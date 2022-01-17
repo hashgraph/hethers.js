@@ -10,7 +10,7 @@
     "@ethersproject/properties": "^5.5.0",
     "@ethersproject/rlp": "^5.5.0",
     "@ethersproject/signing-key": "^5.5.0",
-    "@hashgraph/sdk": "2.6.0"
+    "@hashgraph/sdk": "2.7.0-beta.4"
   },
   "description": "Utilities for decoding and encoding Ethereum transaction for ethers.",
   "ethereum": "donations.ethers.eth",

@@ -77,8 +77,8 @@
   "dependencies": {
     "@babel/parser": "7.8.4",
     "@babel/types": "7.8.3",
-    "@hashgraph/proto": "2.0.1-beta.1",
-    "@hashgraph/sdk": "2.6.0",
+    "@hashgraph/proto": "2.1.2",
+    "@hashgraph/sdk": "2.7.0-beta.4",
     "@ledgerhq/hw-app-eth": "5.27.2",
     "@ledgerhq/hw-transport": "5.26.0",
     "@ledgerhq/hw-transport-u2f": "5.26.0",
@@ -86,7 +86,6 @@
     "@types/mocha": "^5.2.0",
     "aes-js": "3.0.0",
     "axios": "^0.24.0",
-    "bech32": "1.1.4",
     "bn.js": "^4.11.9",
     "elliptic": "6.5.4",
     "hash.js": "1.1.7",
