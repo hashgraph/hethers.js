@@ -35,6 +35,7 @@
     "@hashgraph/sdk": "2.7.0-beta.4",
     "@types/axios": "^0.14.0",
     "axios": "^0.24.0",
+    "bech32": "1.1.4",
     "ws": "7.4.6"
   },
   "description": "Ethereum Providers for ethers.",
