@@ -92,6 +92,13 @@ export abstract class Signer {
     // This MAY throw if changing providers is not supported.
     abstract connect(provider: Provider): Signer;
 
+    /**
+     * Creates an account for the specified public key and sets initial balance.
+     * @param pubKey
+     * @param initialBalance
+     */
+    abstract createAccount(pubKey: BytesLike, initialBalance?: BigInt): Promise<TransactionResponse>;
+
     readonly _isSigner: boolean;
 
 
@@ -286,6 +293,10 @@ export class VoidSigner extends Signer implements TypedDataSigner {
 
     signTransaction(transaction: Deferrable<TransactionRequest>): Promise<string> {
         return this._fail("VoidSigner cannot sign transactions", "signTransaction");
+    }
+
+    createAccount(pubKey: BytesLike, initialBalance?: BigInt): Promise<TransactionResponse> {
+        return this._fail("VoidSigner cannot create accounts", "createAccount");
     }
 
     _signTypedData(domain: TypedDataDomain, types: Record<string, Array<TypedDataField>>, value: Record<string, any>): Promise<string> {

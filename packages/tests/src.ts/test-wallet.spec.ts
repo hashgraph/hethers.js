@@ -12,6 +12,7 @@ import {
     FileAppendTransaction,
     FileCreateTransaction, PublicKey, Transaction
 } from "@hashgraph/sdk";
+import {Wallet} from "./../../wallet";
 
 describe('Test JSON Wallets', function() {
 
@@ -440,4 +441,26 @@ describe("Wallet tx signing", function () {
         assert.ok(Buffer.from(fa.contents).toString() == tx.customData.fileChunk, "Contents mismatch");
         assert.ok(fa.fileId.toString() == tx.customData.fileId, "FileId mismatch");
     });
+});
+
+describe.only("Wallet createAccount", function () {
+    const hederaEoa = {
+        "account": "0.0.41420",
+        "privateKey": "0x36679336bbaa09930f9f2de5c6a21a1032323742526d69f498a76e18352114bb"
+    };
+
+    const provider = ethers.providers.getDefaultProvider('previewnet');
+    // @ts-ignore
+    const wallet = new ethers.Wallet(hederaEoa, provider);
+    const newAccount = Wallet.createRandom();
+
+    it("Should create an account", async function() {
+        const tx = await wallet.createAccount(newAccount._signingKey().compressedPublicKey);
+        assert.ok(tx, 'tx exists');
+    });
+    //
+    // it("Should add initial balance if provided", async function() {
+    //     const tx = await wallet.createAccount(newAccount._signingKey().compressedPublicKey, BigInt(10000) );
+    //     assert.ok(tx, 'tx exists');
+    // });
 });

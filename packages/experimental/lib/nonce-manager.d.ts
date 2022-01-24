@@ -1,5 +1,6 @@
 import { ethers } from "ethers";
-import { TransactionRequest } from "@ethersproject/abstract-provider";
+import { TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
+import { BytesLike } from "@ethersproject/bytes";
 /**
  * TODO: This class and it's usage in the hedera network must be explored.
  */
@@ -15,5 +16,6 @@ export declare class NonceManager extends ethers.Signer {
     signMessage(message: ethers.Bytes | string): Promise<string>;
     signTransaction(transaction: TransactionRequest): Promise<string>;
     sendTransaction(transaction: TransactionRequest): Promise<ethers.providers.TransactionResponse>;
+    createAccount(pubKey: BytesLike, initialBalance?: BigInt): Promise<TransactionResponse>;
 }
 //# sourceMappingURL=nonce-manager.d.ts.map

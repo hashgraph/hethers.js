@@ -262,6 +262,30 @@ var Wallet = /** @class */ (function (_super) {
         var mnemonic = (0, hdnode_1.entropyToMnemonic)(entropy, options.locale);
         return Wallet.fromMnemonic(mnemonic, options.path, options.locale);
     };
+    Wallet.prototype.createAccount = function (pubKey, initialBalance) {
+        return __awaiter(this, void 0, void 0, function () {
+            var signed;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!initialBalance)
+                            initialBalance = BigInt(0);
+                        return [4 /*yield*/, this.signTransaction({
+                                gasLimit: 10000,
+                                customData: {
+                                    isCreateAccount: true,
+                                    publicKey: pubKey,
+                                    initialBalance: initialBalance
+                                },
+                            })];
+                    case 1:
+                        signed = _a.sent();
+                        return [2 /*return*/, this.provider.sendTransaction(signed)];
+                }
+            });
+        });
+    };
+    ;
     Wallet.fromEncryptedJson = function (json, password, progressCallback) {
         return (0, json_wallets_1.decryptJsonWallet)(json, password, progressCallback).then(function (account) {
             return new Wallet(account);

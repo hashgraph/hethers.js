@@ -3,7 +3,8 @@
 import { ethers } from "ethers";
 
 import { version } from "./_version";
-import { TransactionRequest } from "@ethersproject/abstract-provider";
+import { TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
+import { BytesLike } from "@ethersproject/bytes";
 
 const logger = new ethers.utils.Logger(version);
 
@@ -61,4 +62,11 @@ export class NonceManager extends ethers.Signer {
             return tx;
         });
     }
+
+    async createAccount(pubKey: BytesLike, initialBalance?: BigInt): Promise<TransactionResponse> {
+        // @ts-ignore
+        return logger.throwError("Unsupported operation", ethers.errors.UNSUPPORTED_OPERATION, {
+            operation: "createAccount"
+        });
+    };
 }

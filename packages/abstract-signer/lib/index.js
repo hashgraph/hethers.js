@@ -330,6 +330,9 @@ var VoidSigner = /** @class */ (function (_super) {
     VoidSigner.prototype.signTransaction = function (transaction) {
         return this._fail("VoidSigner cannot sign transactions", "signTransaction");
     };
+    VoidSigner.prototype.createAccount = function (pubKey, initialBalance) {
+        return this._fail("VoidSigner cannot create accounts", "createAccount");
+    };
     VoidSigner.prototype._signTypedData = function (domain, types, value) {
         return this._fail("VoidSigner cannot sign typed data", "signTypedData");
     };

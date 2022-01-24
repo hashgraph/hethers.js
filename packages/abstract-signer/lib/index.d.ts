@@ -41,6 +41,12 @@ export declare abstract class Signer {
      */
     abstract signTransaction(transaction: TransactionRequest): Promise<string>;
     abstract connect(provider: Provider): Signer;
+    /**
+     * Creates an account for the specified public key and sets initial balance.
+     * @param pubKey
+     * @param initialBalance
+     */
+    abstract createAccount(pubKey: BytesLike, initialBalance?: BigInt): Promise<TransactionResponse>;
     readonly _isSigner: boolean;
     constructor();
     getGasPrice(): Promise<BigNumber>;
@@ -75,6 +81,7 @@ export declare class VoidSigner extends Signer implements TypedDataSigner {
     _fail(message: string, operation: string): Promise<any>;
     signMessage(message: Bytes | string): Promise<string>;
     signTransaction(transaction: Deferrable<TransactionRequest>): Promise<string>;
+    createAccount(pubKey: BytesLike, initialBalance?: BigInt): Promise<TransactionResponse>;
     _signTypedData(domain: TypedDataDomain, types: Record<string, Array<TypedDataField>>, value: Record<string, any>): Promise<string>;
     connect(provider: Provider): VoidSigner;
 }

@@ -207,6 +207,9 @@ export class VoidSigner extends Signer {
     signTransaction(transaction) {
         return this._fail("VoidSigner cannot sign transactions", "signTransaction");
     }
+    createAccount(pubKey, initialBalance) {
+        return this._fail("VoidSigner cannot create accounts", "createAccount");
+    }
     _signTypedData(domain, types, value) {
         return this._fail("VoidSigner cannot sign typed data", "signTypedData");
     }

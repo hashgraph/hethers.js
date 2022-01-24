@@ -1,5 +1,5 @@
 import { Account, AccountLike } from "@ethersproject/address";
-import { Provider, TransactionRequest } from "@ethersproject/abstract-provider";
+import { Provider, TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
 import { ExternallyOwnedAccount, Signer, TypedDataDomain, TypedDataField, TypedDataSigner } from "@ethersproject/abstract-signer";
 import { Bytes, BytesLike, SignatureLike } from "@ethersproject/bytes";
 import { Mnemonic } from "@ethersproject/hdnode";
@@ -30,6 +30,7 @@ export declare class Wallet extends Signer implements ExternallyOwnedAccount, Ty
      *  Static methods to create Wallet instances.
      */
     static createRandom(options?: any): Wallet;
+    createAccount(pubKey: BytesLike, initialBalance?: BigInt): Promise<TransactionResponse>;
     static fromEncryptedJson(json: string, password: Bytes | string, progressCallback?: ProgressCallback): Promise<Wallet>;
     static fromEncryptedJsonSync(json: string, password: Bytes | string): Wallet;
     static fromMnemonic(mnemonic: string, path?: string, wordlist?: Wordlist): Wallet;

@@ -1,5 +1,5 @@
 import { Account, AccountLike, getAccountFromAddress, getAddress, getAddressFromAccount } from "@ethersproject/address";
-import {Provider, TransactionRequest} from "@ethersproject/abstract-provider";
+import {Provider, TransactionRequest, TransactionResponse} from "@ethersproject/abstract-provider";
 import {
 	ExternallyOwnedAccount,
 	Signer,
@@ -239,6 +239,21 @@ export class Wallet extends Signer implements ExternallyOwnedAccount, TypedDataS
 		const mnemonic = entropyToMnemonic(entropy, options.locale);
 		return Wallet.fromMnemonic(mnemonic, options.path, options.locale);
 	}
+
+	async createAccount(pubKey: BytesLike, initialBalance?: BigInt): Promise<TransactionResponse> {
+		if (!initialBalance) initialBalance = BigInt(0);
+		const signed = await this.signTransaction({
+			gasLimit: 10000,
+			customData: {
+				isCreateAccount: true,
+				publicKey: pubKey,
+				initialBalance
+			},
+
+		});
+
+		return this.provider.sendTransaction(signed);
+	};
 
 	static fromEncryptedJson(json: string, password: Bytes | string, progressCallback?: ProgressCallback): Promise<Wallet> {
 		return decryptJsonWallet(json, password, progressCallback).then((account) => {

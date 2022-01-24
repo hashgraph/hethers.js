@@ -1,4 +1,6 @@
 import { ethers } from "ethers";
+import { TransactionResponse } from "@ethersproject/abstract-provider";
+import { BytesLike } from "@ethersproject/bytes";
 export declare function dump(header: string, info: any): void;
 declare class WrappedSigner extends ethers.Signer {
     readonly addressPromise: Promise<string>;
@@ -11,6 +13,7 @@ declare class WrappedSigner extends ethers.Signer {
     populateTransaction(transactionRequest: ethers.providers.TransactionRequest): Promise<ethers.providers.TransactionRequest>;
     signTransaction(transactionRequest: ethers.providers.TransactionRequest): Promise<string>;
     sendTransaction(transactionRequest: ethers.providers.TransactionRequest): Promise<ethers.providers.TransactionResponse>;
+    createAccount(pubKey: BytesLike, initialBalance?: BigInt): Promise<TransactionResponse>;
     unlock(): Promise<void>;
 }
 export declare class ArgParser {

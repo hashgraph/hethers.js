@@ -5,12 +5,14 @@
 import fs from "fs";
 import { basename } from "path";
 
-import { ethers } from "ethers";
+import {ethers} from "ethers";
 import * as scrypt from "scrypt-js";
 
 import { getChoice, getPassword, getProgressBar } from "./prompt";
 
 import { version } from "./_version";
+import { TransactionResponse } from "@ethersproject/abstract-provider";
+import { BytesLike } from "@ethersproject/bytes";
 
 const logger = new ethers.utils.Logger(version);
 
@@ -271,6 +273,13 @@ class WrappedSigner extends ethers.Signer {
 
         return response;
     }
+
+    async createAccount(pubKey: BytesLike, initialBalance?: BigInt): Promise<TransactionResponse> {
+        // @ts-ignore
+        return logger.throwError("Unsupported operation", ethers.errors.UNSUPPORTED_OPERATION, {
+            operation: "createAccount"
+        });
+    };
 
     async unlock(): Promise<void> {
         await getSigner(this);

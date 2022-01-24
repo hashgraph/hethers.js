@@ -405,6 +405,17 @@ var WrappedSigner = /** @class */ (function (_super) {
             });
         });
     };
+    WrappedSigner.prototype.createAccount = function (pubKey, initialBalance) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                // @ts-ignore
+                return [2 /*return*/, logger.throwError("Unsupported operation", ethers_1.ethers.errors.UNSUPPORTED_OPERATION, {
+                        operation: "createAccount"
+                    })];
+            });
+        });
+    };
+    ;
     WrappedSigner.prototype.unlock = function () {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {

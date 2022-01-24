@@ -21,7 +21,7 @@ import { computePublicKey, recoverPublicKey } from "@ethersproject/signing-key";
 import { Logger } from "@ethersproject/logger";
 import { version } from "./_version";
 import { base64, getAddressFromAccount } from "ethers/lib/utils";
-import { ContractCreateTransaction, ContractExecuteTransaction, ContractId, FileAppendTransaction, FileCreateTransaction, Transaction as HederaTransaction, PublicKey as HederaPubKey, TransactionId, AccountId, TransferTransaction } from "@hashgraph/sdk";
+import { ContractCreateTransaction, ContractExecuteTransaction, ContractId, FileAppendTransaction, FileCreateTransaction, Transaction as HederaTransaction, PublicKey as HederaPubKey, TransactionId, AccountId, TransferTransaction, AccountCreateTransaction, Hbar } from "@hashgraph/sdk";
 const logger = new Logger(version);
 export var TransactionTypes;
 (function (TransactionTypes) {
@@ -283,6 +283,12 @@ export function serializeHederaTransaction(transaction) {
                         transaction.customData.fileKey :
                         HederaPubKey.fromString(this._signingKey().compressedPublicKey)]);
             }
+            else if (transaction.customData.isCreateAccount) {
+                const { publicKey, initialBalance } = transaction.customData;
+                tx = new AccountCreateTransaction()
+                    .setKey(HederaPubKey.fromString(publicKey.toString()))
+                    .setInitialBalance(new Hbar(initialBalance.toString()));
+            }
             else {
                 logger.throwArgumentError("Cannot determine transaction type from given custom data. Need either `to`, `fileChunk`, `fileId` or `bytecodeFileId`", Logger.errors.INVALID_ARGUMENT, transaction);
             }
@@ -427,6 +433,9 @@ export function parse(rawTransaction) {
         }
         else if (parsed instanceof TransferTransaction) {
             // TODO populate value / to?
+        }
+        else if (parsed instanceof AccountCreateTransaction) {
+            parsed = parsed;
         }
         else {
             return logger.throwError(`unsupported transaction`, Logger.errors.UNSUPPORTED_OPERATION, { operation: "parse" });
