@@ -688,7 +688,7 @@ describe("Account like to string", function () {
                 contractAddr = '0000000000000000000000000000000001b34cbb';
                 accStr = (0, address_1.asAccountString)(contractAddr);
                 // should not be touched
-                assert_1.default.strictEqual(accStr, contractAddr);
+                assert_1.default.strictEqual(accStr, '0.0.28527803');
                 return [2 /*return*/];
             });
         });

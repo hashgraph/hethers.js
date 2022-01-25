@@ -23,7 +23,7 @@ import {
 	joinSignature,
 	SignatureLike
 } from "@ethersproject/bytes";
-import { _TypedDataEncoder, hashMessage } from "@ethersproject/hash";
+import { hashMessage } from "@ethersproject/hash";
 import { defaultPath, entropyToMnemonic, HDNode, Mnemonic } from "@ethersproject/hdnode";
 import { keccak256 } from "@ethersproject/keccak256";
 import { defineReadOnly } from "@ethersproject/properties";
@@ -35,7 +35,7 @@ import {
 	encryptKeystore,
 	ProgressCallback
 } from "@ethersproject/json-wallets";
-import { computeAlias, recoverAddress, serializeHederaTransaction } from "@ethersproject/transactions";
+import { computeAlias, serializeHederaTransaction } from "@ethersproject/transactions";
 import { Wordlist } from "@ethersproject/wordlists";
 
 import { Logger } from "@ethersproject/logger";
