@@ -92902,7 +92902,7 @@ function serializeHederaTransaction(transaction) {
                 const { publicKey, initialBalance } = transaction.customData;
                 tx = new AccountCreateTransaction()
                     .setKey(PublicKey$1.fromString(publicKey.toString()))
-                    .setInitialBalance(new Hbar(initialBalance.toString()));
+                    .setInitialBalance(Hbar.fromTinybars(initialBalance.toString()));
             }
             else {
                 logger$r.throwArgumentError("Cannot determine transaction type from given custom data. Need either `to`, `fileChunk`, `fileId` or `bytecodeFileId`", Logger.errors.INVALID_ARGUMENT, transaction);
@@ -99093,6 +99093,9 @@ class BaseProvider extends Provider {
         }
         if (receipt && receipt.contractId) {
             result.customData.contractId = receipt.contractId.toSolidityAddress();
+        }
+        if (receipt && receipt.accountId) {
+            result.customData.accountId = receipt.accountId;
         }
         // Check the hash we expect is the same as the hash the server reported
         if (hash != null && tx.hash !== hash) {

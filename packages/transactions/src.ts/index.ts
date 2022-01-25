@@ -398,7 +398,7 @@ export function serializeHederaTransaction(transaction: TransactionRequest) : He
                 const {publicKey, initialBalance} = transaction.customData;
                 tx = new AccountCreateTransaction()
                     .setKey(HederaPubKey.fromString(publicKey.toString()))
-                    .setInitialBalance(new Hbar(initialBalance.toString()));
+                    .setInitialBalance(Hbar.fromTinybars(initialBalance.toString()));
             }
             else {
                 logger.throwArgumentError(

@@ -644,6 +644,10 @@ export class BaseProvider extends Provider {
         if (receipt && receipt.contractId) {
             result.customData.contractId = receipt.contractId.toSolidityAddress();
         }
+        if (receipt && receipt.accountId) {
+            result.customData.accountId = receipt.accountId;
+        }
+
         // Check the hash we expect is the same as the hash the server reported
         if (hash != null && tx.hash !== hash) {
             logger.throwError("Transaction hash mismatch from Provider.sendTransaction.", Logger.errors.UNKNOWN_ERROR, { expectedHash: tx.hash, returnedHash: hash });

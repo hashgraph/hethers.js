@@ -276,7 +276,7 @@ var Wallet = /** @class */ (function (_super) {
                                     isCreateAccount: true,
                                     publicKey: pubKey,
                                     initialBalance: initialBalance
-                                },
+                                }
                             })];
                     case 1:
                         signed = _a.sent();

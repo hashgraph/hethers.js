@@ -351,7 +351,7 @@ function serializeHederaTransaction(transaction) {
                 var _c = transaction.customData, publicKey = _c.publicKey, initialBalance = _c.initialBalance;
                 tx = new sdk_1.AccountCreateTransaction()
                     .setKey(sdk_1.PublicKey.fromString(publicKey.toString()))
-                    .setInitialBalance(new sdk_1.Hbar(initialBalance.toString()));
+                    .setInitialBalance(sdk_1.Hbar.fromTinybars(initialBalance.toString()));
             }
             else {
                 logger.throwArgumentError("Cannot determine transaction type from given custom data. Need either `to`, `fileChunk`, `fileId` or `bytecodeFileId`", logger_1.Logger.errors.INVALID_ARGUMENT, transaction);

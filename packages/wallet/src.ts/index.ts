@@ -248,8 +248,7 @@ export class Wallet extends Signer implements ExternallyOwnedAccount, TypedDataS
 				isCreateAccount: true,
 				publicKey: pubKey,
 				initialBalance
-			},
-
+			}
 		});
 
 		return this.provider.sendTransaction(signed);
