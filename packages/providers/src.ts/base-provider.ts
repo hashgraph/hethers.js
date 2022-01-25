@@ -1,16 +1,8 @@
 "use strict";
 
 import {
-    BlockTag,
-    EventType,
-    Filter,
-    FilterByBlockHash,
-    Listener,
-    Log,
-    Provider,
-    TransactionReceipt,
-    TransactionRequest,
-    TransactionResponse
+    BlockTag, EventType, Filter, FilterByBlockHash,
+    Listener, Log, Provider, TransactionReceipt, TransactionRequest, TransactionResponse
 } from "@ethersproject/abstract-provider";
 import { Base58 } from "@ethersproject/basex";
 import { BigNumber } from "@ethersproject/bignumber";
@@ -21,24 +13,17 @@ import { Transaction } from "@ethersproject/transactions";
 import { sha256 } from "@ethersproject/sha2";
 import { toUtf8Bytes, toUtf8String } from "@ethersproject/strings";
 import { poll } from "@ethersproject/web";
-
+import { TransactionReceipt as HederaTransactionReceipt } from '@hashgraph/sdk';
 import bech32 from "bech32";
 
 import { Logger } from "@ethersproject/logger";
 import { version } from "./_version";
-import { Formatter } from "./formatter";
-import { getAccountFromAddress } from "@ethersproject/address";
-import axios from "axios";
-import {
-    AccountId,
-    Client,
-    TransactionReceipt as HederaTransactionReceipt,
-    AccountBalanceQuery,
-    NetworkName,
-    Transaction as HederaTransaction
-} from "@hashgraph/sdk";
-
 const logger = new Logger(version);
+
+import { Formatter } from "./formatter";
+import { AccountLike, asAccountString } from "@ethersproject/address";
+import { AccountBalanceQuery, AccountId, Client, NetworkName, Transaction as HederaTransaction } from "@hashgraph/sdk";
+import axios from "axios";
 
 //////////////////////////////
 // Event Serializeing
@@ -136,9 +121,9 @@ export class Event {
     get event(): EventType {
         switch (this.type) {
             case "tx":
-               return this.hash;
+                return this.hash;
             case "filter":
-               return this.filter;
+                return this.filter;
         }
         return this.tag;
     }
@@ -481,10 +466,6 @@ export class BaseProvider extends Provider {
         }
     }
 
-    getHederaNetworkConfig(): AccountId[] {
-        return this.hederaClient._network.getNodeAccountIdsForExecute();
-    }
-
     async _ready(): Promise<Network> {
         if (this._network == null) {
             let network: Network = null;
@@ -593,23 +574,20 @@ export class BaseProvider extends Provider {
      *  AccountBalance query implementation, using the hashgraph sdk.
      *  It returns the tinybar balance of the given address.
      *
-     * @param addressOrName The address to check balance of
+     * @param accountLike The address to check balance of
      */
-    async getBalance(addressOrName: string | Promise<string>): Promise<BigNumber> {
-        addressOrName = await addressOrName;
-        const { shard, realm, num } = getAccountFromAddress(addressOrName);
-        const shardNum = BigNumber.from(shard).toNumber();
-        const realmNum = BigNumber.from(realm).toNumber();
-        const accountNum = BigNumber.from(num).toNumber();
+    async getBalance(accountLike: AccountLike | Promise<AccountLike>): Promise<BigNumber> {
+        accountLike = await accountLike;
+        const account = asAccountString(accountLike);
         try {
             const balance = await new AccountBalanceQuery()
-                .setAccountId(new AccountId({ shard: shardNum, realm: realmNum, num: accountNum }))
+                .setAccountId(AccountId.fromString(account))
                 .execute(this.hederaClient);
             return BigNumber.from(balance.hbars.toTinybars().toNumber());
         } catch (error) {
             return logger.throwError("bad result from backend", Logger.errors.SERVER_ERROR, {
                 method: "AccountBalanceQuery",
-                params: {address: addressOrName},
+                params: {address: accountLike},
                 error
             });
         }
@@ -686,9 +664,16 @@ export class BaseProvider extends Provider {
         return result;
     }
 
+    public getHederaClient() : Client {
+        return this.hederaClient;
+    }
+
+    public getHederaNetworkConfig(): AccountId[] {
+        return this.hederaClient._network.getNodeAccountIdsForExecute();
+    }
+
     async sendTransaction(signedTransaction: string | Promise<string>): Promise<TransactionResponse> {
         signedTransaction = await signedTransaction;
-
         const txBytes = arrayify(signedTransaction);
         const hederaTx = HederaTransaction.fromBytes(txBytes);
         const ethersTx = await this.formatter.transaction(signedTransaction);
@@ -897,7 +882,7 @@ export class BaseProvider extends Provider {
     }
 
     listeners(eventName?: EventType): Array<Listener> {
-       return null;
+        return null;
     }
 
     off(eventName: EventType, listener?: Listener): this {

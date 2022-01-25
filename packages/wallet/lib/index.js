@@ -211,27 +211,12 @@ var Wallet = /** @class */ (function (_super) {
             });
         });
     };
-    // TODO to be revised
     Wallet.prototype._signTypedData = function (domain, types, value) {
         return __awaiter(this, void 0, void 0, function () {
-            var populated;
-            var _this = this;
             return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, hash_1._TypedDataEncoder.resolveNames(domain, types, value, function (name) {
-                            if (_this.provider == null) {
-                                logger.throwError("cannot resolve ENS names without a provider", logger_1.Logger.errors.UNSUPPORTED_OPERATION, {
-                                    operation: "resolveName",
-                                    value: name
-                                });
-                            }
-                            return Promise.resolve(name);
-                            // return this.provider.resolveName(name);
-                        })];
-                    case 1:
-                        populated = _a.sent();
-                        return [2 /*return*/, (0, bytes_1.joinSignature)(this._signingKey().signDigest(hash_1._TypedDataEncoder.hash(populated.domain, types, populated.value)))];
-                }
+                return [2 /*return*/, logger.throwError("_signTypedData not supported", logger_1.Logger.errors.UNSUPPORTED_OPERATION, {
+                        operation: '_signTypedData'
+                    })];
             });
         });
     };
@@ -248,6 +233,13 @@ var Wallet = /** @class */ (function (_super) {
         }
         return (0, json_wallets_1.encryptKeystore)(this, password, options, progressCallback);
     };
+    /**
+     * Performs a contract local call (ContractCallQuery) against the given contract in the provider's network.
+     * In the future, this method should automatically perform getCost and apply the results for gasLimit/txFee.
+     * TODO: utilize getCost when implemented
+     *
+     * @param txRequest - the call request to be submitted
+     */
     /**
      *  Static methods to create Wallet instances.
      */
@@ -310,14 +302,14 @@ var Wallet = /** @class */ (function (_super) {
     return Wallet;
 }(abstract_signer_1.Signer));
 exports.Wallet = Wallet;
-// TODO to be revised
 function verifyMessage(message, signature) {
-    return (0, transactions_1.recoverAddress)((0, hash_1.hashMessage)(message), signature);
+    return (0, signing_key_1.recoverPublicKey)((0, bytes_1.arrayify)((0, hash_1.hashMessage)(message)), signature);
 }
 exports.verifyMessage = verifyMessage;
-// TODO to be revised
 function verifyTypedData(domain, types, value, signature) {
-    return (0, transactions_1.recoverAddress)(hash_1._TypedDataEncoder.hash(domain, types, value), signature);
+    return logger.throwError("verifyTypedData not supported", logger_1.Logger.errors.UNSUPPORTED_OPERATION, {
+        operation: 'verifyTypedData'
+    });
 }
 exports.verifyTypedData = verifyTypedData;
 //# sourceMappingURL=index.js.map

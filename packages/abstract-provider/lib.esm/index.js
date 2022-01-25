@@ -63,6 +63,11 @@ export class Provider {
         logger.checkAbstract(new.target, Provider);
         defineReadOnly(this, "_isProvider", true);
     }
+    getHederaClient() {
+        return logger.throwError("getHederaClient not implemented", Logger.errors.NOT_IMPLEMENTED, {
+            operation: 'getHederaClient'
+        });
+    }
     getHederaNetworkConfig() {
         return logger.throwError("getHederaNetworkConfig not implemented", Logger.errors.NOT_IMPLEMENTED, {
             operation: 'getHederaNetworkConfig'

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseAccount = exports.getAccountFromAddress = exports.getAddressFromAccount = exports.getCreate2Address = exports.getContractAddress = exports.getIcapAddress = exports.isAddress = exports.getAddress = exports.getChecksumAddress = void 0;
+exports.parseAccount = exports.getAccountFromAddress = exports.getAddressFromAccount = exports.getCreate2Address = exports.getContractAddress = exports.getIcapAddress = exports.isAddress = exports.getAddress = exports.getChecksumAddress = exports.asAccountString = void 0;
 var bytes_1 = require("@ethersproject/bytes");
 var bignumber_1 = require("@ethersproject/bignumber");
 var keccak256_1 = require("@ethersproject/keccak256");
@@ -8,6 +8,11 @@ var rlp_1 = require("@ethersproject/rlp");
 var logger_1 = require("@ethersproject/logger");
 var _version_1 = require("./_version");
 var logger = new logger_1.Logger(_version_1.version);
+function asAccountString(accountLike) {
+    var parsedAccount = typeof (accountLike) === "string" ? parseAccount(accountLike) : accountLike;
+    return parsedAccount.shard + "." + parsedAccount.realm + "." + parsedAccount.num;
+}
+exports.asAccountString = asAccountString;
 function getChecksumAddress(address) {
     if (!(0, bytes_1.isHexString)(address, 20)) {
         logger.throwArgumentError("invalid address", "address", address);

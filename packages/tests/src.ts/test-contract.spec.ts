@@ -7,7 +7,7 @@ import { ethers } from "ethers";
 import contractData from "./test-contract.json";
 
 // const provider = new ethers.providers.InfuraProvider("rinkeby", "49a0efa3aaee4fd99797bfa94d8ce2f1");
-const provider = ethers.getDefaultProvider("rinkeby");
+const provider = ethers.getDefaultProvider("testnet");
 
 const TIMEOUT_PERIOD = 120000;
 
@@ -168,7 +168,7 @@ describe("Test Contract Transaction Population", function() {
     const fireflyAddress = "0x8ba1f109551bD432803012645Ac136ddd64DBA72";
 
     const contract = new ethers.Contract(testAddress, abi);
-    const contractConnected = contract.connect(ethers.getDefaultProvider("homestead"));
+    const contractConnected = contract.connect(ethers.getDefaultProvider("testnet"));
 
     xit("standard population", async function() {
         const tx = await contract.populateTransaction.balanceOf(testAddress);

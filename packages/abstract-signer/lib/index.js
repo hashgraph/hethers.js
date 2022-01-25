@@ -14,6 +14,25 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -52,11 +71,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.randomNumBetween = exports.VoidSigner = exports.Signer = void 0;
+var bignumber_1 = require("@ethersproject/bignumber");
+var bytes_1 = require("@ethersproject/bytes");
 var properties_1 = require("@ethersproject/properties");
 var logger_1 = require("@ethersproject/logger");
 var _version_1 = require("./_version");
 var address_1 = require("@ethersproject/address");
 var sdk_1 = require("@hashgraph/sdk");
+var Long = __importStar(require("long"));
+var proto_1 = require("@hashgraph/proto");
 var logger = new logger_1.Logger(_version_1.version);
 var allowedTransactionKeys = [
     "accessList", "chainId", "customData", "data", "from", "gasLimit", "maxFeePerGas", "maxPriorityFeePerGas", "to", "type", "value",
@@ -64,6 +87,29 @@ var allowedTransactionKeys = [
 ];
 ;
 ;
+function checkError(method, error, txRequest) {
+    switch (error.status._code) {
+        // insufficient gas
+        case 30:
+            return logger.throwError("insufficient funds for gas cost", logger_1.Logger.errors.CALL_EXCEPTION, { tx: txRequest });
+        // insufficient payer balance
+        case 10:
+            return logger.throwError("insufficient funds in payer account", logger_1.Logger.errors.INSUFFICIENT_FUNDS, { tx: txRequest });
+        // insufficient tx fee
+        case 9:
+            return logger.throwError("transaction fee too low", logger_1.Logger.errors.INSUFFICIENT_FUNDS, { tx: txRequest });
+        // invalid signature
+        case 7:
+            return logger.throwError("invalid transaction signature", logger_1.Logger.errors.UNKNOWN_ERROR, { tx: txRequest });
+        // invalid contract id
+        case 16:
+            return logger.throwError("invalid contract address", logger_1.Logger.errors.INVALID_ARGUMENT, { tx: txRequest });
+        // contract revert
+        case 33:
+            return logger.throwError("contract execution reverted", logger_1.Logger.errors.CALL_EXCEPTION, { tx: txRequest });
+    }
+    throw error;
+}
 var Signer = /** @class */ (function () {
     ///////////////////
     // Sub-classes MUST call super
@@ -117,11 +163,79 @@ var Signer = /** @class */ (function () {
             });
         });
     };
-    // TODO: this should perform a LocalCall, sign and submit with provider.sendTransaction
-    Signer.prototype.call = function (transaction, blockTag) {
+    // super classes should override this for now
+    Signer.prototype.call = function (txRequest) {
         return __awaiter(this, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                return [2 /*return*/, Promise.resolve("")];
+            var tx, to, from, _a, nodeID, paymentTxId, hederaTx, cost, paymentBody, signed, walletKey, signature, transferSignedTransactionBytes, response, error_1;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        this._checkProvider("call");
+                        return [4 /*yield*/, (0, properties_1.resolveProperties)(this.checkTransaction(txRequest))];
+                    case 1:
+                        tx = _b.sent();
+                        to = (0, address_1.asAccountString)(tx.to);
+                        _a = address_1.asAccountString;
+                        return [4 /*yield*/, this.getAddress()];
+                    case 2:
+                        from = _a.apply(void 0, [_b.sent()]);
+                        nodeID = sdk_1.AccountId.fromString((0, address_1.asAccountString)(tx.nodeId));
+                        paymentTxId = sdk_1.TransactionId.generate(from);
+                        hederaTx = new sdk_1.ContractCallQuery()
+                            .setContractId(to)
+                            .setFunctionParameters((0, bytes_1.arrayify)(tx.data))
+                            .setNodeAccountIds([nodeID])
+                            .setGas((0, bignumber_1.numberify)(tx.gasLimit))
+                            .setPaymentTransactionId(paymentTxId);
+                        cost = 3;
+                        paymentBody = {
+                            transactionID: paymentTxId._toProtobuf(),
+                            nodeAccountID: nodeID._toProtobuf(),
+                            // TODO: check if 1 Hbar is optimal for tx fee
+                            transactionFee: new sdk_1.Hbar(1).toTinybars(),
+                            transactionValidDuration: {
+                                seconds: Long.fromInt(120),
+                            },
+                            cryptoTransfer: {
+                                transfers: {
+                                    accountAmounts: [
+                                        {
+                                            accountID: sdk_1.AccountId.fromString(from)._toProtobuf(),
+                                            amount: new sdk_1.Hbar(cost).negated().toTinybars()
+                                        },
+                                        {
+                                            accountID: nodeID._toProtobuf(),
+                                            amount: new sdk_1.Hbar(cost).toTinybars()
+                                        }
+                                    ],
+                                },
+                            },
+                        };
+                        signed = {
+                            bodyBytes: proto_1.TransactionBody.encode(paymentBody).finish(),
+                            sigMap: {}
+                        };
+                        walletKey = sdk_1.PrivateKey.fromStringECDSA(this._signingKey().privateKey);
+                        signature = walletKey.sign(signed.bodyBytes);
+                        signed.sigMap = {
+                            sigPair: [walletKey.publicKey._toProtobufSignature(signature)]
+                        };
+                        transferSignedTransactionBytes = proto_1.SignedTransaction.encode(signed).finish();
+                        hederaTx._paymentTransactions.push({
+                            signedTransactionBytes: transferSignedTransactionBytes
+                        });
+                        _b.label = 3;
+                    case 3:
+                        _b.trys.push([3, 5, , 6]);
+                        return [4 /*yield*/, hederaTx.execute(this.provider.getHederaClient())];
+                    case 4:
+                        response = _b.sent();
+                        return [2 /*return*/, (0, bytes_1.hexStripZeros)(response.bytes)];
+                    case 5:
+                        error_1 = _b.sent();
+                        return [2 /*return*/, checkError('call', error_1, txRequest)];
+                    case 6: return [2 /*return*/];
+                }
             });
         });
     };

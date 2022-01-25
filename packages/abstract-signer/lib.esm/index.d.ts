@@ -52,7 +52,7 @@ export declare abstract class Signer {
     getGasPrice(): Promise<BigNumber>;
     getBalance(blockTag?: BlockTag): Promise<BigNumber>;
     estimateGas(transaction: Deferrable<TransactionRequest>): Promise<BigNumber>;
-    call(transaction: Deferrable<TransactionRequest>, blockTag?: BlockTag): Promise<string>;
+    call(txRequest: Deferrable<TransactionRequest>): Promise<string>;
     /**
      * Composes a transaction which is signed and sent to the provider's network.
      * @param transaction - the actual tx

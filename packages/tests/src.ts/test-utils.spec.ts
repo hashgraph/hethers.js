@@ -15,6 +15,8 @@ import {
     TransactionId, TransferTransaction
 } from "@hashgraph/sdk";
 import { getAddressFromAccount, hexlify } from "ethers/lib/utils";
+import { asAccountString } from "@ethersproject/address";
+import { Logger } from "@ethersproject/logger";
 
 // @ts-ignore
 function equals(a: any, b: any): boolean {
@@ -689,6 +691,48 @@ describe("Base58 Coder", function() {
     });
 });
 
+describe("Account like to string", function () {
+
+    it('Is usable for ethereum addresses', async function() {
+        const contractAddr = '0000000000000000000000000000000001b34cbb';
+        const accStr = asAccountString(contractAddr);
+        // should not be touched
+        assert.strictEqual(accStr, '0.0.28527803');
+    })
+
+    it('Is able to convert hedera account to string', async function() {
+        const accLike = {
+            shard: BigInt(0),
+            realm: BigInt(0),
+            num: BigInt(420),
+        };
+        let accStr = asAccountString(accLike);
+        const split = accStr.split('.');
+        assert.notStrictEqual(accStr, "");
+        assert.strictEqual(split[0], "0");
+        assert.strictEqual(split[1], "0");
+        assert.strictEqual(split[2], "420");
+
+        const accLike2 = "0.0.69";
+        accStr = asAccountString(accLike2);
+        const split2 = accStr.split('.');
+        assert.notStrictEqual(accStr, "");
+        assert.strictEqual(split2[0], "0");
+        assert.strictEqual(split2[1], "0");
+        assert.strictEqual(split2[2], "69");
+    });
+
+    it("Should throw on random string", async function() {
+        const notReallyAccountLike = "foo";
+        try {
+            asAccountString(notReallyAccountLike);
+        } catch (e) {
+            assert.strictEqual(e.code, Logger.errors.INVALID_ARGUMENT)
+            assert.notStrictEqual(e, null);
+        }
+    });
+});
+
 /*
 describe("Web Fetch", function() {
     it("fetches JSON", async function() {
@@ -718,8 +762,7 @@ describe("EIP-712", function() {
         if (!test.privateKey) { return; }
         it(`signing ${ test.name }`, async function() {
             const wallet = new ethers.Wallet(test.privateKey);
-            const signature = await wallet._signTypedData(test.domain, test.types, test.data);
-            assert.equal(signature, test.signature, "signature");
+            await assert.rejects(wallet._signTypedData(test.domain, test.types, test.data), '_signTypedData not supported');
         });
     });
 });

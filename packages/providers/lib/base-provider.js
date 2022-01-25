@@ -67,11 +67,11 @@ var web_1 = require("@ethersproject/web");
 var bech32_1 = __importDefault(require("bech32"));
 var logger_1 = require("@ethersproject/logger");
 var _version_1 = require("./_version");
+var logger = new logger_1.Logger(_version_1.version);
 var formatter_1 = require("./formatter");
 var address_1 = require("@ethersproject/address");
-var axios_1 = __importDefault(require("axios"));
 var sdk_1 = require("@hashgraph/sdk");
-var logger = new logger_1.Logger(_version_1.version);
+var axios_1 = __importDefault(require("axios"));
 //////////////////////////////
 // Event Serializeing
 // @ts-ignore
@@ -470,9 +470,6 @@ var BaseProvider = /** @class */ (function (_super) {
         }
         return _this;
     }
-    BaseProvider.prototype.getHederaNetworkConfig = function () {
-        return this.hederaClient._network.getNodeAccountIdsForExecute();
-    };
     BaseProvider.prototype._ready = function () {
         return __awaiter(this, void 0, void 0, function () {
             var network, error_1;
@@ -604,34 +601,31 @@ var BaseProvider = /** @class */ (function (_super) {
      *  AccountBalance query implementation, using the hashgraph sdk.
      *  It returns the tinybar balance of the given address.
      *
-     * @param addressOrName The address to check balance of
+     * @param accountLike The address to check balance of
      */
-    BaseProvider.prototype.getBalance = function (addressOrName) {
+    BaseProvider.prototype.getBalance = function (accountLike) {
         return __awaiter(this, void 0, void 0, function () {
-            var _a, shard, realm, num, shardNum, realmNum, accountNum, balance, error_2;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0: return [4 /*yield*/, addressOrName];
+            var account, balance, error_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, accountLike];
                     case 1:
-                        addressOrName = _b.sent();
-                        _a = (0, address_1.getAccountFromAddress)(addressOrName), shard = _a.shard, realm = _a.realm, num = _a.num;
-                        shardNum = bignumber_1.BigNumber.from(shard).toNumber();
-                        realmNum = bignumber_1.BigNumber.from(realm).toNumber();
-                        accountNum = bignumber_1.BigNumber.from(num).toNumber();
-                        _b.label = 2;
+                        accountLike = _a.sent();
+                        account = (0, address_1.asAccountString)(accountLike);
+                        _a.label = 2;
                     case 2:
-                        _b.trys.push([2, 4, , 5]);
+                        _a.trys.push([2, 4, , 5]);
                         return [4 /*yield*/, new sdk_1.AccountBalanceQuery()
-                                .setAccountId(new sdk_1.AccountId({ shard: shardNum, realm: realmNum, num: accountNum }))
+                                .setAccountId(sdk_1.AccountId.fromString(account))
                                 .execute(this.hederaClient)];
                     case 3:
-                        balance = _b.sent();
+                        balance = _a.sent();
                         return [2 /*return*/, bignumber_1.BigNumber.from(balance.hbars.toTinybars().toNumber())];
                     case 4:
-                        error_2 = _b.sent();
+                        error_2 = _a.sent();
                         return [2 /*return*/, logger.throwError("bad result from backend", logger_1.Logger.errors.SERVER_ERROR, {
                                 method: "AccountBalanceQuery",
-                                params: { address: addressOrName },
+                                params: { address: accountLike },
                                 error: error_2
                             })];
                     case 5: return [2 /*return*/];
@@ -733,6 +727,12 @@ var BaseProvider = /** @class */ (function (_super) {
             });
         }); };
         return result;
+    };
+    BaseProvider.prototype.getHederaClient = function () {
+        return this.hederaClient;
+    };
+    BaseProvider.prototype.getHederaNetworkConfig = function () {
+        return this.hederaClient._network.getNodeAccountIdsForExecute();
     };
     BaseProvider.prototype.sendTransaction = function (signedTransaction) {
         var _a;

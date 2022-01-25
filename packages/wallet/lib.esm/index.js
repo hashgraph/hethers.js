@@ -11,14 +11,14 @@ import { getAccountFromAddress, getAddress, getAddressFromAccount } from "@ether
 import { Provider } from "@ethersproject/abstract-provider";
 import { Signer } from "@ethersproject/abstract-signer";
 import { arrayify, concat, hexDataSlice, hexlify, isHexString, joinSignature } from "@ethersproject/bytes";
-import { _TypedDataEncoder, hashMessage } from "@ethersproject/hash";
+import { hashMessage } from "@ethersproject/hash";
 import { defaultPath, entropyToMnemonic, HDNode } from "@ethersproject/hdnode";
 import { keccak256 } from "@ethersproject/keccak256";
 import { defineReadOnly } from "@ethersproject/properties";
 import { randomBytes } from "@ethersproject/random";
-import { SigningKey } from "@ethersproject/signing-key";
+import { SigningKey, recoverPublicKey } from "@ethersproject/signing-key";
 import { decryptJsonWallet, decryptJsonWalletSync, encryptKeystore } from "@ethersproject/json-wallets";
-import { computeAlias, recoverAddress, serializeHederaTransaction } from "@ethersproject/transactions";
+import { computeAlias, serializeHederaTransaction } from "@ethersproject/transactions";
 import { Logger } from "@ethersproject/logger";
 import { version } from "./_version";
 import { PrivateKey as HederaPrivKey, } from "@hashgraph/sdk";
@@ -139,21 +139,11 @@ export class Wallet extends Signer {
             return joinSignature(this._signingKey().signDigest(hashMessage(message)));
         });
     }
-    // TODO to be revised
     _signTypedData(domain, types, value) {
         return __awaiter(this, void 0, void 0, function* () {
-            // Populate any ENS names
-            const populated = yield _TypedDataEncoder.resolveNames(domain, types, value, (name) => {
-                if (this.provider == null) {
-                    logger.throwError("cannot resolve ENS names without a provider", Logger.errors.UNSUPPORTED_OPERATION, {
-                        operation: "resolveName",
-                        value: name
-                    });
-                }
-                return Promise.resolve(name);
-                // return this.provider.resolveName(name);
+            return logger.throwError("_signTypedData not supported", Logger.errors.UNSUPPORTED_OPERATION, {
+                operation: '_signTypedData'
             });
-            return joinSignature(this._signingKey().signDigest(_TypedDataEncoder.hash(populated.domain, types, populated.value)));
         });
     }
     encrypt(password, options, progressCallback) {
@@ -169,6 +159,13 @@ export class Wallet extends Signer {
         }
         return encryptKeystore(this, password, options, progressCallback);
     }
+    /**
+     * Performs a contract local call (ContractCallQuery) against the given contract in the provider's network.
+     * In the future, this method should automatically perform getCost and apply the results for gasLimit/txFee.
+     * TODO: utilize getCost when implemented
+     *
+     * @param txRequest - the call request to be submitted
+     */
     /**
      *  Static methods to create Wallet instances.
      */
@@ -205,12 +202,12 @@ export class Wallet extends Signer {
         }
     }
 }
-// TODO to be revised
 export function verifyMessage(message, signature) {
-    return recoverAddress(hashMessage(message), signature);
+    return recoverPublicKey(arrayify(hashMessage(message)), signature);
 }
-// TODO to be revised
 export function verifyTypedData(domain, types, value, signature) {
-    return recoverAddress(_TypedDataEncoder.hash(domain, types, value), signature);
+    return logger.throwError("verifyTypedData not supported", Logger.errors.UNSUPPORTED_OPERATION, {
+        operation: 'verifyTypedData'
+    });
 }
 //# sourceMappingURL=index.js.map

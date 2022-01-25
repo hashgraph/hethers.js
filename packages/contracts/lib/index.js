@@ -383,7 +383,7 @@ function buildCall(contract, fragment, collapseSimple) {
                     case 5: return [4 /*yield*/, populateTransaction(contract, fragment, args)];
                     case 6:
                         tx = _a.sent();
-                        return [4 /*yield*/, signer.call(tx, blockTag)];
+                        return [4 /*yield*/, signer.call(tx)];
                     case 7:
                         result = _a.sent();
                         try {

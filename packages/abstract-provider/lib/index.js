@@ -102,6 +102,11 @@ var Provider = /** @class */ (function () {
         logger.checkAbstract(_newTarget, Provider);
         (0, properties_1.defineReadOnly)(this, "_isProvider", true);
     }
+    Provider.prototype.getHederaClient = function () {
+        return logger.throwError("getHederaClient not implemented", logger_1.Logger.errors.NOT_IMPLEMENTED, {
+            operation: 'getHederaClient'
+        });
+    };
     Provider.prototype.getHederaNetworkConfig = function () {
         return logger.throwError("getHederaNetworkConfig not implemented", logger_1.Logger.errors.NOT_IMPLEMENTED, {
             operation: 'getHederaNetworkConfig'

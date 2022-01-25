@@ -285,7 +285,7 @@ function buildCall(contract, fragment, collapseSimple) {
             }
             // Call a node and get the result
             const tx = yield populateTransaction(contract, fragment, args);
-            const result = yield signer.call(tx, blockTag);
+            const result = yield signer.call(tx);
             try {
                 let value = contract.interface.decodeFunctionResult(fragment, result);
                 if (collapseSimple && fragment.outputs.length === 1) {

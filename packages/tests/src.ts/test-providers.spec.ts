@@ -1106,7 +1106,7 @@ describe("Test Hedera Provider", function () {
         const txID = TransactionId.generate(hederaTestnetOperableAccount.operator.accountId);
         const tx = await new ContractCreateTransaction()
             .setContractMemo("memo")
-            .setGas(100000)
+            .setGas(300000)
             // .setInitialBalance(1000)
             .setBytecodeFileId("0.0.26562254")
             .setNodeAccountIds([new AccountId(0,0,3)])
@@ -1118,7 +1118,7 @@ describe("Test Hedera Provider", function () {
         const signedTx = ethers.utils.hexlify(txBytes);
         const provider = ethers.providers.getDefaultProvider('testnet');
         const txResponse = await provider.sendTransaction(signedTx);
-        assert.strictEqual(txResponse.gasLimit.toNumber(), 100000);
+        assert.strictEqual(txResponse.gasLimit.toNumber(), 300000);
         assert.strictEqual(txResponse.from, getAddressFromAccount(hederaTestnetOperableAccount.operator.accountId));
         assert.strictEqual(txResponse.to, undefined); // contract create TX should not be addressed to anything
         // assert.strictEqual(txResponse.value.toNumber(), 100000000000);
@@ -1156,5 +1156,5 @@ describe("Test Hedera Provider", function () {
         const txId = `0.0.15680048-1638189529-145876922`;
         const record2 = await provider2.getTransaction(txId);
         assert.notStrictEqual(record2, null, "Record is null")
-    });
+    }).timeout(timeout*4);
 });

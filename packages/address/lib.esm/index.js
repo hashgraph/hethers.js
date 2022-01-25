@@ -6,6 +6,10 @@ import { encode } from "@ethersproject/rlp";
 import { Logger } from "@ethersproject/logger";
 import { version } from "./_version";
 const logger = new Logger(version);
+export function asAccountString(accountLike) {
+    let parsedAccount = typeof (accountLike) === "string" ? parseAccount(accountLike) : accountLike;
+    return `${parsedAccount.shard}.${parsedAccount.realm}.${parsedAccount.num}`;
+}
 export function getChecksumAddress(address) {
     if (!isHexString(address, 20)) {
         logger.throwArgumentError("invalid address", "address", address);

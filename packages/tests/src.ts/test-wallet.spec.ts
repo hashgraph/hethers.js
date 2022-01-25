@@ -2,11 +2,11 @@
 
 import assert from "assert";
 
-import  {  ethers } from "ethers";
+import { ethers } from "ethers";
 import { loadTests, TestCase } from "@ethersproject/testcases";
 import { BytesLike } from "@ethersproject/bytes";
 import * as utils from './utils';
-import { arrayify, getAddressFromAccount } from "ethers/lib/utils";
+import { arrayify, getAddressFromAccount, Logger } from "ethers/lib/utils";
 import {
     AccountCreateTransaction, AccountId,
     Client,
@@ -16,6 +16,8 @@ import {
     FileCreateTransaction, Hbar, PrivateKey, PublicKey, Transaction, TransactionId,
     Key as HederaKey
 } from "@hashgraph/sdk";
+import { readFileSync } from "fs";
+import * as hethers from "ethers";
 import { Wallet } from "./../../wallet";
 import { Key } from "@hashgraph/proto";
 import { BaseProvider } from "./../../providers";
@@ -339,8 +341,9 @@ describe('Test Signing Messages', function() {
     tests.forEach(function(test) {
         it(('verifies a message "' + test.name + '"'), function() {
             this.timeout(120000);
-            let address = ethers.utils.verifyMessage(test.message, test.signature);
-            assert.equal(address, test.address, 'verifies message signature');
+            let wallet = new ethers.Wallet(test.privateKey);
+            const publicKey = ethers.utils.verifyMessage(test.message, test.signature);
+            assert.strictEqual(wallet.publicKey, publicKey);
         });
     });
 
@@ -482,6 +485,101 @@ describe("Wallet tx signing", function () {
         const fa = fromBytes as FileAppendTransaction;
         assert.ok(Buffer.from(fa.contents).toString() == tx.customData.fileChunk, "Contents mismatch");
         assert.ok(fa.fileId.toString() == tx.customData.fileId, "FileId mismatch");
+    });
+});
+
+describe("Wallet getters", function () {
+    it("Should get proper mainnet chainId", async function () {
+        const provider = ethers.providers.getDefaultProvider("mainnet");
+        const wallet = ethers.Wallet.createRandom().connect(provider);
+        const chainId = await wallet.getChainId();
+        assert.strictEqual(chainId, 290);
+    });
+    it("Should get proper testnet chainId", async function () {
+        const provider = ethers.providers.getDefaultProvider("testnet");
+        const wallet = ethers.Wallet.createRandom().connect(provider);
+        const chainId = await wallet.getChainId();
+        assert.strictEqual(chainId, 291)
+    });
+
+    it("Should get proper previewnet chainId", async function () {
+        const provider = ethers.providers.getDefaultProvider("previewnet");
+        const wallet = ethers.Wallet.createRandom().connect(provider);
+        const chainId = await wallet.getChainId();
+        assert.strictEqual(chainId, 292);
+    });
+});
+
+describe("Wallet local calls", async function () {
+    const hederaEoa = {
+        account: '0.0.29511337',
+        privateKey: '0x409836c5c296fe800fcac721093c68c78c4c03a1f88cb10bbdf01ecc49247132'
+    };
+    const provider = ethers.providers.getDefaultProvider('testnet');
+    // @ts-ignore
+    const wallet = new ethers.Wallet(hederaEoa, provider);
+    const contractAddr = '0000000000000000000000000000000001b34cbb';
+    const abi = JSON.parse(readFileSync('examples/assets/abi/GLDToken_abi.json').toString());
+    const contract = hethers.ContractFactory.getContract(contractAddr, abi, wallet);
+    const balanceOfParams = contract.interface.encodeFunctionData('balanceOf', [
+        await wallet.getAddress()
+    ]);
+    // skipped - no balance in account
+    xit("Should be able to perform local call", async function () {
+        const balanceOfTx = {
+            to: contractAddr,
+            gasLimit: 30000,
+            data: arrayify(balanceOfParams),
+        };
+        const response = await wallet.call(balanceOfTx);
+        assert.notStrictEqual(response, null);
+    });
+
+    // skipped - no balance in account
+    xit('should fail on contract revert', async function () {
+        this.timeout(60000);
+        const balanceOfTx = {
+            to: contractAddr,
+            gasLimit: 50000,
+            data: "0x",
+            nodeId: "0.0.3"
+        };
+        try {
+            await wallet.call(balanceOfTx);
+        } catch (err) {
+            assert.strictEqual(err.code, Logger.errors.UNPREDICTABLE_GAS_LIMIT)
+        }
+    });
+
+    it('should fail on insufficient gas', async function() {
+        this.timeout(60000);
+        const balanceOfTx = {
+            to: contractAddr,
+            gasLimit: 100,
+            data: arrayify(balanceOfParams),
+            nodeId: "0.0.3"
+        };
+        try {
+            await wallet.call(balanceOfTx);
+        } catch (err) {
+            assert.strictEqual(err.code, Logger.errors.INSUFFICIENT_FUNDS)
+        }
+    });
+
+    it('should fail on invalid contract', async function() {
+        this.timeout(60000);
+        const balanceOfTx = {
+            // incorrect addr
+            to: 'z000000000000000000000000000000001b34cbb',
+            gasLimit: 30000,
+            data: arrayify(balanceOfParams),
+            nodeId: "0.0.3"
+        };
+        try {
+            await wallet.call(balanceOfTx);
+        } catch (err) {
+            assert.strictEqual(err.code, Logger.errors.INVALID_ARGUMENT)
+        }
     });
 });
 

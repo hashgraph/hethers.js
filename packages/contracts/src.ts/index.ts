@@ -388,7 +388,7 @@ function buildCall(contract: Contract, fragment: FunctionFragment, collapseSimpl
 
         // Call a node and get the result
         const tx = await populateTransaction(contract, fragment, args);
-        const result = await signer.call(tx, blockTag);
+        const result = await signer.call(tx);
 
         try {
             let value = contract.interface.decodeFunctionResult(fragment, result);

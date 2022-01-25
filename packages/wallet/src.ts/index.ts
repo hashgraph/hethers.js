@@ -1,5 +1,11 @@
-import { Account, AccountLike, getAccountFromAddress, getAddress, getAddressFromAccount } from "@ethersproject/address";
-import {Provider, TransactionRequest, TransactionResponse} from "@ethersproject/abstract-provider";
+import {
+	Account,
+	AccountLike,
+	getAccountFromAddress,
+	getAddress,
+	getAddressFromAccount
+} from "@ethersproject/address";
+import { Provider, TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
 import {
 	ExternallyOwnedAccount,
 	Signer,
@@ -20,9 +26,9 @@ import {
 import { _TypedDataEncoder, hashMessage } from "@ethersproject/hash";
 import { defaultPath, entropyToMnemonic, HDNode, Mnemonic } from "@ethersproject/hdnode";
 import { keccak256 } from "@ethersproject/keccak256";
-import {defineReadOnly} from "@ethersproject/properties";
+import { defineReadOnly } from "@ethersproject/properties";
 import { randomBytes } from "@ethersproject/random";
-import { SigningKey } from "@ethersproject/signing-key";
+import { SigningKey, recoverPublicKey } from "@ethersproject/signing-key";
 import {
 	decryptJsonWallet,
 	decryptJsonWalletSync,
@@ -188,21 +194,10 @@ export class Wallet extends Signer implements ExternallyOwnedAccount, TypedDataS
 		return joinSignature(this._signingKey().signDigest(hashMessage(message)));
 	}
 
-	// TODO to be revised
 	async _signTypedData(domain: TypedDataDomain, types: Record<string, Array<TypedDataField>>, value: Record<string, any>): Promise<string> {
-		// Populate any ENS names
-		const populated = await _TypedDataEncoder.resolveNames(domain, types, value, (name: string) => {
-			if (this.provider == null) {
-				logger.throwError("cannot resolve ENS names without a provider", Logger.errors.UNSUPPORTED_OPERATION, {
-					operation: "resolveName",
-					value: name
-				});
-			}
-			return Promise.resolve(name);
-			// return this.provider.resolveName(name);
+		return logger.throwError("_signTypedData not supported", Logger.errors.UNSUPPORTED_OPERATION, {
+			operation: '_signTypedData'
 		});
-
-		return joinSignature(this._signingKey().signDigest(_TypedDataEncoder.hash(populated.domain, types, populated.value)));
 	}
 
 	encrypt(password: Bytes | string, options?: any, progressCallback?: ProgressCallback): Promise<string> {
@@ -221,6 +216,14 @@ export class Wallet extends Signer implements ExternallyOwnedAccount, TypedDataS
 
 		return encryptKeystore(this, password, options, progressCallback);
 	}
+
+	/**
+	 * Performs a contract local call (ContractCallQuery) against the given contract in the provider's network.
+	 * In the future, this method should automatically perform getCost and apply the results for gasLimit/txFee.
+	 * TODO: utilize getCost when implemented
+	 *
+	 * @param txRequest - the call request to be submitted
+	 */
 
 	/**
 	 *  Static methods to create Wallet instances.
@@ -278,12 +281,12 @@ export class Wallet extends Signer implements ExternallyOwnedAccount, TypedDataS
 	}
 }
 
-// TODO to be revised
 export function verifyMessage(message: Bytes | string, signature: SignatureLike): string {
-	return recoverAddress(hashMessage(message), signature);
+	return recoverPublicKey(arrayify(hashMessage(message)), signature);
 }
 
-// TODO to be revised
 export function verifyTypedData(domain: TypedDataDomain, types: Record<string, Array<TypedDataField>>, value: Record<string, any>, signature: SignatureLike): string {
-	return recoverAddress(_TypedDataEncoder.hash(domain, types, value), signature);
+	return logger.throwError("verifyTypedData not supported", Logger.errors.UNSUPPORTED_OPERATION, {
+		operation: 'verifyTypedData'
+	});
 }

@@ -20,11 +20,11 @@ import { poll } from "@ethersproject/web";
 import bech32 from "bech32";
 import { Logger } from "@ethersproject/logger";
 import { version } from "./_version";
-import { Formatter } from "./formatter";
-import { getAccountFromAddress } from "@ethersproject/address";
-import axios from "axios";
-import { AccountId, Client, AccountBalanceQuery, NetworkName, Transaction as HederaTransaction } from "@hashgraph/sdk";
 const logger = new Logger(version);
+import { Formatter } from "./formatter";
+import { asAccountString } from "@ethersproject/address";
+import { AccountBalanceQuery, AccountId, Client, NetworkName, Transaction as HederaTransaction } from "@hashgraph/sdk";
+import axios from "axios";
 //////////////////////////////
 // Event Serializeing
 // @ts-ignore
@@ -379,9 +379,6 @@ export class BaseProvider extends Provider {
             }
         }
     }
-    getHederaNetworkConfig() {
-        return this.hederaClient._network.getNodeAccountIdsForExecute();
-    }
     _ready() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this._network == null) {
@@ -484,25 +481,22 @@ export class BaseProvider extends Provider {
      *  AccountBalance query implementation, using the hashgraph sdk.
      *  It returns the tinybar balance of the given address.
      *
-     * @param addressOrName The address to check balance of
+     * @param accountLike The address to check balance of
      */
-    getBalance(addressOrName) {
+    getBalance(accountLike) {
         return __awaiter(this, void 0, void 0, function* () {
-            addressOrName = yield addressOrName;
-            const { shard, realm, num } = getAccountFromAddress(addressOrName);
-            const shardNum = BigNumber.from(shard).toNumber();
-            const realmNum = BigNumber.from(realm).toNumber();
-            const accountNum = BigNumber.from(num).toNumber();
+            accountLike = yield accountLike;
+            const account = asAccountString(accountLike);
             try {
                 const balance = yield new AccountBalanceQuery()
-                    .setAccountId(new AccountId({ shard: shardNum, realm: realmNum, num: accountNum }))
+                    .setAccountId(AccountId.fromString(account))
                     .execute(this.hederaClient);
                 return BigNumber.from(balance.hbars.toTinybars().toNumber());
             }
             catch (error) {
                 return logger.throwError("bad result from backend", Logger.errors.SERVER_ERROR, {
                     method: "AccountBalanceQuery",
-                    params: { address: addressOrName },
+                    params: { address: accountLike },
                     error
                 });
             }
@@ -580,6 +574,12 @@ export class BaseProvider extends Provider {
             return receipt;
         });
         return result;
+    }
+    getHederaClient() {
+        return this.hederaClient;
+    }
+    getHederaNetworkConfig() {
+        return this.hederaClient._network.getNodeAccountIdsForExecute();
     }
     sendTransaction(signedTransaction) {
         var _a;
