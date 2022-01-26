@@ -725,7 +725,7 @@ describe("Wallet local calls", function () {
         });
     });
 });
-describe.only("Wallet createAccount", function () {
+describe("Wallet createAccount", function () {
     var _this = this;
     var wallet, newAccount, newAccountPublicKey, provider;
     before(function () { return __awaiter(_this, void 0, void 0, function () {
@@ -767,7 +767,7 @@ describe.only("Wallet createAccount", function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.timeout(10000);
+                        this.timeout(12000);
                         return [4 /*yield*/, wallet.createAccount(newAccountPublicKey)];
                     case 1:
                         tx = _a.sent();
@@ -785,7 +785,7 @@ describe.only("Wallet createAccount", function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        this.timeout(10000);
+                        this.timeout(12000);
                         return [4 /*yield*/, wallet.createAccount(newAccountPublicKey, BigInt(123))];
                     case 1:
                         tx = _a.sent();

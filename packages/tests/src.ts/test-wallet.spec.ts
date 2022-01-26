@@ -583,7 +583,7 @@ describe("Wallet local calls", async function () {
     });
 });
 
-describe.only("Wallet createAccount", function () {
+describe("Wallet createAccount", function () {
 
     let wallet: Wallet, newAccount: Wallet, newAccountPublicKey: BytesLike, provider: BaseProvider;
 
@@ -612,7 +612,7 @@ describe.only("Wallet createAccount", function () {
     })
 
     it("Should create an account", async function() {
-        this.timeout(10000);
+        this.timeout(12000);
         const tx = await wallet.createAccount(newAccountPublicKey);
         assert.ok(tx, 'tx exists');
         assert.ok(tx.customData, 'tx.customData exists');
@@ -620,7 +620,7 @@ describe.only("Wallet createAccount", function () {
     });
 
     it("Should add initial balance if provided", async function() {
-        this.timeout(10000);
+        this.timeout(12000);
         const tx = await wallet.createAccount(newAccountPublicKey, BigInt(123) );
         assert.ok(tx, 'tx exists');
         assert.ok(tx.customData, 'tx.customData exists');
