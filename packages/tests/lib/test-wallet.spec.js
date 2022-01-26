@@ -65,8 +65,6 @@ var utils = __importStar(require("./utils"));
 var utils_1 = require("ethers/lib/utils");
 var sdk_1 = require("@hashgraph/sdk");
 var fs_1 = require("fs");
-var hethers = __importStar(require("ethers"));
-var wallet_1 = require("./../../wallet");
 var proto_1 = require("@hashgraph/proto");
 /**
  * Helper function that returns a Wallet instance from the provided ED25519 credentials,
@@ -602,7 +600,7 @@ describe("Wallet local calls", function () {
                     wallet = new ethers_1.ethers.Wallet(hederaEoa, provider);
                     contractAddr = '0000000000000000000000000000000001b34cbb';
                     abi = JSON.parse((0, fs_1.readFileSync)('examples/assets/abi/GLDToken_abi.json').toString());
-                    contract = hethers.ContractFactory.getContract(contractAddr, abi, wallet);
+                    contract = ethers_1.ethers.ContractFactory.getContract(contractAddr, abi, wallet);
                     _b = (_a = contract.interface).encodeFunctionData;
                     _c = ['balanceOf'];
                     return [4 /*yield*/, wallet.getAddress()];
@@ -756,7 +754,7 @@ describe("Wallet createAccount", function () {
     }); });
     beforeEach(function () { return __awaiter(_this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            newAccount = wallet_1.Wallet.createRandom();
+            newAccount = ethers_1.ethers.Wallet.createRandom();
             newAccountPublicKey = newAccount._signingKey().compressedPublicKey;
             return [2 /*return*/];
         });

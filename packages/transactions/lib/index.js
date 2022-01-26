@@ -347,7 +347,7 @@ function serializeHederaTransaction(transaction) {
                         transaction.customData.fileKey :
                         sdk_1.PublicKey.fromString(this._signingKey().compressedPublicKey)]);
             }
-            else if (transaction.customData.isCreateAccount) {
+            else if (transaction.customData.publicKey) {
                 var _c = transaction.customData, publicKey = _c.publicKey, initialBalance = _c.initialBalance;
                 tx = new sdk_1.AccountCreateTransaction()
                     .setKey(sdk_1.PublicKey.fromString(publicKey.toString()))
@@ -508,6 +508,8 @@ function parse(rawTransaction) {
                     }
                     else if (parsed instanceof sdk_1.AccountCreateTransaction) {
                         parsed = parsed;
+                        contents.value = parsed.initialBalance ?
+                            handleNumber(parsed.initialBalance.toBigNumber().toString()) : handleNumber('0');
                     }
                     else {
                         return [2 /*return*/, logger.throwError("unsupported transaction", logger_1.Logger.errors.UNSUPPORTED_OPERATION, { operation: "parse" })];

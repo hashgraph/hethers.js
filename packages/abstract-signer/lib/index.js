@@ -372,7 +372,7 @@ var Signer = /** @class */ (function () {
      */
     Signer.prototype.populateTransaction = function (transaction) {
         return __awaiter(this, void 0, void 0, function () {
-            var tx, customData;
+            var tx, customData, isFileCreateOrAppend, isCreateAccount;
             var _this = this;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -394,8 +394,9 @@ var Signer = /** @class */ (function () {
                         return [4 /*yield*/, tx.customData];
                     case 2:
                         customData = _a.sent();
-                        // FileCreate and FileAppend always carry a customData.fileChunk object
-                        if (!(customData && customData.fileChunk) && tx.gasLimit == null) {
+                        isFileCreateOrAppend = customData && customData.fileChunk;
+                        isCreateAccount = customData && customData.publicKey;
+                        if (!isFileCreateOrAppend && !isCreateAccount && tx.gasLimit == null) {
                             return [2 /*return*/, logger.throwError("cannot estimate gas; transaction requires manual gas limit", logger_1.Logger.errors.UNPREDICTABLE_GAS_LIMIT, { tx: tx })];
                         }
                         return [4 /*yield*/, (0, properties_1.resolveProperties)(tx)];

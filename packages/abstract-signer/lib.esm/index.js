@@ -250,7 +250,10 @@ export class Signer {
             }
             const customData = yield tx.customData;
             // FileCreate and FileAppend always carry a customData.fileChunk object
-            if (!(customData && customData.fileChunk) && tx.gasLimit == null) {
+            const isFileCreateOrAppend = customData && customData.fileChunk;
+            // CreateAccount always has a publicKey
+            const isCreateAccount = customData && customData.publicKey;
+            if (!isFileCreateOrAppend && !isCreateAccount && tx.gasLimit == null) {
                 return logger.throwError("cannot estimate gas; transaction requires manual gas limit", Logger.errors.UNPREDICTABLE_GAS_LIMIT, { tx: tx });
             }
             return yield resolveProperties(tx);

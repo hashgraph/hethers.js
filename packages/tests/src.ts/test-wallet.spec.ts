@@ -17,10 +17,7 @@ import {
     Key as HederaKey
 } from "@hashgraph/sdk";
 import { readFileSync } from "fs";
-import * as hethers from "ethers";
-import { Wallet } from "./../../wallet";
 import { Key } from "@hashgraph/proto";
-import { BaseProvider } from "./../../providers";
 
 /**
  * Helper function that returns a Wallet instance from the provided ED25519 credentials,
@@ -28,7 +25,7 @@ import { BaseProvider } from "./../../providers";
  * @param account
  * @param provider
  */
-const createWalletFromED25519 = async (account: any, provider: BaseProvider) => {
+const createWalletFromED25519 = async (account: any, provider: ethers.providers.BaseProvider) => {
     const edPrivateKey = PrivateKey.fromString(account.operator.privateKey);
     const client = Client.forNetwork(account.network);
     const randomWallet = ethers.Wallet.createRandom();
@@ -520,7 +517,7 @@ describe("Wallet local calls", async function () {
     const wallet = new ethers.Wallet(hederaEoa, provider);
     const contractAddr = '0000000000000000000000000000000001b34cbb';
     const abi = JSON.parse(readFileSync('examples/assets/abi/GLDToken_abi.json').toString());
-    const contract = hethers.ContractFactory.getContract(contractAddr, abi, wallet);
+    const contract = ethers.ContractFactory.getContract(contractAddr, abi, wallet);
     const balanceOfParams = contract.interface.encodeFunctionData('balanceOf', [
         await wallet.getAddress()
     ]);
@@ -585,7 +582,7 @@ describe("Wallet local calls", async function () {
 
 describe("Wallet createAccount", function () {
 
-    let wallet: Wallet, newAccount: Wallet, newAccountPublicKey: BytesLike, provider: BaseProvider;
+    let wallet: ethers.Wallet, newAccount: ethers.Wallet, newAccountPublicKey: BytesLike, provider: ethers.providers.BaseProvider;
 
     before( async () => {
         const account = {
@@ -607,7 +604,7 @@ describe("Wallet createAccount", function () {
     })
 
     beforeEach( async () => {
-        newAccount = Wallet.createRandom();
+        newAccount = ethers.Wallet.createRandom();
         newAccountPublicKey = newAccount._signingKey().compressedPublicKey;
     })
 

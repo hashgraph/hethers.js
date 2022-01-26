@@ -263,9 +263,7 @@ var Wallet = /** @class */ (function (_super) {
                         if (!initialBalance)
                             initialBalance = BigInt(0);
                         return [4 /*yield*/, this.signTransaction({
-                                gasLimit: 10000,
                                 customData: {
-                                    isCreateAccount: true,
                                     publicKey: pubKey,
                                     initialBalance: initialBalance
                                 }

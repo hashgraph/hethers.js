@@ -394,7 +394,7 @@ export function serializeHederaTransaction(transaction: TransactionRequest) : He
                     .setKeys([ transaction.customData.fileKey ?
                         transaction.customData.fileKey :
                         HederaPubKey.fromString(this._signingKey().compressedPublicKey) ])
-            } else if (transaction.customData.isCreateAccount) {
+            } else if (transaction.customData.publicKey) {
                 const {publicKey, initialBalance} = transaction.customData;
                 tx = new AccountCreateTransaction()
                     .setKey(HederaPubKey.fromString(publicKey.toString()))
@@ -551,6 +551,8 @@ export async function parse(rawTransaction: BytesLike): Promise<Transaction> {
         // TODO populate value / to?
     } else if (parsed instanceof AccountCreateTransaction) {
         parsed = parsed as AccountCreateTransaction;
+        contents.value = parsed.initialBalance ?
+            handleNumber(parsed.initialBalance.toBigNumber().toString()) : handleNumber('0');
     } else {
         return logger.throwError(`unsupported transaction`, Logger.errors.UNSUPPORTED_OPERATION, {operation: "parse"});
     }

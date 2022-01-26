@@ -246,9 +246,7 @@ export class Wallet extends Signer implements ExternallyOwnedAccount, TypedDataS
 	async createAccount(pubKey: BytesLike, initialBalance?: BigInt): Promise<TransactionResponse> {
 		if (!initialBalance) initialBalance = BigInt(0);
 		const signed = await this.signTransaction({
-			gasLimit: 10000,
 			customData: {
-				isCreateAccount: true,
 				publicKey: pubKey,
 				initialBalance
 			}
