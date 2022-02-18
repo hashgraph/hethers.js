@@ -321,8 +321,12 @@ export async function parse(rawTransaction: BytesLike): Promise<Transaction> {
         logger.throwArgumentError(error.message, "rawTransaction", rawTransaction);
     }
     const tx = parsed.transactionId;
+
+    const nanos = tx.validStart.nanos.toString().padStart(9, '0');
+    const seconds = tx.validStart.seconds.toString().padStart(10, '0');
+
     let contents = {
-        transactionId: tx.accountId.toString() + '-' + tx.validStart.seconds + '-' + tx.validStart.nanos,
+        transactionId: `${tx.accountId.toString()}-${seconds}-${nanos}`,
         hash: hexlify(await parsed.getTransactionHash()), //stringify?
         from: getAddressFromAccount(parsed.transactionId.accountId.toString()),
     } as HederaTransactionContents;

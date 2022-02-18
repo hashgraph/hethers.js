@@ -279,7 +279,7 @@ exports.serializeHederaTransaction = serializeHederaTransaction;
 function parse(rawTransaction) {
     var _a;
     return __awaiter(this, void 0, void 0, function () {
-        var payload, parsed, tx, contents, _b;
+        var payload, parsed, tx, nanos, seconds, contents, _b;
         var _c;
         return __generator(this, function (_d) {
             switch (_d.label) {
@@ -292,8 +292,10 @@ function parse(rawTransaction) {
                         logger.throwArgumentError(error.message, "rawTransaction", rawTransaction);
                     }
                     tx = parsed.transactionId;
+                    nanos = tx.validStart.nanos.toString().padStart(9, '0');
+                    seconds = tx.validStart.seconds.toString().padStart(10, '0');
                     _c = {
-                        transactionId: tx.accountId.toString() + '-' + tx.validStart.seconds + '-' + tx.validStart.nanos
+                        transactionId: tx.accountId.toString() + "-" + seconds + "-" + nanos
                     };
                     _b = bytes_1.hexlify;
                     return [4 /*yield*/, parsed.getTransactionHash()];
