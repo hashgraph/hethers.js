@@ -22416,9 +22416,6 @@ var dependencies = {
 	"minimalistic-assert": "^1.0.1",
 	"minimalistic-crypto-utils": "^1.0.1"
 };
-var _resolved = "https://registry.npmjs.org/elliptic/-/elliptic-6.5.4.tgz";
-var _integrity = "sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==";
-var _from = "elliptic@6.5.4";
 var require$$0 = {
 	name: name,
 	version: version$b,
@@ -22433,10 +22430,7 @@ var require$$0 = {
 	bugs: bugs,
 	homepage: homepage,
 	devDependencies: devDependencies,
-	dependencies: dependencies,
-	_resolved: _resolved,
-	_integrity: _integrity,
-	_from: _from
+	dependencies: dependencies
 };
 
 var minimalisticAssert = assert;
@@ -39673,7 +39667,7 @@ const COST_QUERY = [];
 /**
  * The ID for a crypto-currency contract on Hedera.
  */
-class ContractId extends Key {
+class ContractId extends Key$1 {
     /**
      * @param {number | Long | import("../EntityIdHelper").IEntityId} props
      * @param {(number | Long)=} realm
@@ -40149,10 +40143,6 @@ class TokenDecimalMap extends ObjectMap {
  * @typedef {object} AccountBalanceJson
  * @property {string} hbars
  * @property {TokenBalanceJson[]} tokens
- */
-
-/**
- * @typedef {import("@hashgraph/cryptography").Key} Key
  */
 
 class AccountBalance {
@@ -43445,7 +43435,7 @@ class TransactionHashMap extends ObjectMap {
  */
 class NodeAccountIdSignatureMap extends ObjectMap {
     constructor() {
-        super((s) => PublicKey.fromString(s));
+        super((s) => PublicKey$1.fromString(s));
     }
 
     /**
@@ -43458,11 +43448,18 @@ class NodeAccountIdSignatureMap extends ObjectMap {
         const sigPairs = sigMap.sigPair != null ? sigMap.sigPair : [];
 
         for (const sigPair of sigPairs) {
-            if (sigPair.pubKeyPrefix != null && sigPair.ed25519 != null) {
-                signatures._set(
-                    PublicKey.fromBytes(sigPair.pubKeyPrefix),
-                    sigPair.ed25519
-                );
+            if (sigPair.pubKeyPrefix != null) {
+                if (sigPair.ed25519 != null) {
+                    signatures._set(
+                        PublicKey$1.fromBytesED25519(sigPair.pubKeyPrefix),
+                        sigPair.ed25519
+                    );
+                } else if (sigPair.ECDSASecp256k1 != null) {
+                    signatures._set(
+                        PublicKey$1.fromBytesECDSA(sigPair.pubKeyPrefix),
+                        sigPair.ECDSASecp256k1
+                    );
+                }
             }
         }
 
@@ -44280,7 +44277,11 @@ class Transaction extends Executable {
             this._nextTransactionIndex * this._nodeIds.length +
             this._nextNodeIndex;
 
-        await this._buildTransactionAsync(index);
+        if (this._signOnDemand) {
+            await this._buildTransactionAsync(index);
+        } else {
+            this._buildTransaction(index);
+        }
 
         return /** @type {proto.ITransaction} */ (this._transactions[index]);
     }
@@ -44364,6 +44365,8 @@ class Transaction extends Executable {
                 this._transactions.push(null);
             }
         }
+
+        // console.log(JSON.stringify(this._signedTransactions[index]));
 
         this._transactions[index] = {
             signedTransactionBytes: lib.SignedTransaction.encode(
@@ -46945,14 +46948,13 @@ QUERY_REGISTRY.set("contractGetBytecode", ContractByteCodeQuery._fromProtobuf);
 // https://github.com/MaiaVictor/eth-lib/blob/da0971f5b09964d9c8449975fa87933f0c9fef35/src/hash.js
 //  - added type declarations
 //  - switched to es6 module syntax
+//
+// Disable linting for entire file because it's nearly all pure JS
+// eslint-disable
 
-/** @type {number[]} */
+const HEX_CHARS$1 = "0123456789abcdef".split("");
 const KECCAK_PADDING$1 = [1, 256, 65536, 16777216];
-
-/** @type {number[]} */
 const SHIFT$1 = [0, 8, 16, 24];
-
-/** @type {number[]} */
 const RC$1 = [
     1, 0, 32898, 0, 32906, 2147483648, 2147516416, 2147483648, 32907, 0,
     2147483649, 0, 2147516545, 2147483648, 32777, 2147483648, 138, 0, 136, 0,
@@ -46963,7 +46965,7 @@ const RC$1 = [
 ];
 
 /**
- * @typedef {object} Keccak
+ * @typedef {object} KeccakT
  * @property {number[]} blocks
  * @property {number} blockCount
  * @property {number} outputBlocks
@@ -46971,45 +46973,23 @@ const RC$1 = [
  * @property {number} start
  * @property {number} block
  * @property {boolean} reset
- * @property {?number} lastByteIndex
+ * @property {number=} lastByteIndex
  */
 
-/**
- * @param {number} bits
- * @returns {Keccak}
- */
-function createKeccakState(bits) {
-    return {
-        blocks: [],
-        reset: true,
-        block: 0,
-        start: 0,
-        lastByteIndex: null,
-        blockCount: (1600 - (bits << 1)) >> 5,
-        outputBlocks: bits >> 5,
-        s: zeroFill(50),
-    };
-}
+/** @type {(bits: number) => KeccakT} */
+const Keccak$1 = (bits) => ({
+    blocks: [],
+    reset: true,
+    block: 0,
+    start: 0,
+    blockCount: (1600 - (bits << 1)) >> 5,
+    outputBlocks: bits >> 5,
+    // @ts-ignore
+    s: ((s) => [].concat(s, s, s, s, s))([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+});
 
-/**
- * @param {number} n
- * @returns {number[]}
- */
-function zeroFill(n) {
-    /** @type {number[]} */
-    let arr = Array(n);
-
-    for (let i = 0; i < n; ++i) arr[i] = 0;
-
-    return arr;
-}
-
-/**
- * @param {Keccak} state
- * @param {string | Uint8Array} message
- * @returns {Uint8Array}
- */
-function update$1(state, message) {
+/** @type {(state: KeccakT, message: string | number[]) => string} */
+const update$1 = (state, /** @type {string | number[]} */ message) => {
     var length = message.length,
         blocks = state.blocks,
         byteCount = state.blockCount << 2,
@@ -47017,7 +46997,7 @@ function update$1(state, message) {
         outputBlocks = state.outputBlocks,
         s = state.s,
         index = 0,
-        i = 0,
+        i,
         code;
 
     // update
@@ -47029,35 +47009,35 @@ function update$1(state, message) {
                 blocks[i] = 0;
             }
         }
-        for (i = state.start; index < length && i < byteCount; ++index) {
-            code =
-                typeof message === "string"
-                    ? message.charCodeAt(index)
-                    : message[index];
-            if (code < 0x80) {
-                blocks[i >> 2] |= code << SHIFT$1[i++ & 3];
-            } else if (code < 0x800) {
-                blocks[i >> 2] |= (0xc0 | (code >> 6)) << SHIFT$1[i++ & 3];
-                blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT$1[i++ & 3];
-            } else if (code < 0xd800 || code >= 0xe000) {
-                blocks[i >> 2] |= (0xe0 | (code >> 12)) << SHIFT$1[i++ & 3];
-                blocks[i >> 2] |=
-                    (0x80 | ((code >> 6) & 0x3f)) << SHIFT$1[i++ & 3];
-                blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT$1[i++ & 3];
-            } else {
-                code =
-                    0x10000 +
-                    (((code & 0x3ff) << 10) |
-                        ((typeof message === "string"
-                            ? message.charCodeAt(++index)
-                            : message[++index]) &
-                            0x3ff));
-                blocks[i >> 2] |= (0xf0 | (code >> 18)) << SHIFT$1[i++ & 3];
-                blocks[i >> 2] |=
-                    (0x80 | ((code >> 12) & 0x3f)) << SHIFT$1[i++ & 3];
-                blocks[i >> 2] |=
-                    (0x80 | ((code >> 6) & 0x3f)) << SHIFT$1[i++ & 3];
-                blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT$1[i++ & 3];
+        if (typeof message !== "string") {
+            for (i = state.start; index < length && i < byteCount; ++index) {
+                blocks[i >> 2] |= message[index] << SHIFT$1[i++ & 3];
+            }
+        } else {
+            for (i = state.start; index < length && i < byteCount; ++index) {
+                code = message.charCodeAt(index);
+                if (code < 0x80) {
+                    blocks[i >> 2] |= code << SHIFT$1[i++ & 3];
+                } else if (code < 0x800) {
+                    blocks[i >> 2] |= (0xc0 | (code >> 6)) << SHIFT$1[i++ & 3];
+                    blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT$1[i++ & 3];
+                } else if (code < 0xd800 || code >= 0xe000) {
+                    blocks[i >> 2] |= (0xe0 | (code >> 12)) << SHIFT$1[i++ & 3];
+                    blocks[i >> 2] |=
+                        (0x80 | ((code >> 6) & 0x3f)) << SHIFT$1[i++ & 3];
+                    blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT$1[i++ & 3];
+                } else {
+                    code =
+                        0x10000 +
+                        (((code & 0x3ff) << 10) |
+                            (message.charCodeAt(++index) & 0x3ff));
+                    blocks[i >> 2] |= (0xf0 | (code >> 18)) << SHIFT$1[i++ & 3];
+                    blocks[i >> 2] |=
+                        (0x80 | ((code >> 12) & 0x3f)) << SHIFT$1[i++ & 3];
+                    blocks[i >> 2] |=
+                        (0x80 | ((code >> 6) & 0x3f)) << SHIFT$1[i++ & 3];
+                    blocks[i >> 2] |= (0x80 | (code & 0x3f)) << SHIFT$1[i++ & 3];
+                }
             }
         }
         state.lastByteIndex = i;
@@ -47075,9 +47055,9 @@ function update$1(state, message) {
     }
 
     // finalize
-    i = /** @type {number} */ (state.lastByteIndex);
+    i = state.lastByteIndex;
+    // @ts-ignore
     blocks[i >> 2] |= KECCAK_PADDING$1[i & 3];
-
     if (state.lastByteIndex === byteCount) {
         blocks[0] = blocks[blockCount];
         for (i = 1; i < blockCount + 1; ++i) {
@@ -47088,33 +47068,37 @@ function update$1(state, message) {
     for (i = 0; i < blockCount; ++i) {
         s[i] ^= blocks[i];
     }
-
     f$2(s);
 
-    const buffer = new ArrayBuffer(outputBlocks * 4);
-    const view = new DataView(buffer);
-
-    i = 0;
+    // toString
+    var hex = "";
+    var block;
     var j = 0;
-
+    i = 0;
     while (j < outputBlocks) {
         for (i = 0; i < blockCount && j < outputBlocks; ++i, ++j) {
-            view.setInt32(i * 4, s[i], true);
+            block = s[i];
+            hex +=
+                HEX_CHARS$1[(block >> 4) & 0x0f] +
+                HEX_CHARS$1[block & 0x0f] +
+                HEX_CHARS$1[(block >> 12) & 0x0f] +
+                HEX_CHARS$1[(block >> 8) & 0x0f] +
+                HEX_CHARS$1[(block >> 20) & 0x0f] +
+                HEX_CHARS$1[(block >> 16) & 0x0f] +
+                HEX_CHARS$1[(block >> 28) & 0x0f] +
+                HEX_CHARS$1[(block >> 24) & 0x0f];
         }
-
         if (j % blockCount === 0) {
             f$2(s);
             i = 0;
         }
     }
+    // @ts-ignore
+    return "0x" + hex;
+};
 
-    return new Uint8Array(buffer);
-}
-
-/**
- * @param {number[]} s
- */
-function f$2(s) {
+/** @type {(s: number[]) => void} */
+const f$2 = (s) => {
     var h,
         l,
         n,
@@ -47357,19 +47341,25 @@ function f$2(s) {
         s[0] ^= RC$1[n];
         s[1] ^= RC$1[n + 1];
     }
-}
+};
+
+const keccak$1 = (/** @type {number} */ bits) => (/** @type {string} */ str) => {
+    var msg;
+    if (str.slice(0, 2) === "0x") {
+        msg = [];
+        for (var i = 2, l = str.length; i < l; i += 2)
+            msg.push(parseInt(str.slice(i, i + 2), 16));
+    } else {
+        msg = str;
+    }
+    // @ts-ignore
+    return update$1(Keccak$1(bits, bits), msg);
+};
 
 /**
- * @param {number} bits
- * @returns {(message: string | Uint8Array) => Uint8Array}
+ * @type {(message: string) => string}
  */
-function createKeccak(bits) {
-    return function (message) {
-        return update$1(createKeccakState(bits), message);
-    };
-}
-
-const keccak256$2 = createKeccak(256);
+const keccak256$2 = keccak$1(256);
 
 /**
  * @enum {number}
@@ -47638,7 +47628,8 @@ class ContractFunctionSelector {
             throw new Error("`name` required for ContractFunctionSelector");
         }
 
-        return new Uint8Array(keccak256$2(this.toString()).slice(0, 4));
+        const func = encode$4(encode$5(this.toString()));
+        return decode$5(keccak256$2(`0x${func}`)).slice(0, 4);
     }
 
     /**
@@ -49294,7 +49285,6 @@ TRANSACTION_REGISTRY.set(
 
 /**
  * @typedef {import("bignumber.js").default} BigNumber
- * @typedef {import("@hashgraph/cryptography").Key} Key
  * @typedef {import("../channel/Channel.js").default} Channel
  * @typedef {import("../client/Client.js").default<*, *>} Client
  * @typedef {import("../account/AccountId.js").default} AccountId
@@ -52707,7 +52697,6 @@ TRANSACTION_REGISTRY.set(
  */
 
 /**
- * @typedef {import("@hashgraph/cryptography").Key} Key
  * @typedef {import("../channel/Channel.js").default} Channel
  * @typedef {import("../client/Client.js").default<*, *>} Client
  * @typedef {import("../transaction/TransactionId.js").default} TransactionId
@@ -57176,7 +57165,6 @@ TRANSACTION_REGISTRY.set(
 
 /**
  * @typedef {import("bignumber.js").default} BigNumber
- * @typedef {import("@hashgraph/cryptography").Key} Key
  * @typedef {import("../channel/Channel.js").default} Channel
  * @typedef {import("../transaction/TransactionId.js").default} TransactionId
  * @typedef {import("./CustomFee.js").default} CustomFee
@@ -58675,9 +58663,6 @@ TRANSACTION_REGISTRY.set(
  * @typedef {import("@hashgraph/proto").IDuration} proto.IDuration
  */
 
-/**
- * @typedef {import("@hashgraph/cryptography").Key} Key
- */
 class TokenNftInfo {
     /**
      * @private
@@ -80762,9 +80747,6 @@ var files$1 = [
 	"deps/googleapis/google/rpc/*.proto",
 	"deps/protoc-gen-validate/validate/**/*.proto"
 ];
-var _resolved$1 = "https://registry.npmjs.org/@grpc/grpc-js/-/grpc-js-1.5.1.tgz";
-var _integrity$1 = "sha512-ItOqQ4ff7JrR9W6KDQm+LdsVjuZtV7Qq64Oy3Hjx8ZPBDDwBx7rD8hOL0Vnde0RbnsqLG86WOgF+tQDzf/nSzQ==";
-var _from$1 = "@grpc/grpc-js@1.5.1";
 var require$$0$2 = {
 	name: name$1,
 	version: version$c,
@@ -80781,10 +80763,7 @@ var require$$0$2 = {
 	contributors: contributors,
 	scripts: scripts$1,
 	dependencies: dependencies$1,
-	files: files$1,
-	_resolved: _resolved$1,
-	_integrity: _integrity$1,
-	_from: _from$1
+	files: files$1
 };
 
 var subchannel = createCommonjsModule(function (module, exports) {
@@ -92930,8 +92909,10 @@ function parse$2(rawTransaction) {
             logger$q.throwArgumentError(error.message, "rawTransaction", rawTransaction);
         }
         const tx = parsed.transactionId;
+        const nanos = tx.validStart.nanos.toString().padStart(9, '0');
+        const seconds = tx.validStart.seconds.toString().padStart(10, '0');
         let contents = {
-            transactionId: tx.accountId.toString() + '-' + tx.validStart.seconds + '-' + tx.validStart.nanos,
+            transactionId: `${tx.accountId.toString()}-${seconds}-${nanos}`,
             hash: hexlify(yield parsed.getTransactionHash()),
             from: utils$1.getAddressFromAccount(parsed.transactionId.accountId.toString()),
         };
