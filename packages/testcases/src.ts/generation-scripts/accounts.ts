@@ -1,20 +1,20 @@
-const ethers = require("ethers");
+const hethers = require("hethers");
 const fs = require("fs");
 
 let result = [];
 for (let i = 0; i < 1024; i++) {
-	let wallet = ethers.Wallet.createRandom();
+	let wallet = hethers.Wallet.createRandom();
 
 	const accountString = "0.0." + (1000 + i);
-	const accountObject = ethers.utils.parseAccount(accountString);
-	const addressString = ethers.utils.getAddressFromAccount(accountObject);
+	const accountObject = hethers.utils.parseAccount(accountString);
+	const addressString = hethers.utils.getAddressFromAccount(accountObject);
 
 	result.push({
 		"address": addressString,
 		"account": accountString,
-		"alias": ethers.utils.computeAlias(wallet.privateKey),
-		"checksumAddress": ethers.utils.getChecksumAddress(addressString),
-		"icapAddress": ethers.utils.getIcapAddress(addressString),
+		"alias": hethers.utils.computeAlias(wallet.privateKey),
+		"checksumAddress": hethers.utils.getChecksumAddress(addressString),
+		"icapAddress": hethers.utils.getIcapAddress(addressString),
 		"index": i + 12,
 		"name": "random-" + i,
 		"privateKey": wallet.privateKey,

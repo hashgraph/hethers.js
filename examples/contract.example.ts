@@ -1,4 +1,4 @@
-import * as hethers from "ethers";
+import * as hethers from "hethers";
 import { AccountCreateTransaction, PrivateKey, Hbar, Client, Key as HederaKey, TransactionId } from "@hashgraph/sdk";
 import { readFileSync } from "fs";
 import { Key } from "@hashgraph/proto";

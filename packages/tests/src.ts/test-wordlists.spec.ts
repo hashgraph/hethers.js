@@ -2,11 +2,11 @@
 
 import assert from 'assert';
 
-import { ethers } from "ethers";
+import { hethers } from "hethers";
 import { loadTests, TestCase } from "@hethers/testcases";
 
 
-function checkWordlist(content: string, wordlist: ethers.Wordlist): void {
+function checkWordlist(content: string, wordlist: hethers.Wordlist): void {
     let words = content.split('\n');
     it('matches wordlists for ' + wordlist.locale, function() {
         for (let i = 0; i < 2048; i++) {
@@ -35,7 +35,7 @@ function checkWordlist(content: string, wordlist: ethers.Wordlist): void {
 describe('Check Wordlists', function() {
     let tests: Array<TestCase.Wordlist> = loadTests("wordlists");
     tests.forEach((test) => {
-        let wordlist = (<{ [ locale: string ]: ethers.Wordlist }>(ethers.wordlists))[test.locale];
+        let wordlist = (<{ [ locale: string ]: hethers.Wordlist }>(hethers.wordlists))[test.locale];
         if (wordlist == null) { return; }
         checkWordlist(test.content, wordlist);
     });

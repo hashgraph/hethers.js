@@ -1,5 +1,5 @@
 'use strict';
-const ethers = require("ethers");
+const hethers = require("hethers");
 
 import fs from "fs";
 import { resolve } from "path";
@@ -32,7 +32,7 @@ function getHD(seed: string): Array<TestCase.HDWalletNode> {
     let hdnodes: Array<TestCase.HDWalletNode> = [{
         path: 'm',
         privateKey: '0x' + privateKey.toString('hex'),
-        alias: ethers.utils.computeAlias('0x' + privateKey.toString('hex'))
+        alias: hethers.utils.computeAlias('0x' + privateKey.toString('hex'))
     }];
 
     for (let j = 0; j < 5; j++) {
@@ -42,7 +42,7 @@ function getHD(seed: string): Array<TestCase.HDWalletNode> {
         hdnodes.push({
             path: path,
             privateKey: '0x' + privateKey.toString('hex'),
-            alias: '0x' + ethers.utils.computeAlias('0x' + privateKey.toString('hex')),
+            alias: '0x' + hethers.utils.computeAlias('0x' + privateKey.toString('hex')),
         });
     }
 

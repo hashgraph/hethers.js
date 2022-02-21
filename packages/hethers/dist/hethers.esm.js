@@ -16,7 +16,7 @@ import https from 'https';
 import assert$b from 'assert';
 import tty from 'tty';
 
-var lib_esm$k = /*#__PURE__*/Object.freeze({
+var lib_esm$j = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	get TransactionTypes () { return TransactionTypes; },
 	get computeAddress () { return computeAddress; },
@@ -6828,7 +6828,7 @@ function decode(data) {
     return decoded.result;
 }
 
-var lib_esm$3 = /*#__PURE__*/Object.freeze({
+var index = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	encode: encode,
 	decode: decode
@@ -7817,7 +7817,7 @@ function nameprep(value) {
 
 "use strict";
 
-var lib_esm$4 = /*#__PURE__*/Object.freeze({
+var lib_esm$3 = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	_toEscapedUtf8String: _toEscapedUtf8String,
 	toUtf8Bytes: toUtf8Bytes,
@@ -8472,7 +8472,7 @@ class TypedDataEncoder {
 
 "use strict";
 
-var lib_esm$5 = /*#__PURE__*/Object.freeze({
+var lib_esm$4 = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	id: id,
 	namehash: namehash,
@@ -9072,7 +9072,7 @@ class Interface {
 
 "use strict";
 
-var lib_esm$6 = /*#__PURE__*/Object.freeze({
+var lib_esm$5 = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	ConstructorFragment: ConstructorFragment,
 	ErrorFragment: ErrorFragment,
@@ -9394,7 +9394,7 @@ class Logger$1 {
 Logger$1.errors = ErrorCode$1;
 Logger$1.levels = LogLevel$1;
 
-var lib_esm$7 = /*#__PURE__*/Object.freeze({
+var lib_esm$6 = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	get LogLevel () { return LogLevel$1; },
 	get ErrorCode () { return ErrorCode$1; },
@@ -22664,50 +22664,36 @@ const keccak = (/** @type {number} */ bits) => (/** @type {string} */ str) => {
  */
 const keccak256$1 = keccak(256);
 
-var _from = "elliptic@6.5.4";
-var _id = "elliptic@6.5.4";
-var _inBundle = false;
-var _integrity = "sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==";
-var _location = "/elliptic";
-var _phantomChildren = {
-};
-var _requested = {
-	type: "version",
-	registry: true,
-	raw: "elliptic@6.5.4",
-	name: "elliptic",
-	escapedName: "elliptic",
-	rawSpec: "6.5.4",
-	saveSpec: null,
-	fetchSpec: "6.5.4"
-};
-var _requiredBy = [
-	"/@ethersproject/signing-key",
-	"/@hashgraph/cryptography"
+var name = "elliptic";
+var version$c = "6.5.4";
+var description = "EC cryptography";
+var main = "lib/elliptic.js";
+var files = [
+	"lib"
 ];
-var _resolved = "https://registry.npmjs.org/elliptic/-/elliptic-6.5.4.tgz";
-var _shasum = "da37cebd31e79a1367e941b592ed1fbebd58abbb";
-var _spec = "elliptic@6.5.4";
-var _where = "/home/ivo/projects/hethers.js/node_modules/@ethersproject/signing-key";
-var author = {
-	name: "Fedor Indutny",
-	email: "fedor@indutny.com"
+var scripts = {
+	lint: "eslint lib test",
+	"lint:fix": "npm run lint -- --fix",
+	unit: "istanbul test _mocha --reporter=spec test/index.js",
+	test: "npm run lint && npm run unit",
+	version: "grunt dist && git add dist/"
 };
+var repository = {
+	type: "git",
+	url: "git@github.com:indutny/elliptic"
+};
+var keywords = [
+	"EC",
+	"Elliptic",
+	"curve",
+	"Cryptography"
+];
+var author = "Fedor Indutny <fedor@indutny.com>";
+var license = "MIT";
 var bugs = {
 	url: "https://github.com/indutny/elliptic/issues"
 };
-var bundleDependencies = false;
-var dependencies = {
-	"bn.js": "^4.11.9",
-	brorand: "^1.1.0",
-	"hash.js": "^1.0.0",
-	"hmac-drbg": "^1.0.1",
-	inherits: "^2.0.4",
-	"minimalistic-assert": "^1.0.1",
-	"minimalistic-crypto-utils": "^1.0.1"
-};
-var deprecated = false;
-var description = "EC cryptography";
+var homepage = "https://github.com/indutny/elliptic";
 var devDependencies = {
 	brfs: "^2.0.2",
 	coveralls: "^3.1.0",
@@ -22723,60 +22709,30 @@ var devDependencies = {
 	istanbul: "^0.4.5",
 	mocha: "^8.0.1"
 };
-var files = [
-	"lib"
-];
-var homepage = "https://github.com/indutny/elliptic";
-var keywords = [
-	"EC",
-	"Elliptic",
-	"curve",
-	"Cryptography"
-];
-var license = "MIT";
-var main = "lib/elliptic.js";
-var name = "elliptic";
-var repository = {
-	type: "git",
-	url: "git+ssh://git@github.com/indutny/elliptic.git"
+var dependencies = {
+	"bn.js": "^4.11.9",
+	brorand: "^1.1.0",
+	"hash.js": "^1.0.0",
+	"hmac-drbg": "^1.0.1",
+	inherits: "^2.0.4",
+	"minimalistic-assert": "^1.0.1",
+	"minimalistic-crypto-utils": "^1.0.1"
 };
-var scripts = {
-	lint: "eslint lib test",
-	"lint:fix": "npm run lint -- --fix",
-	test: "npm run lint && npm run unit",
-	unit: "istanbul test _mocha --reporter=spec test/index.js",
-	version: "grunt dist && git add dist/"
-};
-var version$c = "6.5.4";
 var require$$0 = {
-	_from: _from,
-	_id: _id,
-	_inBundle: _inBundle,
-	_integrity: _integrity,
-	_location: _location,
-	_phantomChildren: _phantomChildren,
-	_requested: _requested,
-	_requiredBy: _requiredBy,
-	_resolved: _resolved,
-	_shasum: _shasum,
-	_spec: _spec,
-	_where: _where,
-	author: author,
-	bugs: bugs,
-	bundleDependencies: bundleDependencies,
-	dependencies: dependencies,
-	deprecated: deprecated,
-	description: description,
-	devDependencies: devDependencies,
-	files: files,
-	homepage: homepage,
-	keywords: keywords,
-	license: license,
-	main: main,
 	name: name,
-	repository: repository,
+	version: version$c,
+	description: description,
+	main: main,
+	files: files,
 	scripts: scripts,
-	version: version$c
+	repository: repository,
+	keywords: keywords,
+	author: author,
+	license: license,
+	bugs: bugs,
+	homepage: homepage,
+	devDependencies: devDependencies,
+	dependencies: dependencies
 };
 
 var minimalisticAssert = assert;
@@ -28319,7 +28275,7 @@ function verify(keydata, message, signature) {
     });
 }
 
-const derPrefix$2 = "302f300706052b8104000a0324000421";
+const derPrefix$2 = "302d300706052b8104000a032200";
 const derPrefixBytes$2 = decode$1(derPrefix$2);
 
 /**
@@ -38056,7 +38012,7 @@ var lib = createCommonjsModule(function (module, exports) {
 "use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.SchedulableTransactionBody=exports.ScheduleCreateTransactionBody=exports.TokenFeeScheduleUpdateTransactionBody=exports.TokenDissociateTransactionBody=exports.TokenAssociateTransactionBody=exports.TokenWipeAccountTransactionBody=exports.TokenBurnTransactionBody=exports.TokenMintTransactionBody=exports.TokenUpdateTransactionBody=exports.TokenDeleteTransactionBody=exports.TokenRevokeKycTransactionBody=exports.TokenGrantKycTransactionBody=exports.TokenUnfreezeAccountTransactionBody=exports.TokenFreezeAccountTransactionBody=exports.RoyaltyFee=exports.AssessedCustomFee=exports.CustomFee=exports.FixedFee=exports.FractionalFee=exports.TokenCreateTransactionBody=exports.UncheckedSubmitBody=exports.ConsensusSubmitMessageTransactionBody=exports.ConsensusMessageChunkInfo=exports.ConsensusUpdateTopicTransactionBody=exports.ContractDeleteTransactionBody=exports.FileUpdateTransactionBody=exports.FileDeleteTransactionBody=exports.FileCreateTransactionBody=exports.FileAppendTransactionBody=exports.CryptoUpdateTransactionBody=exports.CryptoTransferTransactionBody=exports.CryptoDeleteLiveHashTransactionBody=exports.CryptoDeleteTransactionBody=exports.CryptoCreateTransactionBody=exports.CryptoAddLiveHashTransactionBody=exports.LiveHash=exports.ContractUpdateTransactionBody=exports.ContractCreateTransactionBody=exports.ContractCallTransactionBody=exports.FreezeTransactionBody=exports.SystemUndeleteTransactionBody=exports.SystemDeleteTransactionBody=exports.TransactionBody=exports.Transaction=exports.QueryHeader=exports.ResponseType=exports.ConsensusGetTopicInfoResponse=exports.ConsensusGetTopicInfoQuery=exports.ConsensusDeleteTopicTransactionBody=exports.Duration=exports.ConsensusCreateTopicTransactionBody=exports.TimestampSeconds=exports.Timestamp=exports.TokenBalances=exports.TokenBalance=exports.TokenRelationship=exports.ServicesConfigurationList=exports.Setting=exports.SemanticVersion=exports.NodeAddressBook=exports.NodeAddress=exports.ServiceEndpoint=exports.CurrentAndNextFeeSchedule=exports.FeeSchedule=exports.FeeData=exports.TransactionFeeSchedule=exports.FeeComponents=exports.HederaFunctionality=exports.SignatureMap=exports.SignaturePair=exports.SignatureList=exports.ThresholdSignature=exports.Signature=exports.KeyList=exports.ThresholdKey=exports.Key=exports.TokenKycStatus=exports.TokenFreezeStatus=exports.TokenSupplyType=exports.SubType=exports.TokenType=exports.ScheduleID=exports.TokenID=exports.TopicID=exports.Fraction=exports.TokenTransferList=exports.NftTransfer=exports.TransferList=exports.AccountAmount=exports.TransactionID=exports.ContractID=exports.FileID=exports.AccountID=exports.RealmID=exports.ShardID=exports.AllAccountBalances=exports.SingleAccountBalances=exports.TokenUnitBalance=exports.Writer=exports.Reader=void 0,exports.FreezeType=exports.TokenPauseStatus=exports.TokenUnpauseTransactionBody=exports.TokenPauseTransactionBody=exports.BytesValue=exports.StringValue=exports.BoolValue=exports.UInt32Value=exports.UInt64Value=exports.FloatValue=exports.DoubleValue=exports.TransactionList=exports.SignedTransaction=exports.TokenService=exports.ThrottleDefinitions=exports.ThrottleBucket=exports.ThrottleGroup=exports.SmartContractService=exports.ScheduleService=exports.NetworkService=exports.MirrorConsensusService=exports.ConsensusTopicResponse=exports.ConsensusTopicQuery=exports.FreezeService=exports.FileService=exports.CryptoService=exports.Response=exports.TokenGetNftInfosResponse=exports.TokenGetNftInfosQuery=exports.TokenGetNftInfoResponse=exports.TokenNftInfo=exports.TokenGetNftInfoQuery=exports.NftID=exports.TokenGetAccountNftInfosResponse=exports.TokenGetAccountNftInfosQuery=exports.ScheduleGetInfoResponse=exports.ScheduleInfo=exports.ScheduleGetInfoQuery=exports.TokenGetInfoResponse=exports.TokenInfo=exports.TokenGetInfoQuery=exports.NetworkGetVersionInfoResponse=exports.NetworkGetVersionInfoQuery=exports.TransactionGetFastRecordResponse=exports.TransactionGetFastRecordQuery=exports.TransactionGetRecordResponse=exports.TransactionGetRecordQuery=exports.TransactionGetReceiptResponse=exports.TransactionGetReceiptQuery=exports.FileInfo=exports.FileGetInfoResponse=exports.FileGetInfoQuery=exports.FileContents=exports.FileGetContentsResponse=exports.FileGetContentsQuery=exports.CryptoGetStakersResponse=exports.AllProxyStakers=exports.ProxyStaker=exports.CryptoGetStakersQuery=exports.CryptoGetLiveHashResponse=exports.CryptoGetLiveHashQuery=exports.AccountInfo=exports.CryptoGetInfoResponse=exports.CryptoGetInfoQuery=exports.CryptoGetAccountRecordsResponse=exports.CryptoGetAccountRecordsQuery=exports.CryptoGetAccountBalanceResponse=exports.CryptoGetAccountBalanceQuery=exports.ExchangeRateSet=exports.ExchangeRate=exports.TransactionReceipt=exports.TransactionRecord=exports.ContractGetRecordsResponse=exports.ContractGetRecordsQuery=exports.ContractGetBytecodeResponse=exports.ContractGetBytecodeQuery=exports.ContractInfo=exports.ContractGetInfoResponse=exports.ContractGetInfoQuery=exports.ContractCallLocalResponse=exports.ContractCallLocalQuery=exports.ContractFunctionResult=exports.ContractLoginfo=exports.GetBySolidityIDResponse=exports.GetBySolidityIDQuery=exports.GetByKeyResponse=exports.EntityID=exports.GetByKeyQuery=exports.Query=exports.ConsensusService=exports.ConsensusTopicInfo=exports.ResponseCodeEnum=exports.TransactionResponse=exports.ResponseHeader=exports.ScheduleSignTransactionBody=exports.ScheduleDeleteTransactionBody=void 0;var $protobuf=_interopRequireWildcard(minimal$1);function _getRequireWildcardCache(a){if("function"!=typeof WeakMap)return null;var b=new WeakMap,c=new WeakMap;return (_getRequireWildcardCache=function(a){return a?c:b})(a)}function _interopRequireWildcard(a,b){if(!b&&a&&a.__esModule)return a;if(null===a||"object"!=typeof a&&"function"!=typeof a)return {default:a};var c=_getRequireWildcardCache(b);if(c&&c.has(a))return c.get(a);var d={},e=Object.defineProperty&&Object.getOwnPropertyDescriptor;for(var f in a)if("default"!=f&&Object.prototype.hasOwnProperty.call(a,f)){var g=e?Object.getOwnPropertyDescriptor(a,f):null;g&&(g.get||g.set)?Object.defineProperty(d,f,g):d[f]=a[f];}return d.default=a,c&&c.set(a,d),d}const Reader=$protobuf.Reader;exports.Reader=Reader;const Writer=$protobuf.Writer;exports.Writer=Writer;const TokenUnitBalance=proto_1.proto.TokenUnitBalance;exports.TokenUnitBalance=TokenUnitBalance;const SingleAccountBalances=proto_1.proto.SingleAccountBalances;exports.SingleAccountBalances=SingleAccountBalances;const AllAccountBalances=proto_1.proto.AllAccountBalances;exports.AllAccountBalances=AllAccountBalances;const ShardID=proto_1.proto.ShardID;exports.ShardID=ShardID;const RealmID=proto_1.proto.RealmID;exports.RealmID=RealmID;const AccountID=proto_1.proto.AccountID;exports.AccountID=AccountID;const FileID=proto_1.proto.FileID;exports.FileID=FileID;const ContractID=proto_1.proto.ContractID;exports.ContractID=ContractID;const TransactionID=proto_1.proto.TransactionID;exports.TransactionID=TransactionID;const AccountAmount=proto_1.proto.AccountAmount;exports.AccountAmount=AccountAmount;const TransferList=proto_1.proto.TransferList;exports.TransferList=TransferList;const NftTransfer=proto_1.proto.NftTransfer;exports.NftTransfer=NftTransfer;const TokenTransferList=proto_1.proto.TokenTransferList;exports.TokenTransferList=TokenTransferList;const Fraction=proto_1.proto.Fraction;exports.Fraction=Fraction;const TopicID=proto_1.proto.TopicID;exports.TopicID=TopicID;const TokenID=proto_1.proto.TokenID;exports.TokenID=TokenID;const ScheduleID=proto_1.proto.ScheduleID;exports.ScheduleID=ScheduleID;const TokenType=proto_1.proto.TokenType;exports.TokenType=TokenType;const SubType=proto_1.proto.SubType;exports.SubType=SubType;const TokenSupplyType=proto_1.proto.TokenSupplyType;exports.TokenSupplyType=TokenSupplyType;const TokenFreezeStatus=proto_1.proto.TokenFreezeStatus;exports.TokenFreezeStatus=TokenFreezeStatus;const TokenKycStatus=proto_1.proto.TokenKycStatus;exports.TokenKycStatus=TokenKycStatus;const Key=proto_1.proto.Key;exports.Key=Key;const ThresholdKey=proto_1.proto.ThresholdKey;exports.ThresholdKey=ThresholdKey;const KeyList=proto_1.proto.KeyList;exports.KeyList=KeyList;const Signature=proto_1.proto.Signature;exports.Signature=Signature;const ThresholdSignature=proto_1.proto.ThresholdSignature;exports.ThresholdSignature=ThresholdSignature;const SignatureList=proto_1.proto.SignatureList;exports.SignatureList=SignatureList;const SignaturePair=proto_1.proto.SignaturePair;exports.SignaturePair=SignaturePair;const SignatureMap=proto_1.proto.SignatureMap;exports.SignatureMap=SignatureMap;const HederaFunctionality=proto_1.proto.HederaFunctionality;exports.HederaFunctionality=HederaFunctionality;const FeeComponents=proto_1.proto.FeeComponents;exports.FeeComponents=FeeComponents;const TransactionFeeSchedule=proto_1.proto.TransactionFeeSchedule;exports.TransactionFeeSchedule=TransactionFeeSchedule;const FeeData=proto_1.proto.FeeData;exports.FeeData=FeeData;const FeeSchedule=proto_1.proto.FeeSchedule;exports.FeeSchedule=FeeSchedule;const CurrentAndNextFeeSchedule=proto_1.proto.CurrentAndNextFeeSchedule;exports.CurrentAndNextFeeSchedule=CurrentAndNextFeeSchedule;const ServiceEndpoint=proto_1.proto.ServiceEndpoint;exports.ServiceEndpoint=ServiceEndpoint;const NodeAddress=proto_1.proto.NodeAddress;exports.NodeAddress=NodeAddress;const NodeAddressBook=proto_1.proto.NodeAddressBook;exports.NodeAddressBook=NodeAddressBook;const SemanticVersion=proto_1.proto.SemanticVersion;exports.SemanticVersion=SemanticVersion;const Setting=proto_1.proto.Setting;exports.Setting=Setting;const ServicesConfigurationList=proto_1.proto.ServicesConfigurationList;exports.ServicesConfigurationList=ServicesConfigurationList;const TokenRelationship=proto_1.proto.TokenRelationship;exports.TokenRelationship=TokenRelationship;const TokenBalance=proto_1.proto.TokenBalance;exports.TokenBalance=TokenBalance;const TokenBalances=proto_1.proto.TokenBalances;exports.TokenBalances=TokenBalances;const Timestamp=proto_1.proto.Timestamp;exports.Timestamp=Timestamp;const TimestampSeconds=proto_1.proto.TimestampSeconds;exports.TimestampSeconds=TimestampSeconds;const ConsensusCreateTopicTransactionBody=proto_1.proto.ConsensusCreateTopicTransactionBody;exports.ConsensusCreateTopicTransactionBody=ConsensusCreateTopicTransactionBody;const Duration=proto_1.proto.Duration;exports.Duration=Duration;const ConsensusDeleteTopicTransactionBody=proto_1.proto.ConsensusDeleteTopicTransactionBody;exports.ConsensusDeleteTopicTransactionBody=ConsensusDeleteTopicTransactionBody;const ConsensusGetTopicInfoQuery=proto_1.proto.ConsensusGetTopicInfoQuery;exports.ConsensusGetTopicInfoQuery=ConsensusGetTopicInfoQuery;const ConsensusGetTopicInfoResponse=proto_1.proto.ConsensusGetTopicInfoResponse;exports.ConsensusGetTopicInfoResponse=ConsensusGetTopicInfoResponse;const ResponseType=proto_1.proto.ResponseType;exports.ResponseType=ResponseType;const QueryHeader=proto_1.proto.QueryHeader;exports.QueryHeader=QueryHeader;const Transaction=proto_1.proto.Transaction;exports.Transaction=Transaction;const TransactionBody=proto_1.proto.TransactionBody;exports.TransactionBody=TransactionBody;const SystemDeleteTransactionBody=proto_1.proto.SystemDeleteTransactionBody;exports.SystemDeleteTransactionBody=SystemDeleteTransactionBody;const SystemUndeleteTransactionBody=proto_1.proto.SystemUndeleteTransactionBody;exports.SystemUndeleteTransactionBody=SystemUndeleteTransactionBody;const FreezeTransactionBody=proto_1.proto.FreezeTransactionBody;exports.FreezeTransactionBody=FreezeTransactionBody;const ContractCallTransactionBody=proto_1.proto.ContractCallTransactionBody;exports.ContractCallTransactionBody=ContractCallTransactionBody;const ContractCreateTransactionBody=proto_1.proto.ContractCreateTransactionBody;exports.ContractCreateTransactionBody=ContractCreateTransactionBody;const ContractUpdateTransactionBody=proto_1.proto.ContractUpdateTransactionBody;exports.ContractUpdateTransactionBody=ContractUpdateTransactionBody;const LiveHash=proto_1.proto.LiveHash;exports.LiveHash=LiveHash;const CryptoAddLiveHashTransactionBody=proto_1.proto.CryptoAddLiveHashTransactionBody;exports.CryptoAddLiveHashTransactionBody=CryptoAddLiveHashTransactionBody;const CryptoCreateTransactionBody=proto_1.proto.CryptoCreateTransactionBody;exports.CryptoCreateTransactionBody=CryptoCreateTransactionBody;const CryptoDeleteTransactionBody=proto_1.proto.CryptoDeleteTransactionBody;exports.CryptoDeleteTransactionBody=CryptoDeleteTransactionBody;const CryptoDeleteLiveHashTransactionBody=proto_1.proto.CryptoDeleteLiveHashTransactionBody;exports.CryptoDeleteLiveHashTransactionBody=CryptoDeleteLiveHashTransactionBody;const CryptoTransferTransactionBody=proto_1.proto.CryptoTransferTransactionBody;exports.CryptoTransferTransactionBody=CryptoTransferTransactionBody;const CryptoUpdateTransactionBody=proto_1.proto.CryptoUpdateTransactionBody;exports.CryptoUpdateTransactionBody=CryptoUpdateTransactionBody;const FileAppendTransactionBody=proto_1.proto.FileAppendTransactionBody;exports.FileAppendTransactionBody=FileAppendTransactionBody;const FileCreateTransactionBody=proto_1.proto.FileCreateTransactionBody;exports.FileCreateTransactionBody=FileCreateTransactionBody;const FileDeleteTransactionBody=proto_1.proto.FileDeleteTransactionBody;exports.FileDeleteTransactionBody=FileDeleteTransactionBody;const FileUpdateTransactionBody=proto_1.proto.FileUpdateTransactionBody;exports.FileUpdateTransactionBody=FileUpdateTransactionBody;const ContractDeleteTransactionBody=proto_1.proto.ContractDeleteTransactionBody;exports.ContractDeleteTransactionBody=ContractDeleteTransactionBody;const ConsensusUpdateTopicTransactionBody=proto_1.proto.ConsensusUpdateTopicTransactionBody;exports.ConsensusUpdateTopicTransactionBody=ConsensusUpdateTopicTransactionBody;const ConsensusMessageChunkInfo=proto_1.proto.ConsensusMessageChunkInfo;exports.ConsensusMessageChunkInfo=ConsensusMessageChunkInfo;const ConsensusSubmitMessageTransactionBody=proto_1.proto.ConsensusSubmitMessageTransactionBody;exports.ConsensusSubmitMessageTransactionBody=ConsensusSubmitMessageTransactionBody;const UncheckedSubmitBody=proto_1.proto.UncheckedSubmitBody;exports.UncheckedSubmitBody=UncheckedSubmitBody;const TokenCreateTransactionBody=proto_1.proto.TokenCreateTransactionBody;exports.TokenCreateTransactionBody=TokenCreateTransactionBody;const FractionalFee=proto_1.proto.FractionalFee;exports.FractionalFee=FractionalFee;const FixedFee=proto_1.proto.FixedFee;exports.FixedFee=FixedFee;const CustomFee=proto_1.proto.CustomFee;exports.CustomFee=CustomFee;const AssessedCustomFee=proto_1.proto.AssessedCustomFee;exports.AssessedCustomFee=AssessedCustomFee;const RoyaltyFee=proto_1.proto.RoyaltyFee;exports.RoyaltyFee=RoyaltyFee;const TokenFreezeAccountTransactionBody=proto_1.proto.TokenFreezeAccountTransactionBody;exports.TokenFreezeAccountTransactionBody=TokenFreezeAccountTransactionBody;const TokenUnfreezeAccountTransactionBody=proto_1.proto.TokenUnfreezeAccountTransactionBody;exports.TokenUnfreezeAccountTransactionBody=TokenUnfreezeAccountTransactionBody;const TokenGrantKycTransactionBody=proto_1.proto.TokenGrantKycTransactionBody;exports.TokenGrantKycTransactionBody=TokenGrantKycTransactionBody;const TokenRevokeKycTransactionBody=proto_1.proto.TokenRevokeKycTransactionBody;exports.TokenRevokeKycTransactionBody=TokenRevokeKycTransactionBody;const TokenDeleteTransactionBody=proto_1.proto.TokenDeleteTransactionBody;exports.TokenDeleteTransactionBody=TokenDeleteTransactionBody;const TokenUpdateTransactionBody=proto_1.proto.TokenUpdateTransactionBody;exports.TokenUpdateTransactionBody=TokenUpdateTransactionBody;const TokenMintTransactionBody=proto_1.proto.TokenMintTransactionBody;exports.TokenMintTransactionBody=TokenMintTransactionBody;const TokenBurnTransactionBody=proto_1.proto.TokenBurnTransactionBody;exports.TokenBurnTransactionBody=TokenBurnTransactionBody;const TokenWipeAccountTransactionBody=proto_1.proto.TokenWipeAccountTransactionBody;exports.TokenWipeAccountTransactionBody=TokenWipeAccountTransactionBody;const TokenAssociateTransactionBody=proto_1.proto.TokenAssociateTransactionBody;exports.TokenAssociateTransactionBody=TokenAssociateTransactionBody;const TokenDissociateTransactionBody=proto_1.proto.TokenDissociateTransactionBody;exports.TokenDissociateTransactionBody=TokenDissociateTransactionBody;const TokenFeeScheduleUpdateTransactionBody=proto_1.proto.TokenFeeScheduleUpdateTransactionBody;exports.TokenFeeScheduleUpdateTransactionBody=TokenFeeScheduleUpdateTransactionBody;const ScheduleCreateTransactionBody=proto_1.proto.ScheduleCreateTransactionBody;exports.ScheduleCreateTransactionBody=ScheduleCreateTransactionBody;const SchedulableTransactionBody=proto_1.proto.SchedulableTransactionBody;exports.SchedulableTransactionBody=SchedulableTransactionBody;const ScheduleDeleteTransactionBody=proto_1.proto.ScheduleDeleteTransactionBody;exports.ScheduleDeleteTransactionBody=ScheduleDeleteTransactionBody;const ScheduleSignTransactionBody=proto_1.proto.ScheduleSignTransactionBody;exports.ScheduleSignTransactionBody=ScheduleSignTransactionBody;const ResponseHeader=proto_1.proto.ResponseHeader;exports.ResponseHeader=ResponseHeader;const TransactionResponse=proto_1.proto.TransactionResponse;exports.TransactionResponse=TransactionResponse;const ResponseCodeEnum=proto_1.proto.ResponseCodeEnum;exports.ResponseCodeEnum=ResponseCodeEnum;const ConsensusTopicInfo=proto_1.proto.ConsensusTopicInfo;exports.ConsensusTopicInfo=ConsensusTopicInfo;const ConsensusService=proto_1.proto.ConsensusService;exports.ConsensusService=ConsensusService;const Query=proto_1.proto.Query;exports.Query=Query;const GetByKeyQuery=proto_1.proto.GetByKeyQuery;exports.GetByKeyQuery=GetByKeyQuery;const EntityID=proto_1.proto.EntityID;exports.EntityID=EntityID;const GetByKeyResponse=proto_1.proto.GetByKeyResponse;exports.GetByKeyResponse=GetByKeyResponse;const GetBySolidityIDQuery=proto_1.proto.GetBySolidityIDQuery;exports.GetBySolidityIDQuery=GetBySolidityIDQuery;const GetBySolidityIDResponse=proto_1.proto.GetBySolidityIDResponse;exports.GetBySolidityIDResponse=GetBySolidityIDResponse;const ContractLoginfo=proto_1.proto.ContractLoginfo;exports.ContractLoginfo=ContractLoginfo;const ContractFunctionResult=proto_1.proto.ContractFunctionResult;exports.ContractFunctionResult=ContractFunctionResult;const ContractCallLocalQuery=proto_1.proto.ContractCallLocalQuery;exports.ContractCallLocalQuery=ContractCallLocalQuery;const ContractCallLocalResponse=proto_1.proto.ContractCallLocalResponse;exports.ContractCallLocalResponse=ContractCallLocalResponse;const ContractGetInfoQuery=proto_1.proto.ContractGetInfoQuery;exports.ContractGetInfoQuery=ContractGetInfoQuery;const ContractGetInfoResponse=proto_1.proto.ContractGetInfoResponse;exports.ContractGetInfoResponse=ContractGetInfoResponse;const ContractInfo=proto_1.proto.ContractGetInfoResponse.ContractInfo;exports.ContractInfo=ContractInfo;const ContractGetBytecodeQuery=proto_1.proto.ContractGetBytecodeQuery;exports.ContractGetBytecodeQuery=ContractGetBytecodeQuery;const ContractGetBytecodeResponse=proto_1.proto.ContractGetBytecodeResponse;exports.ContractGetBytecodeResponse=ContractGetBytecodeResponse;const ContractGetRecordsQuery=proto_1.proto.ContractGetRecordsQuery;exports.ContractGetRecordsQuery=ContractGetRecordsQuery;const ContractGetRecordsResponse=proto_1.proto.ContractGetRecordsResponse;exports.ContractGetRecordsResponse=ContractGetRecordsResponse;const TransactionRecord=proto_1.proto.TransactionRecord;exports.TransactionRecord=TransactionRecord;const TransactionReceipt=proto_1.proto.TransactionReceipt;exports.TransactionReceipt=TransactionReceipt;const ExchangeRate=proto_1.proto.ExchangeRate;exports.ExchangeRate=ExchangeRate;const ExchangeRateSet=proto_1.proto.ExchangeRateSet;exports.ExchangeRateSet=ExchangeRateSet;const CryptoGetAccountBalanceQuery=proto_1.proto.CryptoGetAccountBalanceQuery;exports.CryptoGetAccountBalanceQuery=CryptoGetAccountBalanceQuery;const CryptoGetAccountBalanceResponse=proto_1.proto.CryptoGetAccountBalanceResponse;exports.CryptoGetAccountBalanceResponse=CryptoGetAccountBalanceResponse;const CryptoGetAccountRecordsQuery=proto_1.proto.CryptoGetAccountRecordsQuery;exports.CryptoGetAccountRecordsQuery=CryptoGetAccountRecordsQuery;const CryptoGetAccountRecordsResponse=proto_1.proto.CryptoGetAccountRecordsResponse;exports.CryptoGetAccountRecordsResponse=CryptoGetAccountRecordsResponse;const CryptoGetInfoQuery=proto_1.proto.CryptoGetInfoQuery;exports.CryptoGetInfoQuery=CryptoGetInfoQuery;const CryptoGetInfoResponse=proto_1.proto.CryptoGetInfoResponse;exports.CryptoGetInfoResponse=CryptoGetInfoResponse;const AccountInfo=proto_1.proto.CryptoGetInfoResponse.AccountInfo;exports.AccountInfo=AccountInfo;const CryptoGetLiveHashQuery=proto_1.proto.CryptoGetLiveHashQuery;exports.CryptoGetLiveHashQuery=CryptoGetLiveHashQuery;const CryptoGetLiveHashResponse=proto_1.proto.CryptoGetLiveHashResponse;exports.CryptoGetLiveHashResponse=CryptoGetLiveHashResponse;const CryptoGetStakersQuery=proto_1.proto.CryptoGetStakersQuery;exports.CryptoGetStakersQuery=CryptoGetStakersQuery;const ProxyStaker=proto_1.proto.ProxyStaker;exports.ProxyStaker=ProxyStaker;const AllProxyStakers=proto_1.proto.AllProxyStakers;exports.AllProxyStakers=AllProxyStakers;const CryptoGetStakersResponse=proto_1.proto.CryptoGetStakersResponse;exports.CryptoGetStakersResponse=CryptoGetStakersResponse;const FileGetContentsQuery=proto_1.proto.FileGetContentsQuery;exports.FileGetContentsQuery=FileGetContentsQuery;const FileGetContentsResponse=proto_1.proto.FileGetContentsResponse;exports.FileGetContentsResponse=FileGetContentsResponse;const FileContents=proto_1.proto.FileGetContentsResponse.FileContents;exports.FileContents=FileContents;const FileGetInfoQuery=proto_1.proto.FileGetInfoQuery;exports.FileGetInfoQuery=FileGetInfoQuery;const FileGetInfoResponse=proto_1.proto.FileGetInfoResponse;exports.FileGetInfoResponse=FileGetInfoResponse;const FileInfo=proto_1.proto.FileGetInfoResponse.FileInfo;exports.FileInfo=FileInfo;const TransactionGetReceiptQuery=proto_1.proto.TransactionGetReceiptQuery;exports.TransactionGetReceiptQuery=TransactionGetReceiptQuery;const TransactionGetReceiptResponse=proto_1.proto.TransactionGetReceiptResponse;exports.TransactionGetReceiptResponse=TransactionGetReceiptResponse;const TransactionGetRecordQuery=proto_1.proto.TransactionGetRecordQuery;exports.TransactionGetRecordQuery=TransactionGetRecordQuery;const TransactionGetRecordResponse=proto_1.proto.TransactionGetRecordResponse;exports.TransactionGetRecordResponse=TransactionGetRecordResponse;const TransactionGetFastRecordQuery=proto_1.proto.TransactionGetFastRecordQuery;exports.TransactionGetFastRecordQuery=TransactionGetFastRecordQuery;const TransactionGetFastRecordResponse=proto_1.proto.TransactionGetFastRecordResponse;exports.TransactionGetFastRecordResponse=TransactionGetFastRecordResponse;const NetworkGetVersionInfoQuery=proto_1.proto.NetworkGetVersionInfoQuery;exports.NetworkGetVersionInfoQuery=NetworkGetVersionInfoQuery;const NetworkGetVersionInfoResponse=proto_1.proto.NetworkGetVersionInfoResponse;exports.NetworkGetVersionInfoResponse=NetworkGetVersionInfoResponse;const TokenGetInfoQuery=proto_1.proto.TokenGetInfoQuery;exports.TokenGetInfoQuery=TokenGetInfoQuery;const TokenInfo=proto_1.proto.TokenInfo;exports.TokenInfo=TokenInfo;const TokenGetInfoResponse=proto_1.proto.TokenGetInfoResponse;exports.TokenGetInfoResponse=TokenGetInfoResponse;const ScheduleGetInfoQuery=proto_1.proto.ScheduleGetInfoQuery;exports.ScheduleGetInfoQuery=ScheduleGetInfoQuery;const ScheduleInfo=proto_1.proto.ScheduleInfo;exports.ScheduleInfo=ScheduleInfo;const ScheduleGetInfoResponse=proto_1.proto.ScheduleGetInfoResponse;exports.ScheduleGetInfoResponse=ScheduleGetInfoResponse;const TokenGetAccountNftInfosQuery=proto_1.proto.TokenGetAccountNftInfosQuery;exports.TokenGetAccountNftInfosQuery=TokenGetAccountNftInfosQuery;const TokenGetAccountNftInfosResponse=proto_1.proto.TokenGetAccountNftInfosResponse;exports.TokenGetAccountNftInfosResponse=TokenGetAccountNftInfosResponse;const NftID=proto_1.proto.NftID;exports.NftID=NftID;const TokenGetNftInfoQuery=proto_1.proto.TokenGetNftInfoQuery;exports.TokenGetNftInfoQuery=TokenGetNftInfoQuery;const TokenNftInfo=proto_1.proto.TokenNftInfo;exports.TokenNftInfo=TokenNftInfo;const TokenGetNftInfoResponse=proto_1.proto.TokenGetNftInfoResponse;exports.TokenGetNftInfoResponse=TokenGetNftInfoResponse;const TokenGetNftInfosQuery=proto_1.proto.TokenGetNftInfosQuery;exports.TokenGetNftInfosQuery=TokenGetNftInfosQuery;const TokenGetNftInfosResponse=proto_1.proto.TokenGetNftInfosResponse;exports.TokenGetNftInfosResponse=TokenGetNftInfosResponse;const Response=proto_1.proto.Response;exports.Response=Response;const CryptoService=proto_1.proto.CryptoService;exports.CryptoService=CryptoService;const FileService=proto_1.proto.FileService;exports.FileService=FileService;const FreezeService=proto_1.proto.FreezeService;exports.FreezeService=FreezeService;const ConsensusTopicQuery=proto_1.proto.ConsensusTopicQuery;exports.ConsensusTopicQuery=ConsensusTopicQuery;const ConsensusTopicResponse=proto_1.proto.ConsensusTopicResponse;exports.ConsensusTopicResponse=ConsensusTopicResponse;const MirrorConsensusService=proto_1.proto.MirrorConsensusService;exports.MirrorConsensusService=MirrorConsensusService;const NetworkService=proto_1.proto.NetworkService;exports.NetworkService=NetworkService;const ScheduleService=proto_1.proto.ScheduleService;exports.ScheduleService=ScheduleService;const SmartContractService=proto_1.proto.SmartContractService;exports.SmartContractService=SmartContractService;const ThrottleGroup=proto_1.proto.ThrottleGroup;exports.ThrottleGroup=ThrottleGroup;const ThrottleBucket=proto_1.proto.ThrottleBucket;exports.ThrottleBucket=ThrottleBucket;const ThrottleDefinitions=proto_1.proto.ThrottleDefinitions;exports.ThrottleDefinitions=ThrottleDefinitions;const TokenService=proto_1.proto.TokenService;exports.TokenService=TokenService;const SignedTransaction=proto_1.proto.SignedTransaction;exports.SignedTransaction=SignedTransaction;const TransactionList=proto_1.proto.TransactionList;exports.TransactionList=TransactionList;const DoubleValue=proto_1.proto.DoubleValue;exports.DoubleValue=DoubleValue;const FloatValue=proto_1.proto.FloatValue;exports.FloatValue=FloatValue;const UInt64Value=proto_1.proto.UInt64Value;exports.UInt64Value=UInt64Value;const UInt32Value=proto_1.proto.UInt32Value;exports.UInt32Value=UInt32Value;const BoolValue=proto_1.proto.BoolValue;exports.BoolValue=BoolValue;const StringValue=proto_1.proto.StringValue;exports.StringValue=StringValue;const BytesValue=proto_1.proto.BytesValue;exports.BytesValue=BytesValue;const TokenPauseTransactionBody=proto_1.proto.TokenPauseTransactionBody;exports.TokenPauseTransactionBody=TokenPauseTransactionBody;const TokenUnpauseTransactionBody=proto_1.proto.TokenUnpauseTransactionBody;exports.TokenUnpauseTransactionBody=TokenUnpauseTransactionBody;const TokenPauseStatus=proto_1.proto.TokenPauseStatus;exports.TokenPauseStatus=TokenPauseStatus;const FreezeType=proto_1.proto.FreezeType;exports.FreezeType=FreezeType;
 });
 
-var index = /*@__PURE__*/getDefaultExportFromCjs(lib);
+var index$1 = /*@__PURE__*/getDefaultExportFromCjs(lib);
 
 /**
  * @typedef {import("../client/Client.js").default<*, *>} Client
@@ -80411,7 +80367,7 @@ util.addCommonProtos();
 
 });
 
-var index$1 = /*@__PURE__*/getDefaultExportFromCjs(src$1);
+var index$2 = /*@__PURE__*/getDefaultExportFromCjs(src$1);
 
 var channelz = createCommonjsModule(function (module, exports) {
 "use strict";
@@ -81020,46 +80976,22 @@ exports.setup = setup;
 
 var channelz$1 = /*@__PURE__*/getDefaultExportFromCjs(channelz);
 
-var _from$1 = "@grpc/grpc-js@^1.4.4";
-var _id$1 = "@grpc/grpc-js@1.5.5";
-var _inBundle$1 = false;
-var _integrity$1 = "sha512-FTd27ItHlsSG/7hp62xgI9YnqSwRbHRSVmDVR8DwOoC+6t8JhHRXe2JL0U8N9GLc0jS0HrtEbO/KP5+G0ebjLQ==";
-var _location$1 = "/@grpc/grpc-js";
-var _phantomChildren$1 = {
+var name$1 = "@grpc/grpc-js";
+var version$d = "1.5.5";
+var description$1 = "gRPC Library for Node - pure JS implementation";
+var homepage$1 = "https://grpc.io/";
+var repository$1 = "https://github.com/grpc/grpc-node/tree/master/packages/grpc-js";
+var main$1 = "build/src/index.js";
+var engines = {
+	node: "^8.13.0 || >=10.10.0"
 };
-var _requested$1 = {
-	type: "range",
-	registry: true,
-	raw: "@grpc/grpc-js@^1.4.4",
-	name: "@grpc/grpc-js",
-	escapedName: "@grpc%2fgrpc-js",
-	scope: "@grpc",
-	rawSpec: "^1.4.4",
-	saveSpec: null,
-	fetchSpec: "^1.4.4"
-};
-var _requiredBy$1 = [
-	"/@hashgraph/sdk"
+var keywords$1 = [
 ];
-var _resolved$1 = "https://registry.npmjs.org/@grpc/grpc-js/-/grpc-js-1.5.5.tgz";
-var _shasum$1 = "f850a1bb7de8a1d0bb4821aabd3655d1c928d4c6";
-var _spec$1 = "@grpc/grpc-js@^1.4.4";
-var _where$1 = "/home/ivo/projects/hethers.js/node_modules/@hashgraph/sdk";
 var author$1 = {
 	name: "Google Inc."
 };
-var bundleDependencies$1 = false;
-var contributors = [
-	{
-		name: "Google Inc."
-	}
-];
-var dependencies$1 = {
-	"@grpc/proto-loader": "^0.6.4",
-	"@types/node": ">=12.12.47"
-};
-var deprecated$1 = false;
-var description$1 = "gRPC Library for Node - pure JS implementation";
+var types = "build/src/index.d.ts";
+var license$1 = "Apache-2.0";
 var devDependencies$1 = {
 	"@types/gulp": "^4.0.6",
 	"@types/gulp-mocha": "0.0.32",
@@ -81083,8 +81015,29 @@ var devDependencies$1 = {
 	"ts-node": "^8.3.0",
 	typescript: "^3.7.2"
 };
-var engines = {
-	node: "^8.13.0 || >=10.10.0"
+var contributors = [
+	{
+		name: "Google Inc."
+	}
+];
+var scripts$1 = {
+	build: "npm run compile",
+	clean: "rimraf ./build",
+	compile: "tsc -p .",
+	format: "clang-format -i -style=\"{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}\" src/*.ts test/*.ts",
+	lint: "npm run check",
+	prepare: "npm run generate-types && npm run compile",
+	test: "gulp test",
+	check: "gts check src/**/*.ts",
+	fix: "gts fix src/*.ts",
+	pretest: "npm run generate-types && npm run generate-test-types && npm run compile",
+	posttest: "npm run check && madge -c ./build/src",
+	"generate-types": "proto-loader-gen-types --keepCase --longs String --enums String --defaults --oneofs --includeComments --includeDirs proto/ --include-dirs test/fixtures/ -O src/generated/ --grpcLib ../index channelz.proto",
+	"generate-test-types": "proto-loader-gen-types --keepCase --longs String --enums String --defaults --oneofs --includeComments --include-dirs test/fixtures/ -O test/generated/ --grpcLib ../../src/index test_service.proto"
+};
+var dependencies$1 = {
+	"@grpc/proto-loader": "^0.6.4",
+	"@types/node": ">=12.12.47"
 };
 var files$1 = [
 	"src/**/*.ts",
@@ -81100,64 +81053,23 @@ var files$1 = [
 	"deps/googleapis/google/rpc/*.proto",
 	"deps/protoc-gen-validate/validate/**/*.proto"
 ];
-var homepage$1 = "https://grpc.io/";
-var keywords$1 = [
-];
-var license$1 = "Apache-2.0";
-var main$1 = "build/src/index.js";
-var name$1 = "@grpc/grpc-js";
-var repository$1 = {
-	type: "git",
-	url: "https://github.com/grpc/grpc-node/tree/master/packages/grpc-js"
-};
-var scripts$1 = {
-	build: "npm run compile",
-	check: "gts check src/**/*.ts",
-	clean: "rimraf ./build",
-	compile: "tsc -p .",
-	fix: "gts fix src/*.ts",
-	format: "clang-format -i -style=\"{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}\" src/*.ts test/*.ts",
-	"generate-test-types": "proto-loader-gen-types --keepCase --longs String --enums String --defaults --oneofs --includeComments --include-dirs test/fixtures/ -O test/generated/ --grpcLib ../../src/index test_service.proto",
-	"generate-types": "proto-loader-gen-types --keepCase --longs String --enums String --defaults --oneofs --includeComments --includeDirs proto/ --include-dirs test/fixtures/ -O src/generated/ --grpcLib ../index channelz.proto",
-	lint: "npm run check",
-	posttest: "npm run check && madge -c ./build/src",
-	prepare: "npm run generate-types && npm run compile",
-	pretest: "npm run generate-types && npm run generate-test-types && npm run compile",
-	test: "gulp test"
-};
-var types = "build/src/index.d.ts";
-var version$d = "1.5.5";
 var require$$0$2 = {
-	_from: _from$1,
-	_id: _id$1,
-	_inBundle: _inBundle$1,
-	_integrity: _integrity$1,
-	_location: _location$1,
-	_phantomChildren: _phantomChildren$1,
-	_requested: _requested$1,
-	_requiredBy: _requiredBy$1,
-	_resolved: _resolved$1,
-	_shasum: _shasum$1,
-	_spec: _spec$1,
-	_where: _where$1,
-	author: author$1,
-	bundleDependencies: bundleDependencies$1,
-	contributors: contributors,
-	dependencies: dependencies$1,
-	deprecated: deprecated$1,
-	description: description$1,
-	devDependencies: devDependencies$1,
-	engines: engines,
-	files: files$1,
-	homepage: homepage$1,
-	keywords: keywords$1,
-	license: license$1,
-	main: main$1,
 	name: name$1,
+	version: version$d,
+	description: description$1,
+	homepage: homepage$1,
 	repository: repository$1,
-	scripts: scripts$1,
+	main: main$1,
+	engines: engines,
+	keywords: keywords$1,
+	author: author$1,
 	types: types,
-	version: version$d
+	license: license$1,
+	devDependencies: devDependencies$1,
+	contributors: contributors,
+	scripts: scripts$1,
+	dependencies: dependencies$1,
+	files: files$1
 };
 
 var subchannel = createCommonjsModule(function (module, exports) {
@@ -85991,7 +85903,7 @@ const clientVersion = require$$0$2.version;
 
 });
 
-var index$2 = /*@__PURE__*/getDefaultExportFromCjs(src$2);
+var index$3 = /*@__PURE__*/getDefaultExportFromCjs(src$2);
 
 /**
  * @internal
@@ -86903,18 +86815,6 @@ function getIcapAddress$1(address) {
     }
     return "XE" + ibanChecksum$1("XE00" + base36) + base36;
 }
-// http://ethereum.stackexchange.com/questions/760/how-is-the-address-of-an-ethereum-contract-computed
-function getContractAddress$1(transaction) {
-    let from = null;
-    try {
-        from = getAddress$1(transaction.from);
-    }
-    catch (error) {
-        logger$g.throwArgumentError("missing from address", "transaction", transaction);
-    }
-    const nonce = stripZeros(arrayify(BigNumber.from(transaction.nonce).toHexString()));
-    return getAddress$1(hexDataSlice(keccak256(encode([from, nonce])), 12));
-}
 function getCreate2Address$1(from, salt, initCodeHash) {
     if (hexDataLength(salt) !== 32) {
         logger$g.throwArgumentError("salt must be 32 bytes", "salt", salt);
@@ -86964,7 +86864,7 @@ function parseAccount(account) {
     return result;
 }
 
-var lib_esm$8 = /*#__PURE__*/Object.freeze({
+var lib_esm$7 = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	getAccountFromTransactionId: getAccountFromTransactionId,
 	asAccountString: asAccountString,
@@ -86972,7 +86872,6 @@ var lib_esm$8 = /*#__PURE__*/Object.freeze({
 	getAddress: getAddress$1,
 	isAddress: isAddress$1,
 	getIcapAddress: getIcapAddress$1,
-	getContractAddress: getContractAddress$1,
 	getCreate2Address: getCreate2Address$1,
 	getAddressFromAccount: getAddressFromAccount,
 	getAccountFromAddress: getAccountFromAddress,
@@ -86999,7 +86898,7 @@ const HBarSymbol = "\u210F"; // none
 
 "use strict";
 
-var index$3 = /*#__PURE__*/Object.freeze({
+var index$4 = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	AddressZero: AddressZero$1,
 	NegativeOne: NegativeOne$3,
@@ -89565,7 +89464,7 @@ function computePublicKey(key, compressed) {
     return logger$h.throwArgumentError("invalid public or private key", "key", "[REDACTED]");
 }
 
-var lib_esm$9 = /*#__PURE__*/Object.freeze({
+var lib_esm$8 = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	SigningKey: SigningKey,
 	recoverPublicKey: recoverPublicKey,
@@ -89594,7 +89493,7 @@ function encode$6(data) {
 
 "use strict";
 
-var lib_esm$a = /*#__PURE__*/Object.freeze({
+var lib_esm$9 = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	decode: decode$7,
 	encode: encode$6
@@ -89716,7 +89615,7 @@ const Base58 = new BaseX("123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuv
 //console.log(Base58.decode("Qmd2V777o5XvJbYMeMb8k2nU5f8d3ciUQ5YpYuWhzv8iDj"))
 //console.log(Base58.encode(Base58.decode("Qmd2V777o5XvJbYMeMb8k2nU5f8d3ciUQ5YpYuWhzv8iDj")))
 
-var lib_esm$b = /*#__PURE__*/Object.freeze({
+var lib_esm$a = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	BaseX: BaseX,
 	Base32: Base32,
@@ -89753,7 +89652,7 @@ function computeHmac(algorithm, key, data) {
     return "0x" + hash_1.hmac(hash_1[algorithm], arrayify(key)).update(arrayify(data)).digest("hex");
 }
 
-var lib_esm$c = /*#__PURE__*/Object.freeze({
+var lib_esm$b = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	computeHmac: computeHmac,
 	ripemd160: ripemd160$1,
@@ -90213,7 +90112,7 @@ function getAccountPath(index) {
     return `m/44'/60'/${index}'/0/0`;
 }
 
-var lib_esm$d = /*#__PURE__*/Object.freeze({
+var lib_esm$c = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	defaultPath: defaultPath,
 	HDNode: HDNode,
@@ -91602,7 +91501,7 @@ function shuffled(array) {
 
 "use strict";
 
-var lib_esm$e = /*#__PURE__*/Object.freeze({
+var lib_esm$d = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	randomBytes: randomBytes,
 	shuffled: shuffled
@@ -91982,7 +91881,7 @@ function decryptJsonWalletSync(json, password) {
     throw new Error("invalid JSON wallet");
 }
 
-var lib_esm$f = /*#__PURE__*/Object.freeze({
+var lib_esm$e = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	decryptKeystore: decrypt,
 	decryptKeystoreSync: decryptSync,
@@ -92079,7 +91978,7 @@ function sha256$2(types, values) {
     return sha256$1(pack$1(types, values));
 }
 
-var lib_esm$g = /*#__PURE__*/Object.freeze({
+var lib_esm$f = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	pack: pack$1,
 	keccak256: keccak256$3,
@@ -92169,7 +92068,7 @@ function parseHbar(hbar) {
     return parseUnits(hbar, 8);
 }
 
-var lib_esm$h = /*#__PURE__*/Object.freeze({
+var lib_esm$g = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	commify: commify,
 	formatUnits: formatUnits,
@@ -92190,7 +92089,7 @@ var lib$1 = createCommonjsModule(function (module, exports) {
 "use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports.SchedulableTransactionBody=exports.ScheduleCreateTransactionBody=exports.TokenFeeScheduleUpdateTransactionBody=exports.TokenDissociateTransactionBody=exports.TokenAssociateTransactionBody=exports.TokenWipeAccountTransactionBody=exports.TokenBurnTransactionBody=exports.TokenMintTransactionBody=exports.TokenUpdateTransactionBody=exports.TokenDeleteTransactionBody=exports.TokenRevokeKycTransactionBody=exports.TokenGrantKycTransactionBody=exports.TokenUnfreezeAccountTransactionBody=exports.TokenFreezeAccountTransactionBody=exports.RoyaltyFee=exports.AssessedCustomFee=exports.CustomFee=exports.FixedFee=exports.FractionalFee=exports.TokenCreateTransactionBody=exports.UncheckedSubmitBody=exports.ConsensusSubmitMessageTransactionBody=exports.ConsensusMessageChunkInfo=exports.ConsensusUpdateTopicTransactionBody=exports.ContractDeleteTransactionBody=exports.FileUpdateTransactionBody=exports.FileDeleteTransactionBody=exports.FileCreateTransactionBody=exports.FileAppendTransactionBody=exports.CryptoUpdateTransactionBody=exports.CryptoTransferTransactionBody=exports.CryptoDeleteLiveHashTransactionBody=exports.CryptoDeleteTransactionBody=exports.CryptoCreateTransactionBody=exports.CryptoAddLiveHashTransactionBody=exports.LiveHash=exports.ContractUpdateTransactionBody=exports.ContractCreateTransactionBody=exports.ContractCallTransactionBody=exports.FreezeTransactionBody=exports.SystemUndeleteTransactionBody=exports.SystemDeleteTransactionBody=exports.TransactionBody=exports.Transaction=exports.QueryHeader=exports.ResponseType=exports.ConsensusGetTopicInfoResponse=exports.ConsensusGetTopicInfoQuery=exports.ConsensusDeleteTopicTransactionBody=exports.Duration=exports.ConsensusCreateTopicTransactionBody=exports.TimestampSeconds=exports.Timestamp=exports.TokenBalances=exports.TokenBalance=exports.TokenRelationship=exports.ServicesConfigurationList=exports.Setting=exports.SemanticVersion=exports.NodeAddressBook=exports.NodeAddress=exports.ServiceEndpoint=exports.CurrentAndNextFeeSchedule=exports.FeeSchedule=exports.FeeData=exports.TransactionFeeSchedule=exports.FeeComponents=exports.HederaFunctionality=exports.SignatureMap=exports.SignaturePair=exports.SignatureList=exports.ThresholdSignature=exports.Signature=exports.KeyList=exports.ThresholdKey=exports.Key=exports.TokenKycStatus=exports.TokenFreezeStatus=exports.TokenSupplyType=exports.SubType=exports.TokenType=exports.ScheduleID=exports.TokenID=exports.TopicID=exports.Fraction=exports.TokenTransferList=exports.NftTransfer=exports.TransferList=exports.AccountAmount=exports.TransactionID=exports.ContractID=exports.FileID=exports.AccountID=exports.RealmID=exports.ShardID=exports.AllAccountBalances=exports.SingleAccountBalances=exports.TokenUnitBalance=exports.Writer=exports.Reader=void 0,exports.FreezeType=exports.TokenPauseStatus=exports.TokenUnpauseTransactionBody=exports.TokenPauseTransactionBody=exports.BytesValue=exports.StringValue=exports.BoolValue=exports.UInt32Value=exports.UInt64Value=exports.FloatValue=exports.DoubleValue=exports.TransactionList=exports.SignedTransaction=exports.TokenService=exports.ThrottleDefinitions=exports.ThrottleBucket=exports.ThrottleGroup=exports.SmartContractService=exports.ScheduleService=exports.NetworkService=exports.MirrorConsensusService=exports.ConsensusTopicResponse=exports.ConsensusTopicQuery=exports.FreezeService=exports.FileService=exports.CryptoService=exports.Response=exports.TokenGetNftInfosResponse=exports.TokenGetNftInfosQuery=exports.TokenGetNftInfoResponse=exports.TokenNftInfo=exports.TokenGetNftInfoQuery=exports.NftID=exports.TokenGetAccountNftInfosResponse=exports.TokenGetAccountNftInfosQuery=exports.ScheduleGetInfoResponse=exports.ScheduleInfo=exports.ScheduleGetInfoQuery=exports.TokenGetInfoResponse=exports.TokenInfo=exports.TokenGetInfoQuery=exports.NetworkGetVersionInfoResponse=exports.NetworkGetVersionInfoQuery=exports.TransactionGetFastRecordResponse=exports.TransactionGetFastRecordQuery=exports.TransactionGetRecordResponse=exports.TransactionGetRecordQuery=exports.TransactionGetReceiptResponse=exports.TransactionGetReceiptQuery=exports.FileInfo=exports.FileGetInfoResponse=exports.FileGetInfoQuery=exports.FileContents=exports.FileGetContentsResponse=exports.FileGetContentsQuery=exports.CryptoGetStakersResponse=exports.AllProxyStakers=exports.ProxyStaker=exports.CryptoGetStakersQuery=exports.CryptoGetLiveHashResponse=exports.CryptoGetLiveHashQuery=exports.AccountInfo=exports.CryptoGetInfoResponse=exports.CryptoGetInfoQuery=exports.CryptoGetAccountRecordsResponse=exports.CryptoGetAccountRecordsQuery=exports.CryptoGetAccountBalanceResponse=exports.CryptoGetAccountBalanceQuery=exports.ExchangeRateSet=exports.ExchangeRate=exports.TransactionReceipt=exports.TransactionRecord=exports.ContractGetRecordsResponse=exports.ContractGetRecordsQuery=exports.ContractGetBytecodeResponse=exports.ContractGetBytecodeQuery=exports.ContractInfo=exports.ContractGetInfoResponse=exports.ContractGetInfoQuery=exports.ContractCallLocalResponse=exports.ContractCallLocalQuery=exports.ContractFunctionResult=exports.ContractLoginfo=exports.GetBySolidityIDResponse=exports.GetBySolidityIDQuery=exports.GetByKeyResponse=exports.EntityID=exports.GetByKeyQuery=exports.Query=exports.ConsensusService=exports.ConsensusTopicInfo=exports.ResponseCodeEnum=exports.TransactionResponse=exports.ResponseHeader=exports.ScheduleSignTransactionBody=exports.ScheduleDeleteTransactionBody=void 0;var $protobuf=_interopRequireWildcard(minimal$1);function _getRequireWildcardCache(a){if("function"!=typeof WeakMap)return null;var b=new WeakMap,c=new WeakMap;return (_getRequireWildcardCache=function(a){return a?c:b})(a)}function _interopRequireWildcard(a,b){if(!b&&a&&a.__esModule)return a;if(null===a||"object"!=typeof a&&"function"!=typeof a)return {default:a};var c=_getRequireWildcardCache(b);if(c&&c.has(a))return c.get(a);var d={},e=Object.defineProperty&&Object.getOwnPropertyDescriptor;for(var f in a)if("default"!=f&&Object.prototype.hasOwnProperty.call(a,f)){var g=e?Object.getOwnPropertyDescriptor(a,f):null;g&&(g.get||g.set)?Object.defineProperty(d,f,g):d[f]=a[f];}return d.default=a,c&&c.set(a,d),d}const Reader=$protobuf.Reader;exports.Reader=Reader;const Writer=$protobuf.Writer;exports.Writer=Writer;const TokenUnitBalance=proto_1$1.proto.TokenUnitBalance;exports.TokenUnitBalance=TokenUnitBalance;const SingleAccountBalances=proto_1$1.proto.SingleAccountBalances;exports.SingleAccountBalances=SingleAccountBalances;const AllAccountBalances=proto_1$1.proto.AllAccountBalances;exports.AllAccountBalances=AllAccountBalances;const ShardID=proto_1$1.proto.ShardID;exports.ShardID=ShardID;const RealmID=proto_1$1.proto.RealmID;exports.RealmID=RealmID;const AccountID=proto_1$1.proto.AccountID;exports.AccountID=AccountID;const FileID=proto_1$1.proto.FileID;exports.FileID=FileID;const ContractID=proto_1$1.proto.ContractID;exports.ContractID=ContractID;const TransactionID=proto_1$1.proto.TransactionID;exports.TransactionID=TransactionID;const AccountAmount=proto_1$1.proto.AccountAmount;exports.AccountAmount=AccountAmount;const TransferList=proto_1$1.proto.TransferList;exports.TransferList=TransferList;const NftTransfer=proto_1$1.proto.NftTransfer;exports.NftTransfer=NftTransfer;const TokenTransferList=proto_1$1.proto.TokenTransferList;exports.TokenTransferList=TokenTransferList;const Fraction=proto_1$1.proto.Fraction;exports.Fraction=Fraction;const TopicID=proto_1$1.proto.TopicID;exports.TopicID=TopicID;const TokenID=proto_1$1.proto.TokenID;exports.TokenID=TokenID;const ScheduleID=proto_1$1.proto.ScheduleID;exports.ScheduleID=ScheduleID;const TokenType=proto_1$1.proto.TokenType;exports.TokenType=TokenType;const SubType=proto_1$1.proto.SubType;exports.SubType=SubType;const TokenSupplyType=proto_1$1.proto.TokenSupplyType;exports.TokenSupplyType=TokenSupplyType;const TokenFreezeStatus=proto_1$1.proto.TokenFreezeStatus;exports.TokenFreezeStatus=TokenFreezeStatus;const TokenKycStatus=proto_1$1.proto.TokenKycStatus;exports.TokenKycStatus=TokenKycStatus;const Key=proto_1$1.proto.Key;exports.Key=Key;const ThresholdKey=proto_1$1.proto.ThresholdKey;exports.ThresholdKey=ThresholdKey;const KeyList=proto_1$1.proto.KeyList;exports.KeyList=KeyList;const Signature=proto_1$1.proto.Signature;exports.Signature=Signature;const ThresholdSignature=proto_1$1.proto.ThresholdSignature;exports.ThresholdSignature=ThresholdSignature;const SignatureList=proto_1$1.proto.SignatureList;exports.SignatureList=SignatureList;const SignaturePair=proto_1$1.proto.SignaturePair;exports.SignaturePair=SignaturePair;const SignatureMap=proto_1$1.proto.SignatureMap;exports.SignatureMap=SignatureMap;const HederaFunctionality=proto_1$1.proto.HederaFunctionality;exports.HederaFunctionality=HederaFunctionality;const FeeComponents=proto_1$1.proto.FeeComponents;exports.FeeComponents=FeeComponents;const TransactionFeeSchedule=proto_1$1.proto.TransactionFeeSchedule;exports.TransactionFeeSchedule=TransactionFeeSchedule;const FeeData=proto_1$1.proto.FeeData;exports.FeeData=FeeData;const FeeSchedule=proto_1$1.proto.FeeSchedule;exports.FeeSchedule=FeeSchedule;const CurrentAndNextFeeSchedule=proto_1$1.proto.CurrentAndNextFeeSchedule;exports.CurrentAndNextFeeSchedule=CurrentAndNextFeeSchedule;const ServiceEndpoint=proto_1$1.proto.ServiceEndpoint;exports.ServiceEndpoint=ServiceEndpoint;const NodeAddress=proto_1$1.proto.NodeAddress;exports.NodeAddress=NodeAddress;const NodeAddressBook=proto_1$1.proto.NodeAddressBook;exports.NodeAddressBook=NodeAddressBook;const SemanticVersion=proto_1$1.proto.SemanticVersion;exports.SemanticVersion=SemanticVersion;const Setting=proto_1$1.proto.Setting;exports.Setting=Setting;const ServicesConfigurationList=proto_1$1.proto.ServicesConfigurationList;exports.ServicesConfigurationList=ServicesConfigurationList;const TokenRelationship=proto_1$1.proto.TokenRelationship;exports.TokenRelationship=TokenRelationship;const TokenBalance=proto_1$1.proto.TokenBalance;exports.TokenBalance=TokenBalance;const TokenBalances=proto_1$1.proto.TokenBalances;exports.TokenBalances=TokenBalances;const Timestamp=proto_1$1.proto.Timestamp;exports.Timestamp=Timestamp;const TimestampSeconds=proto_1$1.proto.TimestampSeconds;exports.TimestampSeconds=TimestampSeconds;const ConsensusCreateTopicTransactionBody=proto_1$1.proto.ConsensusCreateTopicTransactionBody;exports.ConsensusCreateTopicTransactionBody=ConsensusCreateTopicTransactionBody;const Duration=proto_1$1.proto.Duration;exports.Duration=Duration;const ConsensusDeleteTopicTransactionBody=proto_1$1.proto.ConsensusDeleteTopicTransactionBody;exports.ConsensusDeleteTopicTransactionBody=ConsensusDeleteTopicTransactionBody;const ConsensusGetTopicInfoQuery=proto_1$1.proto.ConsensusGetTopicInfoQuery;exports.ConsensusGetTopicInfoQuery=ConsensusGetTopicInfoQuery;const ConsensusGetTopicInfoResponse=proto_1$1.proto.ConsensusGetTopicInfoResponse;exports.ConsensusGetTopicInfoResponse=ConsensusGetTopicInfoResponse;const ResponseType=proto_1$1.proto.ResponseType;exports.ResponseType=ResponseType;const QueryHeader=proto_1$1.proto.QueryHeader;exports.QueryHeader=QueryHeader;const Transaction=proto_1$1.proto.Transaction;exports.Transaction=Transaction;const TransactionBody=proto_1$1.proto.TransactionBody;exports.TransactionBody=TransactionBody;const SystemDeleteTransactionBody=proto_1$1.proto.SystemDeleteTransactionBody;exports.SystemDeleteTransactionBody=SystemDeleteTransactionBody;const SystemUndeleteTransactionBody=proto_1$1.proto.SystemUndeleteTransactionBody;exports.SystemUndeleteTransactionBody=SystemUndeleteTransactionBody;const FreezeTransactionBody=proto_1$1.proto.FreezeTransactionBody;exports.FreezeTransactionBody=FreezeTransactionBody;const ContractCallTransactionBody=proto_1$1.proto.ContractCallTransactionBody;exports.ContractCallTransactionBody=ContractCallTransactionBody;const ContractCreateTransactionBody=proto_1$1.proto.ContractCreateTransactionBody;exports.ContractCreateTransactionBody=ContractCreateTransactionBody;const ContractUpdateTransactionBody=proto_1$1.proto.ContractUpdateTransactionBody;exports.ContractUpdateTransactionBody=ContractUpdateTransactionBody;const LiveHash=proto_1$1.proto.LiveHash;exports.LiveHash=LiveHash;const CryptoAddLiveHashTransactionBody=proto_1$1.proto.CryptoAddLiveHashTransactionBody;exports.CryptoAddLiveHashTransactionBody=CryptoAddLiveHashTransactionBody;const CryptoCreateTransactionBody=proto_1$1.proto.CryptoCreateTransactionBody;exports.CryptoCreateTransactionBody=CryptoCreateTransactionBody;const CryptoDeleteTransactionBody=proto_1$1.proto.CryptoDeleteTransactionBody;exports.CryptoDeleteTransactionBody=CryptoDeleteTransactionBody;const CryptoDeleteLiveHashTransactionBody=proto_1$1.proto.CryptoDeleteLiveHashTransactionBody;exports.CryptoDeleteLiveHashTransactionBody=CryptoDeleteLiveHashTransactionBody;const CryptoTransferTransactionBody=proto_1$1.proto.CryptoTransferTransactionBody;exports.CryptoTransferTransactionBody=CryptoTransferTransactionBody;const CryptoUpdateTransactionBody=proto_1$1.proto.CryptoUpdateTransactionBody;exports.CryptoUpdateTransactionBody=CryptoUpdateTransactionBody;const FileAppendTransactionBody=proto_1$1.proto.FileAppendTransactionBody;exports.FileAppendTransactionBody=FileAppendTransactionBody;const FileCreateTransactionBody=proto_1$1.proto.FileCreateTransactionBody;exports.FileCreateTransactionBody=FileCreateTransactionBody;const FileDeleteTransactionBody=proto_1$1.proto.FileDeleteTransactionBody;exports.FileDeleteTransactionBody=FileDeleteTransactionBody;const FileUpdateTransactionBody=proto_1$1.proto.FileUpdateTransactionBody;exports.FileUpdateTransactionBody=FileUpdateTransactionBody;const ContractDeleteTransactionBody=proto_1$1.proto.ContractDeleteTransactionBody;exports.ContractDeleteTransactionBody=ContractDeleteTransactionBody;const ConsensusUpdateTopicTransactionBody=proto_1$1.proto.ConsensusUpdateTopicTransactionBody;exports.ConsensusUpdateTopicTransactionBody=ConsensusUpdateTopicTransactionBody;const ConsensusMessageChunkInfo=proto_1$1.proto.ConsensusMessageChunkInfo;exports.ConsensusMessageChunkInfo=ConsensusMessageChunkInfo;const ConsensusSubmitMessageTransactionBody=proto_1$1.proto.ConsensusSubmitMessageTransactionBody;exports.ConsensusSubmitMessageTransactionBody=ConsensusSubmitMessageTransactionBody;const UncheckedSubmitBody=proto_1$1.proto.UncheckedSubmitBody;exports.UncheckedSubmitBody=UncheckedSubmitBody;const TokenCreateTransactionBody=proto_1$1.proto.TokenCreateTransactionBody;exports.TokenCreateTransactionBody=TokenCreateTransactionBody;const FractionalFee=proto_1$1.proto.FractionalFee;exports.FractionalFee=FractionalFee;const FixedFee=proto_1$1.proto.FixedFee;exports.FixedFee=FixedFee;const CustomFee=proto_1$1.proto.CustomFee;exports.CustomFee=CustomFee;const AssessedCustomFee=proto_1$1.proto.AssessedCustomFee;exports.AssessedCustomFee=AssessedCustomFee;const RoyaltyFee=proto_1$1.proto.RoyaltyFee;exports.RoyaltyFee=RoyaltyFee;const TokenFreezeAccountTransactionBody=proto_1$1.proto.TokenFreezeAccountTransactionBody;exports.TokenFreezeAccountTransactionBody=TokenFreezeAccountTransactionBody;const TokenUnfreezeAccountTransactionBody=proto_1$1.proto.TokenUnfreezeAccountTransactionBody;exports.TokenUnfreezeAccountTransactionBody=TokenUnfreezeAccountTransactionBody;const TokenGrantKycTransactionBody=proto_1$1.proto.TokenGrantKycTransactionBody;exports.TokenGrantKycTransactionBody=TokenGrantKycTransactionBody;const TokenRevokeKycTransactionBody=proto_1$1.proto.TokenRevokeKycTransactionBody;exports.TokenRevokeKycTransactionBody=TokenRevokeKycTransactionBody;const TokenDeleteTransactionBody=proto_1$1.proto.TokenDeleteTransactionBody;exports.TokenDeleteTransactionBody=TokenDeleteTransactionBody;const TokenUpdateTransactionBody=proto_1$1.proto.TokenUpdateTransactionBody;exports.TokenUpdateTransactionBody=TokenUpdateTransactionBody;const TokenMintTransactionBody=proto_1$1.proto.TokenMintTransactionBody;exports.TokenMintTransactionBody=TokenMintTransactionBody;const TokenBurnTransactionBody=proto_1$1.proto.TokenBurnTransactionBody;exports.TokenBurnTransactionBody=TokenBurnTransactionBody;const TokenWipeAccountTransactionBody=proto_1$1.proto.TokenWipeAccountTransactionBody;exports.TokenWipeAccountTransactionBody=TokenWipeAccountTransactionBody;const TokenAssociateTransactionBody=proto_1$1.proto.TokenAssociateTransactionBody;exports.TokenAssociateTransactionBody=TokenAssociateTransactionBody;const TokenDissociateTransactionBody=proto_1$1.proto.TokenDissociateTransactionBody;exports.TokenDissociateTransactionBody=TokenDissociateTransactionBody;const TokenFeeScheduleUpdateTransactionBody=proto_1$1.proto.TokenFeeScheduleUpdateTransactionBody;exports.TokenFeeScheduleUpdateTransactionBody=TokenFeeScheduleUpdateTransactionBody;const ScheduleCreateTransactionBody=proto_1$1.proto.ScheduleCreateTransactionBody;exports.ScheduleCreateTransactionBody=ScheduleCreateTransactionBody;const SchedulableTransactionBody=proto_1$1.proto.SchedulableTransactionBody;exports.SchedulableTransactionBody=SchedulableTransactionBody;const ScheduleDeleteTransactionBody=proto_1$1.proto.ScheduleDeleteTransactionBody;exports.ScheduleDeleteTransactionBody=ScheduleDeleteTransactionBody;const ScheduleSignTransactionBody=proto_1$1.proto.ScheduleSignTransactionBody;exports.ScheduleSignTransactionBody=ScheduleSignTransactionBody;const ResponseHeader=proto_1$1.proto.ResponseHeader;exports.ResponseHeader=ResponseHeader;const TransactionResponse=proto_1$1.proto.TransactionResponse;exports.TransactionResponse=TransactionResponse;const ResponseCodeEnum=proto_1$1.proto.ResponseCodeEnum;exports.ResponseCodeEnum=ResponseCodeEnum;const ConsensusTopicInfo=proto_1$1.proto.ConsensusTopicInfo;exports.ConsensusTopicInfo=ConsensusTopicInfo;const ConsensusService=proto_1$1.proto.ConsensusService;exports.ConsensusService=ConsensusService;const Query=proto_1$1.proto.Query;exports.Query=Query;const GetByKeyQuery=proto_1$1.proto.GetByKeyQuery;exports.GetByKeyQuery=GetByKeyQuery;const EntityID=proto_1$1.proto.EntityID;exports.EntityID=EntityID;const GetByKeyResponse=proto_1$1.proto.GetByKeyResponse;exports.GetByKeyResponse=GetByKeyResponse;const GetBySolidityIDQuery=proto_1$1.proto.GetBySolidityIDQuery;exports.GetBySolidityIDQuery=GetBySolidityIDQuery;const GetBySolidityIDResponse=proto_1$1.proto.GetBySolidityIDResponse;exports.GetBySolidityIDResponse=GetBySolidityIDResponse;const ContractLoginfo=proto_1$1.proto.ContractLoginfo;exports.ContractLoginfo=ContractLoginfo;const ContractFunctionResult=proto_1$1.proto.ContractFunctionResult;exports.ContractFunctionResult=ContractFunctionResult;const ContractCallLocalQuery=proto_1$1.proto.ContractCallLocalQuery;exports.ContractCallLocalQuery=ContractCallLocalQuery;const ContractCallLocalResponse=proto_1$1.proto.ContractCallLocalResponse;exports.ContractCallLocalResponse=ContractCallLocalResponse;const ContractGetInfoQuery=proto_1$1.proto.ContractGetInfoQuery;exports.ContractGetInfoQuery=ContractGetInfoQuery;const ContractGetInfoResponse=proto_1$1.proto.ContractGetInfoResponse;exports.ContractGetInfoResponse=ContractGetInfoResponse;const ContractInfo=proto_1$1.proto.ContractGetInfoResponse.ContractInfo;exports.ContractInfo=ContractInfo;const ContractGetBytecodeQuery=proto_1$1.proto.ContractGetBytecodeQuery;exports.ContractGetBytecodeQuery=ContractGetBytecodeQuery;const ContractGetBytecodeResponse=proto_1$1.proto.ContractGetBytecodeResponse;exports.ContractGetBytecodeResponse=ContractGetBytecodeResponse;const ContractGetRecordsQuery=proto_1$1.proto.ContractGetRecordsQuery;exports.ContractGetRecordsQuery=ContractGetRecordsQuery;const ContractGetRecordsResponse=proto_1$1.proto.ContractGetRecordsResponse;exports.ContractGetRecordsResponse=ContractGetRecordsResponse;const TransactionRecord=proto_1$1.proto.TransactionRecord;exports.TransactionRecord=TransactionRecord;const TransactionReceipt=proto_1$1.proto.TransactionReceipt;exports.TransactionReceipt=TransactionReceipt;const ExchangeRate=proto_1$1.proto.ExchangeRate;exports.ExchangeRate=ExchangeRate;const ExchangeRateSet=proto_1$1.proto.ExchangeRateSet;exports.ExchangeRateSet=ExchangeRateSet;const CryptoGetAccountBalanceQuery=proto_1$1.proto.CryptoGetAccountBalanceQuery;exports.CryptoGetAccountBalanceQuery=CryptoGetAccountBalanceQuery;const CryptoGetAccountBalanceResponse=proto_1$1.proto.CryptoGetAccountBalanceResponse;exports.CryptoGetAccountBalanceResponse=CryptoGetAccountBalanceResponse;const CryptoGetAccountRecordsQuery=proto_1$1.proto.CryptoGetAccountRecordsQuery;exports.CryptoGetAccountRecordsQuery=CryptoGetAccountRecordsQuery;const CryptoGetAccountRecordsResponse=proto_1$1.proto.CryptoGetAccountRecordsResponse;exports.CryptoGetAccountRecordsResponse=CryptoGetAccountRecordsResponse;const CryptoGetInfoQuery=proto_1$1.proto.CryptoGetInfoQuery;exports.CryptoGetInfoQuery=CryptoGetInfoQuery;const CryptoGetInfoResponse=proto_1$1.proto.CryptoGetInfoResponse;exports.CryptoGetInfoResponse=CryptoGetInfoResponse;const AccountInfo=proto_1$1.proto.CryptoGetInfoResponse.AccountInfo;exports.AccountInfo=AccountInfo;const CryptoGetLiveHashQuery=proto_1$1.proto.CryptoGetLiveHashQuery;exports.CryptoGetLiveHashQuery=CryptoGetLiveHashQuery;const CryptoGetLiveHashResponse=proto_1$1.proto.CryptoGetLiveHashResponse;exports.CryptoGetLiveHashResponse=CryptoGetLiveHashResponse;const CryptoGetStakersQuery=proto_1$1.proto.CryptoGetStakersQuery;exports.CryptoGetStakersQuery=CryptoGetStakersQuery;const ProxyStaker=proto_1$1.proto.ProxyStaker;exports.ProxyStaker=ProxyStaker;const AllProxyStakers=proto_1$1.proto.AllProxyStakers;exports.AllProxyStakers=AllProxyStakers;const CryptoGetStakersResponse=proto_1$1.proto.CryptoGetStakersResponse;exports.CryptoGetStakersResponse=CryptoGetStakersResponse;const FileGetContentsQuery=proto_1$1.proto.FileGetContentsQuery;exports.FileGetContentsQuery=FileGetContentsQuery;const FileGetContentsResponse=proto_1$1.proto.FileGetContentsResponse;exports.FileGetContentsResponse=FileGetContentsResponse;const FileContents=proto_1$1.proto.FileGetContentsResponse.FileContents;exports.FileContents=FileContents;const FileGetInfoQuery=proto_1$1.proto.FileGetInfoQuery;exports.FileGetInfoQuery=FileGetInfoQuery;const FileGetInfoResponse=proto_1$1.proto.FileGetInfoResponse;exports.FileGetInfoResponse=FileGetInfoResponse;const FileInfo=proto_1$1.proto.FileGetInfoResponse.FileInfo;exports.FileInfo=FileInfo;const TransactionGetReceiptQuery=proto_1$1.proto.TransactionGetReceiptQuery;exports.TransactionGetReceiptQuery=TransactionGetReceiptQuery;const TransactionGetReceiptResponse=proto_1$1.proto.TransactionGetReceiptResponse;exports.TransactionGetReceiptResponse=TransactionGetReceiptResponse;const TransactionGetRecordQuery=proto_1$1.proto.TransactionGetRecordQuery;exports.TransactionGetRecordQuery=TransactionGetRecordQuery;const TransactionGetRecordResponse=proto_1$1.proto.TransactionGetRecordResponse;exports.TransactionGetRecordResponse=TransactionGetRecordResponse;const TransactionGetFastRecordQuery=proto_1$1.proto.TransactionGetFastRecordQuery;exports.TransactionGetFastRecordQuery=TransactionGetFastRecordQuery;const TransactionGetFastRecordResponse=proto_1$1.proto.TransactionGetFastRecordResponse;exports.TransactionGetFastRecordResponse=TransactionGetFastRecordResponse;const NetworkGetVersionInfoQuery=proto_1$1.proto.NetworkGetVersionInfoQuery;exports.NetworkGetVersionInfoQuery=NetworkGetVersionInfoQuery;const NetworkGetVersionInfoResponse=proto_1$1.proto.NetworkGetVersionInfoResponse;exports.NetworkGetVersionInfoResponse=NetworkGetVersionInfoResponse;const TokenGetInfoQuery=proto_1$1.proto.TokenGetInfoQuery;exports.TokenGetInfoQuery=TokenGetInfoQuery;const TokenInfo=proto_1$1.proto.TokenInfo;exports.TokenInfo=TokenInfo;const TokenGetInfoResponse=proto_1$1.proto.TokenGetInfoResponse;exports.TokenGetInfoResponse=TokenGetInfoResponse;const ScheduleGetInfoQuery=proto_1$1.proto.ScheduleGetInfoQuery;exports.ScheduleGetInfoQuery=ScheduleGetInfoQuery;const ScheduleInfo=proto_1$1.proto.ScheduleInfo;exports.ScheduleInfo=ScheduleInfo;const ScheduleGetInfoResponse=proto_1$1.proto.ScheduleGetInfoResponse;exports.ScheduleGetInfoResponse=ScheduleGetInfoResponse;const TokenGetAccountNftInfosQuery=proto_1$1.proto.TokenGetAccountNftInfosQuery;exports.TokenGetAccountNftInfosQuery=TokenGetAccountNftInfosQuery;const TokenGetAccountNftInfosResponse=proto_1$1.proto.TokenGetAccountNftInfosResponse;exports.TokenGetAccountNftInfosResponse=TokenGetAccountNftInfosResponse;const NftID=proto_1$1.proto.NftID;exports.NftID=NftID;const TokenGetNftInfoQuery=proto_1$1.proto.TokenGetNftInfoQuery;exports.TokenGetNftInfoQuery=TokenGetNftInfoQuery;const TokenNftInfo=proto_1$1.proto.TokenNftInfo;exports.TokenNftInfo=TokenNftInfo;const TokenGetNftInfoResponse=proto_1$1.proto.TokenGetNftInfoResponse;exports.TokenGetNftInfoResponse=TokenGetNftInfoResponse;const TokenGetNftInfosQuery=proto_1$1.proto.TokenGetNftInfosQuery;exports.TokenGetNftInfosQuery=TokenGetNftInfosQuery;const TokenGetNftInfosResponse=proto_1$1.proto.TokenGetNftInfosResponse;exports.TokenGetNftInfosResponse=TokenGetNftInfosResponse;const Response=proto_1$1.proto.Response;exports.Response=Response;const CryptoService=proto_1$1.proto.CryptoService;exports.CryptoService=CryptoService;const FileService=proto_1$1.proto.FileService;exports.FileService=FileService;const FreezeService=proto_1$1.proto.FreezeService;exports.FreezeService=FreezeService;const ConsensusTopicQuery=proto_1$1.proto.ConsensusTopicQuery;exports.ConsensusTopicQuery=ConsensusTopicQuery;const ConsensusTopicResponse=proto_1$1.proto.ConsensusTopicResponse;exports.ConsensusTopicResponse=ConsensusTopicResponse;const MirrorConsensusService=proto_1$1.proto.MirrorConsensusService;exports.MirrorConsensusService=MirrorConsensusService;const NetworkService=proto_1$1.proto.NetworkService;exports.NetworkService=NetworkService;const ScheduleService=proto_1$1.proto.ScheduleService;exports.ScheduleService=ScheduleService;const SmartContractService=proto_1$1.proto.SmartContractService;exports.SmartContractService=SmartContractService;const ThrottleGroup=proto_1$1.proto.ThrottleGroup;exports.ThrottleGroup=ThrottleGroup;const ThrottleBucket=proto_1$1.proto.ThrottleBucket;exports.ThrottleBucket=ThrottleBucket;const ThrottleDefinitions=proto_1$1.proto.ThrottleDefinitions;exports.ThrottleDefinitions=ThrottleDefinitions;const TokenService=proto_1$1.proto.TokenService;exports.TokenService=TokenService;const SignedTransaction=proto_1$1.proto.SignedTransaction;exports.SignedTransaction=SignedTransaction;const TransactionList=proto_1$1.proto.TransactionList;exports.TransactionList=TransactionList;const DoubleValue=proto_1$1.proto.DoubleValue;exports.DoubleValue=DoubleValue;const FloatValue=proto_1$1.proto.FloatValue;exports.FloatValue=FloatValue;const UInt64Value=proto_1$1.proto.UInt64Value;exports.UInt64Value=UInt64Value;const UInt32Value=proto_1$1.proto.UInt32Value;exports.UInt32Value=UInt32Value;const BoolValue=proto_1$1.proto.BoolValue;exports.BoolValue=BoolValue;const StringValue=proto_1$1.proto.StringValue;exports.StringValue=StringValue;const BytesValue=proto_1$1.proto.BytesValue;exports.BytesValue=BytesValue;const TokenPauseTransactionBody=proto_1$1.proto.TokenPauseTransactionBody;exports.TokenPauseTransactionBody=TokenPauseTransactionBody;const TokenUnpauseTransactionBody=proto_1$1.proto.TokenUnpauseTransactionBody;exports.TokenUnpauseTransactionBody=TokenUnpauseTransactionBody;const TokenPauseStatus=proto_1$1.proto.TokenPauseStatus;exports.TokenPauseStatus=TokenPauseStatus;const FreezeType=proto_1$1.proto.FreezeType;exports.FreezeType=FreezeType;
 });
 
-var index$4 = /*@__PURE__*/getDefaultExportFromCjs(lib$1);
+var index$5 = /*@__PURE__*/getDefaultExportFromCjs(lib$1);
 
 "use strict";
 var __awaiter$3 = (window && window.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -92744,7 +92643,7 @@ function verifyTypedData(domain, types, value, signature) {
     });
 }
 
-var lib_esm$i = /*#__PURE__*/Object.freeze({
+var lib_esm$h = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	Wallet: Wallet,
 	verifyMessage: verifyMessage,
@@ -93152,54 +93051,52 @@ function poll(func, options) {
     });
 }
 
-var lib_esm$j = /*#__PURE__*/Object.freeze({
+var lib_esm$i = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	_fetchData: _fetchData,
 	fetchJson: fetchJson,
 	poll: poll
 });
 
-var abi_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$6);
+var abi_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$5);
 
-var address_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$8);
+var address_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$7);
 
-var require$$0$3 = /*@__PURE__*/getAugmentedNamespace(lib_esm$a);
+var require$$0$3 = /*@__PURE__*/getAugmentedNamespace(lib_esm$9);
 
-var basex_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$b);
+var basex_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$a);
 
 var bytes_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm);
 
-var hash_1$1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$5);
+var hash_1$1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$4);
 
-var hdnode_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$d);
+var hdnode_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$c);
 
-var json_wallets_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$f);
+var json_wallets_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$e);
 
 var keccak256_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$2);
 
-var logger_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$7);
+var logger_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$6);
 
-var sha2_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$c);
+var sha2_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$b);
 
-var solidity_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$g);
+var solidity_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$f);
 
-var random_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$e);
+var random_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$d);
 
 var properties_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$1);
 
-var require$$1$1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$3);
+var signing_key_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$8);
 
-var signing_key_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$9);
+var strings_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$3);
 
-var strings_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$4);
+var transactions_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$j);
 
-var transactions_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$k);
+var units_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$g);
 
-var units_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$h);
+var wallet_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$h);
 
-var wallet_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$i);
-
-var web_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$j);
+var web_1 = /*@__PURE__*/getAugmentedNamespace(lib_esm$i);
 
 var utils$1 = createCommonjsModule(function (module, exports) {
 "use strict";
@@ -93223,8 +93120,8 @@ var __importStar = (commonjsGlobal && commonjsGlobal.__importStar) || function (
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.formatBytes32String = exports.Utf8ErrorFuncs = exports.toUtf8String = exports.toUtf8CodePoints = exports.toUtf8Bytes = exports._toEscapedUtf8String = exports.nameprep = exports.hexDataSlice = exports.hexDataLength = exports.hexZeroPad = exports.hexValue = exports.hexStripZeros = exports.hexConcat = exports.isHexString = exports.hexlify = exports.base64 = exports.base58 = exports.TransactionDescription = exports.LogDescription = exports.Interface = exports.SigningKey = exports.HDNode = exports.defaultPath = exports.isBytesLike = exports.isBytes = exports.zeroPad = exports.stripZeros = exports.concat = exports.arrayify = exports.shallowCopy = exports.resolveProperties = exports.getStatic = exports.defineReadOnly = exports.deepCopy = exports.checkProperties = exports.poll = exports.fetchJson = exports._fetchData = exports.RLP = exports.Logger = exports.checkResultErrors = exports.FormatTypes = exports.ParamType = exports.FunctionFragment = exports.EventFragment = exports.ErrorFragment = exports.ConstructorFragment = exports.Fragment = exports.defaultAbiCoder = exports.AbiCoder = void 0;
-exports.parseAccount = exports.getAccountFromAddress = exports.getAddressFromAccount = exports.Indexed = exports.Utf8ErrorReason = exports.UnicodeNormalizationForm = exports.SupportedAlgorithm = exports.mnemonicToSeed = exports.isValidMnemonic = exports.entropyToMnemonic = exports.mnemonicToEntropy = exports.getAccountPath = exports.verifyTypedData = exports.verifyMessage = exports.recoverPublicKey = exports.computePublicKey = exports.recoverAddress = exports.computeAlias = exports.computeAddress = exports.getJsonWalletAddress = exports.TransactionTypes = exports.parseTransaction = exports.accessListify = exports.joinSignature = exports.splitSignature = exports.soliditySha256 = exports.solidityKeccak256 = exports.solidityPack = exports.shuffled = exports.randomBytes = exports.sha512 = exports.sha256 = exports.ripemd160 = exports.keccak256 = exports.computeHmac = exports.commify = exports.parseUnits = exports.formatUnits = exports.parseHbar = exports.formatHbar = exports.isAddress = exports.getCreate2Address = exports.getContractAddress = exports.getIcapAddress = exports.getChecksumAddress = exports.getAddress = exports._TypedDataEncoder = exports.id = exports.hashMessage = exports.parseBytes32String = void 0;
+exports.parseBytes32String = exports.formatBytes32String = exports.Utf8ErrorFuncs = exports.toUtf8String = exports.toUtf8CodePoints = exports.toUtf8Bytes = exports._toEscapedUtf8String = exports.nameprep = exports.hexDataSlice = exports.hexDataLength = exports.hexZeroPad = exports.hexValue = exports.hexStripZeros = exports.hexConcat = exports.isHexString = exports.hexlify = exports.base64 = exports.base58 = exports.TransactionDescription = exports.LogDescription = exports.Interface = exports.SigningKey = exports.HDNode = exports.defaultPath = exports.isBytesLike = exports.isBytes = exports.zeroPad = exports.stripZeros = exports.concat = exports.arrayify = exports.shallowCopy = exports.resolveProperties = exports.getStatic = exports.defineReadOnly = exports.deepCopy = exports.checkProperties = exports.poll = exports.fetchJson = exports._fetchData = exports.Logger = exports.checkResultErrors = exports.FormatTypes = exports.ParamType = exports.FunctionFragment = exports.EventFragment = exports.ErrorFragment = exports.ConstructorFragment = exports.Fragment = exports.defaultAbiCoder = exports.AbiCoder = void 0;
+exports.parseAccount = exports.getAccountFromAddress = exports.getAddressFromAccount = exports.Indexed = exports.Utf8ErrorReason = exports.UnicodeNormalizationForm = exports.SupportedAlgorithm = exports.mnemonicToSeed = exports.isValidMnemonic = exports.entropyToMnemonic = exports.mnemonicToEntropy = exports.getAccountPath = exports.verifyTypedData = exports.verifyMessage = exports.recoverPublicKey = exports.computePublicKey = exports.recoverAddress = exports.computeAlias = exports.computeAddress = exports.getJsonWalletAddress = exports.TransactionTypes = exports.parseTransaction = exports.accessListify = exports.joinSignature = exports.splitSignature = exports.soliditySha256 = exports.solidityKeccak256 = exports.solidityPack = exports.shuffled = exports.randomBytes = exports.sha512 = exports.sha256 = exports.ripemd160 = exports.keccak256 = exports.computeHmac = exports.commify = exports.parseUnits = exports.formatUnits = exports.parseHbar = exports.formatHbar = exports.isAddress = exports.getCreate2Address = exports.getIcapAddress = exports.getChecksumAddress = exports.getAddress = exports._TypedDataEncoder = exports.id = exports.hashMessage = void 0;
 
 Object.defineProperty(exports, "AbiCoder", { enumerable: true, get: function () { return abi_1.AbiCoder; } });
 Object.defineProperty(exports, "checkResultErrors", { enumerable: true, get: function () { return abi_1.checkResultErrors; } });
@@ -93244,7 +93141,6 @@ Object.defineProperty(exports, "TransactionDescription", { enumerable: true, get
 Object.defineProperty(exports, "getAddress", { enumerable: true, get: function () { return address_1.getAddress; } });
 Object.defineProperty(exports, "getChecksumAddress", { enumerable: true, get: function () { return address_1.getChecksumAddress; } });
 Object.defineProperty(exports, "getCreate2Address", { enumerable: true, get: function () { return address_1.getCreate2Address; } });
-Object.defineProperty(exports, "getContractAddress", { enumerable: true, get: function () { return address_1.getContractAddress; } });
 Object.defineProperty(exports, "getIcapAddress", { enumerable: true, get: function () { return address_1.getIcapAddress; } });
 Object.defineProperty(exports, "isAddress", { enumerable: true, get: function () { return address_1.isAddress; } });
 Object.defineProperty(exports, "getAccountFromAddress", { enumerable: true, get: function () { return address_1.getAccountFromAddress; } });
@@ -93308,8 +93204,6 @@ Object.defineProperty(exports, "defineReadOnly", { enumerable: true, get: functi
 Object.defineProperty(exports, "getStatic", { enumerable: true, get: function () { return properties_1.getStatic; } });
 Object.defineProperty(exports, "resolveProperties", { enumerable: true, get: function () { return properties_1.resolveProperties; } });
 Object.defineProperty(exports, "shallowCopy", { enumerable: true, get: function () { return properties_1.shallowCopy; } });
-var RLP = __importStar(require$$1$1);
-exports.RLP = RLP;
 
 Object.defineProperty(exports, "computePublicKey", { enumerable: true, get: function () { return signing_key_1.computePublicKey; } });
 Object.defineProperty(exports, "recoverPublicKey", { enumerable: true, get: function () { return signing_key_1.recoverPublicKey; } });
@@ -93816,7 +93710,7 @@ class Formatter {
         return (address === AddressZero$1) ? null : address;
     }
     contractAddress(value) {
-        return getContractAddress$1(value);
+        return value;
     }
     // Requires a hash, optionally requires 0x prefix; returns prefixed lowercase hash.
     hash48(value, strict) {
@@ -95101,6 +94995,7 @@ var s$1 = 1000;
 var m = s$1 * 60;
 var h = m * 60;
 var d = h * 24;
+var w = d * 7;
 var y = d * 365.25;
 
 /**
@@ -95122,7 +95017,7 @@ var ms = function(val, options) {
   var type = typeof val;
   if (type === 'string' && val.length > 0) {
     return parse$3(val);
-  } else if (type === 'number' && isNaN(val) === false) {
+  } else if (type === 'number' && isFinite(val)) {
     return options.long ? fmtLong(val) : fmtShort(val);
   }
   throw new Error(
@@ -95144,7 +95039,7 @@ function parse$3(str) {
   if (str.length > 100) {
     return;
   }
-  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(
+  var match = /^(-?(?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)?$/i.exec(
     str
   );
   if (!match) {
@@ -95159,6 +95054,10 @@ function parse$3(str) {
     case 'yr':
     case 'y':
       return n * y;
+    case 'weeks':
+    case 'week':
+    case 'w':
+      return n * w;
     case 'days':
     case 'day':
     case 'd':
@@ -95201,16 +95100,17 @@ function parse$3(str) {
  */
 
 function fmtShort(ms) {
-  if (ms >= d) {
+  var msAbs = Math.abs(ms);
+  if (msAbs >= d) {
     return Math.round(ms / d) + 'd';
   }
-  if (ms >= h) {
+  if (msAbs >= h) {
     return Math.round(ms / h) + 'h';
   }
-  if (ms >= m) {
+  if (msAbs >= m) {
     return Math.round(ms / m) + 'm';
   }
-  if (ms >= s$1) {
+  if (msAbs >= s$1) {
     return Math.round(ms / s$1) + 's';
   }
   return ms + 'ms';
@@ -95225,260 +95125,409 @@ function fmtShort(ms) {
  */
 
 function fmtLong(ms) {
-  return plural(ms, d, 'day') ||
-    plural(ms, h, 'hour') ||
-    plural(ms, m, 'minute') ||
-    plural(ms, s$1, 'second') ||
-    ms + ' ms';
+  var msAbs = Math.abs(ms);
+  if (msAbs >= d) {
+    return plural(ms, msAbs, d, 'day');
+  }
+  if (msAbs >= h) {
+    return plural(ms, msAbs, h, 'hour');
+  }
+  if (msAbs >= m) {
+    return plural(ms, msAbs, m, 'minute');
+  }
+  if (msAbs >= s$1) {
+    return plural(ms, msAbs, s$1, 'second');
+  }
+  return ms + ' ms';
 }
 
 /**
  * Pluralization helper.
  */
 
-function plural(ms, n, name) {
-  if (ms < n) {
-    return;
-  }
-  if (ms < n * 1.5) {
-    return Math.floor(ms / n) + ' ' + name;
-  }
-  return Math.ceil(ms / n) + ' ' + name + 's';
+function plural(ms, msAbs, n, name) {
+  var isPlural = msAbs >= n * 1.5;
+  return Math.round(ms / n) + ' ' + name + (isPlural ? 's' : '');
 }
 
-var debug = createCommonjsModule(function (module, exports) {
 /**
  * This is the common logic for both the Node.js and web browser
  * implementations of `debug()`.
- *
- * Expose `debug()` as the module.
  */
 
-exports = module.exports = createDebug.debug = createDebug['default'] = createDebug;
-exports.coerce = coerce;
-exports.disable = disable;
-exports.enable = enable;
-exports.enabled = enabled;
-exports.humanize = ms;
+function setup(env) {
+	createDebug.debug = createDebug;
+	createDebug.default = createDebug;
+	createDebug.coerce = coerce;
+	createDebug.disable = disable;
+	createDebug.enable = enable;
+	createDebug.enabled = enabled;
+	createDebug.humanize = ms;
+	createDebug.destroy = destroy;
 
-/**
- * The currently active debug mode names, and names to skip.
- */
+	Object.keys(env).forEach(key => {
+		createDebug[key] = env[key];
+	});
 
-exports.names = [];
-exports.skips = [];
+	/**
+	* The currently active debug mode names, and names to skip.
+	*/
 
-/**
- * Map of special "%n" handling functions, for the debug "format" argument.
- *
- * Valid key names are a single, lower or upper-case letter, i.e. "n" and "N".
- */
+	createDebug.names = [];
+	createDebug.skips = [];
 
-exports.formatters = {};
+	/**
+	* Map of special "%n" handling functions, for the debug "format" argument.
+	*
+	* Valid key names are a single, lower or upper-case letter, i.e. "n" and "N".
+	*/
+	createDebug.formatters = {};
 
-/**
- * Previous log timestamp.
- */
+	/**
+	* Selects a color for a debug namespace
+	* @param {String} namespace The namespace string for the debug instance to be colored
+	* @return {Number|String} An ANSI color code for the given namespace
+	* @api private
+	*/
+	function selectColor(namespace) {
+		let hash = 0;
 
-var prevTime;
+		for (let i = 0; i < namespace.length; i++) {
+			hash = ((hash << 5) - hash) + namespace.charCodeAt(i);
+			hash |= 0; // Convert to 32bit integer
+		}
 
-/**
- * Select a color.
- * @param {String} namespace
- * @return {Number}
- * @api private
- */
+		return createDebug.colors[Math.abs(hash) % createDebug.colors.length];
+	}
+	createDebug.selectColor = selectColor;
 
-function selectColor(namespace) {
-  var hash = 0, i;
+	/**
+	* Create a debugger with the given `namespace`.
+	*
+	* @param {String} namespace
+	* @return {Function}
+	* @api public
+	*/
+	function createDebug(namespace) {
+		let prevTime;
+		let enableOverride = null;
+		let namespacesCache;
+		let enabledCache;
 
-  for (i in namespace) {
-    hash  = ((hash << 5) - hash) + namespace.charCodeAt(i);
-    hash |= 0; // Convert to 32bit integer
-  }
+		function debug(...args) {
+			// Disabled?
+			if (!debug.enabled) {
+				return;
+			}
 
-  return exports.colors[Math.abs(hash) % exports.colors.length];
+			const self = debug;
+
+			// Set `diff` timestamp
+			const curr = Number(new Date());
+			const ms = curr - (prevTime || curr);
+			self.diff = ms;
+			self.prev = prevTime;
+			self.curr = curr;
+			prevTime = curr;
+
+			args[0] = createDebug.coerce(args[0]);
+
+			if (typeof args[0] !== 'string') {
+				// Anything else let's inspect with %O
+				args.unshift('%O');
+			}
+
+			// Apply any `formatters` transformations
+			let index = 0;
+			args[0] = args[0].replace(/%([a-zA-Z%])/g, (match, format) => {
+				// If we encounter an escaped % then don't increase the array index
+				if (match === '%%') {
+					return '%';
+				}
+				index++;
+				const formatter = createDebug.formatters[format];
+				if (typeof formatter === 'function') {
+					const val = args[index];
+					match = formatter.call(self, val);
+
+					// Now we need to remove `args[index]` since it's inlined in the `format`
+					args.splice(index, 1);
+					index--;
+				}
+				return match;
+			});
+
+			// Apply env-specific formatting (colors, etc.)
+			createDebug.formatArgs.call(self, args);
+
+			const logFn = self.log || createDebug.log;
+			logFn.apply(self, args);
+		}
+
+		debug.namespace = namespace;
+		debug.useColors = createDebug.useColors();
+		debug.color = createDebug.selectColor(namespace);
+		debug.extend = extend;
+		debug.destroy = createDebug.destroy; // XXX Temporary. Will be removed in the next major release.
+
+		Object.defineProperty(debug, 'enabled', {
+			enumerable: true,
+			configurable: false,
+			get: () => {
+				if (enableOverride !== null) {
+					return enableOverride;
+				}
+				if (namespacesCache !== createDebug.namespaces) {
+					namespacesCache = createDebug.namespaces;
+					enabledCache = createDebug.enabled(namespace);
+				}
+
+				return enabledCache;
+			},
+			set: v => {
+				enableOverride = v;
+			}
+		});
+
+		// Env-specific initialization logic for debug instances
+		if (typeof createDebug.init === 'function') {
+			createDebug.init(debug);
+		}
+
+		return debug;
+	}
+
+	function extend(namespace, delimiter) {
+		const newDebug = createDebug(this.namespace + (typeof delimiter === 'undefined' ? ':' : delimiter) + namespace);
+		newDebug.log = this.log;
+		return newDebug;
+	}
+
+	/**
+	* Enables a debug mode by namespaces. This can include modes
+	* separated by a colon and wildcards.
+	*
+	* @param {String} namespaces
+	* @api public
+	*/
+	function enable(namespaces) {
+		createDebug.save(namespaces);
+		createDebug.namespaces = namespaces;
+
+		createDebug.names = [];
+		createDebug.skips = [];
+
+		let i;
+		const split = (typeof namespaces === 'string' ? namespaces : '').split(/[\s,]+/);
+		const len = split.length;
+
+		for (i = 0; i < len; i++) {
+			if (!split[i]) {
+				// ignore empty strings
+				continue;
+			}
+
+			namespaces = split[i].replace(/\*/g, '.*?');
+
+			if (namespaces[0] === '-') {
+				createDebug.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
+			} else {
+				createDebug.names.push(new RegExp('^' + namespaces + '$'));
+			}
+		}
+	}
+
+	/**
+	* Disable debug output.
+	*
+	* @return {String} namespaces
+	* @api public
+	*/
+	function disable() {
+		const namespaces = [
+			...createDebug.names.map(toNamespace),
+			...createDebug.skips.map(toNamespace).map(namespace => '-' + namespace)
+		].join(',');
+		createDebug.enable('');
+		return namespaces;
+	}
+
+	/**
+	* Returns true if the given mode name is enabled, false otherwise.
+	*
+	* @param {String} name
+	* @return {Boolean}
+	* @api public
+	*/
+	function enabled(name) {
+		if (name[name.length - 1] === '*') {
+			return true;
+		}
+
+		let i;
+		let len;
+
+		for (i = 0, len = createDebug.skips.length; i < len; i++) {
+			if (createDebug.skips[i].test(name)) {
+				return false;
+			}
+		}
+
+		for (i = 0, len = createDebug.names.length; i < len; i++) {
+			if (createDebug.names[i].test(name)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	* Convert regexp to namespace
+	*
+	* @param {RegExp} regxep
+	* @return {String} namespace
+	* @api private
+	*/
+	function toNamespace(regexp) {
+		return regexp.toString()
+			.substring(2, regexp.toString().length - 2)
+			.replace(/\.\*\?$/, '*');
+	}
+
+	/**
+	* Coerce `val`.
+	*
+	* @param {Mixed} val
+	* @return {Mixed}
+	* @api private
+	*/
+	function coerce(val) {
+		if (val instanceof Error) {
+			return val.stack || val.message;
+		}
+		return val;
+	}
+
+	/**
+	* XXX DO NOT USE. This is a temporary stub function.
+	* XXX It WILL be removed in the next major release.
+	*/
+	function destroy() {
+		console.warn('Instance method `debug.destroy()` is deprecated and no longer does anything. It will be removed in the next major version of `debug`.');
+	}
+
+	createDebug.enable(createDebug.load());
+
+	return createDebug;
 }
 
-/**
- * Create a debugger with the given `namespace`.
- *
- * @param {String} namespace
- * @return {Function}
- * @api public
- */
-
-function createDebug(namespace) {
-
-  function debug() {
-    // disabled?
-    if (!debug.enabled) return;
-
-    var self = debug;
-
-    // set `diff` timestamp
-    var curr = +new Date();
-    var ms = curr - (prevTime || curr);
-    self.diff = ms;
-    self.prev = prevTime;
-    self.curr = curr;
-    prevTime = curr;
-
-    // turn the `arguments` into a proper Array
-    var args = new Array(arguments.length);
-    for (var i = 0; i < args.length; i++) {
-      args[i] = arguments[i];
-    }
-
-    args[0] = exports.coerce(args[0]);
-
-    if ('string' !== typeof args[0]) {
-      // anything else let's inspect with %O
-      args.unshift('%O');
-    }
-
-    // apply any `formatters` transformations
-    var index = 0;
-    args[0] = args[0].replace(/%([a-zA-Z%])/g, function(match, format) {
-      // if we encounter an escaped % then don't increase the array index
-      if (match === '%%') return match;
-      index++;
-      var formatter = exports.formatters[format];
-      if ('function' === typeof formatter) {
-        var val = args[index];
-        match = formatter.call(self, val);
-
-        // now we need to remove `args[index]` since it's inlined in the `format`
-        args.splice(index, 1);
-        index--;
-      }
-      return match;
-    });
-
-    // apply env-specific formatting (colors, etc.)
-    exports.formatArgs.call(self, args);
-
-    var logFn = debug.log || exports.log || console.log.bind(console);
-    logFn.apply(self, args);
-  }
-
-  debug.namespace = namespace;
-  debug.enabled = exports.enabled(namespace);
-  debug.useColors = exports.useColors();
-  debug.color = selectColor(namespace);
-
-  // env-specific initialization logic for debug instances
-  if ('function' === typeof exports.init) {
-    exports.init(debug);
-  }
-
-  return debug;
-}
-
-/**
- * Enables a debug mode by namespaces. This can include modes
- * separated by a colon and wildcards.
- *
- * @param {String} namespaces
- * @api public
- */
-
-function enable(namespaces) {
-  exports.save(namespaces);
-
-  exports.names = [];
-  exports.skips = [];
-
-  var split = (typeof namespaces === 'string' ? namespaces : '').split(/[\s,]+/);
-  var len = split.length;
-
-  for (var i = 0; i < len; i++) {
-    if (!split[i]) continue; // ignore empty strings
-    namespaces = split[i].replace(/\*/g, '.*?');
-    if (namespaces[0] === '-') {
-      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
-    } else {
-      exports.names.push(new RegExp('^' + namespaces + '$'));
-    }
-  }
-}
-
-/**
- * Disable debug output.
- *
- * @api public
- */
-
-function disable() {
-  exports.enable('');
-}
-
-/**
- * Returns true if the given mode name is enabled, false otherwise.
- *
- * @param {String} name
- * @return {Boolean}
- * @api public
- */
-
-function enabled(name) {
-  var i, len;
-  for (i = 0, len = exports.skips.length; i < len; i++) {
-    if (exports.skips[i].test(name)) {
-      return false;
-    }
-  }
-  for (i = 0, len = exports.names.length; i < len; i++) {
-    if (exports.names[i].test(name)) {
-      return true;
-    }
-  }
-  return false;
-}
-
-/**
- * Coerce `val`.
- *
- * @param {Mixed} val
- * @return {Mixed}
- * @api private
- */
-
-function coerce(val) {
-  if (val instanceof Error) return val.stack || val.message;
-  return val;
-}
-});
+var common$4 = setup;
 
 var browser = createCommonjsModule(function (module, exports) {
+/* eslint-env browser */
+
 /**
  * This is the web browser implementation of `debug()`.
- *
- * Expose `debug()` as the module.
  */
 
-exports = module.exports = debug;
-exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
 exports.load = load;
 exports.useColors = useColors;
-exports.storage = 'undefined' != typeof chrome
-               && 'undefined' != typeof chrome.storage
-                  ? chrome.storage.local
-                  : localstorage();
+exports.storage = localstorage();
+exports.destroy = (() => {
+	let warned = false;
+
+	return () => {
+		if (!warned) {
+			warned = true;
+			console.warn('Instance method `debug.destroy()` is deprecated and no longer does anything. It will be removed in the next major version of `debug`.');
+		}
+	};
+})();
 
 /**
  * Colors.
  */
 
 exports.colors = [
-  'lightseagreen',
-  'forestgreen',
-  'goldenrod',
-  'dodgerblue',
-  'darkorchid',
-  'crimson'
+	'#0000CC',
+	'#0000FF',
+	'#0033CC',
+	'#0033FF',
+	'#0066CC',
+	'#0066FF',
+	'#0099CC',
+	'#0099FF',
+	'#00CC00',
+	'#00CC33',
+	'#00CC66',
+	'#00CC99',
+	'#00CCCC',
+	'#00CCFF',
+	'#3300CC',
+	'#3300FF',
+	'#3333CC',
+	'#3333FF',
+	'#3366CC',
+	'#3366FF',
+	'#3399CC',
+	'#3399FF',
+	'#33CC00',
+	'#33CC33',
+	'#33CC66',
+	'#33CC99',
+	'#33CCCC',
+	'#33CCFF',
+	'#6600CC',
+	'#6600FF',
+	'#6633CC',
+	'#6633FF',
+	'#66CC00',
+	'#66CC33',
+	'#9900CC',
+	'#9900FF',
+	'#9933CC',
+	'#9933FF',
+	'#99CC00',
+	'#99CC33',
+	'#CC0000',
+	'#CC0033',
+	'#CC0066',
+	'#CC0099',
+	'#CC00CC',
+	'#CC00FF',
+	'#CC3300',
+	'#CC3333',
+	'#CC3366',
+	'#CC3399',
+	'#CC33CC',
+	'#CC33FF',
+	'#CC6600',
+	'#CC6633',
+	'#CC9900',
+	'#CC9933',
+	'#CCCC00',
+	'#CCCC33',
+	'#FF0000',
+	'#FF0033',
+	'#FF0066',
+	'#FF0099',
+	'#FF00CC',
+	'#FF00FF',
+	'#FF3300',
+	'#FF3333',
+	'#FF3366',
+	'#FF3399',
+	'#FF33CC',
+	'#FF33FF',
+	'#FF6600',
+	'#FF6633',
+	'#FF9900',
+	'#FF9933',
+	'#FFCC00',
+	'#FFCC33'
 ];
 
 /**
@@ -95489,38 +95538,31 @@ exports.colors = [
  * TODO: add a `localStorage` variable to explicitly enable/disable colors
  */
 
+// eslint-disable-next-line complexity
 function useColors() {
-  // NB: In an Electron preload script, document will be defined but not fully
-  // initialized. Since we know we're in Chrome, we'll just detect this case
-  // explicitly
-  if (typeof window !== 'undefined' && window.process && window.process.type === 'renderer') {
-    return true;
-  }
+	// NB: In an Electron preload script, document will be defined but not fully
+	// initialized. Since we know we're in Chrome, we'll just detect this case
+	// explicitly
+	if (typeof window !== 'undefined' && window.process && (window.process.type === 'renderer' || window.process.__nwjs)) {
+		return true;
+	}
 
-  // is webkit? http://stackoverflow.com/a/16459606/376773
-  // document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
-  return (typeof document !== 'undefined' && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance) ||
-    // is firebug? http://stackoverflow.com/a/398120/376773
-    (typeof window !== 'undefined' && window.console && (window.console.firebug || (window.console.exception && window.console.table))) ||
-    // is firefox >= v31?
-    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
-    (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31) ||
-    // double check webkit in userAgent just in case we are in a worker
-    (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/));
+	// Internet Explorer and Edge do not support colors.
+	if (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/(edge|trident)\/(\d+)/)) {
+		return false;
+	}
+
+	// Is webkit? http://stackoverflow.com/a/16459606/376773
+	// document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
+	return (typeof document !== 'undefined' && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance) ||
+		// Is firebug? http://stackoverflow.com/a/398120/376773
+		(typeof window !== 'undefined' && window.console && (window.console.firebug || (window.console.exception && window.console.table))) ||
+		// Is firefox >= v31?
+		// https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+		(typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31) ||
+		// Double check webkit in userAgent just in case we are in a worker
+		(typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/));
 }
-
-/**
- * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
- */
-
-exports.formatters.j = function(v) {
-  try {
-    return JSON.stringify(v);
-  } catch (err) {
-    return '[UnexpectedJSONParseError]: ' + err.message;
-  }
-};
-
 
 /**
  * Colorize log arguments if enabled.
@@ -95529,52 +95571,49 @@ exports.formatters.j = function(v) {
  */
 
 function formatArgs(args) {
-  var useColors = this.useColors;
+	args[0] = (this.useColors ? '%c' : '') +
+		this.namespace +
+		(this.useColors ? ' %c' : ' ') +
+		args[0] +
+		(this.useColors ? '%c ' : ' ') +
+		'+' + module.exports.humanize(this.diff);
 
-  args[0] = (useColors ? '%c' : '')
-    + this.namespace
-    + (useColors ? ' %c' : ' ')
-    + args[0]
-    + (useColors ? '%c ' : ' ')
-    + '+' + exports.humanize(this.diff);
+	if (!this.useColors) {
+		return;
+	}
 
-  if (!useColors) return;
+	const c = 'color: ' + this.color;
+	args.splice(1, 0, c, 'color: inherit');
 
-  var c = 'color: ' + this.color;
-  args.splice(1, 0, c, 'color: inherit');
+	// The final "%c" is somewhat tricky, because there could be other
+	// arguments passed either before or after the %c, so we need to
+	// figure out the correct index to insert the CSS into
+	let index = 0;
+	let lastC = 0;
+	args[0].replace(/%[a-zA-Z%]/g, match => {
+		if (match === '%%') {
+			return;
+		}
+		index++;
+		if (match === '%c') {
+			// We only are interested in the *last* %c
+			// (the user may have provided their own)
+			lastC = index;
+		}
+	});
 
-  // the final "%c" is somewhat tricky, because there could be other
-  // arguments passed either before or after the %c, so we need to
-  // figure out the correct index to insert the CSS into
-  var index = 0;
-  var lastC = 0;
-  args[0].replace(/%[a-zA-Z%]/g, function(match) {
-    if ('%%' === match) return;
-    index++;
-    if ('%c' === match) {
-      // we only are interested in the *last* %c
-      // (the user may have provided their own)
-      lastC = index;
-    }
-  });
-
-  args.splice(lastC, 0, c);
+	args.splice(lastC, 0, c);
 }
 
 /**
- * Invokes `console.log()` when available.
- * No-op when `console.log` is not a "function".
+ * Invokes `console.debug()` when available.
+ * No-op when `console.debug` is not a "function".
+ * If `console.debug` is not available, falls back
+ * to `console.log`.
  *
  * @api public
  */
-
-function log() {
-  // this hackery is required for IE8/9, where
-  // the `console.log` function doesn't have 'apply'
-  return 'object' === typeof console
-    && console.log
-    && Function.prototype.apply.call(console.log, console, arguments);
-}
+exports.log = console.debug || console.log || (() => {});
 
 /**
  * Save `namespaces`.
@@ -95582,15 +95621,17 @@ function log() {
  * @param {String} namespaces
  * @api private
  */
-
 function save(namespaces) {
-  try {
-    if (null == namespaces) {
-      exports.storage.removeItem('debug');
-    } else {
-      exports.storage.debug = namespaces;
-    }
-  } catch(e) {}
+	try {
+		if (namespaces) {
+			exports.storage.setItem('debug', namespaces);
+		} else {
+			exports.storage.removeItem('debug');
+		}
+	} catch (error) {
+		// Swallow
+		// XXX (@Qix-) should we be logging these?
+	}
 }
 
 /**
@@ -95599,26 +95640,22 @@ function save(namespaces) {
  * @return {String} returns the previously persisted debug modes
  * @api private
  */
-
 function load() {
-  var r;
-  try {
-    r = exports.storage.debug;
-  } catch(e) {}
+	let r;
+	try {
+		r = exports.storage.getItem('debug');
+	} catch (error) {
+		// Swallow
+		// XXX (@Qix-) should we be logging these?
+	}
 
-  // If debug isn't set in LS, and we're in Electron, try to load $DEBUG
-  if (!r && typeof process !== 'undefined' && 'env' in process) {
-    r = process.env.DEBUG;
-  }
+	// If debug isn't set in LS, and we're in Electron, try to load $DEBUG
+	if (!r && typeof process !== 'undefined' && 'env' in process) {
+		r = process.env.DEBUG;
+	}
 
-  return r;
+	return r;
 }
-
-/**
- * Enable namespaces listed in `localStorage.debug` initially.
- */
-
-exports.enable(load());
 
 /**
  * Localstorage attempts to return the localstorage.
@@ -95632,11 +95669,177 @@ exports.enable(load());
  */
 
 function localstorage() {
-  try {
-    return window.localStorage;
-  } catch (e) {}
+	try {
+		// TVMLKit (Apple TV JS Runtime) does not have a window object, just localStorage in the global context
+		// The Browser also has localStorage in the global context.
+		return localStorage;
+	} catch (error) {
+		// Swallow
+		// XXX (@Qix-) should we be logging these?
+	}
 }
+
+module.exports = common$4(exports);
+
+const {formatters} = module.exports;
+
+/**
+ * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
+ */
+
+formatters.j = function (v) {
+	try {
+		return JSON.stringify(v);
+	} catch (error) {
+		return '[UnexpectedJSONParseError]: ' + error.message;
+	}
+};
 });
+
+'use strict';
+
+var hasFlag = (flag, argv = process.argv) => {
+	const prefix = flag.startsWith('-') ? '' : (flag.length === 1 ? '-' : '--');
+	const position = argv.indexOf(prefix + flag);
+	const terminatorPosition = argv.indexOf('--');
+	return position !== -1 && (terminatorPosition === -1 || position < terminatorPosition);
+};
+
+'use strict';
+
+
+
+
+const {env} = process;
+
+let forceColor;
+if (hasFlag('no-color') ||
+	hasFlag('no-colors') ||
+	hasFlag('color=false') ||
+	hasFlag('color=never')) {
+	forceColor = 0;
+} else if (hasFlag('color') ||
+	hasFlag('colors') ||
+	hasFlag('color=true') ||
+	hasFlag('color=always')) {
+	forceColor = 1;
+}
+
+if ('FORCE_COLOR' in env) {
+	if (env.FORCE_COLOR === 'true') {
+		forceColor = 1;
+	} else if (env.FORCE_COLOR === 'false') {
+		forceColor = 0;
+	} else {
+		forceColor = env.FORCE_COLOR.length === 0 ? 1 : Math.min(parseInt(env.FORCE_COLOR, 10), 3);
+	}
+}
+
+function translateLevel(level) {
+	if (level === 0) {
+		return false;
+	}
+
+	return {
+		level,
+		hasBasic: true,
+		has256: level >= 2,
+		has16m: level >= 3
+	};
+}
+
+function supportsColor(haveStream, streamIsTTY) {
+	if (forceColor === 0) {
+		return 0;
+	}
+
+	if (hasFlag('color=16m') ||
+		hasFlag('color=full') ||
+		hasFlag('color=truecolor')) {
+		return 3;
+	}
+
+	if (hasFlag('color=256')) {
+		return 2;
+	}
+
+	if (haveStream && !streamIsTTY && forceColor === undefined) {
+		return 0;
+	}
+
+	const min = forceColor || 0;
+
+	if (env.TERM === 'dumb') {
+		return min;
+	}
+
+	if (process.platform === 'win32') {
+		// Windows 10 build 10586 is the first Windows release that supports 256 colors.
+		// Windows 10 build 14931 is the first release that supports 16m/TrueColor.
+		const osRelease = os.release().split('.');
+		if (
+			Number(osRelease[0]) >= 10 &&
+			Number(osRelease[2]) >= 10586
+		) {
+			return Number(osRelease[2]) >= 14931 ? 3 : 2;
+		}
+
+		return 1;
+	}
+
+	if ('CI' in env) {
+		if (['TRAVIS', 'CIRCLECI', 'APPVEYOR', 'GITLAB_CI', 'GITHUB_ACTIONS', 'BUILDKITE'].some(sign => sign in env) || env.CI_NAME === 'codeship') {
+			return 1;
+		}
+
+		return min;
+	}
+
+	if ('TEAMCITY_VERSION' in env) {
+		return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(env.TEAMCITY_VERSION) ? 1 : 0;
+	}
+
+	if (env.COLORTERM === 'truecolor') {
+		return 3;
+	}
+
+	if ('TERM_PROGRAM' in env) {
+		const version = parseInt((env.TERM_PROGRAM_VERSION || '').split('.')[0], 10);
+
+		switch (env.TERM_PROGRAM) {
+			case 'iTerm.app':
+				return version >= 3 ? 3 : 2;
+			case 'Apple_Terminal':
+				return 2;
+			// No default
+		}
+	}
+
+	if (/-256(color)?$/i.test(env.TERM)) {
+		return 2;
+	}
+
+	if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env.TERM)) {
+		return 1;
+	}
+
+	if ('COLORTERM' in env) {
+		return 1;
+	}
+
+	return min;
+}
+
+function getSupportLevel(stream) {
+	const level = supportsColor(stream, stream && stream.isTTY);
+	return translateLevel(level);
+}
+
+var supportsColor_1 = {
+	supportsColor: getSupportLevel,
+	stdout: translateLevel(supportsColor(true, tty.isatty(1))),
+	stderr: translateLevel(supportsColor(true, tty.isatty(2)))
+};
 
 var node = createCommonjsModule(function (module, exports) {
 /**
@@ -95648,17 +95851,18 @@ var node = createCommonjsModule(function (module, exports) {
 
 /**
  * This is the Node.js implementation of `debug()`.
- *
- * Expose `debug()` as the module.
  */
 
-exports = module.exports = debug;
 exports.init = init;
 exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
 exports.load = load;
 exports.useColors = useColors;
+exports.destroy = util$2.deprecate(
+	() => {},
+	'Instance method `debug.destroy()` is deprecated and no longer does anything. It will be removed in the next major version of `debug`.'
+);
 
 /**
  * Colors.
@@ -95666,79 +95870,137 @@ exports.useColors = useColors;
 
 exports.colors = [6, 2, 3, 4, 5, 1];
 
+try {
+	// Optional dependency (as in, doesn't need to be installed, NOT like optionalDependencies in package.json)
+	// eslint-disable-next-line import/no-extraneous-dependencies
+	const supportsColor = supportsColor_1;
+
+	if (supportsColor && (supportsColor.stderr || supportsColor).level >= 2) {
+		exports.colors = [
+			20,
+			21,
+			26,
+			27,
+			32,
+			33,
+			38,
+			39,
+			40,
+			41,
+			42,
+			43,
+			44,
+			45,
+			56,
+			57,
+			62,
+			63,
+			68,
+			69,
+			74,
+			75,
+			76,
+			77,
+			78,
+			79,
+			80,
+			81,
+			92,
+			93,
+			98,
+			99,
+			112,
+			113,
+			128,
+			129,
+			134,
+			135,
+			148,
+			149,
+			160,
+			161,
+			162,
+			163,
+			164,
+			165,
+			166,
+			167,
+			168,
+			169,
+			170,
+			171,
+			172,
+			173,
+			178,
+			179,
+			184,
+			185,
+			196,
+			197,
+			198,
+			199,
+			200,
+			201,
+			202,
+			203,
+			204,
+			205,
+			206,
+			207,
+			208,
+			209,
+			214,
+			215,
+			220,
+			221
+		];
+	}
+} catch (error) {
+	// Swallow - we only care if `supports-color` is available; it doesn't have to be.
+}
+
 /**
  * Build up the default `inspectOpts` object from the environment variables.
  *
  *   $ DEBUG_COLORS=no DEBUG_DEPTH=10 DEBUG_SHOW_HIDDEN=enabled node script.js
  */
 
-exports.inspectOpts = Object.keys(process.env).filter(function (key) {
-  return /^debug_/i.test(key);
-}).reduce(function (obj, key) {
-  // camel-case
-  var prop = key
-    .substring(6)
-    .toLowerCase()
-    .replace(/_([a-z])/g, function (_, k) { return k.toUpperCase() });
+exports.inspectOpts = Object.keys(process.env).filter(key => {
+	return /^debug_/i.test(key);
+}).reduce((obj, key) => {
+	// Camel-case
+	const prop = key
+		.substring(6)
+		.toLowerCase()
+		.replace(/_([a-z])/g, (_, k) => {
+			return k.toUpperCase();
+		});
 
-  // coerce string value into JS value
-  var val = process.env[key];
-  if (/^(yes|on|true|enabled)$/i.test(val)) val = true;
-  else if (/^(no|off|false|disabled)$/i.test(val)) val = false;
-  else if (val === 'null') val = null;
-  else val = Number(val);
+	// Coerce string value into JS value
+	let val = process.env[key];
+	if (/^(yes|on|true|enabled)$/i.test(val)) {
+		val = true;
+	} else if (/^(no|off|false|disabled)$/i.test(val)) {
+		val = false;
+	} else if (val === 'null') {
+		val = null;
+	} else {
+		val = Number(val);
+	}
 
-  obj[prop] = val;
-  return obj;
+	obj[prop] = val;
+	return obj;
 }, {});
-
-/**
- * The file descriptor to write the `debug()` calls to.
- * Set the `DEBUG_FD` env variable to override with another value. i.e.:
- *
- *   $ DEBUG_FD=3 node script.js 3>debug.log
- */
-
-var fd = parseInt(process.env.DEBUG_FD, 10) || 2;
-
-if (1 !== fd && 2 !== fd) {
-  util$2.deprecate(function(){}, 'except for stderr(2) and stdout(1), any other usage of DEBUG_FD is deprecated. Override debug.log if you want to use a different log function (https://git.io/debug_fd)')();
-}
-
-var stream = 1 === fd ? process.stdout :
-             2 === fd ? process.stderr :
-             createWritableStdioStream(fd);
 
 /**
  * Is stdout a TTY? Colored output is enabled when `true`.
  */
 
 function useColors() {
-  return 'colors' in exports.inspectOpts
-    ? Boolean(exports.inspectOpts.colors)
-    : tty.isatty(fd);
+	return 'colors' in exports.inspectOpts ?
+		Boolean(exports.inspectOpts.colors) :
+		tty.isatty(process.stderr.fd);
 }
-
-/**
- * Map %o to `util.inspect()`, all on a single line.
- */
-
-exports.formatters.o = function(v) {
-  this.inspectOpts.colors = this.useColors;
-  return util$2.inspect(v, this.inspectOpts)
-    .split('\n').map(function(str) {
-      return str.trim()
-    }).join(' ');
-};
-
-/**
- * Map %o to `util.inspect()`, allowing multiple lines if needed.
- */
-
-exports.formatters.O = function(v) {
-  this.inspectOpts.colors = this.useColors;
-  return util$2.inspect(v, this.inspectOpts);
-};
 
 /**
  * Adds ANSI color escape codes if enabled.
@@ -95747,27 +96009,33 @@ exports.formatters.O = function(v) {
  */
 
 function formatArgs(args) {
-  var name = this.namespace;
-  var useColors = this.useColors;
+	const {namespace: name, useColors} = this;
 
-  if (useColors) {
-    var c = this.color;
-    var prefix = '  \u001b[3' + c + ';1m' + name + ' ' + '\u001b[0m';
+	if (useColors) {
+		const c = this.color;
+		const colorCode = '\u001B[3' + (c < 8 ? c : '8;5;' + c);
+		const prefix = `  ${colorCode};1m${name} \u001B[0m`;
 
-    args[0] = prefix + args[0].split('\n').join('\n' + prefix);
-    args.push('\u001b[3' + c + 'm+' + exports.humanize(this.diff) + '\u001b[0m');
-  } else {
-    args[0] = new Date().toUTCString()
-      + ' ' + name + ' ' + args[0];
-  }
+		args[0] = prefix + args[0].split('\n').join('\n' + prefix);
+		args.push(colorCode + 'm+' + module.exports.humanize(this.diff) + '\u001B[0m');
+	} else {
+		args[0] = getDate() + name + ' ' + args[0];
+	}
+}
+
+function getDate() {
+	if (exports.inspectOpts.hideDate) {
+		return '';
+	}
+	return new Date().toISOString() + ' ';
 }
 
 /**
- * Invokes `util.format()` with the specified arguments and writes to `stream`.
+ * Invokes `util.format()` with the specified arguments and writes to stderr.
  */
 
-function log() {
-  return stream.write(util$2.format.apply(util$2, arguments) + '\n');
+function log(...args) {
+	return process.stderr.write(util$2.format(...args) + '\n');
 }
 
 /**
@@ -95776,15 +96044,14 @@ function log() {
  * @param {String} namespaces
  * @api private
  */
-
 function save(namespaces) {
-  if (null == namespaces) {
-    // If you set a process.env field to null or undefined, it gets cast to the
-    // string 'null' or 'undefined'. Just delete instead.
-    delete process.env.DEBUG;
-  } else {
-    process.env.DEBUG = namespaces;
-  }
+	if (namespaces) {
+		process.env.DEBUG = namespaces;
+	} else {
+		// If you set a process.env field to null or undefined, it gets cast to the
+		// string 'null' or 'undefined'. Just delete instead.
+		delete process.env.DEBUG;
+	}
 }
 
 /**
@@ -95795,75 +96062,7 @@ function save(namespaces) {
  */
 
 function load() {
-  return process.env.DEBUG;
-}
-
-/**
- * Copied from `node/src/node.js`.
- *
- * XXX: It's lame that node doesn't expose this API out-of-the-box. It also
- * relies on the undocumented `tty_wrap.guessHandleType()` which is also lame.
- */
-
-function createWritableStdioStream (fd) {
-  var stream;
-  var tty_wrap = process.binding('tty_wrap');
-
-  // Note stream._type is used for test-module-load-list.js
-
-  switch (tty_wrap.guessHandleType(fd)) {
-    case 'TTY':
-      stream = new tty.WriteStream(fd);
-      stream._type = 'tty';
-
-      // Hack to have stream not keep the event loop alive.
-      // See https://github.com/joyent/node/issues/1726
-      if (stream._handle && stream._handle.unref) {
-        stream._handle.unref();
-      }
-      break;
-
-    case 'FILE':
-      var fs = fs$1;
-      stream = new fs.SyncWriteStream(fd, { autoClose: false });
-      stream._type = 'fs';
-      break;
-
-    case 'PIPE':
-    case 'TCP':
-      var net = net_1;
-      stream = new net.Socket({
-        fd: fd,
-        readable: false,
-        writable: true
-      });
-
-      // FIXME Should probably have an option in net.Socket to create a
-      // stream from an existing fd which is writable only. But for now
-      // we'll just add this hack and set the `readable` member to false.
-      // Test: ./node test/fixtures/echo.js < /etc/passwd
-      stream.readable = false;
-      stream.read = null;
-      stream._type = 'pipe';
-
-      // FIXME Hack to have stream not keep the event loop alive.
-      // See https://github.com/joyent/node/issues/1726
-      if (stream._handle && stream._handle.unref) {
-        stream._handle.unref();
-      }
-      break;
-
-    default:
-      // Probably an error on in uv_guess_handle()
-      throw new Error('Implement me. Unknown stream file type!');
-  }
-
-  // For supporting legacy API we put the FD here.
-  stream.fd = fd;
-
-  stream._isStdio = true;
-
-  return stream;
+	return process.env.DEBUG;
 }
 
 /**
@@ -95873,49 +96072,68 @@ function createWritableStdioStream (fd) {
  * differently for a particular `debug` instance.
  */
 
-function init (debug) {
-  debug.inspectOpts = {};
+function init(debug) {
+	debug.inspectOpts = {};
 
-  var keys = Object.keys(exports.inspectOpts);
-  for (var i = 0; i < keys.length; i++) {
-    debug.inspectOpts[keys[i]] = exports.inspectOpts[keys[i]];
-  }
+	const keys = Object.keys(exports.inspectOpts);
+	for (let i = 0; i < keys.length; i++) {
+		debug.inspectOpts[keys[i]] = exports.inspectOpts[keys[i]];
+	}
 }
 
+module.exports = common$4(exports);
+
+const {formatters} = module.exports;
+
 /**
- * Enable namespaces listed in `process.env.DEBUG` initially.
+ * Map %o to `util.inspect()`, all on a single line.
  */
 
-exports.enable(load());
+formatters.o = function (v) {
+	this.inspectOpts.colors = this.useColors;
+	return util$2.inspect(v, this.inspectOpts)
+		.split('\n')
+		.map(str => str.trim())
+		.join(' ');
+};
+
+/**
+ * Map %O to `util.inspect()`, allowing multiple lines if needed.
+ */
+
+formatters.O = function (v) {
+	this.inspectOpts.colors = this.useColors;
+	return util$2.inspect(v, this.inspectOpts);
+};
 });
 
 var src$3 = createCommonjsModule(function (module) {
 /**
- * Detect Electron renderer process, which is node, but we should
+ * Detect Electron renderer / nwjs process, which is node, but we should
  * treat as a browser.
  */
 
-if (typeof process !== 'undefined' && process.type === 'renderer') {
-  module.exports = browser;
+if (typeof process === 'undefined' || process.type === 'renderer' || process.browser === true || process.__nwjs) {
+	module.exports = browser;
 } else {
-  module.exports = node;
+	module.exports = node;
 }
 });
 
-var debug$1;
+var debug;
 
 var debug_1 = function () {
-  if (!debug$1) {
+  if (!debug) {
     try {
       /* eslint global-require: off */
-      debug$1 = src$3("follow-redirects");
+      debug = src$3("follow-redirects");
     }
     catch (error) { /* */ }
-    if (typeof debug$1 !== "function") {
-      debug$1 = function () { /* */ };
+    if (typeof debug !== "function") {
+      debug = function () { /* */ };
     }
   }
-  debug$1.apply(null, arguments);
+  debug.apply(null, arguments);
 };
 
 var URL = url.URL;
@@ -96255,97 +96473,101 @@ RedirectableRequest.prototype._processResponse = function (response) {
   // the user agent MAY automatically redirect its request to the URI
   // referenced by the Location field value,
   // even if the specific status code is not understood.
+
+  // If the response is not a redirect; return it as-is
   var location = response.headers.location;
-  if (location && this._options.followRedirects !== false &&
-      statusCode >= 300 && statusCode < 400) {
-    // Abort the current request
-    abortRequest(this._currentRequest);
-    // Discard the remainder of the response to avoid waiting for data
-    response.destroy();
-
-    // RFC7231§6.4: A client SHOULD detect and intervene
-    // in cyclical redirections (i.e., "infinite" redirection loops).
-    if (++this._redirectCount > this._options.maxRedirects) {
-      this.emit("error", new TooManyRedirectsError());
-      return;
-    }
-
-    // RFC7231§6.4: Automatic redirection needs to done with
-    // care for methods not known to be safe, […]
-    // RFC7231§6.4.2–3: For historical reasons, a user agent MAY change
-    // the request method from POST to GET for the subsequent request.
-    if ((statusCode === 301 || statusCode === 302) && this._options.method === "POST" ||
-        // RFC7231§6.4.4: The 303 (See Other) status code indicates that
-        // the server is redirecting the user agent to a different resource […]
-        // A user agent can perform a retrieval request targeting that URI
-        // (a GET or HEAD request if using HTTP) […]
-        (statusCode === 303) && !/^(?:GET|HEAD)$/.test(this._options.method)) {
-      this._options.method = "GET";
-      // Drop a possible entity and headers related to it
-      this._requestBodyBuffers = [];
-      removeMatchingHeaders(/^content-/i, this._options.headers);
-    }
-
-    // Drop the Host header, as the redirect might lead to a different host
-    var currentHostHeader = removeMatchingHeaders(/^host$/i, this._options.headers);
-
-    // If the redirect is relative, carry over the host of the last request
-    var currentUrlParts = url.parse(this._currentUrl);
-    var currentHost = currentHostHeader || currentUrlParts.host;
-    var currentUrl = /^\w+:/.test(location) ? this._currentUrl :
-      url.format(Object.assign(currentUrlParts, { host: currentHost }));
-
-    // Determine the URL of the redirection
-    var redirectUrl;
-    try {
-      redirectUrl = url.resolve(currentUrl, location);
-    }
-    catch (cause) {
-      this.emit("error", new RedirectionError(cause));
-      return;
-    }
-
-    // Create the redirected request
-    debug_1("redirecting to", redirectUrl);
-    this._isRedirect = true;
-    var redirectUrlParts = url.parse(redirectUrl);
-    Object.assign(this._options, redirectUrlParts);
-
-    // Drop confidential headers when redirecting to another scheme:domain
-    if (redirectUrlParts.protocol !== currentUrlParts.protocol ||
-       !isSameOrSubdomain(redirectUrlParts.host, currentHost)) {
-      removeMatchingHeaders(/^(?:authorization|cookie)$/i, this._options.headers);
-    }
-
-    // Evaluate the beforeRedirect callback
-    if (typeof this._options.beforeRedirect === "function") {
-      var responseDetails = { headers: response.headers };
-      try {
-        this._options.beforeRedirect.call(null, this._options, responseDetails);
-      }
-      catch (err) {
-        this.emit("error", err);
-        return;
-      }
-      this._sanitizeOptions(this._options);
-    }
-
-    // Perform the redirected request
-    try {
-      this._performRequest();
-    }
-    catch (cause) {
-      this.emit("error", new RedirectionError(cause));
-    }
-  }
-  else {
-    // The response is not a redirect; return it as-is
+  if (!location || this._options.followRedirects === false ||
+      statusCode < 300 || statusCode >= 400) {
     response.responseUrl = this._currentUrl;
     response.redirects = this._redirects;
     this.emit("response", response);
 
     // Clean up
     this._requestBodyBuffers = [];
+    return;
+  }
+
+  // The response is a redirect, so abort the current request
+  abortRequest(this._currentRequest);
+  // Discard the remainder of the response to avoid waiting for data
+  response.destroy();
+
+  // RFC7231§6.4: A client SHOULD detect and intervene
+  // in cyclical redirections (i.e., "infinite" redirection loops).
+  if (++this._redirectCount > this._options.maxRedirects) {
+    this.emit("error", new TooManyRedirectsError());
+    return;
+  }
+
+  // RFC7231§6.4: Automatic redirection needs to done with
+  // care for methods not known to be safe, […]
+  // RFC7231§6.4.2–3: For historical reasons, a user agent MAY change
+  // the request method from POST to GET for the subsequent request.
+  if ((statusCode === 301 || statusCode === 302) && this._options.method === "POST" ||
+      // RFC7231§6.4.4: The 303 (See Other) status code indicates that
+      // the server is redirecting the user agent to a different resource […]
+      // A user agent can perform a retrieval request targeting that URI
+      // (a GET or HEAD request if using HTTP) […]
+      (statusCode === 303) && !/^(?:GET|HEAD)$/.test(this._options.method)) {
+    this._options.method = "GET";
+    // Drop a possible entity and headers related to it
+    this._requestBodyBuffers = [];
+    removeMatchingHeaders(/^content-/i, this._options.headers);
+  }
+
+  // Drop the Host header, as the redirect might lead to a different host
+  var currentHostHeader = removeMatchingHeaders(/^host$/i, this._options.headers);
+
+  // If the redirect is relative, carry over the host of the last request
+  var currentUrlParts = url.parse(this._currentUrl);
+  var currentHost = currentHostHeader || currentUrlParts.host;
+  var currentUrl = /^\w+:/.test(location) ? this._currentUrl :
+    url.format(Object.assign(currentUrlParts, { host: currentHost }));
+
+  // Determine the URL of the redirection
+  var redirectUrl;
+  try {
+    redirectUrl = url.resolve(currentUrl, location);
+  }
+  catch (cause) {
+    this.emit("error", new RedirectionError(cause));
+    return;
+  }
+
+  // Create the redirected request
+  debug_1("redirecting to", redirectUrl);
+  this._isRedirect = true;
+  var redirectUrlParts = url.parse(redirectUrl);
+  Object.assign(this._options, redirectUrlParts);
+
+  // Drop confidential headers when redirecting to a less secure protocol
+  // or to a different domain that is not a superdomain
+  if (redirectUrlParts.protocol !== currentUrlParts.protocol &&
+     redirectUrlParts.protocol !== "https:" ||
+     redirectUrlParts.host !== currentHost &&
+     !isSubdomain(redirectUrlParts.host, currentHost)) {
+    removeMatchingHeaders(/^(?:authorization|cookie)$/i, this._options.headers);
+  }
+
+  // Evaluate the beforeRedirect callback
+  if (typeof this._options.beforeRedirect === "function") {
+    var responseDetails = { headers: response.headers };
+    try {
+      this._options.beforeRedirect.call(null, this._options, responseDetails);
+    }
+    catch (err) {
+      this.emit("error", err);
+      return;
+    }
+    this._sanitizeOptions(this._options);
+  }
+
+  // Perform the redirected request
+  try {
+    this._performRequest();
+  }
+  catch (cause) {
+    this.emit("error", new RedirectionError(cause));
   }
 };
 
@@ -96479,10 +96701,7 @@ function abortRequest(request) {
   request.abort();
 }
 
-function isSameOrSubdomain(subdomain, domain) {
-  if (subdomain === domain) {
-    return true;
-  }
+function isSubdomain(subdomain, domain) {
   const dot = subdomain.length - domain.length - 1;
   return dot > 0 && subdomain[dot] === "." && subdomain.endsWith(domain);
 }
@@ -98644,7 +98863,7 @@ function composeHederaTimestamp(timestamp) {
     }
 }
 
-var index$5 = /*#__PURE__*/Object.freeze({
+var index$6 = /*#__PURE__*/Object.freeze({
 	__proto__: null,
 	Provider: Provider,
 	BaseProvider: BaseProvider,
@@ -99596,7 +99815,7 @@ var utils$4 = /*#__PURE__*/Object.freeze({
 	FormatTypes: FormatTypes,
 	checkResultErrors: checkResultErrors,
 	Logger: Logger$1,
-	RLP: lib_esm$3,
+	RLP: index,
 	_fetchData: _fetchData,
 	fetchJson: fetchJson,
 	poll: poll,
@@ -99619,7 +99838,7 @@ var utils$4 = /*#__PURE__*/Object.freeze({
 	LogDescription: LogDescription,
 	TransactionDescription: TransactionDescription,
 	base58: Base58,
-	base64: lib_esm$a,
+	base64: lib_esm$9,
 	hexlify: hexlify,
 	isHexString: isHexString,
 	hexConcat: hexConcat,
@@ -99642,7 +99861,6 @@ var utils$4 = /*#__PURE__*/Object.freeze({
 	getAddress: getAddress$1,
 	getChecksumAddress: getChecksumAddress$1,
 	getIcapAddress: getIcapAddress$1,
-	getContractAddress: getContractAddress$1,
 	getCreate2Address: getCreate2Address$1,
 	isAddress: isAddress$1,
 	formatHbar: formatHbar,
@@ -99698,13 +99916,13 @@ var hethers = /*#__PURE__*/Object.freeze({
 	Wallet: Wallet,
 	VoidSigner: VoidSigner,
 	getDefaultProvider: getDefaultProvider,
-	providers: index$5,
+	providers: index$6,
 	BaseContract: BaseContract,
 	Contract: Contract,
 	ContractFactory: ContractFactory,
 	BigNumber: BigNumber,
 	FixedNumber: FixedNumber,
-	constants: index$3,
+	constants: index$4,
 	get errors () { return ErrorCode$1; },
 	logger: logger$x,
 	utils: utils$4,
@@ -99722,5 +99940,5 @@ try {
 }
 catch (error) { }
 
-export { BaseContract, BigNumber, Contract, ContractFactory, FixedNumber, Signer, VoidSigner, Wallet, Wordlist, index$3 as constants, ErrorCode$1 as errors, getDefaultProvider, hethers, logger$x as logger, index$5 as providers, utils$4 as utils, version$t as version, wordlists };
+export { BaseContract, BigNumber, Contract, ContractFactory, FixedNumber, Signer, VoidSigner, Wallet, Wordlist, index$4 as constants, ErrorCode$1 as errors, getDefaultProvider, hethers, logger$x as logger, index$6 as providers, utils$4 as utils, version$t as version, wordlists };
 //# sourceMappingURL=hethers.esm.js.map

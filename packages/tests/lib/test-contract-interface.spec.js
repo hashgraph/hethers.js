@@ -40,9 +40,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var assert_1 = __importDefault(require("assert"));
-var ethers_1 = require("ethers");
+var hethers_1 = require("hethers");
 var testcases_1 = require("@hethers/testcases");
-var bnify = ethers_1.ethers.BigNumber.from;
+var bnify = hethers_1.hethers.BigNumber.from;
 function equals(actual, expected) {
     // Array (treat recursively)
     if (Array.isArray(actual)) {
@@ -81,10 +81,10 @@ function equals(actual, expected) {
     }
     // Uint8Array
     if (expected.buffer) {
-        if (!ethers_1.ethers.utils.isHexString(actual)) {
+        if (!hethers_1.hethers.utils.isHexString(actual)) {
             return false;
         }
-        actual = ethers_1.ethers.utils.arrayify(actual);
+        actual = hethers_1.hethers.utils.arrayify(actual);
         if (!actual.buffer || actual.length !== expected.length) {
             return false;
         }
@@ -97,8 +97,8 @@ function equals(actual, expected) {
     }
     // Maybe address?
     try {
-        var actualAddress = ethers_1.ethers.utils.getAddress(actual);
-        var expectedAddress = ethers_1.ethers.utils.getAddress(expected);
+        var actualAddress = hethers_1.hethers.utils.getAddress(actual);
+        var expectedAddress = hethers_1.hethers.utils.getAddress(expected);
         return (actualAddress === expectedAddress);
     }
     catch (error) { }
@@ -120,7 +120,7 @@ function getValues(object, named) {
         case 'string':
             return object.value;
         case 'buffer':
-            return ethers_1.ethers.utils.arrayify(object.value);
+            return hethers_1.hethers.utils.arrayify(object.value);
         case 'tuple':
             var result = getValues(object.value, named);
             if (named) {
@@ -136,7 +136,7 @@ function getValues(object, named) {
     }
 }
 describe('ABI Coder Encoding', function () {
-    var coder = ethers_1.ethers.utils.defaultAbiCoder;
+    var coder = hethers_1.hethers.utils.defaultAbiCoder;
     var tests = (0, testcases_1.loadTests)('contract-interface');
     tests.forEach(function (test) {
         var values = getValues(JSON.parse(test.normalizedValues));
@@ -151,7 +151,7 @@ describe('ABI Coder Encoding', function () {
     });
 });
 describe('ABI Coder Decoding', function () {
-    var coder = ethers_1.ethers.utils.defaultAbiCoder;
+    var coder = hethers_1.hethers.utils.defaultAbiCoder;
     var tests = (0, testcases_1.loadTests)('contract-interface');
     tests.forEach(function (test) {
         var values = getValues(JSON.parse(test.normalizedValues));
@@ -166,7 +166,7 @@ describe('ABI Coder Decoding', function () {
     });
 });
 describe('ABI Coder ABIv2 Encoding', function () {
-    var coder = ethers_1.ethers.utils.defaultAbiCoder;
+    var coder = hethers_1.hethers.utils.defaultAbiCoder;
     var tests = (0, testcases_1.loadTests)('contract-interface-abi2');
     tests.forEach(function (test) {
         var values = getValues(JSON.parse(test.values));
@@ -184,7 +184,7 @@ describe('ABI Coder ABIv2 Encoding', function () {
     });
 });
 describe('ABI Coder ABIv2 Decoding', function () {
-    var coder = ethers_1.ethers.utils.defaultAbiCoder;
+    var coder = hethers_1.hethers.utils.defaultAbiCoder;
     var tests = (0, testcases_1.loadTests)('contract-interface-abi2');
     tests.forEach(function (test) {
         var values = getValues(JSON.parse(test.values));
@@ -203,7 +203,7 @@ describe('Test Contract Events', function () {
     tests.forEach(function (test, index) {
         it(('decodes event parameters - ' + test.name + ' - ' + test.types), function () {
             this.timeout(120000);
-            var iface = new ethers_1.ethers.utils.Interface(test.interface);
+            var iface = new hethers_1.hethers.utils.Interface(test.interface);
             var parsed = iface.decodeEventLog(iface.getEvent("testEvent"), test.data, test.topics);
             test.normalizedValues.forEach(function (expected, index) {
                 if (test.hashed[index]) {
@@ -218,11 +218,11 @@ describe('Test Contract Events', function () {
     tests.forEach(function (test, index) {
         it(('decodes event data - ' + test.name + ' - ' + test.types), function () {
             this.timeout(120000);
-            var iface = new ethers_1.ethers.utils.Interface(test.interface);
+            var iface = new hethers_1.hethers.utils.Interface(test.interface);
             var parsed = iface.decodeEventLog(iface.getEvent("testEvent"), test.data);
             test.normalizedValues.forEach(function (expected, index) {
                 if (test.indexed[index]) {
-                    assert_1.default.ok((ethers_1.ethers.Contract.isIndexed(parsed[index]) && parsed[index].hash == null), 'parsed event data has empty Indexed - ' + index);
+                    assert_1.default.ok((hethers_1.hethers.Contract.isIndexed(parsed[index]) && parsed[index].hash == null), 'parsed event data has empty Indexed - ' + index);
                 }
                 else {
                     assert_1.default.ok(equals(parsed[index], expected), 'parsed event data matches - ' + index);
@@ -235,14 +235,14 @@ describe('Test Interface Signatures', function () {
     var tests = (0, testcases_1.loadTests)('contract-signatures');
     tests.forEach(function (test) {
         it('derives the correct signature - ' + test.name, function () {
-            var iface = new ethers_1.ethers.utils.Interface(test.abi);
+            var iface = new hethers_1.hethers.utils.Interface(test.abi);
             this.timeout(120000);
             assert_1.default.equal(iface.getFunction("testSig").format(), test.signature, 'derived the correct signature');
             assert_1.default.equal(iface.getSighash(iface.getFunction("testSig")), test.sigHash, 'derived the correct signature hash');
         });
     });
     it('derives correct description for human-readable ABI', function () {
-        var iface = new ethers_1.ethers.utils.Interface(["function transfer(address from, uint amount)"]);
+        var iface = new hethers_1.hethers.utils.Interface(["function transfer(address from, uint amount)"]);
         [
             "transfer",
             "transfer(address,uint256)"
@@ -255,7 +255,7 @@ describe('Test Interface Signatures', function () {
     });
 });
 describe('Test Number Coder', function () {
-    var coder = ethers_1.ethers.utils.defaultAbiCoder;
+    var coder = hethers_1.hethers.utils.defaultAbiCoder;
     it('null input failed', function () {
         this.timeout(120000);
         assert_1.default.throws(function () {
@@ -284,7 +284,7 @@ describe('Test Number Coder', function () {
             { n: 'hex zero', v: '0x0' },
             { n: 'hex leading even length', v: '0x0000' },
             { n: 'hex leading odd length', v: '0x00000' },
-            { n: 'BigNumber', v: ethers_1.ethers.constants.Zero }
+            { n: 'BigNumber', v: hethers_1.hethers.constants.Zero }
         ];
         var expected = zeroHex;
         ['uint8', 'uint256', 'int8', 'int256'].forEach(function (type) {
@@ -300,7 +300,7 @@ describe('Test Number Coder', function () {
             { n: 'hex', v: '0x1' },
             { n: 'hex leading even length', v: '0x0001' },
             { n: 'hex leading odd length', v: '0x00001' },
-            { n: 'BigNumber', v: ethers_1.ethers.constants.One }
+            { n: 'BigNumber', v: hethers_1.hethers.constants.One }
         ];
         var expected = oneHex;
         ['uint8', 'uint256', 'int8', 'int256'].forEach(function (type) {
@@ -316,7 +316,7 @@ describe('Test Number Coder', function () {
             { n: 'hex', v: '-0x1' },
             { n: 'hex leading even length', v: '-0x0001' },
             { n: 'hex leading odd length', v: '-0x00001' },
-            { n: 'BigNumber', v: ethers_1.ethers.constants.NegativeOne }
+            { n: 'BigNumber', v: hethers_1.hethers.constants.NegativeOne }
         ];
         var expected = maxHex;
         ['int8', 'int256'].forEach(function (type) {
@@ -329,7 +329,7 @@ describe('Test Number Coder', function () {
     it('encodes full uint8 range', function () {
         for (var i = 0; i < 256; i++) {
             var expected = '0x00000000000000000000000000000000000000000000000000000000000000';
-            expected += ethers_1.ethers.utils.hexlify(i).substring(2);
+            expected += hethers_1.hethers.utils.hexlify(i).substring(2);
             var result = coder.encode(['uint8'], [i]);
             assert_1.default.equal(result, expected, 'int8 ' + i);
         }
@@ -342,11 +342,11 @@ describe('Test Number Coder', function () {
             }
             else if (i < 0) {
                 expected = '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
-                expected += ethers_1.ethers.utils.hexlify(256 + i).substring(2);
+                expected += hethers_1.hethers.utils.hexlify(256 + i).substring(2);
             }
             else {
                 expected = '0x00000000000000000000000000000000000000000000000000000000000000';
-                expected += ethers_1.ethers.utils.hexlify(i).substring(2);
+                expected += hethers_1.hethers.utils.hexlify(i).substring(2);
             }
             var result = coder.encode(['int8'], [i]);
             assert_1.default.equal(result, expected, 'int8 ' + i);
@@ -408,7 +408,7 @@ describe('Test Number Coder', function () {
     });
 });
 describe('Test Fixed Bytes Coder', function () {
-    var coder = ethers_1.ethers.utils.defaultAbiCoder;
+    var coder = hethers_1.hethers.utils.defaultAbiCoder;
     var zeroHex = '0x0000000000000000000000000000000000000000000000000000000000000000';
     it('fails to encode out-of-range bytes4', function () {
         ['0x', '0x00000', '0x000', zeroHex, '0x12345', '0x123456', '0x123', '0x12'].forEach(function (value, index) {
@@ -447,7 +447,7 @@ describe('Test Filters', function () {
     // @TODO: Add a LOT more tests here
     function doTest(test) {
         it(test.name, function () {
-            var iface = new ethers_1.ethers.utils.Interface([test.signature]);
+            var iface = new hethers_1.hethers.utils.Interface([test.signature]);
             var eventDescription = iface.getEvent(test.event);
             var filter = iface.encodeFilterTopics(eventDescription, test.args);
             assert_1.default.equal(filter.length, test.expected.length, 'filter length matches - ' + test.name);
@@ -458,7 +458,7 @@ describe('Test Filters', function () {
     }
     var Tests = [
         // Skips null in non-indexed fields
-        // See: https://github.com/ethers-io/ethers.js/issues/305
+        // See: https://github.com/hethers-io/hethers.js/issues/305
         {
             name: "creates correct filters for null non-indexed fields",
             args: [null, 2, null, null],
@@ -526,7 +526,7 @@ describe("Test ParamType Parser", function () {
     ];
     Tests.forEach(function (test) {
         it("allows correct modifiers " + JSON.stringify(test.type), function () {
-            var paramType = ethers_1.ethers.utils.ParamType.from(test.type);
+            var paramType = hethers_1.hethers.utils.ParamType.from(test.type);
             //console.log(test, paramType.format("full"));
             assert_1.default.equal(paramType.format("full"), test.format);
         });
@@ -540,8 +540,8 @@ describe('Test EIP-838 Error Codes', function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        provider = ethers_1.ethers.providers.getDefaultProvider();
-                        contract = new ethers_1.ethers.Contract(addr, [
+                        provider = hethers_1.hethers.providers.getDefaultProvider();
+                        contract = new hethers_1.hethers.Contract(addr, [
                             "function testError1(bool pass, address addr, uint256 value) pure returns (bool)",
                             "function testError2(bool pass, bytes data) pure returns (bool)",
                             "error TestError1(address addr, uint256 value)",
@@ -558,7 +558,7 @@ describe('Test EIP-838 Error Codes', function () {
                         return [3 /*break*/, 4];
                     case 3:
                         error_1 = _a.sent();
-                        assert_1.default.equal(error_1.code, ethers_1.ethers.utils.Logger.errors.CALL_EXCEPTION, "error.code");
+                        assert_1.default.equal(error_1.code, hethers_1.hethers.utils.Logger.errors.CALL_EXCEPTION, "error.code");
                         assert_1.default.equal(error_1.errorSignature, "TestError1(address,uint256)", "error.errorSignature");
                         assert_1.default.equal(error_1.errorName, "TestError1", "error.errorName");
                         assert_1.default.equal(error_1.errorArgs[0], addr, "error.errorArgs[0]");
@@ -575,7 +575,7 @@ describe('Test EIP-838 Error Codes', function () {
 describe("Additional test cases", function () {
     // See: #1906
     it("allows addresses without the 0x", function () {
-        var iface = new ethers_1.ethers.utils.Interface([
+        var iface = new hethers_1.hethers.utils.Interface([
             "function test(address foo) view returns (bool)"
         ]);
         var tx = iface.encodeFunctionData("test", ["c1912fee45d61c87cc5ea59dae31190fffff232d"]);
