@@ -1,7 +1,7 @@
 "use strict";
 
 import { AbiCoder, checkResultErrors, ConstructorFragment, defaultAbiCoder, ErrorFragment, EventFragment, FormatTypes, Fragment, FunctionFragment, Indexed, Interface, LogDescription, ParamType, Result, TransactionDescription }from "@ethersproject/abi";
-import { getAddress, getChecksumAddress, getCreate2Address, getContractAddress, getIcapAddress, isAddress, getAccountFromAddress, getAddressFromAccount, parseAccount, Account, AccountLike } from "@hethers/address";
+import { getAddress, getChecksumAddress, getCreate2Address, getIcapAddress, isAddress, getAccountFromAddress, getAddressFromAccount, parseAccount, Account, AccountLike } from "@hethers/address";
 import * as base64 from "@ethersproject/base64";
 import { Base58 as base58 } from "@ethersproject/basex";
 import { arrayify, concat, hexConcat, hexDataSlice, hexDataLength, hexlify, hexStripZeros, hexValue, hexZeroPad, isBytes, isBytesLike, isHexString, joinSignature, zeroPad, splitSignature, stripZeros } from "@ethersproject/bytes";
@@ -14,7 +14,6 @@ import { computeHmac, ripemd160, sha256, sha512 } from "@ethersproject/sha2";
 import { keccak256 as solidityKeccak256, pack as solidityPack, sha256 as soliditySha256 } from "@ethersproject/solidity";
 import { randomBytes, shuffled } from "@ethersproject/random";
 import { checkProperties, deepCopy, defineReadOnly, getStatic, resolveProperties, shallowCopy } from "@ethersproject/properties";
-import * as RLP from "@ethersproject/rlp";
 import { computePublicKey, recoverPublicKey, SigningKey } from "@ethersproject/signing-key";
 import { formatBytes32String, nameprep, parseBytes32String, _toEscapedUtf8String, toUtf8Bytes, toUtf8CodePoints, toUtf8String, Utf8ErrorFuncs } from "@ethersproject/strings";
 import { accessListify, computeAddress, computeAlias, parse as parseTransaction, recoverAddress, TransactionTypes } from "@hethers/transactions";
@@ -59,8 +58,6 @@ export {
     Result,
 
     Logger,
-
-    RLP,
 
     _fetchData,
     fetchJson,
@@ -121,7 +118,6 @@ export {
     getAddress,
     getChecksumAddress,
     getIcapAddress,
-    getContractAddress,
     getCreate2Address,
     isAddress,
 

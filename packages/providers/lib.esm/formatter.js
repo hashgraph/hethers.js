@@ -1,5 +1,5 @@
 "use strict";
-import { getAddress, getAddressFromAccount, getContractAddress } from "@hethers/address";
+import { getAddress, getAddressFromAccount } from "@hethers/address";
 import { BigNumber } from "@ethersproject/bignumber";
 import { hexDataLength, hexDataSlice, hexZeroPad, isHexString } from "@ethersproject/bytes";
 import { AddressZero } from "@hethers/constants";
@@ -182,7 +182,7 @@ export class Formatter {
         return (address === AddressZero) ? null : address;
     }
     contractAddress(value) {
-        return getContractAddress(value);
+        return value;
     }
     // Requires a hash, optionally requires 0x prefix; returns prefixed lowercase hash.
     hash48(value, strict) {

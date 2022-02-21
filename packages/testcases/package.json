@@ -1,6 +1,5 @@
 {
   "_devDependencies": {
-    "@ethersproject/cli": "^5.0.0",
     "@types/bip39": "2.4.1",
     "@types/bitcoinjs-lib": "3.3.2",
     "bip39": "2.5.0",

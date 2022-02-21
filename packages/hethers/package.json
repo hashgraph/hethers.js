@@ -1,5 +1,5 @@
 {
-  "browser-old": "./dist/ethers.umd.js",
+  "browser-old": "./dist/hethers.umd.js",
   "dependencies": {
     "@hethers/abstract-provider": "1.0.0",
     "@hethers/abstract-signer": "1.0.0",
@@ -14,7 +14,6 @@
     "@hethers/logger": "1.0.0",
     "@hethers/networks": "1.0.0",
     "@hethers/providers": "1.0.0",
-    "@ethersproject/rlp": "5.5.0",
     "@ethersproject/signing-key": "5.5.0",
     "@ethersproject/strings": "5.5.0",
     "@hethers/transactions": "1.0.0",
@@ -45,7 +44,7 @@
   "module": "./lib.esm/index.js",
   "name": "hethers",
   "repository": {
-    "directory": "packages/ethers",
+    "directory": "packages/hethers",
     "type": "git",
     "url": "git://github.com/hashgraph/hethers.js.git"
   },

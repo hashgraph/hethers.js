@@ -186,7 +186,7 @@ var Formatter = /** @class */ (function () {
         return (address === constants_1.AddressZero) ? null : address;
     };
     Formatter.prototype.contractAddress = function (value) {
-        return (0, address_1.getContractAddress)(value);
+        return value;
     };
     // Requires a hash, optionally requires 0x prefix; returns prefixed lowercase hash.
     Formatter.prototype.hash48 = function (value, strict) {
