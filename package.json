@@ -6,6 +6,7 @@
     "type": "git",
     "url": "git@github.com:hashgraph/hethers.js.git"
   },
+  "common": {},
   "scripts": {
     "preinstall": "npm run bootstrap-hoist",
     "postinstall": "node ./misc/admin/lib/cmds/update-depgraph && npm run bootstrap-link",
@@ -34,11 +35,11 @@
     "_esm-alias-nodesafe": "node ./misc/admin/lib/cmds/echo 'Bundling ESM elliptic (lib._esm/browser-elliptic.js)...' && node misc/admin/lib/cmds/esm-alias",
     "_esm-alias": "node ./misc/admin/lib/cmds/npm-skip-node8.js || npm run _esm-alias-nodesafe",
     "build-libs": "node ./misc/admin/lib/cmds/update-exports.js && node ./misc/admin/lib/cmds/bundle-testcases && npm run _build-cjs && npm run _build-esm && npm run _reset-build && npm run _esm-alias",
-    "build-dist-libs": "rollup -c rollup-dist.config.js && terser packages/hethers/dist/ethers.umd.js --output packages/hethers/dist/ethers.umd.min.js --source-map content='packages/hethers/dist/ethers.umd.js.map' && terser packages/hethers/dist/ethers.esm.js --output packages/hethers/dist/ethers.esm.min.js --source-map content='packages/hethers/dist/ethers.esm.js.map'",
+    "build-dist-libs": "rollup -c rollup-dist.config.js && terser packages/hethers/dist/hethers.umd.js --output packages/hethers/dist/hethers.umd.min.js --source-map content='packages/hethers/dist/hethers.umd.js.map' && terser packages/hethers/dist/hethers.esm.js --output packages/hethers/dist/hethers.esm.min.js --source-map content='packages/hethers/dist/hethers.esm.js.map'",
     "_build-dist-nodesafe": "node ./misc/admin/lib/cmds/echo 'Building dist files...' && npm run build-dist-libs",
     "build-dist": "node ./misc/admin/lib/cmds/npm-skip-node8.js || npm run _build-dist-nodesafe",
     "build-all": "npm run build-libs && npm run build-dist",
-    "update-versions": "npm run clean && npm install && npm run spell-check && npm run build-all && node ./misc/admin/lib/cmds/bump-versions && npm run build-all && node ./misc/admin/lib/cmds/update-hashes && node ./misc/admin/lib/cmds/update-changelog",
+    "update-versions": "npm install && npm run spell-check && npm run build-all && node ./misc/admin/lib/cmds/bump-versions && npm run build-all && node ./misc/admin/lib/cmds/update-hashes && node ./misc/admin/lib/cmds/update-changelog",
     "publish-all": "node ./misc/admin/lib/cmds/publish",
     "TODO-sync-github": "node ./admin/cmds/cache-github",
     "local-ci": "npm run build-all && npm run test-node"
