@@ -60,13 +60,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var assert_1 = __importDefault(require("assert"));
 // @ts-ignore
-var ethers_1 = require("ethers");
-var testcases_1 = require("@ethersproject/testcases");
+var hethers_1 = require("hethers");
+var testcases_1 = require("@hethers/testcases");
 var utils = __importStar(require("./utils"));
 var sdk_1 = require("@hashgraph/sdk");
-var utils_1 = require("ethers/lib/utils");
-var address_1 = require("@ethersproject/address");
-var logger_1 = require("@ethersproject/logger");
+var utils_1 = require("hethers/lib/utils");
+var address_1 = require("@hethers/address");
+var logger_1 = require("@hethers/logger");
 // @ts-ignore
 function equals(a, b) {
     if (Array.isArray(a)) {
@@ -83,41 +83,7 @@ function equals(a, b) {
     return a === b;
 }
 describe('Test Unit Conversion', function () {
-    var tests = (0, testcases_1.loadTests)('units');
-    tests.forEach(function (test) {
-        var wei = ethers_1.ethers.BigNumber.from(test.wei);
-        it(('parses ' + test.ether + ' ether'), function () {
-            assert_1.default.ok(ethers_1.ethers.utils.parseEther(test.ether.replace(/,/g, '')).eq(wei), 'parsing ether failed - ' + test.name);
-        });
-        it(('formats ' + wei.toString() + ' wei to ether'), function () {
-            var actual = ethers_1.ethers.utils.formatEther(wei);
-            assert_1.default.equal(actual, test.ether_format, 'formatting wei failed - ' + test.name);
-        });
-    });
-    tests.forEach(function (test) {
-        var wei = ethers_1.ethers.BigNumber.from(test.wei);
-        ['kwei', 'mwei', 'gwei', 'szabo', 'finney', 'satoshi'].forEach(function (name) {
-            var unitName = name;
-            if (name === 'satoshi') {
-                unitName = 8;
-            }
-            if (test[name]) {
-                it(('parses ' + test[name] + ' ' + name), function () {
-                    this.timeout(120000);
-                    assert_1.default.ok(ethers_1.ethers.utils.parseUnits(test[name].replace(/,/g, ''), unitName).eq(wei), ('parsing ' + name + ' failed - ' + test.name));
-                });
-            }
-            var expectedKey = (name + '_format');
-            if (test[expectedKey]) {
-                it(('formats ' + wei.toString() + ' wei to ' + name + ')'), function () {
-                    var actual = ethers_1.ethers.utils.formatUnits(wei, unitName);
-                    var expected = test[expectedKey];
-                    assert_1.default.equal(actual, expected, ('formats ' + name + ' - ' + test.name));
-                });
-            }
-        });
-    });
-    it("formats with commify", function () {
+    it("should be able to execute formats with commify", function () {
         var tests = {
             "0.0": "0.0",
             ".0": "0.0",
@@ -133,23 +99,65 @@ describe('Test Unit Conversion', function () {
             "1000.12345": "1,000.12345",
             "998998998998.123456789": "998,998,998,998.123456789",
         };
-        Object.keys(tests).forEach(function (test) {
-            assert_1.default.equal(ethers_1.ethers.utils.commify(test), tests[test]);
-        });
+        for (var i in tests) {
+            assert_1.default.strictEqual(hethers_1.hethers.utils.commify(i), tests[i]);
+        }
     });
-    // See #2016; @TODO: Add more tests along these lines
-    it("checks extra tests", function () {
-        assert_1.default.ok(ethers_1.ethers.utils.parseUnits("2", 0).eq(2), "folds trailing zeros without decimal: 2");
-        assert_1.default.ok(ethers_1.ethers.utils.parseUnits("2.", 0).eq(2), "folds trailing zeros without decimal: 2.");
-        assert_1.default.ok(ethers_1.ethers.utils.parseUnits("2.0", 0).eq(2), "folds trailing zeros without decimal: 2.0");
-        assert_1.default.ok(ethers_1.ethers.utils.parseUnits("2.00", 0).eq(2), "folds trailing zeros without decimal: 2.00");
-        assert_1.default.ok(ethers_1.ethers.utils.parseUnits("2", 1).eq(20), "folds trailing zeros: 2");
-        assert_1.default.ok(ethers_1.ethers.utils.parseUnits("2.", 1).eq(20), "folds trailing zeros: 2.");
-        assert_1.default.ok(ethers_1.ethers.utils.parseUnits("2.0", 1).eq(20), "folds trailing zeros: 2.0");
-        assert_1.default.ok(ethers_1.ethers.utils.parseUnits("2.00", 1).eq(20), "folds trailing zeros: 2.00");
-        assert_1.default.ok(ethers_1.ethers.utils.parseUnits("2.5", 1).eq(25), "folds trailing zeros: 2.5");
-        assert_1.default.ok(ethers_1.ethers.utils.parseUnits("2.50", 1).eq(25), "folds trailing zeros: 2.50");
-        assert_1.default.ok(ethers_1.ethers.utils.parseUnits("2.500", 1).eq(25), "folds trailing zeros: 2.500");
+    it("should be able to execute formatUnits()", function () {
+        var tinyBars = '100000000000';
+        var resultTinybar = hethers_1.hethers.utils.formatUnits(tinyBars, 'tinybar');
+        var expectedTinybar = ((new sdk_1.Hbar(tinyBars, sdk_1.HbarUnit.Tinybar)).to(sdk_1.HbarUnit.Tinybar)).toString();
+        assert_1.default.strictEqual(resultTinybar, expectedTinybar);
+        var resultMicrobar = hethers_1.hethers.utils.formatUnits(tinyBars, 'microbar');
+        var expectedMicrobar = ((new sdk_1.Hbar(tinyBars, sdk_1.HbarUnit.Tinybar)).to(sdk_1.HbarUnit.Microbar)).toNumber().toFixed(1);
+        assert_1.default.strictEqual(resultMicrobar, expectedMicrobar);
+        var resultMillibar = hethers_1.hethers.utils.formatUnits(tinyBars, 'millibar');
+        var expectedMillibar = ((new sdk_1.Hbar(tinyBars, sdk_1.HbarUnit.Tinybar)).to(sdk_1.HbarUnit.Millibar)).toNumber().toFixed(1);
+        assert_1.default.strictEqual(resultMillibar, expectedMillibar);
+        var resultHbar = hethers_1.hethers.utils.formatUnits(tinyBars, 'hbar');
+        var expectedHbar = ((new sdk_1.Hbar(tinyBars, sdk_1.HbarUnit.Tinybar)).to(sdk_1.HbarUnit.Hbar)).toNumber().toFixed(1);
+        assert_1.default.strictEqual(resultHbar, expectedHbar);
+        var resultKilobar = hethers_1.hethers.utils.formatUnits(tinyBars, 'kilobar');
+        var expectedKilobar = ((new sdk_1.Hbar(tinyBars, sdk_1.HbarUnit.Tinybar)).to(sdk_1.HbarUnit.Kilobar)).toNumber().toFixed(1);
+        assert_1.default.strictEqual(resultKilobar, expectedKilobar);
+        var resultMegabar = hethers_1.hethers.utils.formatUnits(tinyBars, 'megabar');
+        var expectedMegabar = ((new sdk_1.Hbar(tinyBars, sdk_1.HbarUnit.Tinybar)).to(sdk_1.HbarUnit.Megabar)).toString();
+        assert_1.default.strictEqual(resultMegabar, expectedMegabar);
+        var resultGigabar = hethers_1.hethers.utils.formatUnits(tinyBars, 'gigabar');
+        var expectedGigabar = ((new sdk_1.Hbar(tinyBars, sdk_1.HbarUnit.Tinybar)).to(sdk_1.HbarUnit.Gigabar)).toString();
+        assert_1.default.strictEqual(resultGigabar, expectedGigabar);
+    });
+    it("should be able to execute parseUnits()", function () {
+        var tinyBars = '1';
+        var resultTinybar = hethers_1.hethers.utils.parseUnits(tinyBars, 'tinybar');
+        var expectedTinybar = ((new sdk_1.Hbar(tinyBars, sdk_1.HbarUnit.Tinybar)).to(sdk_1.HbarUnit.Tinybar)).toString();
+        assert_1.default.strictEqual(resultTinybar.toString(), expectedTinybar);
+        var resultMicrobar = hethers_1.hethers.utils.parseUnits(tinyBars, 'microbar');
+        var expectedMicrobar = ((new sdk_1.Hbar(tinyBars, sdk_1.HbarUnit.Microbar)).to(sdk_1.HbarUnit.Tinybar)).toString();
+        assert_1.default.strictEqual(resultMicrobar.toString(), expectedMicrobar);
+        var resultMillibar = hethers_1.hethers.utils.parseUnits(tinyBars, 'millibar');
+        var expectedMillibar = ((new sdk_1.Hbar(tinyBars, sdk_1.HbarUnit.Millibar)).to(sdk_1.HbarUnit.Tinybar)).toString();
+        assert_1.default.strictEqual(resultMillibar.toString(), expectedMillibar);
+        var resultHbar = hethers_1.hethers.utils.parseUnits(tinyBars, 'hbar');
+        var expectedHbar = ((new sdk_1.Hbar(tinyBars, sdk_1.HbarUnit.Hbar)).to(sdk_1.HbarUnit.Tinybar)).toString();
+        assert_1.default.strictEqual(resultHbar.toString(), expectedHbar);
+        var resultKilobar = hethers_1.hethers.utils.parseUnits(tinyBars, 'kilobar');
+        var expectedKilobar = ((new sdk_1.Hbar(tinyBars, sdk_1.HbarUnit.Kilobar)).to(sdk_1.HbarUnit.Tinybar)).toString();
+        assert_1.default.strictEqual(resultKilobar.toString(), expectedKilobar);
+        var resultMegabar = hethers_1.hethers.utils.parseUnits(tinyBars, 'megabar');
+        var expectedMegabar = ((new sdk_1.Hbar(tinyBars, sdk_1.HbarUnit.Megabar)).to(sdk_1.HbarUnit.Tinybar)).toString();
+        assert_1.default.strictEqual(resultMegabar.toString(), expectedMegabar);
+        var resultGigabar = hethers_1.hethers.utils.parseUnits(tinyBars, 'gigabar');
+        var expectedGigabar = ((new sdk_1.Hbar(tinyBars, sdk_1.HbarUnit.Gigabar)).to(sdk_1.HbarUnit.Tinybar)).toString();
+        assert_1.default.strictEqual(resultGigabar.toString(), expectedGigabar);
+    });
+    it("should be able to execute formatHbar()", function () {
+        var result = hethers_1.hethers.utils.formatHbar('100000000');
+        assert_1.default.strictEqual(result, '1.0');
+    });
+    it("should be able to execute parseHbar()", function () {
+        var result = hethers_1.hethers.utils.parseHbar('1');
+        assert_1.default.strictEqual(result.toString(), '100000000');
     });
 });
 describe('Test ID Hash Functions', function () {
@@ -163,7 +171,7 @@ describe('Test ID Hash Functions', function () {
     tests.forEach(function (test) {
         it(('computes id - ' + test.name), function () {
             this.timeout(120000);
-            var actual = ethers_1.ethers.utils.id(test.text);
+            var actual = hethers_1.hethers.utils.id(test.text);
             assert_1.default.equal(actual, test.expected, 'computes id(' + test.text + ')');
         });
     });
@@ -174,7 +182,7 @@ describe('Test Solidity Hash Functions', function () {
         it("computes " + funcName + " correctly", function () {
             this.timeout(120000);
             tests.forEach(function (test, index) {
-                var actual = (ethers_1.ethers.utils)['solidity' + funcName](test.types, test.values);
+                var actual = (hethers_1.hethers.utils)['solidity' + funcName](test.types, test.values);
                 var expected = test[testKey];
                 assert_1.default.equal(actual, expected, ('computes solidity-' + funcName + '(' + JSON.stringify(test.values) + ') - ' + test.types));
             });
@@ -195,7 +203,7 @@ describe('Test Solidity Hash Functions', function () {
     testsInvalid.forEach(function (type) {
         it("disallows invalid type \"" + type + "\"", function () {
             assert_1.default.throws(function () {
-                ethers_1.ethers.utils.solidityPack([type], ["0x12"]);
+                hethers_1.hethers.utils.solidityPack([type], ["0x12"]);
             }, function (error) {
                 var message = error.message;
                 return (message.match(/invalid([a-z ]*) type/) && message.indexOf(type) >= 0);
@@ -208,19 +216,19 @@ describe('Test Hash Functions', function () {
     it('computes keccak256 correctly', function () {
         this.timeout(120000);
         tests.forEach(function (test) {
-            assert_1.default.equal(ethers_1.ethers.utils.keccak256(test.data), test.keccak256, ('Keccak256 - ' + test.data));
+            assert_1.default.equal(hethers_1.hethers.utils.keccak256(test.data), test.keccak256, ('Keccak256 - ' + test.data));
         });
     });
     it('computes sha2-256 correctly', function () {
         this.timeout(120000);
         tests.forEach(function (test) {
-            assert_1.default.equal(ethers_1.ethers.utils.sha256(test.data), test.sha256, ('SHA256 - ' + test.data));
+            assert_1.default.equal(hethers_1.hethers.utils.sha256(test.data), test.sha256, ('SHA256 - ' + test.data));
         });
     });
     it('computes sha2-512 correctly', function () {
         this.timeout(120000);
         tests.forEach(function (test) {
-            assert_1.default.equal(ethers_1.ethers.utils.sha512(test.data), test.sha512, ('SHA512 - ' + test.data));
+            assert_1.default.equal(hethers_1.hethers.utils.sha512(test.data), test.sha512, ('SHA512 - ' + test.data));
         });
     });
 });
@@ -230,8 +238,8 @@ describe('Test Solidity splitSignature', function () {
         var r = '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
         var s = '0xcafe1a7ecafe1a7ecafe1a7ecafe1a7ecafe1a7ecafe1a7ecafe1a7ecafe1a7e';
         for (var v = 27; v <= 28; v++) {
-            var signature = ethers_1.ethers.utils.concat([r, s, [v]]);
-            var sig = ethers_1.ethers.utils.splitSignature(signature);
+            var signature = hethers_1.hethers.utils.concat([r, s, [v]]);
+            var sig = hethers_1.hethers.utils.splitSignature(signature);
             assert_1.default.equal(sig.r, r, 'split r correctly');
             assert_1.default.equal(sig.s, s, 'split s correctly');
             assert_1.default.equal(sig.v, v, 'split v correctly');
@@ -242,8 +250,8 @@ describe('Test Solidity splitSignature', function () {
         var r = '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
         var s = '0xcafe1a7ecafe1a7ecafe1a7ecafe1a7ecafe1a7ecafe1a7ecafe1a7ecafe1a7e';
         for (var v = 27; v <= 28; v++) {
-            var signature = ethers_1.ethers.utils.concat([r, s, [v - 27]]);
-            var sig = ethers_1.ethers.utils.splitSignature(signature);
+            var signature = hethers_1.hethers.utils.concat([r, s, [v - 27]]);
+            var sig = hethers_1.hethers.utils.splitSignature(signature);
             assert_1.default.equal(sig.r, r, 'split r correctly');
             assert_1.default.equal(sig.s, s, 'split s correctly');
             assert_1.default.equal(sig.v, v, 'split v correctly');
@@ -255,19 +263,19 @@ describe('Test Base64 coder', function () {
     it('encodes and decodes the example from wikipedia', function () {
         this.timeout(120000);
         var decodedText = 'Man is distinguished, not only by his reason, but by this singular passion from other animals, which is a lust of the mind, that by a perseverance of delight in the continued and indefatigable generation of knowledge, exceeds the short vehemence of any carnal pleasure.';
-        var decoded = ethers_1.ethers.utils.toUtf8Bytes(decodedText);
+        var decoded = hethers_1.hethers.utils.toUtf8Bytes(decodedText);
         var encoded = 'TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlzIHNpbmd1bGFyIHBhc3Npb24gZnJvbSBvdGhlciBhbmltYWxzLCB3aGljaCBpcyBhIGx1c3Qgb2YgdGhlIG1pbmQsIHRoYXQgYnkgYSBwZXJzZXZlcmFuY2Ugb2YgZGVsaWdodCBpbiB0aGUgY29udGludWVkIGFuZCBpbmRlZmF0aWdhYmxlIGdlbmVyYXRpb24gb2Yga25vd2xlZGdlLCBleGNlZWRzIHRoZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNhcm5hbCBwbGVhc3VyZS4=';
-        assert_1.default.equal(ethers_1.ethers.utils.base64.encode(decoded), encoded, 'encodes to base64 string');
-        assert_1.default.equal(ethers_1.ethers.utils.toUtf8String(ethers_1.ethers.utils.base64.decode(encoded)), decodedText, 'decodes from base64 string');
+        assert_1.default.equal(hethers_1.hethers.utils.base64.encode(decoded), encoded, 'encodes to base64 string');
+        assert_1.default.equal(hethers_1.hethers.utils.toUtf8String(hethers_1.hethers.utils.base64.decode(encoded)), decodedText, 'decodes from base64 string');
     });
 });
 describe('Test UTF-8 coder', function () {
-    var overlong = ethers_1.ethers.utils.Utf8ErrorReason.OVERLONG;
-    var utf16Surrogate = ethers_1.ethers.utils.Utf8ErrorReason.UTF16_SURROGATE;
-    var overrun = ethers_1.ethers.utils.Utf8ErrorReason.OVERRUN;
-    var missingContinue = ethers_1.ethers.utils.Utf8ErrorReason.MISSING_CONTINUE;
-    var unexpectedContinue = ethers_1.ethers.utils.Utf8ErrorReason.UNEXPECTED_CONTINUE;
-    var outOfRange = ethers_1.ethers.utils.Utf8ErrorReason.OUT_OF_RANGE;
+    var overlong = hethers_1.hethers.utils.Utf8ErrorReason.OVERLONG;
+    var utf16Surrogate = hethers_1.hethers.utils.Utf8ErrorReason.UTF16_SURROGATE;
+    var overrun = hethers_1.hethers.utils.Utf8ErrorReason.OVERRUN;
+    var missingContinue = hethers_1.hethers.utils.Utf8ErrorReason.MISSING_CONTINUE;
+    var unexpectedContinue = hethers_1.hethers.utils.Utf8ErrorReason.UNEXPECTED_CONTINUE;
+    var outOfRange = hethers_1.hethers.utils.Utf8ErrorReason.OUT_OF_RANGE;
     var BadUTF = [
         // See: https://en.wikipedia.org/wiki/UTF-8#Overlong_encodings
         { bytes: [0xF0, 0x82, 0x82, 0xAC], reason: overlong, ignored: "", replaced: "\u20ac", name: 'wikipedia overlong encoded Euro sign' },
@@ -292,14 +300,14 @@ describe('Test UTF-8 coder', function () {
     BadUTF.forEach(function (test) {
         it('toUtf8String - ' + test.name, function () {
             // Check the string using the ignoreErrors conversion
-            var ignored = ethers_1.ethers.utils.toUtf8String(test.bytes, ethers_1.ethers.utils.Utf8ErrorFuncs.ignore);
+            var ignored = hethers_1.hethers.utils.toUtf8String(test.bytes, hethers_1.hethers.utils.Utf8ErrorFuncs.ignore);
             assert_1.default.equal(ignored, test.ignored, "ignoring errors matches");
             // Check the string using the replaceErrors conversion
-            var replaced = ethers_1.ethers.utils.toUtf8String(test.bytes, ethers_1.ethers.utils.Utf8ErrorFuncs.replace);
+            var replaced = hethers_1.hethers.utils.toUtf8String(test.bytes, hethers_1.hethers.utils.Utf8ErrorFuncs.replace);
             assert_1.default.equal(replaced, test.replaced, "replaced errors matches");
             // Check the string throws the correct error during conversion
             assert_1.default.throws(function () {
-                var result = ethers_1.ethers.utils.toUtf8String(test.bytes);
+                var result = hethers_1.hethers.utils.toUtf8String(test.bytes);
                 console.log('Result', result);
             }, function (error) {
                 return (error.message.split(";").pop().split("(")[0].trim() === test.reason);
@@ -334,9 +342,9 @@ describe('Test UTF-8 coder', function () {
         for (var i = 0; i < 100000; i++) {
             var seed = 'test-' + String(i);
             var str = randomString(seed);
-            var bytes = ethers_1.ethers.utils.toUtf8Bytes(str);
-            var str2 = ethers_1.ethers.utils.toUtf8String(bytes);
-            var escaped = JSON.parse(ethers_1.ethers.utils._toEscapedUtf8String(bytes));
+            var bytes = hethers_1.hethers.utils.toUtf8Bytes(str);
+            var str2 = hethers_1.hethers.utils.toUtf8String(bytes);
+            var escaped = JSON.parse(hethers_1.hethers.utils._toEscapedUtf8String(bytes));
             //            assert.ok(Buffer.from(str).equals(Buffer.from(bytes)), 'bytes not generated correctly - ' + bytes)
             assert_1.default.equal(str2, str, 'conversion not reflexive - ' + bytes);
             assert_1.default.equal(escaped, str, 'conversion not reflexive - ' + bytes);
@@ -347,14 +355,14 @@ describe('Test Bytes32String coder', function () {
     // @TODO: a LOT more test cases; generated from Solidity
     it("encodes an ens name", function () {
         var str = "ricmoo.firefly.eth";
-        var bytes32 = ethers_1.ethers.utils.formatBytes32String(str);
-        var str2 = ethers_1.ethers.utils.parseBytes32String(bytes32);
+        var bytes32 = hethers_1.hethers.utils.formatBytes32String(str);
+        var str2 = hethers_1.hethers.utils.parseBytes32String(bytes32);
         assert_1.default.equal(bytes32, '0x7269636d6f6f2e66697265666c792e6574680000000000000000000000000000', 'formatted correctly');
         assert_1.default.equal(str2, str, "parsed correctly");
     });
 });
 function getHex(value) {
-    return ethers_1.ethers.utils.hexlify(ethers_1.ethers.utils.toUtf8Bytes(value));
+    return hethers_1.hethers.utils.hexlify(hethers_1.hethers.utils.toUtf8Bytes(value));
 }
 describe("Test nameprep", function () {
     var Tests = (0, testcases_1.loadTests)("nameprep");
@@ -372,17 +380,17 @@ describe("Test nameprep", function () {
             return;
         }
         it(test.comment, function () {
-            var input = ethers_1.ethers.utils.toUtf8String(test.input);
+            var input = hethers_1.hethers.utils.toUtf8String(test.input);
             if (test.output) {
-                var expected = ethers_1.ethers.utils.toUtf8String(test.output);
-                var actual = ethers_1.ethers.utils.nameprep(input);
+                var expected = hethers_1.hethers.utils.toUtf8String(test.output);
+                var actual = hethers_1.hethers.utils.nameprep(input);
                 assert_1.default.equal(actual, expected, "actual(\"" + getHex(actual) + "\") !== expected(\"" + getHex(expected) + "\")");
             }
             else {
                 var ok = true;
                 var reason = "";
                 try {
-                    var actual = ethers_1.ethers.utils.nameprep(input);
+                    var actual = hethers_1.hethers.utils.nameprep(input);
                     console.log(actual);
                     reason = "should has thrown " + test.rc + " - actual(\"" + getHex(actual) + "\")";
                     ok = false;
@@ -395,30 +403,31 @@ describe("Test nameprep", function () {
     });
 });
 // FIXME
-describe("Test Signature Manipulation", function () {
+xdescribe("Test Signature Manipulation", function () {
     // TODO: fix by recovering PublicKey and not address (ecrecover)
     var tests = (0, testcases_1.loadTests)("transactions");
     tests.forEach(function (test) {
         it("autofills partial signatures - " + test.name, function () {
-            var address = ethers_1.ethers.utils.getAddress(test.accountAddress);
-            var hash = ethers_1.ethers.utils.keccak256(test.unsignedTransaction);
-            var data = ethers_1.ethers.utils.RLP.decode(test.signedTransaction);
+            var address = hethers_1.hethers.utils.getAddress(test.accountAddress);
+            var hash = hethers_1.hethers.utils.keccak256(test.unsignedTransaction);
+            // @ts-ignore
+            var data = hethers_1.hethers.utils.RLP.decode(test.signedTransaction);
             var s = data.pop(), r = data.pop(), v = parseInt(data.pop().substring(2), 16);
-            var sig = ethers_1.ethers.utils.splitSignature({ r: r, s: s, v: v });
+            var sig = hethers_1.hethers.utils.splitSignature({ r: r, s: s, v: v });
             {
-                var addr = ethers_1.ethers.utils.recoverAddress(hash, {
+                var addr = hethers_1.hethers.utils.recoverAddress(hash, {
                     r: r, s: s, v: v
                 });
                 assert_1.default.equal(addr, address, "Using r, s and v");
             }
             {
-                var addr = ethers_1.ethers.utils.recoverAddress(hash, {
+                var addr = hethers_1.hethers.utils.recoverAddress(hash, {
                     r: sig.r, _vs: sig._vs
                 });
                 assert_1.default.equal(addr, address, "Using r, _vs");
             }
             {
-                var addr = ethers_1.ethers.utils.recoverAddress(hash, {
+                var addr = hethers_1.hethers.utils.recoverAddress(hash, {
                     r: sig.r, s: sig.s, recoveryParam: sig.recoveryParam
                 });
                 assert_1.default.equal(addr, address, "Using r, s and recoveryParam");
@@ -447,7 +456,7 @@ describe("Test Typed Transactions", function () {
                             .setConstructorParameters(new sdk_1.ContractFunctionParameters().addAddress((0, utils_1.getAddressFromAccount)(sendingAccount)))
                             .setTransactionId(sdk_1.TransactionId.generate(sendingAccount))
                             .freeze();
-                        return [4 /*yield*/, ethers_1.ethers.utils.parseTransaction(cc.toBytes())];
+                        return [4 /*yield*/, hethers_1.hethers.utils.parseTransaction(cc.toBytes())];
                     case 1:
                         tx = _d.sent();
                         (0, assert_1.default)(tx.gasLimit.toNumber() === 1000, "Invalid gas limit");
@@ -480,7 +489,7 @@ describe("Test Typed Transactions", function () {
                             .setTransactionId(sdk_1.TransactionId.generate(sendingAccount))
                             .setNodeAccountIds([new sdk_1.AccountId(0, 0, 3)])
                             .freeze();
-                        return [4 /*yield*/, ethers_1.ethers.utils.parseTransaction(ce.toBytes())];
+                        return [4 /*yield*/, hethers_1.hethers.utils.parseTransaction(ce.toBytes())];
                     case 1:
                         tx = _d.sent();
                         (0, assert_1.default)(tx.gasLimit.toNumber() === 1000, "Invalid gas");
@@ -515,7 +524,7 @@ describe("Test Typed Transactions", function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, ethers_1.ethers.utils.parseTransaction(t.toBytes())];
+                        return [4 /*yield*/, hethers_1.hethers.utils.parseTransaction(t.toBytes())];
                     case 2:
                         tx = _a.sent();
                         (0, assert_1.default)(tx == null, "unexpected tx");
@@ -536,7 +545,7 @@ describe("BigNumber", function () {
         if (test.expectedValue == null) {
             it(test.testcase, function () {
                 assert_1.default.throws(function () {
-                    var value = ethers_1.ethers.BigNumber.from(test.value);
+                    var value = hethers_1.hethers.BigNumber.from(test.value);
                     console.log("ERROR", value);
                 }, function (error) {
                     return true;
@@ -545,9 +554,9 @@ describe("BigNumber", function () {
         }
         else {
             it(test.testcase, function () {
-                var value = ethers_1.ethers.BigNumber.from(test.value);
+                var value = hethers_1.hethers.BigNumber.from(test.value);
                 assert_1.default.equal(value.toHexString(), test.expectedValue);
-                var value2 = ethers_1.ethers.BigNumber.from(value);
+                var value2 = hethers_1.hethers.BigNumber.from(value);
                 assert_1.default.equal(value2.toHexString(), test.expectedValue);
             });
         }
@@ -563,8 +572,8 @@ describe("BigNumber", function () {
         { value: "-0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", expected: "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" },
     ].forEach(function (test) {
         it("absolute value (" + test.value + ")", function () {
-            var value = ethers_1.ethers.BigNumber.from(test.value);
-            var expected = ethers_1.ethers.BigNumber.from(test.expected);
+            var value = hethers_1.hethers.BigNumber.from(test.value);
+            var expected = hethers_1.hethers.BigNumber.from(test.expected);
             assert_1.default.ok(value.abs().eq(expected));
         });
     });
@@ -572,7 +581,7 @@ describe("BigNumber", function () {
     it("Fails on junk with a length property", function () {
         var junk = { negative: 0, words: [1000], length: 1, red: null };
         assert_1.default.throws(function () {
-            var value = ethers_1.ethers.BigNumber.from("100").add(junk);
+            var value = hethers_1.hethers.BigNumber.from("100").add(junk);
             console.log("ERROR", value);
         }, function (error) {
             return true;
@@ -596,7 +605,7 @@ describe("FixedNumber", function () {
         ];
         Tests.forEach(function (test) {
             it("Create from=" + test.value, function () {
-                var value = ethers_1.ethers.FixedNumber.from(test.value);
+                var value = hethers_1.hethers.FixedNumber.from(test.value);
                 assert_1.default.equal(value.toString(), test.expected);
             });
         });
@@ -620,7 +629,7 @@ describe("FixedNumber", function () {
         ];
         Tests.forEach(function (test) {
             it("Rounding value=" + test.value + ", decimals=" + test.round, function () {
-                var value = ethers_1.ethers.FixedNumber.from(test.value).round(test.round);
+                var value = hethers_1.hethers.FixedNumber.from(test.value).round(test.round);
                 assert_1.default.equal(value.toString(), test.expected);
             });
         });
@@ -636,7 +645,7 @@ describe("FixedNumber", function () {
         ];
         Tests.forEach(function (test) {
             it("Clamping value=" + test.value, function () {
-                var value = ethers_1.ethers.FixedNumber.from(test.value);
+                var value = hethers_1.hethers.FixedNumber.from(test.value);
                 assert_1.default.equal(value.floor().toString(), test.floor);
                 assert_1.default.equal(value.ceiling().toString(), test.ceiling);
             });
@@ -644,15 +653,15 @@ describe("FixedNumber", function () {
     }
 });
 describe("Logger", function () {
-    var logger = new ethers_1.ethers.utils.Logger("testing/0.0");
+    var logger = new hethers_1.hethers.utils.Logger("testing/0.0");
     it("setLogLevel", function () {
-        ethers_1.ethers.utils.Logger.setLogLevel(ethers_1.ethers.utils.Logger.levels.DEBUG);
-        ethers_1.ethers.utils.Logger.setLogLevel(ethers_1.ethers.utils.Logger.levels.INFO);
-        ethers_1.ethers.utils.Logger.setLogLevel(ethers_1.ethers.utils.Logger.levels.WARNING);
-        ethers_1.ethers.utils.Logger.setLogLevel(ethers_1.ethers.utils.Logger.levels.ERROR);
-        ethers_1.ethers.utils.Logger.setLogLevel(ethers_1.ethers.utils.Logger.levels.OFF);
+        hethers_1.hethers.utils.Logger.setLogLevel(hethers_1.hethers.utils.Logger.levels.DEBUG);
+        hethers_1.hethers.utils.Logger.setLogLevel(hethers_1.hethers.utils.Logger.levels.INFO);
+        hethers_1.hethers.utils.Logger.setLogLevel(hethers_1.hethers.utils.Logger.levels.WARNING);
+        hethers_1.hethers.utils.Logger.setLogLevel(hethers_1.hethers.utils.Logger.levels.ERROR);
+        hethers_1.hethers.utils.Logger.setLogLevel(hethers_1.hethers.utils.Logger.levels.OFF);
         // Reset back to INFO when done tests
-        ethers_1.ethers.utils.Logger.setLogLevel(ethers_1.ethers.utils.Logger.levels.INFO);
+        hethers_1.hethers.utils.Logger.setLogLevel(hethers_1.hethers.utils.Logger.levels.INFO);
     });
     it("checkArgumentCount", function () {
         logger.checkArgumentCount(3, 3);
@@ -661,23 +670,23 @@ describe("Logger", function () {
         assert_1.default.throws(function () {
             logger.checkArgumentCount(1, 3);
         }, function (error) {
-            return error.code === ethers_1.ethers.utils.Logger.errors.MISSING_ARGUMENT;
+            return error.code === hethers_1.hethers.utils.Logger.errors.MISSING_ARGUMENT;
         });
     });
     it("checkArgumentCount - too many", function () {
         assert_1.default.throws(function () {
             logger.checkArgumentCount(3, 1);
         }, function (error) {
-            return error.code === ethers_1.ethers.utils.Logger.errors.UNEXPECTED_ARGUMENT;
+            return error.code === hethers_1.hethers.utils.Logger.errors.UNEXPECTED_ARGUMENT;
         });
     });
 });
 describe("Base58 Coder", function () {
     it("decodes", function () {
-        assert_1.default.equal(ethers_1.ethers.utils.toUtf8String(ethers_1.ethers.utils.base58.decode("JxF12TrwUP45BMd")), "Hello World");
+        assert_1.default.equal(hethers_1.hethers.utils.toUtf8String(hethers_1.hethers.utils.base58.decode("JxF12TrwUP45BMd")), "Hello World");
     });
     it("encodes", function () {
-        assert_1.default.equal(ethers_1.ethers.utils.base58.encode(ethers_1.ethers.utils.toUtf8Bytes("Hello World")), "JxF12TrwUP45BMd");
+        assert_1.default.equal(hethers_1.hethers.utils.base58.encode(hethers_1.hethers.utils.toUtf8Bytes("Hello World")), "JxF12TrwUP45BMd");
     });
 });
 describe("Account like to string", function () {
@@ -740,7 +749,7 @@ describe("Account like to string", function () {
 describe("Web Fetch", function() {
     it("fetches JSON", async function() {
         const url = "https:/\/api.etherscan.io/api?module=stats&action=ethprice&apikey=9D13ZE7XSBTJ94N9BNJ2MA33VMAY2YPIRB";
-        const getData = ethers.utils.fetchJson(url)
+        const getData = hethers.utils.fetchJson(url)
     });
 });
 */
@@ -749,12 +758,12 @@ describe("EIP-712", function () {
     var tests = (0, testcases_1.loadTests)("eip712");
     tests.forEach(function (test) {
         it("encoding " + test.name, function () {
-            var encoder = ethers_1.ethers.utils._TypedDataEncoder.from(test.types);
+            var encoder = hethers_1.hethers.utils._TypedDataEncoder.from(test.types);
             assert_1.default.equal(encoder.primaryType, test.primaryType, "instance.primaryType");
             assert_1.default.equal(encoder.encode(test.data), test.encoded, "instance.encode()");
             //console.log(test);
-            assert_1.default.equal(ethers_1.ethers.utils._TypedDataEncoder.getPrimaryType(test.types), test.primaryType, "getPrimaryType");
-            assert_1.default.equal(ethers_1.ethers.utils._TypedDataEncoder.hash(test.domain, test.types, test.data), test.digest, "digest");
+            assert_1.default.equal(hethers_1.hethers.utils._TypedDataEncoder.getPrimaryType(test.types), test.primaryType, "getPrimaryType");
+            assert_1.default.equal(hethers_1.hethers.utils._TypedDataEncoder.hash(test.domain, test.types, test.data), test.digest, "digest");
         });
     });
     tests.forEach(function (test) {
@@ -767,7 +776,7 @@ describe("EIP-712", function () {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            wallet = new ethers_1.ethers.Wallet(test.privateKey);
+                            wallet = new hethers_1.hethers.Wallet(test.privateKey);
                             return [4 /*yield*/, assert_1.default.rejects(wallet._signTypedData(test.domain, test.types, test.data), '_signTypedData not supported')];
                         case 1:
                             _a.sent();
@@ -838,10 +847,10 @@ describe("EIP-2930", function () {
                 type: 1,
                 chainId: 3,
                 nonce: 13,
-                gasPrice: ethers_1.ethers.BigNumber.from("0x65cf89a0"),
-                gasLimit: ethers_1.ethers.BigNumber.from("0x5b68"),
+                gasPrice: hethers_1.hethers.BigNumber.from("0x65cf89a0"),
+                gasLimit: hethers_1.hethers.BigNumber.from("0x5b68"),
                 to: "0x32162F3581E88a5f62e8A61892B42C46E2c18f7b",
-                value: ethers_1.ethers.BigNumber.from("0"),
+                value: hethers_1.hethers.BigNumber.from("0"),
                 data: "0x",
                 accessList: [
                     {
@@ -864,10 +873,10 @@ describe("EIP-2930", function () {
                 type: 1,
                 chainId: 3,
                 nonce: 14,
-                gasPrice: ethers_1.ethers.BigNumber.from("0x65cf89a0"),
-                gasLimit: ethers_1.ethers.BigNumber.from("0x71ac"),
+                gasPrice: hethers_1.hethers.BigNumber.from("0x65cf89a0"),
+                gasLimit: hethers_1.hethers.BigNumber.from("0x71ac"),
                 to: "0x32162F3581E88a5f62e8A61892B42C46E2c18f7b",
-                value: ethers_1.ethers.BigNumber.from("0"),
+                value: hethers_1.hethers.BigNumber.from("0"),
                 data: "0x",
                 accessList: [
                     {
@@ -889,15 +898,15 @@ describe("EIP-2930", function () {
     Tests.forEach(function (test) {
         it("tx:" + test.hash, function () {
             // FIXME
-            // const tx = ethers.utils.parseTransaction(test.data);
+            // const tx = hethers.utils.parseTransaction(test.data);
             // assert.equal(tx.hash, test.hash);
             // const reason = deepEquals(tx, test.tx);
             // assert.ok(reason == null, reason);
             //
-            // const preimageData = ethers.utils.serializeTransaction(<any>(test.tx));
+            // const preimageData = hethers.utils.serializeTransaction(<any>(test.tx));
             // assert.equal(preimageData, test.preimage);
             //
-            // const data = ethers.utils.serializeTransaction(<any>(test.tx), test.tx);
+            // const data = hethers.utils.serializeTransaction(<any>(test.tx), test.tx);
             // assert.equal(data, test.data);
         });
     });

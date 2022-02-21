@@ -2,13 +2,13 @@
 
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import { BytesLike } from "@ethersproject/bytes";
-import { Network } from "@ethersproject/networks";
+import { Network } from "@hethers/networks";
 import { Deferrable, defineReadOnly } from "@ethersproject/properties";
-import { AccessListish, Transaction } from "@ethersproject/transactions";
+import { AccessListish, Transaction } from "@hethers/transactions";
 
-import { Logger } from "@ethersproject/logger";
+import { Logger } from "@hethers/logger";
 import { version } from "./_version";
-import { AccountLike } from "@ethersproject/address";
+import { AccountLike } from "@hethers/address";
 import { AccountId, Client } from '@hashgraph/sdk';
 const logger = new Logger(version);
 ///////////////////////////////

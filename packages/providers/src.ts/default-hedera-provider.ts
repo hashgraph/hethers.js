@@ -1,5 +1,5 @@
 import { BaseProvider } from "./base-provider";
-import { Networkish } from "@ethersproject/networks";
+import { Networkish } from "@hethers/networks";
 
 // contains predefined, sdk acceptable hedera network strings
 export enum HederaNetworks {

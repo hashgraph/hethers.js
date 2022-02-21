@@ -4,7 +4,7 @@
 // See: https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki
 
 
-import { ExternallyOwnedAccount } from "@ethersproject/abstract-signer";
+import { ExternallyOwnedAccount } from "@hethers/abstract-signer";
 import { Base58 } from "@ethersproject/basex";
 import { arrayify, BytesLike, concat, hexDataSlice, hexZeroPad, hexlify } from "@ethersproject/bytes";
 import { BigNumber } from "@ethersproject/bignumber";
@@ -15,9 +15,9 @@ import { SigningKey } from "@ethersproject/signing-key";
 import { computeHmac, ripemd160, sha256, SupportedAlgorithm } from "@ethersproject/sha2";
 import { Wordlist, wordlists } from "@ethersproject/wordlists";
 
-import { Logger } from "@ethersproject/logger";
+import { Logger } from "@hethers/logger";
 import { version } from "./_version";
-import {computeAlias} from "@ethersproject/transactions";
+import {computeAlias} from "@hethers/transactions";
 const logger = new Logger(version);
 
 const N = BigNumber.from("0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141");

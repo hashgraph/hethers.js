@@ -1,5 +1,5 @@
 import { BaseProvider } from "./base-provider";
-import { AccountLike } from "@ethersproject/address";
+import { AccountLike } from "@hethers/address";
 /**
  * Provides support for connecting to custom network by specifying consensus and mirror node url.
  */

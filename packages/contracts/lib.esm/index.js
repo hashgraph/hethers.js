@@ -9,15 +9,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import { checkResultErrors, Indexed, Interface } from "@ethersproject/abi";
-import { Provider } from "@ethersproject/abstract-provider";
-import { composeHederaTimestamp } from "@ethersproject/providers";
-import { Signer, VoidSigner } from "@ethersproject/abstract-signer";
-import { getAddress, getAddressFromAccount } from "@ethersproject/address";
+import { Provider } from "@hethers/abstract-provider";
+import { composeHederaTimestamp } from "@hethers/providers";
+import { Signer, VoidSigner } from "@hethers/abstract-signer";
+import { getAddress, getAddressFromAccount } from "@hethers/address";
 import { BigNumber } from "@ethersproject/bignumber";
 import { arrayify, concat, hexlify, isBytes, isHexString } from "@ethersproject/bytes";
 import { deepCopy, defineReadOnly, getStatic, resolveProperties, shallowCopy } from "@ethersproject/properties";
-import { accessListify } from "@ethersproject/transactions";
-import { Logger } from "@ethersproject/logger";
+import { accessListify } from "@hethers/transactions";
+import { Logger } from "@hethers/logger";
 import { version } from "./_version";
 const logger = new Logger(version);
 ///////////////////////////////

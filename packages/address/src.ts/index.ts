@@ -7,13 +7,11 @@ import {
     hexDataLength,
     hexDataSlice, hexlify,
     isHexString,
-    stripZeros
 } from "@ethersproject/bytes";
-import {_base16To36, _base36To16, BigNumber, BigNumberish} from "@ethersproject/bignumber";
+import {_base16To36, _base36To16} from "@ethersproject/bignumber";
 import {keccak256} from "@ethersproject/keccak256";
-import {encode} from "@ethersproject/rlp";
 
-import {Logger} from "@ethersproject/logger";
+import {Logger} from "@hethers/logger";
 import {version} from "./_version";
 
 const logger = new Logger(version);
@@ -165,20 +163,6 @@ export function getIcapAddress(address: string): string {
         base36 = "0" + base36;
     }
     return "XE" + ibanChecksum("XE00" + base36) + base36;
-}
-
-// http://ethereum.stackexchange.com/questions/760/how-is-the-address-of-an-ethereum-contract-computed
-export function getContractAddress(transaction: { from: string, nonce: BigNumberish }) {
-    let from: string = null;
-    try {
-        from = getAddress(transaction.from);
-    } catch (error) {
-        logger.throwArgumentError("missing from address", "transaction", transaction);
-    }
-
-    const nonce = stripZeros(arrayify(BigNumber.from(transaction.nonce).toHexString()));
-
-    return getAddress(hexDataSlice(keccak256(encode([from, nonce])), 12));
 }
 
 export function getCreate2Address(from: string, salt: BytesLike, initCodeHash: BytesLike): string {

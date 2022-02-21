@@ -10,17 +10,17 @@ import {
     TransactionReceipt,
     TransactionRequest,
     TransactionResponse
-} from "@ethersproject/abstract-provider";
+} from "@hethers/abstract-provider";
 
-import { getNetwork } from "@ethersproject/networks";
-import { Network, Networkish } from "@ethersproject/networks";
+import { getNetwork } from "@hethers/networks";
+import { Network, Networkish } from "@hethers/networks";
 
 import { BaseProvider } from "./base-provider";
 
 import { DefaultHederaProvider } from "./default-hedera-provider";
 import { Formatter } from "./formatter";
 
-import { Logger } from "@ethersproject/logger";
+import { Logger } from "@hethers/logger";
 import { version } from "./_version";
 import HederaProvider from "./hedera-provider";
 

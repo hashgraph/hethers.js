@@ -1,8 +1,8 @@
-import { Provider, TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
+import { Provider, TransactionRequest, TransactionResponse } from "@hethers/abstract-provider";
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import { Bytes, BytesLike } from "@ethersproject/bytes";
 import { Deferrable } from "@ethersproject/properties";
-import { Account } from "@ethersproject/address";
+import { Account } from "@hethers/address";
 import { SigningKey } from "@ethersproject/signing-key";
 export interface TypedDataDomain {
     name?: string;

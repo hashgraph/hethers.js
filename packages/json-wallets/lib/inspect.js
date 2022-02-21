@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getJsonWalletAddress = exports.isKeystoreWallet = void 0;
-var address_1 = require("@ethersproject/address");
+var address_1 = require("@hethers/address");
 function isKeystoreWallet(json) {
     var data = null;
     try {

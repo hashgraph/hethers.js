@@ -59,10 +59,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var assert_1 = __importDefault(require("assert"));
-var ethers_1 = require("ethers");
-var testcases_1 = require("@ethersproject/testcases");
+var hethers_1 = require("hethers");
+var testcases_1 = require("@hethers/testcases");
 var utils = __importStar(require("./utils"));
-var utils_1 = require("ethers/lib/utils");
+var utils_1 = require("hethers/lib/utils");
 var sdk_1 = require("@hashgraph/sdk");
 var fs_1 = require("fs");
 describe('Test JSON Wallets', function () {
@@ -75,12 +75,12 @@ describe('Test JSON Wallets', function () {
                     switch (_a.label) {
                         case 0:
                             this.timeout(1200000);
-                            return [4 /*yield*/, ethers_1.ethers.Wallet.fromEncryptedJson(test.json, test.password)];
+                            return [4 /*yield*/, hethers_1.hethers.Wallet.fromEncryptedJson(test.json, test.password)];
                         case 1:
                             wallet = _a.sent();
                             assert_1.default.strictEqual(wallet.privateKey, test.privateKey, 'generated correct private key - ' + wallet.privateKey);
                             if (!test.hasAddress) return [3 /*break*/, 3];
-                            assert_1.default.ok((ethers_1.ethers.utils.getJsonWalletAddress(test.json) !== null), 'detect encrypted JSON wallet');
+                            assert_1.default.ok((hethers_1.hethers.utils.getJsonWalletAddress(test.json) !== null), 'detect encrypted JSON wallet');
                             assert_1.default.strictEqual(wallet.address.toLowerCase(), test.address, 'generate correct address - ' + wallet.address);
                             return [4 /*yield*/, wallet.getAddress()];
                         case 2:
@@ -90,7 +90,7 @@ describe('Test JSON Wallets', function () {
                         case 3:
                             // Test connect
                             {
-                                provider = ethers_1.ethers.providers.getDefaultProvider();
+                                provider = hethers_1.hethers.providers.getDefaultProvider();
                                 walletConnected = wallet.connect(provider);
                                 assert_1.default.strictEqual(walletConnected.provider, provider, "provider is connected");
                                 assert_1.default.ok((wallet.provider == null), "original wallet provider is null");
@@ -100,12 +100,12 @@ describe('Test JSON Wallets', function () {
                             }
                             // Make sure it can accept a SigningKey
                             {
-                                wallet2 = new ethers_1.ethers.Wallet(wallet._signingKey());
+                                wallet2 = new hethers_1.hethers.Wallet(wallet._signingKey());
                                 assert_1.default.equal(wallet2.privateKey, test.privateKey, 'generated correct private key - ' + wallet2.privateKey);
                             }
                             // Test the sync decryption (this wallet is light, so it is safe)
                             if (test.name === "life") {
-                                wallet2 = ethers_1.ethers.Wallet.fromEncryptedJsonSync(test.json, test.password);
+                                wallet2 = hethers_1.hethers.Wallet.fromEncryptedJsonSync(test.json, test.password);
                                 assert_1.default.equal(wallet2.privateKey, test.privateKey, 'generated correct private key - ' + wallet2.privateKey);
                             }
                             if (test.mnemonic) {
@@ -120,12 +120,12 @@ describe('Test JSON Wallets', function () {
     // A few extra test cases to test encrypting/decrypting
     ['one', 'two', 'three'].forEach(function (i) {
         var password = 'foobar' + i;
-        var wallet = ethers_1.ethers.Wallet.createRandom({ path: "m/56'/82", extraEntropy: utils.randomHexString('test-' + i, 32) });
+        var wallet = hethers_1.hethers.Wallet.createRandom({ path: "m/56'/82", extraEntropy: utils.randomHexString('test-' + i, 32) });
         wallet = wallet.connectAccount("0.0.1001");
         it('encrypts and decrypts a random wallet - ' + i, function () {
             this.timeout(1200000);
             return wallet.encrypt(password).then(function (json) {
-                return ethers_1.ethers.Wallet.fromEncryptedJson(json, password).then(function (decryptedWallet) {
+                return hethers_1.hethers.Wallet.fromEncryptedJson(json, password).then(function (decryptedWallet) {
                     assert_1.default.strictEqual(decryptedWallet.address, wallet.address, 'decrypted wallet - ' + wallet.privateKey);
                     assert_1.default.strictEqual(decryptedWallet.mnemonic.phrase, wallet.mnemonic.phrase, "decrypted wallet mnemonic - " + wallet.privateKey);
                     assert_1.default.strictEqual(decryptedWallet.mnemonic.path, wallet.mnemonic.path, "decrypted wallet path - " + wallet.privateKey);
@@ -151,7 +151,7 @@ describe('Test Transaction Signing and Parsing', function () {
     //         let value = parsedTransaction[key];
     //
     //         if ([ "gasLimit", "gasPrice", "value"].indexOf(key) >= 0) {
-    //             assert.ok((ethers.BigNumber.isBigNumber(value)),
+    //             assert.ok((hethers.BigNumber.isBigNumber(value)),
     //                 'parsed into a big number - ' + key);
     //             value = value.toHexString();
     //
@@ -161,7 +161,7 @@ describe('Test Transaction Signing and Parsing', function () {
     //             assert.equal(typeof(value), 'number',
     //                 'parse into a number - nonce');
     //
-    //             value = ethers.utils.hexlify(value);
+    //             value = hethers.utils.hexlify(value);
     //
     //             if (!expected || expected === '0x') { expected = '0x00'; }
     //
@@ -171,7 +171,7 @@ describe('Test Transaction Signing and Parsing', function () {
     //         } else if (key === 'to') {
     //             if (value) {
     //                 // Make sure the address is valid
-    //                 ethers.utils.getAddress(value);
+    //                 hethers.utils.getAddress(value);
     //                 value = value.toLowerCase();
     //             }
     //         }
@@ -189,17 +189,17 @@ describe('Test Transaction Signing and Parsing', function () {
         // it(('parses and signs transaction - ' + test.name), function() {
         //     this.timeout(120000);
         //
-        //     let signingKey = new ethers.utils.SigningKey(test.privateKey);
+        //     let signingKey = new hethers.utils.SigningKey(test.privateKey);
         //     let signDigest = signingKey.signDigest.bind(signingKey);
         //
         //     // Legacy parsing unsigned transaction
-        //     checkTransaction(ethers.utils.parseTransaction(test.unsignedTransaction), test);
+        //     checkTransaction(hethers.utils.parseTransaction(test.unsignedTransaction), test);
         //
-        //     let parsedTransaction = ethers.utils.parseTransaction(test.signedTransaction);
+        //     let parsedTransaction = hethers.utils.parseTransaction(test.signedTransaction);
         //     let transaction = checkTransaction(parsedTransaction, test);
         //
         //     // Legacy signed transaction ecrecover
-        //     // assert.equal(parsedTransaction.from, ethers.utils.getAddress(test.accountAddress),
+        //     // assert.equal(parsedTransaction.from, hethers.utils.getAddress(test.accountAddress),
         //     //     'computed from');
         //
         //     // Legacy transaction chain ID
@@ -207,13 +207,13 @@ describe('Test Transaction Signing and Parsing', function () {
         //
         //     // Legacy serializes unsigned transaction
         //     (function() {
-        //         let unsignedTx = ethers.utils.serializeTransaction(transaction);
+        //         let unsignedTx = hethers.utils.serializeTransaction(transaction);
         //         assert.equal(unsignedTx, test.unsignedTransaction,
         //             'serializes unsigned transaction (legacy)');
         //
         //         // Legacy signed serialized transaction
-        //         let signature = signDigest(ethers.utils.keccak256(unsignedTx));
-        //         assert.equal(ethers.utils.serializeTransaction(transaction, signature), test.signedTransaction,
+        //         let signature = signDigest(hethers.utils.keccak256(unsignedTx));
+        //         assert.equal(hethers.utils.serializeTransaction(transaction, signature), test.signedTransaction,
         //             'signs transaction (legacy)');
         //     })();
         //
@@ -221,12 +221,12 @@ describe('Test Transaction Signing and Parsing', function () {
         //     // EIP155
         //
         //     // EIP-155 parsing unsigned transaction
-        //     let parsedUnsignedTransactionChainId5 = ethers.utils.parseTransaction(test.unsignedTransactionChainId5);
+        //     let parsedUnsignedTransactionChainId5 = hethers.utils.parseTransaction(test.unsignedTransactionChainId5);
         //     checkTransaction(parsedUnsignedTransactionChainId5, test);
         //     // assert.equal(parsedUnsignedTransactionChainId5.chainId, 5, 'parses chainId (eip155)');
         //
         //     // EIP-155 fields
-        //     let parsedTransactionChainId5 = ethers.utils.parseTransaction(test.signedTransactionChainId5);
+        //     let parsedTransactionChainId5 = hethers.utils.parseTransaction(test.signedTransactionChainId5);
         //
         //     type TxStringKey = 'data' | 'from' | 'nonce' | 'to';
         //     ['data', 'from', 'nonce', 'to'].forEach((key: TxStringKey) => {
@@ -248,13 +248,13 @@ describe('Test Transaction Signing and Parsing', function () {
         //
         //     (function() {
         //         // EIP-155 serialized unsigned transaction
-        //         let unsignedTx = ethers.utils.serializeTransaction(transaction);
+        //         let unsignedTx = hethers.utils.serializeTransaction(transaction);
         //         assert.equal(unsignedTx, test.unsignedTransactionChainId5,
         //             'serializes unsigned transaction (eip155) ');
         //
         //         // EIP-155 signed serialized transaction
-        //         let signature = signDigest(ethers.utils.keccak256(unsignedTx));
-        //         assert.equal(ethers.utils.serializeTransaction(transaction, signature), test.signedTransactionChainId5,
+        //         let signature = signDigest(hethers.utils.keccak256(unsignedTx));
+        //         assert.equal(hethers.utils.serializeTransaction(transaction, signature), test.signedTransactionChainId5,
         //             'signs transaction (eip155)');
         //     })();
         // });
@@ -281,20 +281,20 @@ describe('Test Signing Messages', function () {
             privateKey: '0x0123456789012345678901234567890123456789012345678901234567890123',
             signature: '0xddd0a7290af9526056b4e35a077b9a11b513aa0028ec6c9880948544508f3c63265e99e47ad31bb2cab9646c504576b3abc6939a1710afc08cbf3034d73214b81c'
         },
-        // See: https://github.com/ethers-io/ethers.js/issues/80
+        // See: https://github.com/hethers-io/hethers.js/issues/80
         {
             address: '0xD351c7c627ad5531Edb9587f4150CaF393c33E87',
             name: 'bytes(0x47173285...4cb01fad)',
-            message: ethers_1.ethers.utils.arrayify('0x47173285a8d7341e5e972fc677286384f802f8ef42a5ec5f03bbfa254cb01fad'),
+            message: hethers_1.hethers.utils.arrayify('0x47173285a8d7341e5e972fc677286384f802f8ef42a5ec5f03bbfa254cb01fad'),
             messageHash: '0x93100cc9477ba6522a2d7d5e83d0e075b167224ed8aa0c5860cfd47fa9f22797',
             privateKey: '0x51d1d6047622bca92272d36b297799ecc152dc2ef91b229debf84fc41e8c73ee',
             signature: '0x546f0c996fa4cfbf2b68fd413bfb477f05e44e66545d7782d87d52305831cd055fc9943e513297d0f6755ad1590a5476bf7d1761d4f9dc07dfe473824bbdec751b'
         },
-        // See: https://github.com/ethers-io/ethers.js/issues/85
+        // See: https://github.com/hethers-io/hethers.js/issues/85
         {
             address: '0xe7deA7e64B62d1Ca52f1716f29cd27d4FE28e3e1',
             name: 'zero-prefixed signature',
-            message: ethers_1.ethers.utils.arrayify(ethers_1.ethers.utils.id('0x7f23b5eed5bc7e89f267f339561b2697faab234a2')),
+            message: hethers_1.hethers.utils.arrayify(hethers_1.hethers.utils.id('0x7f23b5eed5bc7e89f267f339561b2697faab234a2')),
             messageHash: '0x06c9d148d268f9a13d8f94f4ce351b0beff3b9ba69f23abbf171168202b2dd67',
             privateKey: '0x09a11afa58d6014843fd2c5fd4e21e7fadf96ca2d8ce9934af6b8e204314f25c',
             signature: '0x7222038446034a0425b6e3f0cc3594f0d979c656206408f937c37a8180bb1bea047d061e4ded4aeac77fa86eb02d42ba7250964ac3eb9da1337090258ce798491c'
@@ -303,7 +303,7 @@ describe('Test Signing Messages', function () {
     tests.forEach(function (test) {
         it(('signs a message "' + test.name + '"'), function () {
             this.timeout(120000);
-            var wallet = new ethers_1.ethers.Wallet(test.privateKey);
+            var wallet = new hethers_1.hethers.Wallet(test.privateKey);
             return wallet.signMessage(test.message).then(function (signature) {
                 assert_1.default.equal(signature, test.signature, 'computes message signature');
             });
@@ -312,15 +312,15 @@ describe('Test Signing Messages', function () {
     tests.forEach(function (test) {
         it(('verifies a message "' + test.name + '"'), function () {
             this.timeout(120000);
-            var wallet = new ethers_1.ethers.Wallet(test.privateKey);
-            var publicKey = ethers_1.ethers.utils.verifyMessage(test.message, test.signature);
+            var wallet = new hethers_1.hethers.Wallet(test.privateKey);
+            var publicKey = hethers_1.hethers.utils.verifyMessage(test.message, test.signature);
             assert_1.default.strictEqual(wallet.publicKey, publicKey);
         });
     });
     tests.forEach(function (test) {
         it(('hashes a message "' + test.name + '"'), function () {
             this.timeout(120000);
-            var hash = ethers_1.ethers.utils.hashMessage(test.message);
+            var hash = hethers_1.hethers.utils.hashMessage(test.message);
             assert_1.default.equal(hash, test.messageHash, 'calculates message hash');
         });
     });
@@ -328,7 +328,7 @@ describe('Test Signing Messages', function () {
 describe("Wallet Errors", function () {
     it("fails on privateKey/address mismatch", function () {
         assert_1.default.throws(function () {
-            var wallet = new ethers_1.ethers.Wallet({
+            var wallet = new hethers_1.hethers.Wallet({
                 privateKey: "0x6a73cd9b03647e83ef937888a5258a26e4c766dbf41ddd974f15e32d09cfe9c0",
                 alias: "0.0.BLZ906RnM9t5+nzS4Cq8wkLA1uWU3tvKa+7wIqznr6zvkrdJYX+bwkUOdj/yfkp5gSrjxw/Jy7Hm7NsXWs0vRsg="
             });
@@ -339,7 +339,7 @@ describe("Wallet Errors", function () {
     });
     it("fails on mnemonic/address mismatch", function () {
         assert_1.default.throws(function () {
-            var wallet = new ethers_1.ethers.Wallet({
+            var wallet = new hethers_1.hethers.Wallet({
                 privateKey: "0x6a73cd9b03647e83ef937888a5258a26e4c766dbf41ddd974f15e32d09cfe9c0",
                 mnemonic: {
                     phrase: "pact grief smile usage kind pledge river excess garbage mixed olive receive"
@@ -351,14 +351,14 @@ describe("Wallet Errors", function () {
         });
     });
     // it("fails on from mismatch", function() {
-    //     const wallet = new ethers.Wallet("0x6a73cd9b03647e83ef937888a5258a26e4c766dbf41ddd974f15e32d09cfe9c0");
+    //     const wallet = new hethers.Wallet("0x6a73cd9b03647e83ef937888a5258a26e4c766dbf41ddd974f15e32d09cfe9c0");
     //     return new Promise(async (resolve, reject) => {
     //         try {
     //             await wallet.signTransaction({
     //                 from: "0x3f4f037dfc910a3517b9a5b23cf036ffae01a5a7"
     //             });
     //         } catch (error) {
-    //             if (error.code === ethers.utils.Logger.errors.INVALID_ARGUMENT && error.argument === "transaction.from") {
+    //             if (error.code === hethers.utils.Logger.errors.INVALID_ARGUMENT && error.argument === "transaction.from") {
     //                 resolve(true);
     //                 return;
     //             }
@@ -373,9 +373,9 @@ describe("Wallet tx signing", function () {
         account: "0.0.1280",
         privateKey: "0x074cc0bd198d1bc91f668c59b46a1e74fd13215661e5a7bd42ad0d324476295d"
     };
-    var provider = ethers_1.ethers.providers.getDefaultProvider('previewnet');
+    var provider = hethers_1.hethers.providers.getDefaultProvider('previewnet');
     // @ts-ignore
-    var wallet = new ethers_1.ethers.Wallet(hederaEoa, provider);
+    var wallet = new hethers_1.hethers.Wallet(hederaEoa, provider);
     it("Should sign ContractCall", function () {
         return __awaiter(this, void 0, void 0, function () {
             var data, tx, signed, fromBytes, cc;
@@ -487,8 +487,8 @@ describe("Wallet getters", function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        provider = ethers_1.ethers.providers.getDefaultProvider("mainnet");
-                        wallet = ethers_1.ethers.Wallet.createRandom().connect(provider);
+                        provider = hethers_1.hethers.providers.getDefaultProvider("mainnet");
+                        wallet = hethers_1.hethers.Wallet.createRandom().connect(provider);
                         return [4 /*yield*/, wallet.getChainId()];
                     case 1:
                         chainId = _a.sent();
@@ -504,8 +504,8 @@ describe("Wallet getters", function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        provider = ethers_1.ethers.providers.getDefaultProvider("testnet");
-                        wallet = ethers_1.ethers.Wallet.createRandom().connect(provider);
+                        provider = hethers_1.hethers.providers.getDefaultProvider("testnet");
+                        wallet = hethers_1.hethers.Wallet.createRandom().connect(provider);
                         return [4 /*yield*/, wallet.getChainId()];
                     case 1:
                         chainId = _a.sent();
@@ -521,8 +521,8 @@ describe("Wallet getters", function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        provider = ethers_1.ethers.providers.getDefaultProvider("previewnet");
-                        wallet = ethers_1.ethers.Wallet.createRandom().connect(provider);
+                        provider = hethers_1.hethers.providers.getDefaultProvider("previewnet");
+                        wallet = hethers_1.hethers.Wallet.createRandom().connect(provider);
                         return [4 /*yield*/, wallet.getChainId()];
                     case 1:
                         chainId = _a.sent();
@@ -543,11 +543,11 @@ describe("Wallet local calls", function () {
                         account: '0.0.29511337',
                         privateKey: '0x409836c5c296fe800fcac721093c68c78c4c03a1f88cb10bbdf01ecc49247132'
                     };
-                    provider = ethers_1.ethers.providers.getDefaultProvider('testnet');
-                    wallet = new ethers_1.ethers.Wallet(hederaEoa, provider);
+                    provider = hethers_1.hethers.providers.getDefaultProvider('testnet');
+                    wallet = new hethers_1.hethers.Wallet(hederaEoa, provider);
                     contractAddr = '0000000000000000000000000000000001b34cbb';
                     abi = JSON.parse((0, fs_1.readFileSync)('examples/assets/abi/GLDToken_abi.json').toString());
-                    contract = ethers_1.ethers.ContractFactory.getContract(contractAddr, abi, wallet);
+                    contract = hethers_1.hethers.ContractFactory.getContract(contractAddr, abi, wallet);
                     _b = (_a = contract.interface).encodeFunctionData;
                     _c = ['balanceOf'];
                     return [4 /*yield*/, wallet.getAddress()];
@@ -685,20 +685,20 @@ describe("Wallet createAccount", function () {
                 };
                 acc1Eoa = { "account": "0.0.29631749", "privateKey": "0x18a2ac384f3fa3670f71fc37e2efbf4879a90051bb0d437dd8cbd77077b24d9b" };
                 acc2Eoa = { "account": "0.0.29631750", "privateKey": "0x6357b34b94fe53ded45ebe4c22b9c1175634d3f7a8a568079c2cb93bba0e3aee" };
-                provider = ethers_1.ethers.providers.getDefaultProvider('testnet');
+                provider = hethers_1.hethers.providers.getDefaultProvider('testnet');
                 // @ts-ignore
-                wallet = new ethers_1.ethers.Wallet(hederaEoa, provider);
+                wallet = new hethers_1.hethers.Wallet(hederaEoa, provider);
                 // @ts-ignore
-                acc1Wallet = new ethers_1.ethers.Wallet(acc1Eoa, provider);
+                acc1Wallet = new hethers_1.hethers.Wallet(acc1Eoa, provider);
                 // @ts-ignore
-                acc2Wallet = new ethers_1.ethers.Wallet(acc2Eoa, provider);
+                acc2Wallet = new hethers_1.hethers.Wallet(acc2Eoa, provider);
                 return [2 /*return*/];
             });
         });
     });
     beforeEach(function () { return __awaiter(_this, void 0, void 0, function () {
         return __generator(this, function (_a) {
-            newAccount = ethers_1.ethers.Wallet.createRandom();
+            newAccount = hethers_1.hethers.Wallet.createRandom();
             newAccountPublicKey = newAccount._signingKey().compressedPublicKey;
             return [2 /*return*/];
         });
@@ -896,8 +896,8 @@ describe("Wallet createAccount", function () {
                     case 0:
                         abiGLDTokenWithConstructorArgs = JSON.parse((0, fs_1.readFileSync)('examples/assets/abi/GLDTokenWithConstructorArgs_abi.json').toString());
                         contractByteCodeGLDTokenWithConstructorArgs = (0, fs_1.readFileSync)('examples/assets/bytecode/GLDTokenWithConstructorArgs.bin').toString();
-                        contractFactory = new ethers_1.ethers.ContractFactory(abiGLDTokenWithConstructorArgs, contractByteCodeGLDTokenWithConstructorArgs, acc1Wallet);
-                        return [4 /*yield*/, contractFactory.deploy(ethers_1.ethers.BigNumber.from('10000'), { gasLimit: 3000000 })];
+                        contractFactory = new hethers_1.hethers.ContractFactory(abiGLDTokenWithConstructorArgs, contractByteCodeGLDTokenWithConstructorArgs, acc1Wallet);
+                        return [4 /*yield*/, contractFactory.deploy(hethers_1.hethers.BigNumber.from('10000'), { gasLimit: 3000000 })];
                     case 1:
                         contract = _a.sent();
                         return [4 /*yield*/, contract.deployed()];
@@ -933,7 +933,7 @@ describe("Wallet createAccount", function () {
                     case 0:
                         exceptionThrown = false;
                         errorReason = null;
-                        acc1WalletWithoutProvider = new ethers_1.ethers.Wallet(acc1Eoa);
+                        acc1WalletWithoutProvider = new hethers_1.hethers.Wallet(acc1Eoa);
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);

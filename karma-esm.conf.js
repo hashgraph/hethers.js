@@ -5,7 +5,7 @@ module.exports = function(config) {
     basePath: "./output/karma",
     frameworks: [ 'mocha' ],
     files: [
-        { pattern: "./ethers.esm.js", type: "module" },
+        { pattern: "./hethers.esm.js", type: "module" },
         { pattern: "./tests.esm.js", type: "module" }
     ],
     reporters: [ 'karma' ],

@@ -1,6 +1,6 @@
-import { EventType, FeeData, Filter, Log, Listener, Provider, TransactionReceipt, TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
-import { getNetwork } from "@ethersproject/networks";
-import { Network, Networkish } from "@ethersproject/networks";
+import { EventType, FeeData, Filter, Log, Listener, Provider, TransactionReceipt, TransactionRequest, TransactionResponse } from "@hethers/abstract-provider";
+import { getNetwork } from "@hethers/networks";
+import { Network, Networkish } from "@hethers/networks";
 import { BaseProvider } from "./base-provider";
 import { DefaultHederaProvider } from "./default-hedera-provider";
 import { Formatter } from "./formatter";

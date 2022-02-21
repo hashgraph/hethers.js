@@ -41,13 +41,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var assert_1 = __importDefault(require("assert"));
 // import Web3HttpProvider from "web3-providers-http";
-var ethers_1 = require("ethers");
+var hethers_1 = require("hethers");
 var bignumber_1 = require("@ethersproject/bignumber");
-var providers_1 = require("@ethersproject/providers");
-var utils_1 = require("ethers/lib/utils");
-var default_hedera_provider_1 = require("@ethersproject/providers/lib/default-hedera-provider");
+var providers_1 = require("@hethers/providers");
+var utils_1 = require("hethers/lib/utils");
+var default_hedera_provider_1 = require("@hethers/providers/lib/default-hedera-provider");
 var sdk_1 = require("@hashgraph/sdk");
-var bnify = ethers_1.ethers.BigNumber.from;
+var bnify = hethers_1.hethers.BigNumber.from;
 var hederaTestnetOperableAccount = {
     "operator": {
         "accountId": "0.0.19041642",
@@ -506,8 +506,8 @@ function equals(name, actual, expected) {
         if (actual == null) {
             assert_1.default.ok(false, name + " - actual big number null");
         }
-        expected = ethers_1.ethers.BigNumber.from(expected);
-        actual = ethers_1.ethers.BigNumber.from(actual);
+        expected = hethers_1.hethers.BigNumber.from(expected);
+        actual = hethers_1.hethers.BigNumber.from(actual);
         assert_1.default.ok(expected.eq(actual), name + " matches");
     }
     else if (Array.isArray(expected)) {
@@ -566,7 +566,7 @@ function getApiKeys(network) {
     if (network === "default" || network == null) {
         network = "homestead";
     }
-    var apiKeys = ethers_1.ethers.utils.shallowCopy(_ApiKeys);
+    var apiKeys = hethers_1.hethers.utils.shallowCopy(_ApiKeys);
     apiKeys.pocket = _ApiKeysPocket[network];
     return apiKeys;
 }
@@ -577,14 +577,14 @@ var providerFunctions = [
         networks: allNetworks,
         create: function (network) {
             if (network == "default") {
-                return ethers_1.ethers.getDefaultProvider("homestead", getApiKeys(network));
+                return hethers_1.hethers.getDefaultProvider("homestead", getApiKeys(network));
             }
-            return ethers_1.ethers.getDefaultProvider(network, getApiKeys(network));
+            return hethers_1.hethers.getDefaultProvider(network, getApiKeys(network));
         }
     },
 ];
 // This wallet can be funded and used for various test cases
-var fundWallet = ethers_1.ethers.Wallet.createRandom();
+var fundWallet = hethers_1.hethers.Wallet.createRandom();
 var testFunctions = [];
 Object.keys(blockchainData).forEach(function (network) {
     function addSimpleTest(name, func, expected) {
@@ -724,7 +724,7 @@ Object.keys(blockchainData).forEach(function (network) {
             }); }
         });
     }
-    addErrorTest(ethers_1.ethers.utils.Logger.errors.INSUFFICIENT_FUNDS, function (provider) { return __awaiter(_this, void 0, void 0, function () {
+    addErrorTest(hethers_1.hethers.utils.Logger.errors.INSUFFICIENT_FUNDS, function (provider) { return __awaiter(_this, void 0, void 0, function () {
         var txProps, wallet, tx;
         return __generator(this, function (_a) {
             switch (_a.label) {
@@ -736,7 +736,7 @@ Object.keys(blockchainData).forEach(function (network) {
                         chainId: 3,
                         value: 1,
                     };
-                    wallet = ethers_1.ethers.Wallet.createRandom();
+                    wallet = hethers_1.hethers.Wallet.createRandom();
                     return [4 /*yield*/, wallet.signTransaction(txProps)];
                 case 1:
                     tx = _a.sent();
@@ -744,7 +744,7 @@ Object.keys(blockchainData).forEach(function (network) {
             }
         });
     }); });
-    addErrorTest(ethers_1.ethers.utils.Logger.errors.INSUFFICIENT_FUNDS, function (provider) { return __awaiter(_this, void 0, void 0, function () {
+    addErrorTest(hethers_1.hethers.utils.Logger.errors.INSUFFICIENT_FUNDS, function (provider) { return __awaiter(_this, void 0, void 0, function () {
         var txProps, wallet;
         return __generator(this, function (_a) {
             txProps = {
@@ -755,11 +755,11 @@ Object.keys(blockchainData).forEach(function (network) {
                 // @TODO: Remove this once all providers are eip-1559 savvy
                 type: 0,
             };
-            wallet = ethers_1.ethers.Wallet.createRandom().connect(provider);
+            wallet = hethers_1.hethers.Wallet.createRandom().connect(provider);
             return [2 /*return*/, wallet.sendTransaction(txProps)];
         });
     }); });
-    addErrorTest(ethers_1.ethers.utils.Logger.errors.UNPREDICTABLE_GAS_LIMIT, function (provider) { return __awaiter(_this, void 0, void 0, function () {
+    addErrorTest(hethers_1.hethers.utils.Logger.errors.UNPREDICTABLE_GAS_LIMIT, function (provider) { return __awaiter(_this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             return [2 /*return*/, provider.estimateGas({
                     to: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e" // ENS contract
@@ -818,7 +818,7 @@ testFunctions.push({
                     return [4 /*yield*/, provider.getBalance(wallet.address)];
                 case 2:
                     b0 = _a.sent();
-                    assert_1.default.ok(b0.gt(ethers_1.ethers.constants.Zero), "balance is non-zero");
+                    assert_1.default.ok(b0.gt(hethers_1.hethers.constants.Zero), "balance is non-zero");
                     return [4 /*yield*/, wallet.sendTransaction({
                             type: 2,
                             accessList: {
@@ -849,15 +849,15 @@ testFunctions.push({
 });
 // TODO: methods here should be tested when they are ready
 // describe("Test Provider Methods", function() {
-//     let fundReceipt: Promise<ethers.providers.TransactionReceipt> = null;
+//     let fundReceipt: Promise<hethers.providers.TransactionReceipt> = null;
 //     const faucet = "0x8210357f377E901f18E45294e86a2A32215Cc3C9";
 //
 //     before(async function() {
 //         this.timeout(300000);
 //
 //         // Get some ether from the faucet
-//         const provider = new ethers.providers.InfuraProvider("ropsten", getApiKeys("ropsten").infura);
-//         const funder = await ethers.utils.fetchJson(`https:/\/api.ethers.io/api/v1/?action=fundAccount&address=${ fundWallet.address.toLowerCase() }`);
+//         const provider = new hethers.providers.InfuraProvider("ropsten", getApiKeys("ropsten").infura);
+//         const funder = await hethers.utils.fetchJson(`https:/\/api.hethers.io/api/v1/?action=fundAccount&address=${ fundWallet.address.toLowerCase() }`);
 //         fundReceipt = provider.waitForTransaction(funder.hash);
 //         fundReceipt.then((receipt) => {
 //             console.log(`*** Funded: ${ fundWallet.address }`);
@@ -871,7 +871,7 @@ testFunctions.push({
 //         await fundReceipt;
 //
 //         // Refund all unused ether to the faucet
-//         const provider = new ethers.providers.InfuraProvider("ropsten", getApiKeys("ropsten").infura);
+//         const provider = new hethers.providers.InfuraProvider("ropsten", getApiKeys("ropsten").infura);
 //         const gasPrice = await provider.getGasPrice();
 //         const balance = await provider.getBalance(fundWallet.address);
 //         const tx = await fundWallet.connect(provider).sendTransaction({
@@ -944,7 +944,7 @@ describe("Test Basic Authentication", function () {
     function test(name, url) {
         it("tests " + name, function () {
             this.timeout(60000);
-            return ethers_1.ethers.utils.fetchJson(url).then(function (data) {
+            return hethers_1.hethers.utils.fetchJson(url).then(function (data) {
                 assert_1.default.equal(data.authenticated, true, "authenticates user");
             });
         });
@@ -970,7 +970,7 @@ describe("Test Basic Authentication", function () {
     it("tests insecure connections fail", function () {
         this.timeout(60000);
         assert_1.default.throws(function () {
-            return ethers_1.ethers.utils.fetchJson(insecure);
+            return hethers_1.hethers.utils.fetchJson(insecure);
         }, function (error) {
             return (error.reason === "basic authentication requires a secure https url");
         }, "throws an exception for insecure connections");
@@ -979,7 +979,7 @@ describe("Test Basic Authentication", function () {
 // describe("Test Events", function() {
 //     this.retries(3);
 //
-//     async function testBlockEvent(provider: ethers.providers.Provider) {
+//     async function testBlockEvent(provider: hethers.providers.Provider) {
 //         return new Promise((resolve, reject) => {
 //             let firstBlockNumber: number = null;
 //             const handler = (blockNumber: number) => {
@@ -1000,7 +1000,7 @@ describe("Test Basic Authentication", function () {
 //
 //     it("InfuraProvider", async function() {
 //         this.timeout(60000);
-//         const provider = new ethers.providers.InfuraProvider("rinkeby");
+//         const provider = new hethers.providers.InfuraProvider("rinkeby");
 //         await testBlockEvent(provider);
 //     });
 // });
@@ -1190,7 +1190,7 @@ describe("Test Hedera Provider", function () {
                     case 1:
                         tx = _a.sent();
                         txBytes = tx.toBytes();
-                        signedTx = ethers_1.ethers.utils.hexlify(txBytes);
+                        signedTx = hethers_1.hethers.utils.hexlify(txBytes);
                         return [2 /*return*/];
                 }
             });
@@ -1394,9 +1394,9 @@ describe("Test Hedera Provider", function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        defaultProvider = ethers_1.ethers.providers.getDefaultProvider(default_hedera_provider_1.HederaNetworks.TESTNET);
+                        defaultProvider = hethers_1.hethers.providers.getDefaultProvider(default_hedera_provider_1.HederaNetworks.TESTNET);
                         assert_1.default.notStrictEqual(defaultProvider, null);
-                        chainIDDerivedProvider = ethers_1.ethers.providers.getDefaultProvider(291);
+                        chainIDDerivedProvider = hethers_1.hethers.providers.getDefaultProvider(291);
                         assert_1.default.notStrictEqual(chainIDDerivedProvider, null);
                         return [4 /*yield*/, defaultProvider.getBalance(solAddr)];
                     case 1:
@@ -1417,7 +1417,7 @@ describe("Test Hedera Provider", function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        defaultMainnetProvider = ethers_1.ethers.providers.getDefaultProvider();
+                        defaultMainnetProvider = hethers_1.hethers.providers.getDefaultProvider();
                         assert_1.default.notStrictEqual(defaultMainnetProvider, null);
                         return [4 /*yield*/, defaultMainnetProvider.getBalance(solAddr)];
                     case 1:
@@ -1449,8 +1449,8 @@ describe("Test Hedera Provider", function () {
                     case 1:
                         tx = _a.sent();
                         txBytes = tx.toBytes();
-                        signedTx = ethers_1.ethers.utils.hexlify(txBytes);
-                        provider = ethers_1.ethers.providers.getDefaultProvider('testnet');
+                        signedTx = hethers_1.hethers.utils.hexlify(txBytes);
+                        provider = hethers_1.hethers.providers.getDefaultProvider('testnet');
                         return [4 /*yield*/, provider.sendTransaction(signedTx)];
                     case 2:
                         txResponse = _a.sent();
@@ -1482,7 +1482,7 @@ describe("Test Hedera Provider", function () {
                                 "127.0.0.1:50213": "0.0.5"
                             }
                         };
-                        prov = new ethers_1.ethers.providers.HederaProvider(genesis.network["127.0.0.1:50211"], "127.0.0.1:50211", "");
+                        prov = new hethers_1.hethers.providers.HederaProvider(genesis.network["127.0.0.1:50211"], "127.0.0.1:50211", "");
                         return [4 /*yield*/, prov.getBalance(solAddr)];
                     case 1:
                         bal = _a.sent();
@@ -1498,7 +1498,7 @@ describe("Test Hedera Provider", function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        provider2 = new ethers_1.ethers.providers.HederaProvider("0.0.3", "0.testnet.hedera.com:50211", "https://testnet.mirrornode.hedera.com");
+                        provider2 = new hethers_1.hethers.providers.HederaProvider("0.0.3", "0.testnet.hedera.com:50211", "https://testnet.mirrornode.hedera.com");
                         return [4 /*yield*/, provider2.getBalance(solAddr)];
                     case 1:
                         balance2 = _a.sent();

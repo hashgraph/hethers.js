@@ -17,14 +17,14 @@ function addUtilsReplace(plugins) {
 
     // Remove the buffer check from BN.js
     plugins.push(replace({
-        "require('buffer')": "/*RicMoo:ethers:require(buffer)*/(null)",
+        "require('buffer')": "/*RicMoo:hethers:require(buffer)*/(null)",
         include: "**/lib/bn.js",
         delimiters: [ '', '' ]
     }));
 
     // Remove the util from inhjerits (forces browser inherits)
     plugins.push(replace({
-        "require('util')": "/*RicMoo:ethers:require(util)*/(null)",
+        "require('util')": "/*RicMoo:hethers:require(util)*/(null)",
         include: "**/inherits/inherits.js",
         delimiters: [ '', '' ]
     }));
@@ -35,7 +35,7 @@ function addUtilsReplace(plugins) {
 function addLangReplace(plugins) {
 
     plugins.push(replace({
-        'require("./wordlists")': 'require("./browser-wordlists")/*RicMoo:ethers:require(wordlists)*/',
+        'require("./wordlists")': 'require("./browser-wordlists")/*RicMoo:hethers:require(wordlists)*/',
         include: "**/wordlists/lib/index.js",
         delimiters: [ '', '' ]
     }));
@@ -47,7 +47,7 @@ function addEllipticReplace(plugins) {
 
     // Replace the package.json in elliptic
     plugins.push(replace({
-        "require('../package.json')": `/*RicMoo:ethers*/{ version: "${ elliptic.version }" }`,
+        "require('../package.json')": `/*RicMoo:hethers*/{ version: "${ elliptic.version }" }`,
         include: "**/lib/elliptic.js",
         delimiters: [ '', '' ]
     }));
@@ -68,7 +68,7 @@ function addEllipticReplace(plugins) {
             include: `**/${ filename }`,
             delimiters: [ '', '' ]
         };
-        replacement[`require('${ name }')`] = `/*RicMoo:ethers:require(${ name })*/${ text }`,
+        replacement[`require('${ name }')`] = `/*RicMoo:hethers:require(${ name })*/${ text }`,
         plugins.push(replace(replacement));
     });
 
@@ -89,9 +89,9 @@ function getUmdConfig() {
     plugins.push(commonjs({ }));
 
     return {
-        input: `packages/ethers/lib/index.js`,
+        input: `packages/hethers/lib/index.js`,
         output: {
-            file: `packages/ethers/dist/ethers.umd.js`,
+            file: `packages/hethers/dist/hethers.umd.js`,
             format: "umd",
             name: "hethers",
             sourcemap: true
@@ -117,9 +117,9 @@ function getEsmConfig() {
     plugins.push(commonjs({ }));
 
     return {
-        input: `packages/ethers/lib.esm/index.js`,
+        input: `packages/hethers/lib.esm/index.js`,
         output: {
-            file: `packages/ethers/dist/ethers.esm.js`,
+            file: `packages/hethers/dist/hethers.esm.js`,
             format: "esm",
             sourcemap: true
         },
@@ -135,7 +135,7 @@ function getConfig() {
 
     // Remove the buffer check from BN.js
     plugins.push(replace({
-        "require('buffer')": "/ * RicMoo:ethers * /(null)",
+        "require('buffer')": "/ * RicMoo:hethers * /(null)",
         include: "* * / lib/bn.js",
         delimiters: [ '', '' ]
     }));
@@ -145,12 +145,12 @@ function getConfig() {
     plugins.push(commonjs({ }));
 
     return {
-        input: `packages/ethers/lib.esm/index.js`,
+        input: `packages/hethers/lib.esm/index.js`,
         output: {
-            file: `packages/ethers/dist/test-esm.js`,
+            file: `packages/hethers/dist/test-esm.js`,
             //preserveModules: true,
             format: "esm",
-            //name: `ethers`,
+            //name: `hethers`,
             sourcemap: true,
             exports: "named"
         },

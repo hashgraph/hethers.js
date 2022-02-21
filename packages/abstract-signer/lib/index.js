@@ -82,16 +82,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.randomNumBetween = exports.VoidSigner = exports.Signer = void 0;
-var transactions_1 = require("@ethersproject/transactions");
+var transactions_1 = require("@hethers/transactions");
 var bytes_1 = require("@ethersproject/bytes");
 var properties_1 = require("@ethersproject/properties");
-var logger_1 = require("@ethersproject/logger");
+var logger_1 = require("@hethers/logger");
 var _version_1 = require("./_version");
-var address_1 = require("@ethersproject/address");
+var address_1 = require("@hethers/address");
 var sdk_1 = require("@hashgraph/sdk");
 var Long = __importStar(require("long"));
 var proto_1 = require("@hashgraph/proto");
-var strings_1 = require("@ethersproject/strings");
 var logger = new logger_1.Logger(_version_1.version);
 var allowedTransactionKeys = [
     "accessList", "chainId", "customData", "data", "from", "gasLimit", "maxFeePerGas", "maxPriorityFeePerGas", "to", "type", "value",
@@ -270,7 +269,7 @@ var Signer = /** @class */ (function () {
                     case 3: return [2 /*return*/, _b.sent()];
                     case 4:
                         contractByteCode = tx.data;
-                        chunks = (0, strings_1.splitInChunks)(Buffer.from(contractByteCode).toString(), 4096);
+                        chunks = splitInChunks(Buffer.from(contractByteCode).toString(), 4096);
                         fileCreate = {
                             customData: {
                                 fileChunk: chunks[0],
@@ -499,4 +498,19 @@ function randomNumBetween(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 exports.randomNumBetween = randomNumBetween;
+/**
+ * Splits data (utf8) into chunks with the given size
+ * @param data
+ * @param chunkSize
+ */
+function splitInChunks(data, chunkSize) {
+    var chunks = [];
+    var num = 0;
+    while (num <= data.length) {
+        var slice = data.slice(num, chunkSize + num);
+        num += chunkSize;
+        chunks.push(slice);
+    }
+    return chunks;
+}
 //# sourceMappingURL=index.js.map

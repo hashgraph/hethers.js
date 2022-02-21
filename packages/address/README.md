@@ -22,8 +22,7 @@ const {
     isAddress,
 
     getIcapAddress,
-
-    getContractAddress,
+    
     getCreate2Address
 
 } = require("@hethers/address");

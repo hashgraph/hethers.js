@@ -1,10 +1,10 @@
 "use strict";
-import { Provider } from "@ethersproject/abstract-provider";
-import { getNetwork } from "@ethersproject/networks";
+import { Provider } from "@hethers/abstract-provider";
+import { getNetwork } from "@hethers/networks";
 import { BaseProvider } from "./base-provider";
 import { DefaultHederaProvider } from "./default-hedera-provider";
 import { Formatter } from "./formatter";
-import { Logger } from "@ethersproject/logger";
+import { Logger } from "@hethers/logger";
 import { version } from "./_version";
 import HederaProvider from "./hedera-provider";
 const logger = new Logger(version);

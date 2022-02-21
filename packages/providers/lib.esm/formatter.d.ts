@@ -1,6 +1,6 @@
-import { Log, TransactionReceipt, TransactionResponse, HederaTransactionRecord } from "@ethersproject/abstract-provider";
+import { Log, TransactionReceipt, TransactionResponse, HederaTransactionRecord } from "@hethers/abstract-provider";
 import { BigNumber } from "@ethersproject/bignumber";
-import { AccessList } from "@ethersproject/transactions";
+import { AccessList } from "@hethers/transactions";
 export declare type FormatFunc = (value: any) => any;
 export declare type FormatFuncs = {
     [key: string]: FormatFunc;

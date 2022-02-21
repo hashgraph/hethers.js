@@ -3,7 +3,7 @@
 const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
-const ethers = require('ethers');
+const hethers = require('hethers');
 const testcases = [];
 
 const mnemonics = {
@@ -20,8 +20,8 @@ fs.readdirSync(inputDir).forEach((filename, index) => {
        name: comps[1],
        type: "secret-storage",
        hasAddress: !!data.address,
-       address: ethers.utils.getAddressFromAccount(`0.0.${index + 1000}`),
-       alias: ethers.utils.computeAlias("0x" + comps[3]),
+       address: hethers.utils.getAddressFromAccount(`0.0.${index + 1000}`),
+       alias: hethers.utils.computeAlias("0x" + comps[3]),
        privateKey: ("0x" + comps[3]),
        mnemonic: (mnemonics[comps[2]] || null),
        password: comps[4],

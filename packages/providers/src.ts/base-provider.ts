@@ -9,24 +9,23 @@ import {
     TransactionReceipt,
     TransactionRequest,
     TransactionResponse
-} from "@ethersproject/abstract-provider";
-import {BigNumber} from "@ethersproject/bignumber";
-import {arrayify, hexDataLength, hexlify} from "@ethersproject/bytes";
-import {getNetwork, Network, Networkish, HederaNetworkConfigLike} from "@ethersproject/networks";
-import {Deferrable, defineReadOnly, getStatic, resolveProperties} from "@ethersproject/properties";
-import {Transaction} from "@ethersproject/transactions";
-import {Timestamp, TransactionReceipt as HederaTransactionReceipt} from '@hashgraph/sdk';
+} from "@hethers/abstract-provider";
+import { BigNumber } from "@ethersproject/bignumber";
+import { arrayify, hexDataLength, hexlify } from "@ethersproject/bytes";
+import { getNetwork, Network, Networkish, HederaNetworkConfigLike } from "@hethers/networks";
+import { Deferrable, defineReadOnly, getStatic, resolveProperties } from "@ethersproject/properties";
+import { Transaction } from "@hethers/transactions";
+import { Timestamp, TransactionReceipt as HederaTransactionReceipt } from '@hashgraph/sdk';
 
-import {Logger} from "@ethersproject/logger";
-import {version} from "./_version";
-
+import { Logger } from "@hethers/logger";
+import { version } from "./_version";
 const logger = new Logger(version);
 
 import {Formatter} from "./formatter";
-import {getAccountFromTransactionId, AccountLike, asAccountString, getAddressFromAccount} from "@ethersproject/address";
+import {getAccountFromTransactionId, AccountLike, asAccountString, getAddressFromAccount} from "@hethers/address";
 import {AccountBalanceQuery, AccountId, Client, NetworkName, Transaction as HederaTransaction} from "@hashgraph/sdk";
 import axios from "axios";
-import {base64} from "ethers/lib/utils";
+import {base64} from "hethers/lib/utils";
 
 const ZERO_HEDERA_TIMESTAMP = "1000000000.000000000";
 

@@ -1,6 +1,6 @@
 "use strict";
 
-import { AccountLike } from "@ethersproject/address";
+import { AccountLike } from "@hethers/address";
 
 export type Network = {
     name: string,

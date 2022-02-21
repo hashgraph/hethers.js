@@ -4,12 +4,12 @@ import assert from "assert";
 
 // import Web3HttpProvider from "web3-providers-http";
 
-import { ethers } from "ethers";
+import { hethers } from "hethers";
 import { BigNumber } from "@ethersproject/bignumber";
-import { DefaultHederaProvider } from "@ethersproject/providers";
-import { HederaTransactionRecord, TransactionResponse, TransactionReceipt } from "@ethersproject/abstract-provider";
-import { getAddressFromAccount } from "ethers/lib/utils";
-import { HederaNetworks } from "@ethersproject/providers/lib/default-hedera-provider";
+import { DefaultHederaProvider } from "@hethers/providers";
+import { HederaTransactionRecord, TransactionResponse, TransactionReceipt } from "@hethers/abstract-provider";
+import { getAddressFromAccount } from "hethers/lib/utils";
+import { HederaNetworks } from "@hethers/providers/lib/default-hedera-provider";
 import {
     AccountId,
     ContractCreateTransaction, ContractFunctionParameters,
@@ -17,7 +17,7 @@ import {
     TransactionId
 } from "@hashgraph/sdk";
 
-const bnify = ethers.BigNumber.from;
+const bnify = hethers.BigNumber.from;
 
 type TestCases = {
     addresses: Array<any>;
@@ -490,8 +490,8 @@ blockchainData["default"] = blockchainData.homestead;
 function equals(name: string, actual: any, expected: any): void {
     if (expected && expected.eq) {
         if (actual == null) { assert.ok(false, name + " - actual big number null"); }
-        expected = ethers.BigNumber.from(expected);
-        actual = ethers.BigNumber.from(actual);
+        expected = hethers.BigNumber.from(expected);
+        actual = hethers.BigNumber.from(actual);
         assert.ok(expected.eq(actual), name + " matches");
 
     } else if (Array.isArray(expected)) {
@@ -532,7 +532,7 @@ function waiter(duration: number): Promise<void> {
 type ProviderDescription = {
     name: string;
     networks: Array<string>;
-    create: (network: string) => ethers.providers.Provider;
+    create: (network: string) => hethers.providers.Provider;
 };
 
 type CheckSkipFunc = (provider: string, network: string, test: TestDescription) => boolean;
@@ -540,7 +540,7 @@ type CheckSkipFunc = (provider: string, network: string, test: TestDescription) 
 type TestDescription = {
     name: string;
     networks: Array<string>;
-    execute: (provider: ethers.providers.Provider) => Promise<void>;
+    execute: (provider: hethers.providers.Provider) => Promise<void>;
 
     attempts?: number;
     timeout?: number;
@@ -575,7 +575,7 @@ type ApiKeySet = {
 
 function getApiKeys(network: string): ApiKeySet {
     if (network === "default" || network == null) { network = "homestead"; }
-    const apiKeys = ethers.utils.shallowCopy(_ApiKeys);
+    const apiKeys = hethers.utils.shallowCopy(_ApiKeys);
     apiKeys.pocket = _ApiKeysPocket[network];
     return <ApiKeySet>apiKeys;
 }
@@ -587,37 +587,37 @@ const providerFunctions: Array<ProviderDescription> = [
         networks: allNetworks,
         create: (network: string) => {
             if (network == "default") {
-                return ethers.getDefaultProvider("homestead", getApiKeys(network));
+                return hethers.getDefaultProvider("homestead", getApiKeys(network));
             }
-            return ethers.getDefaultProvider(network, getApiKeys(network));
+            return hethers.getDefaultProvider(network, getApiKeys(network));
         }
     },
 ];
 
 // This wallet can be funded and used for various test cases
-const fundWallet = ethers.Wallet.createRandom();
+const fundWallet = hethers.Wallet.createRandom();
 
 
 const testFunctions: Array<TestDescription> = [ ];
 
 Object.keys(blockchainData).forEach((network) => {
-    function addSimpleTest(name: string, func: (provider: ethers.providers.Provider) => Promise<any>, expected: any) {
+    function addSimpleTest(name: string, func: (provider: hethers.providers.Provider) => Promise<any>, expected: any) {
         testFunctions.push({
             name: name,
             networks: [ network ],
-            execute: async (provider: ethers.providers.Provider) => {
+            execute: async (provider: hethers.providers.Provider) => {
                 const value = await func(provider);
                 equals(name, expected, value);
             }
         });
     }
 
-    function addObjectTest(name: string, func: (provider: ethers.providers.Provider) => Promise<any>, expected: any, checkSkip?: CheckSkipFunc) {
+    function addObjectTest(name: string, func: (provider: hethers.providers.Provider) => Promise<any>, expected: any, checkSkip?: CheckSkipFunc) {
         testFunctions.push({
             name,
             networks: [ network ],
             checkSkip,
-            execute: async (provider: ethers.providers.Provider) => {
+            execute: async (provider: hethers.providers.Provider) => {
                 const value = await func(provider);
                 Object.keys(expected).forEach((key) => {
                     equals(`${ name }.${ key }`, value[key], expected[key]);
@@ -635,13 +635,13 @@ Object.keys(blockchainData).forEach((network) => {
     // - ENS name
     tests.addresses.forEach((test) => {
         if (test.balance) {
-            addSimpleTest(`fetches account balance: ${ test.address }`, (provider: ethers.providers.Provider) => {
+            addSimpleTest(`fetches account balance: ${ test.address }`, (provider: hethers.providers.Provider) => {
                 return provider.getBalance(test.address);
             }, test.balance);
         }
 
         if (test.code) {
-            addSimpleTest(`fetches account code: ${ test.address }`, (provider: ethers.providers.Provider) => {
+            addSimpleTest(`fetches account code: ${ test.address }`, (provider: hethers.providers.Provider) => {
                 return provider.getCode(test.address);
             }, test.code);
         }
@@ -649,7 +649,7 @@ Object.keys(blockchainData).forEach((network) => {
 
     tests.transactions.forEach((test) => {
         const hash = test.hash;
-        addObjectTest(`fetches transaction ${ hash }`, async (provider: ethers.providers.Provider) => {
+        addObjectTest(`fetches transaction ${ hash }`, async (provider: hethers.providers.Provider) => {
             const tx = await provider.getTransaction(hash);
 
 
@@ -666,7 +666,7 @@ Object.keys(blockchainData).forEach((network) => {
 
     tests.transactionReceipts.forEach((test) => {
         const hash = test.transactionHash;
-        addObjectTest(`fetches transaction receipt ${ hash }`, async (provider: ethers.providers.Provider) => {
+        addObjectTest(`fetches transaction receipt ${ hash }`, async (provider: hethers.providers.Provider) => {
             const receipt = await provider.getTransactionReceipt(hash);
 
             if (test.status === null) {
@@ -688,14 +688,14 @@ Object.keys(blockchainData).forEach((network) => {
 });
 
 (function() {
-    function addErrorTest(code: string, func: (provider: ethers.providers.Provider) => Promise<any>) {
+    function addErrorTest(code: string, func: (provider: hethers.providers.Provider) => Promise<any>) {
         testFunctions.push({
             name: `throws correct ${ code } error`,
             networks: [ "ropsten" ],
             checkSkip: (provider: string, network: string, test: TestDescription) => {
                 return false;
             },
-            execute: async (provider: ethers.providers.Provider) => {
+            execute: async (provider: hethers.providers.Provider) => {
                 try {
                     const value = await func(provider);
                     console.log(value);
@@ -707,7 +707,7 @@ Object.keys(blockchainData).forEach((network) => {
         });
     }
 
-    addErrorTest(ethers.utils.Logger.errors.INSUFFICIENT_FUNDS, async (provider: ethers.providers.Provider) => {
+    addErrorTest(hethers.utils.Logger.errors.INSUFFICIENT_FUNDS, async (provider: hethers.providers.Provider) => {
 
         const txProps = {
             to: "0x8ba1f109551bD432803012645Ac136ddd64DBA72",
@@ -717,12 +717,12 @@ Object.keys(blockchainData).forEach((network) => {
             value: 1,
         };
 
-        const wallet = ethers.Wallet.createRandom();
+        const wallet = hethers.Wallet.createRandom();
         const tx = await wallet.signTransaction(txProps);
         return provider.sendTransaction(tx);
     });
 
-    addErrorTest(ethers.utils.Logger.errors.INSUFFICIENT_FUNDS, async (provider: ethers.providers.Provider) => {
+    addErrorTest(hethers.utils.Logger.errors.INSUFFICIENT_FUNDS, async (provider: hethers.providers.Provider) => {
         const txProps = {
             to: "0x8ba1f109551bD432803012645Ac136ddd64DBA72",
             gasPrice: 9000000000,
@@ -733,11 +733,11 @@ Object.keys(blockchainData).forEach((network) => {
             type: 0,
         };
 
-        const wallet = ethers.Wallet.createRandom().connect(provider);
+        const wallet = hethers.Wallet.createRandom().connect(provider);
         return wallet.sendTransaction(txProps);
     });
 
-    addErrorTest(ethers.utils.Logger.errors.UNPREDICTABLE_GAS_LIMIT, async (provider: ethers.providers.Provider) => {
+    addErrorTest(hethers.utils.Logger.errors.UNPREDICTABLE_GAS_LIMIT, async (provider: hethers.providers.Provider) => {
         return provider.estimateGas({
             to: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e" // ENS contract
         });
@@ -753,7 +753,7 @@ testFunctions.push({
     checkSkip: (provider: string, network: string, test: TestDescription) => {
         return false;
     },
-    execute: async (provider: ethers.providers.Provider) => {
+    execute: async (provider: hethers.providers.Provider) => {
         // const gasPrice = (await provider.getGasPrice()).mul(10);
         //
         // const wallet = fundWallet.connect(provider);
@@ -763,7 +763,7 @@ testFunctions.push({
         // await waiter(3000);
         //
         // const b0 = await provider.getBalance(wallet.address);
-        // assert.ok(b0.gt(ethers.constants.Zero), "balance is non-zero");
+        // assert.ok(b0.gt(hethers.constants.Zero), "balance is non-zero");
         //
         // const tx = await wallet.sendTransaction({
         //     type: 0,
@@ -789,7 +789,7 @@ testFunctions.push({
     checkSkip: (provider: string, network: string, test: TestDescription) => {
         return false;
     },
-    execute: async (provider: ethers.providers.Provider) => {
+    execute: async (provider: hethers.providers.Provider) => {
         // const gasPrice = (await provider.getGasPrice()).mul(10);
         //
         // const wallet = fundWallet.connect(provider);
@@ -799,7 +799,7 @@ testFunctions.push({
         // await waiter(3000);
         //
         // const b0 = await provider.getBalance(wallet.address);
-        // assert.ok(b0.gt(ethers.constants.Zero), "balance is non-zero");
+        // assert.ok(b0.gt(hethers.constants.Zero), "balance is non-zero");
         //
         // const tx = await wallet.sendTransaction({
         //     type: 1,
@@ -832,7 +832,7 @@ testFunctions.push({
         // These don't support EIP-1559 yet for sending
         return (provider === "AlchemyProvider");
     },
-    execute: async (provider: ethers.providers.Provider) => {
+    execute: async (provider: hethers.providers.Provider) => {
         const wallet = fundWallet.connect(provider);
 
         const addr = "0x8210357f377E901f18E45294e86a2A32215Cc3C9";
@@ -840,7 +840,7 @@ testFunctions.push({
         await waiter(3000);
 
         const b0 = await provider.getBalance(wallet.address);
-        assert.ok(b0.gt(ethers.constants.Zero), "balance is non-zero");
+        assert.ok(b0.gt(hethers.constants.Zero), "balance is non-zero");
 
         const tx = await wallet.sendTransaction({
             type: 2,
@@ -865,15 +865,15 @@ testFunctions.push({
 
 // TODO: methods here should be tested when they are ready
 // describe("Test Provider Methods", function() {
-//     let fundReceipt: Promise<ethers.providers.TransactionReceipt> = null;
+//     let fundReceipt: Promise<hethers.providers.TransactionReceipt> = null;
 //     const faucet = "0x8210357f377E901f18E45294e86a2A32215Cc3C9";
 //
 //     before(async function() {
 //         this.timeout(300000);
 //
 //         // Get some ether from the faucet
-//         const provider = new ethers.providers.InfuraProvider("ropsten", getApiKeys("ropsten").infura);
-//         const funder = await ethers.utils.fetchJson(`https:/\/api.ethers.io/api/v1/?action=fundAccount&address=${ fundWallet.address.toLowerCase() }`);
+//         const provider = new hethers.providers.InfuraProvider("ropsten", getApiKeys("ropsten").infura);
+//         const funder = await hethers.utils.fetchJson(`https:/\/api.hethers.io/api/v1/?action=fundAccount&address=${ fundWallet.address.toLowerCase() }`);
 //         fundReceipt = provider.waitForTransaction(funder.hash);
 //         fundReceipt.then((receipt) => {
 //             console.log(`*** Funded: ${ fundWallet.address }`);
@@ -887,7 +887,7 @@ testFunctions.push({
 //         await fundReceipt;
 //
 //         // Refund all unused ether to the faucet
-//         const provider = new ethers.providers.InfuraProvider("ropsten", getApiKeys("ropsten").infura);
+//         const provider = new hethers.providers.InfuraProvider("ropsten", getApiKeys("ropsten").infura);
 //         const gasPrice = await provider.getGasPrice();
 //         const balance = await provider.getBalance(fundWallet.address);
 //         const tx = await fundWallet.connect(provider).sendTransaction({
@@ -971,7 +971,7 @@ describe("Test Basic Authentication", function() {
     function test(name: string, url: TestCase): void {
         it("tests " + name, function() {
             this.timeout(60000);
-            return ethers.utils.fetchJson(url).then((data) => {
+            return hethers.utils.fetchJson(url).then((data) => {
                 assert.equal(data.authenticated, true, "authenticates user");
             });
         });
@@ -1002,7 +1002,7 @@ describe("Test Basic Authentication", function() {
     it("tests insecure connections fail", function() {
         this.timeout(60000);
         assert.throws(() => {
-            return ethers.utils.fetchJson(insecure);
+            return hethers.utils.fetchJson(insecure);
         }, (error: Error) => {
             return ((<any>error).reason === "basic authentication requires a secure https url");
         }, "throws an exception for insecure connections");
@@ -1012,7 +1012,7 @@ describe("Test Basic Authentication", function() {
 // describe("Test Events", function() {
 //     this.retries(3);
 //
-//     async function testBlockEvent(provider: ethers.providers.Provider) {
+//     async function testBlockEvent(provider: hethers.providers.Provider) {
 //         return new Promise((resolve, reject) => {
 //             let firstBlockNumber: number = null;
 //             const handler = (blockNumber: number) => {
@@ -1033,7 +1033,7 @@ describe("Test Basic Authentication", function() {
 //
 //     it("InfuraProvider", async function() {
 //         this.timeout(60000);
-//         const provider = new ethers.providers.InfuraProvider("rinkeby");
+//         const provider = new hethers.providers.InfuraProvider("rinkeby");
 //         await testBlockEvent(provider);
 //     });
 // });
@@ -1184,7 +1184,7 @@ describe("Test Hedera Provider", function () {
                 .freeze()
                 .sign(privateKey);
             const txBytes = tx.toBytes();
-            signedTx = ethers.utils.hexlify(txBytes);
+            signedTx = hethers.utils.hexlify(txBytes);
         });
 
         it("Should populate transaction receipt", async function (){
@@ -1273,10 +1273,10 @@ describe("Test Hedera Provider", function () {
     }).timeout(timeout * 4);
 
     it("Is able to get hedera provider as default", async function() {
-        let defaultProvider = ethers.providers.getDefaultProvider(HederaNetworks.TESTNET);
+        let defaultProvider = hethers.providers.getDefaultProvider(HederaNetworks.TESTNET);
         assert.notStrictEqual(defaultProvider, null);
 
-        const chainIDDerivedProvider = ethers.providers.getDefaultProvider(291);
+        const chainIDDerivedProvider = hethers.providers.getDefaultProvider(291);
         assert.notStrictEqual(chainIDDerivedProvider, null);
 
         // ensure providers are usable
@@ -1288,7 +1288,7 @@ describe("Test Hedera Provider", function () {
     }).timeout(timeout * 4);
 
     it("Defaults the provider to hedera mainnet", async function() {
-        let defaultMainnetProvider = ethers.providers.getDefaultProvider();
+        let defaultMainnetProvider = hethers.providers.getDefaultProvider();
         assert.notStrictEqual(defaultMainnetProvider, null);
         const balance = await defaultMainnetProvider.getBalance(solAddr);
         assert.strictEqual(true, balance.gte(0));
@@ -1313,8 +1313,8 @@ describe("Test Hedera Provider", function () {
             .freeze()
             .sign(privateKey);
         const txBytes = tx.toBytes();
-        const signedTx = ethers.utils.hexlify(txBytes);
-        const provider = ethers.providers.getDefaultProvider('testnet');
+        const signedTx = hethers.utils.hexlify(txBytes);
+        const provider = hethers.providers.getDefaultProvider('testnet');
         const txResponse = await provider.sendTransaction(signedTx);
         assert.strictEqual(txResponse.gasLimit.toNumber(), 300000);
         assert.strictEqual(txResponse.from, getAddressFromAccount(hederaTestnetOperableAccount.operator.accountId));
@@ -1338,13 +1338,13 @@ describe("Test Hedera Provider", function () {
             }
         };
         /* Connected to the local network as the GENESIS account*/
-        const prov = new ethers.providers.HederaProvider(genesis.network["127.0.0.1:50211"], "127.0.0.1:50211", "");
+        const prov = new hethers.providers.HederaProvider(genesis.network["127.0.0.1:50211"], "127.0.0.1:50211", "");
         const bal = await prov.getBalance(solAddr);
         assert.strictEqual(true, bal.gte(0));
     });
 
     it("Should be able to query testnet with custom urls", async function() {
-        const provider2 = new ethers.providers.HederaProvider(
+        const provider2 = new hethers.providers.HederaProvider(
             "0.0.3",
             "0.testnet.hedera.com:50211",
             "https://testnet.mirrornode.hedera.com");

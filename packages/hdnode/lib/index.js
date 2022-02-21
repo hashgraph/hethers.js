@@ -10,9 +10,9 @@ var properties_1 = require("@ethersproject/properties");
 var signing_key_1 = require("@ethersproject/signing-key");
 var sha2_1 = require("@ethersproject/sha2");
 var wordlists_1 = require("@ethersproject/wordlists");
-var logger_1 = require("@ethersproject/logger");
+var logger_1 = require("@hethers/logger");
 var _version_1 = require("./_version");
-var transactions_1 = require("@ethersproject/transactions");
+var transactions_1 = require("@hethers/transactions");
 var logger = new logger_1.Logger(_version_1.version);
 var N = bignumber_1.BigNumber.from("0xfffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141");
 // "Bitcoin seed"

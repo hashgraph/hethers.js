@@ -1,12 +1,12 @@
 "use strict";
 
-import { Log, TransactionReceipt, TransactionResponse, HederaTransactionRecord } from "@ethersproject/abstract-provider";
-import { getAddress, getAddressFromAccount, getContractAddress } from "@ethersproject/address";
+import { Log, TransactionReceipt, TransactionResponse, HederaTransactionRecord } from "@hethers/abstract-provider";
+import { getAddress, getAddressFromAccount } from "@hethers/address";
 import { BigNumber } from "@ethersproject/bignumber";
 import { hexDataLength, hexDataSlice, hexZeroPad, isHexString } from "@ethersproject/bytes";
-import { AddressZero } from "@ethersproject/constants";
-import { AccessList, accessListify, parse as parseTransaction } from "@ethersproject/transactions";
-import { Logger } from "@ethersproject/logger";
+import { AddressZero } from "@hethers/constants";
+import { AccessList, accessListify, parse as parseTransaction } from "@hethers/transactions";
+import { Logger } from "@hethers/logger";
 import { version } from "./_version";
 const logger = new Logger(version);
 
@@ -210,7 +210,7 @@ export class Formatter {
     }
 
     contractAddress(value: any): string {
-        return getContractAddress(value);
+        return value;
     }
 
     // Requires a hash, optionally requires 0x prefix; returns prefixed lowercase hash.

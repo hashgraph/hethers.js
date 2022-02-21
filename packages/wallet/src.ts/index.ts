@@ -4,15 +4,15 @@ import {
 	getAccountFromAddress,
 	getAddress,
 	getAddressFromAccount
-} from "@ethersproject/address";
-import { Provider, TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
+} from "@hethers/address";
+import { Provider, TransactionRequest, TransactionResponse } from "@hethers/abstract-provider";
 import {
 	ExternallyOwnedAccount,
 	Signer,
 	TypedDataDomain,
 	TypedDataField,
 	TypedDataSigner
-} from "@ethersproject/abstract-signer";
+} from "@hethers/abstract-signer";
 import {
 	arrayify,
 	Bytes,
@@ -24,7 +24,7 @@ import {
 	SignatureLike
 } from "@ethersproject/bytes";
 import { hashMessage } from "@ethersproject/hash";
-import { defaultPath, entropyToMnemonic, HDNode, Mnemonic } from "@ethersproject/hdnode";
+import { defaultPath, entropyToMnemonic, HDNode, Mnemonic } from "@hethers/hdnode";
 import { keccak256 } from "@ethersproject/keccak256";
 import { defineReadOnly } from "@ethersproject/properties";
 import { randomBytes } from "@ethersproject/random";
@@ -34,11 +34,11 @@ import {
 	decryptJsonWalletSync,
 	encryptKeystore,
 	ProgressCallback
-} from "@ethersproject/json-wallets";
-import { computeAlias, serializeHederaTransaction } from "@ethersproject/transactions";
+} from "@hethers/json-wallets";
+import { computeAlias, serializeHederaTransaction } from "@hethers/transactions";
 import { Wordlist } from "@ethersproject/wordlists";
 
-import { Logger } from "@ethersproject/logger";
+import { Logger } from "@hethers/logger";
 import { version } from "./_version";
 import {
 	PrivateKey as HederaPrivKey, PublicKey as HederaPubKey

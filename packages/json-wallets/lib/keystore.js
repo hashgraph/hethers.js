@@ -57,15 +57,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.encrypt = exports.decrypt = exports.decryptSync = exports.KeystoreAccount = void 0;
 var aes_js_1 = __importDefault(require("aes-js"));
 var scrypt_js_1 = __importDefault(require("scrypt-js"));
-var address_1 = require("@ethersproject/address");
+var address_1 = require("@hethers/address");
 var bytes_1 = require("@ethersproject/bytes");
-var hdnode_1 = require("@ethersproject/hdnode");
+var hdnode_1 = require("@hethers/hdnode");
 var keccak256_1 = require("@ethersproject/keccak256");
 var pbkdf2_1 = require("@ethersproject/pbkdf2");
 var random_1 = require("@ethersproject/random");
 var properties_1 = require("@ethersproject/properties");
 var utils_1 = require("./utils");
-var logger_1 = require("@ethersproject/logger");
+var logger_1 = require("@hethers/logger");
 var _version_1 = require("./_version");
 var logger = new logger_1.Logger(_version_1.version);
 // Exported Types

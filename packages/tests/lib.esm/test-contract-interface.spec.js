@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import assert from "assert";
 import { ethers } from "ethers";
-import { loadTests } from "@ethersproject/testcases";
+import { loadTests } from "@hethers/testcases";
 const bnify = ethers.BigNumber.from;
 function equals(actual, expected) {
     // Array (treat recursively)

@@ -1,5 +1,5 @@
-const hethers = require("ethers");
-import { HederaNetworks } from "@ethersproject/providers/lib/default-hedera-provider";
+const hethers = require("hethers");
+import { HederaNetworks } from "@hethers/providers/lib/default-hedera-provider";
 
 (async () => {
     const accountNum = 98;

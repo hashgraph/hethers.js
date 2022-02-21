@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import assert from "assert";
-import { BigNumber, ethers } from "ethers";
+import { BigNumber, hethers } from "hethers";
 import fs, { readFileSync } from "fs";
 // @ts-ignore
 import * as abi from '../../../examples/assets/abi/GLDToken_abi.json';
@@ -19,8 +19,11 @@ import * as abiWithArgs from '../../../examples/assets/abi/GLDTokenWithConstruct
 abi = abi.default;
 // @ts-ignore
 abiWithArgs = abiWithArgs.default;
-import { arrayify } from "ethers/lib/utils";
-import { Logger } from "@ethersproject/logger";
+import { arrayify } from "hethers/lib/utils";
+import { Logger } from "@hethers/logger";
+// const provider = new hethers.providers.InfuraProvider("rinkeby", "49a0efa3aaee4fd99797bfa94d8ce2f1");
+// @ts-ignore
+const provider = hethers.getDefaultProvider("testnet");
 const TIMEOUT_PERIOD = 120000;
 const hederaEoa = {
     account: '0.0.29562194',
@@ -58,7 +61,7 @@ describe("Test Contract Transaction Population", function () {
     const testAddress = "0xdeadbeef00deadbeef01deadbeef02deadbeef03";
     const testAddressCheck = "0xDEAdbeeF00deAdbeEF01DeAdBEEF02DeADBEEF03";
     const fireflyAddress = "0x8ba1f109551bD432803012645Ac136ddd64DBA72";
-    const contract = new ethers.Contract(null, abi);
+    const contract = new hethers.Contract(null, abi);
     xit("standard population", function () {
         return __awaiter(this, void 0, void 0, function* () {
             const tx = yield contract.populateTransaction.balanceOf(testAddress);
@@ -169,12 +172,12 @@ describe("Test Contract Transaction Population", function () {
     });
     it("should return an array of transactions on getDeployTransaction call", function () {
         return __awaiter(this, void 0, void 0, function* () {
-            const provider = ethers.providers.getDefaultProvider('testnet');
+            const provider = hethers.providers.getDefaultProvider('testnet');
             // @ts-ignore
-            const wallet = new ethers.Wallet(hederaEoa, provider);
+            const wallet = new hethers.Wallet(hederaEoa, provider);
             const contractBytecode = fs.readFileSync('examples/assets/bytecode/GLDTokenWithConstructorArgs.bin').toString();
-            const contractFactory = new ethers.ContractFactory(abiWithArgs, contractBytecode, wallet);
-            const transaction = contractFactory.getDeployTransaction(ethers.BigNumber.from("1000000"), {
+            const contractFactory = new hethers.ContractFactory(abiWithArgs, contractBytecode, wallet);
+            const transaction = contractFactory.getDeployTransaction(hethers.BigNumber.from("1000000"), {
                 gasLimit: 300000
             });
             assert('data' in transaction);
@@ -185,11 +188,11 @@ describe("Test Contract Transaction Population", function () {
     });
     it("should be able to deploy a contract", function () {
         return __awaiter(this, void 0, void 0, function* () {
-            const provider = ethers.providers.getDefaultProvider('testnet');
+            const provider = hethers.providers.getDefaultProvider('testnet');
             // @ts-ignore
-            const wallet = new ethers.Wallet(hederaEoa, provider);
+            const wallet = new hethers.Wallet(hederaEoa, provider);
             const bytecode = fs.readFileSync('examples/assets/bytecode/GLDToken.bin').toString();
-            const contractFactory = new ethers.ContractFactory(abi, bytecode, wallet);
+            const contractFactory = new hethers.ContractFactory(abi, bytecode, wallet);
             const contract = yield contractFactory.deploy({ gasLimit: 300000 });
             assert.notStrictEqual(contract, null, "nullified contract");
             assert.notStrictEqual(contract.deployTransaction, "missing deploy transaction");
@@ -209,17 +212,17 @@ describe("Test Contract Transaction Population", function () {
     it("should be able to call contract methods", function () {
         return __awaiter(this, void 0, void 0, function* () {
             // configs
-            const providerTestnet = ethers.providers.getDefaultProvider('testnet');
+            const providerTestnet = hethers.providers.getDefaultProvider('testnet');
             // contract init
             // @ts-ignore
-            const contractWallet = new ethers.Wallet(hederaEoa, providerTestnet);
+            const contractWallet = new hethers.Wallet(hederaEoa, providerTestnet);
             const abiGLDTokenWithConstructorArgs = JSON.parse(readFileSync('examples/assets/abi/GLDTokenWithConstructorArgs_abi.json').toString());
             const contractByteCodeGLDTokenWithConstructorArgs = readFileSync('examples/assets/bytecode/GLDTokenWithConstructorArgs.bin').toString();
-            const contractFactory = new ethers.ContractFactory(abiGLDTokenWithConstructorArgs, contractByteCodeGLDTokenWithConstructorArgs, contractWallet);
-            const contract = yield contractFactory.deploy(ethers.BigNumber.from('10000'), { gasLimit: 3000000 });
+            const contractFactory = new hethers.ContractFactory(abiGLDTokenWithConstructorArgs, contractByteCodeGLDTokenWithConstructorArgs, contractWallet);
+            const contract = yield contractFactory.deploy(hethers.BigNumber.from('10000'), { gasLimit: 3000000 });
             yield contract.deployed();
             // client wallet init
-            let clientWallet = ethers.Wallet.createRandom();
+            let clientWallet = hethers.Wallet.createRandom();
             const clientAccountId = (yield contractWallet.createAccount(clientWallet._signingKey().compressedPublicKey)).customData.accountId;
             clientWallet = clientWallet.connect(providerTestnet).connectAccount(clientAccountId.toString());
             // test sending hbars to the contract
@@ -248,11 +251,11 @@ describe("Test Contract Transaction Population", function () {
     }).timeout(300000);
     it('should have a .wait function', function () {
         return __awaiter(this, void 0, void 0, function* () {
-            const provider = ethers.providers.getDefaultProvider('testnet');
+            const provider = hethers.providers.getDefaultProvider('testnet');
             // @ts-ignore
-            const wallet = new ethers.Wallet(hederaEoa, provider);
+            const wallet = new hethers.Wallet(hederaEoa, provider);
             const bytecode = fs.readFileSync('examples/assets/bytecode/GLDToken.bin').toString();
-            const contractFactory = new ethers.ContractFactory(abi, bytecode, wallet);
+            const contractFactory = new hethers.ContractFactory(abi, bytecode, wallet);
             const contract = yield contractFactory.deploy({ gasLimit: 300000 });
             try {
                 yield contract.deployTransaction.wait(10);
@@ -308,11 +311,11 @@ describe("Test Contract Transaction Population", function () {
     }).timeout(60000);
 });
 describe('Contract Events', function () {
-    const provider = ethers.providers.getDefaultProvider('testnet');
+    const provider = hethers.providers.getDefaultProvider('testnet');
     // @ts-ignore
-    const wallet = new ethers.Wallet(hederaEoa, provider);
+    const wallet = new hethers.Wallet(hederaEoa, provider);
     const abiGLDTokenWithConstructorArgs = JSON.parse(readFileSync('examples/assets/abi/GLDTokenWithConstructorArgs_abi.json').toString());
-    const contract = ethers.ContractFactory.getContract('0x0000000000000000000000000000000001c42805', abiGLDTokenWithConstructorArgs, wallet);
+    const contract = hethers.ContractFactory.getContract('0x0000000000000000000000000000000001c42805', abiGLDTokenWithConstructorArgs, wallet);
     const sleep = (timeout) => __awaiter(this, void 0, void 0, function* () {
         yield new Promise(resolve => {
             setTimeout(resolve, timeout);
@@ -374,13 +377,17 @@ describe('Contract Events', function () {
     }).timeout(TIMEOUT_PERIOD);
 });
 describe("contract.deployed", function () {
-    const provider = ethers.providers.getDefaultProvider('testnet');
+    const hederaEoa = {
+        account: '0.0.29562194',
+        privateKey: '0x3b6cd41ded6986add931390d5d3efa0bb2b311a8415cfe66716cac0234de035d'
+    };
+    const provider = hethers.providers.getDefaultProvider('testnet');
     // @ts-ignore
-    const wallet = new ethers.Wallet(hederaEoa, provider);
+    const wallet = new hethers.Wallet(hederaEoa, provider);
     const bytecode = fs.readFileSync('examples/assets/bytecode/GLDToken.bin').toString();
     it("should work for already deployed contracts", function () {
         return __awaiter(this, void 0, void 0, function* () {
-            const contract = ethers.ContractFactory.getContract('0000000000000000000000000000000001c3903b', abi, wallet);
+            const contract = hethers.ContractFactory.getContract('0000000000000000000000000000000001c3903b', abi, wallet);
             const contractDeployed = yield contract.deployed();
             assert.notStrictEqual(contractDeployed, null, "deployed returns the contract");
             assert.strictEqual(contractDeployed.address, contract.address, "deployed returns the same contract instance");
@@ -388,7 +395,7 @@ describe("contract.deployed", function () {
     }).timeout(60000);
     it("should work if contract is just now deployed", function () {
         return __awaiter(this, void 0, void 0, function* () {
-            const contractFactory = new ethers.ContractFactory(abi, bytecode, wallet);
+            const contractFactory = new hethers.ContractFactory(abi, bytecode, wallet);
             const contract = yield contractFactory.deploy({ gasLimit: 300000 });
             assert.notStrictEqual(contract, null, "nullified contract");
             assert.notStrictEqual(contract.deployTransaction, "missing deploy transaction");
@@ -404,15 +411,15 @@ describe("Test Contract Query Filter", function () {
         account: '0.0.29562194',
         privateKey: '0x3b6cd41ded6986add931390d5d3efa0bb2b311a8415cfe66716cac0234de035d'
     };
-    const provider = ethers.providers.getDefaultProvider('testnet');
+    const provider = hethers.providers.getDefaultProvider('testnet');
     // @ts-ignore
-    const wallet = new ethers.Wallet(hederaEoa, provider);
+    const wallet = new hethers.Wallet(hederaEoa, provider);
     it("should filter contract events by timestamp string", function () {
         return __awaiter(this, void 0, void 0, function* () {
             const contractAddress = '0x000000000000000000000000000000000186fb1a';
             const fromTimestamp = '1642065156.264170833';
             const toTimestamp = '1642080642.176149864';
-            const contract = ethers.ContractFactory.getContract(contractAddress, abi, wallet);
+            const contract = hethers.ContractFactory.getContract(contractAddress, abi, wallet);
             const filter = {
                 address: contractAddress,
             };
@@ -435,7 +442,7 @@ describe("Test Contract Query Filter", function () {
             const contractAddress = '0x000000000000000000000000000000000186fb1a';
             const fromTimestamp = 1642065156264170;
             const toTimestamp = 1642080642176150;
-            const contract = ethers.ContractFactory.getContract(contractAddress, abi, wallet);
+            const contract = hethers.ContractFactory.getContract(contractAddress, abi, wallet);
             const filter = {
                 address: contractAddress,
             };

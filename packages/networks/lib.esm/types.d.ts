@@ -1,4 +1,4 @@
-import { AccountLike } from "@ethersproject/address";
+import { AccountLike } from "@hethers/address";
 export declare type Network = {
     name: string;
     chainId: number;

@@ -1,6 +1,6 @@
 "use strict";
 
-import { getAddress } from "@ethersproject/address";
+import { getAddress } from "@hethers/address";
 
 export function isKeystoreWallet(json: string): boolean {
     let data: any = null;

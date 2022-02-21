@@ -1,11 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseAccount = exports.getAccountFromAddress = exports.getAddressFromAccount = exports.getCreate2Address = exports.getContractAddress = exports.getIcapAddress = exports.isAddress = exports.getAddress = exports.getChecksumAddress = exports.asAccountString = exports.getAccountFromTransactionId = void 0;
+exports.parseAccount = exports.getAccountFromAddress = exports.getAddressFromAccount = exports.getCreate2Address = exports.getIcapAddress = exports.isAddress = exports.getAddress = exports.getChecksumAddress = exports.asAccountString = exports.getAccountFromTransactionId = void 0;
 var bytes_1 = require("@ethersproject/bytes");
 var bignumber_1 = require("@ethersproject/bignumber");
 var keccak256_1 = require("@ethersproject/keccak256");
-var rlp_1 = require("@ethersproject/rlp");
-var logger_1 = require("@ethersproject/logger");
+var logger_1 = require("@hethers/logger");
 var _version_1 = require("./_version");
 var logger = new logger_1.Logger(_version_1.version);
 function getAccountFromTransactionId(transactionId) {
@@ -134,19 +133,6 @@ function getIcapAddress(address) {
     return "XE" + ibanChecksum("XE00" + base36) + base36;
 }
 exports.getIcapAddress = getIcapAddress;
-// http://ethereum.stackexchange.com/questions/760/how-is-the-address-of-an-ethereum-contract-computed
-function getContractAddress(transaction) {
-    var from = null;
-    try {
-        from = getAddress(transaction.from);
-    }
-    catch (error) {
-        logger.throwArgumentError("missing from address", "transaction", transaction);
-    }
-    var nonce = (0, bytes_1.stripZeros)((0, bytes_1.arrayify)(bignumber_1.BigNumber.from(transaction.nonce).toHexString()));
-    return getAddress((0, bytes_1.hexDataSlice)((0, keccak256_1.keccak256)((0, rlp_1.encode)([from, nonce])), 12));
-}
-exports.getContractAddress = getContractAddress;
 function getCreate2Address(from, salt, initCodeHash) {
     if ((0, bytes_1.hexDataLength)(salt) !== 32) {
         logger.throwArgumentError("salt must be 32 bytes", "salt", salt);

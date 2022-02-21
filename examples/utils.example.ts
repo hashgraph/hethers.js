@@ -1,4 +1,4 @@
-const hethers = require("ethers");
+const hethers = require("hethers");
 
 // 0x0000000000000000000000000000000000000001 -> 0.0.1
 const address = `0x0000000000000000000000000000000000000001`;

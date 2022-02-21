@@ -10,13 +10,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import assert from 'assert';
 // @ts-ignore
-import { ethers } from "ethers";
-import { loadTests } from "@ethersproject/testcases";
+import { hethers } from "hethers";
+import { loadTests } from "@hethers/testcases";
 import * as utils from './utils';
-import { AccountId, ContractCreateTransaction, ContractExecuteTransaction, ContractFunctionParameters, Hbar, TransactionId, TransferTransaction } from "@hashgraph/sdk";
-import { getAddressFromAccount, hexlify } from "ethers/lib/utils";
-import { asAccountString } from "@ethersproject/address";
-import { Logger } from "@ethersproject/logger";
+import { AccountId, ContractCreateTransaction, ContractExecuteTransaction, ContractFunctionParameters, Hbar, HbarUnit, TransactionId, TransferTransaction } from "@hashgraph/sdk";
+import { getAddressFromAccount, hexlify } from "hethers/lib/utils";
+import { asAccountString } from "@hethers/address";
+import { Logger } from "@hethers/logger";
 // @ts-ignore
 function equals(a, b) {
     if (Array.isArray(a)) {
@@ -33,41 +33,7 @@ function equals(a, b) {
     return a === b;
 }
 describe('Test Unit Conversion', function () {
-    const tests = loadTests('units');
-    tests.forEach((test) => {
-        let wei = ethers.BigNumber.from(test.wei);
-        it(('parses ' + test.ether + ' ether'), function () {
-            assert.ok(ethers.utils.parseEther(test.ether.replace(/,/g, '')).eq(wei), 'parsing ether failed - ' + test.name);
-        });
-        it(('formats ' + wei.toString() + ' wei to ether'), function () {
-            let actual = ethers.utils.formatEther(wei);
-            assert.equal(actual, test.ether_format, 'formatting wei failed - ' + test.name);
-        });
-    });
-    tests.forEach((test) => {
-        let wei = ethers.BigNumber.from(test.wei);
-        ['kwei', 'mwei', 'gwei', 'szabo', 'finney', 'satoshi'].forEach((name) => {
-            let unitName = name;
-            if (name === 'satoshi') {
-                unitName = 8;
-            }
-            if (test[name]) {
-                it(('parses ' + test[name] + ' ' + name), function () {
-                    this.timeout(120000);
-                    assert.ok(ethers.utils.parseUnits(test[name].replace(/,/g, ''), unitName).eq(wei), ('parsing ' + name + ' failed - ' + test.name));
-                });
-            }
-            let expectedKey = (name + '_format');
-            if (test[expectedKey]) {
-                it(('formats ' + wei.toString() + ' wei to ' + name + ')'), function () {
-                    let actual = ethers.utils.formatUnits(wei, unitName);
-                    let expected = test[expectedKey];
-                    assert.equal(actual, expected, ('formats ' + name + ' - ' + test.name));
-                });
-            }
-        });
-    });
-    it("formats with commify", function () {
+    it("should be able to execute formats with commify", function () {
         const tests = {
             "0.0": "0.0",
             ".0": "0.0",
@@ -83,23 +49,65 @@ describe('Test Unit Conversion', function () {
             "1000.12345": "1,000.12345",
             "998998998998.123456789": "998,998,998,998.123456789",
         };
-        Object.keys(tests).forEach((test) => {
-            assert.equal(ethers.utils.commify(test), tests[test]);
-        });
+        for (let i in tests) {
+            assert.strictEqual(hethers.utils.commify(i), tests[i]);
+        }
     });
-    // See #2016; @TODO: Add more tests along these lines
-    it("checks extra tests", function () {
-        assert.ok(ethers.utils.parseUnits("2", 0).eq(2), "folds trailing zeros without decimal: 2");
-        assert.ok(ethers.utils.parseUnits("2.", 0).eq(2), "folds trailing zeros without decimal: 2.");
-        assert.ok(ethers.utils.parseUnits("2.0", 0).eq(2), "folds trailing zeros without decimal: 2.0");
-        assert.ok(ethers.utils.parseUnits("2.00", 0).eq(2), "folds trailing zeros without decimal: 2.00");
-        assert.ok(ethers.utils.parseUnits("2", 1).eq(20), "folds trailing zeros: 2");
-        assert.ok(ethers.utils.parseUnits("2.", 1).eq(20), "folds trailing zeros: 2.");
-        assert.ok(ethers.utils.parseUnits("2.0", 1).eq(20), "folds trailing zeros: 2.0");
-        assert.ok(ethers.utils.parseUnits("2.00", 1).eq(20), "folds trailing zeros: 2.00");
-        assert.ok(ethers.utils.parseUnits("2.5", 1).eq(25), "folds trailing zeros: 2.5");
-        assert.ok(ethers.utils.parseUnits("2.50", 1).eq(25), "folds trailing zeros: 2.50");
-        assert.ok(ethers.utils.parseUnits("2.500", 1).eq(25), "folds trailing zeros: 2.500");
+    it("should be able to execute formatUnits()", function () {
+        const tinyBars = '100000000000';
+        let resultTinybar = hethers.utils.formatUnits(tinyBars, 'tinybar');
+        let expectedTinybar = ((new Hbar(tinyBars, HbarUnit.Tinybar)).to(HbarUnit.Tinybar)).toString();
+        assert.strictEqual(resultTinybar, expectedTinybar);
+        let resultMicrobar = hethers.utils.formatUnits(tinyBars, 'microbar');
+        let expectedMicrobar = ((new Hbar(tinyBars, HbarUnit.Tinybar)).to(HbarUnit.Microbar)).toNumber().toFixed(1);
+        assert.strictEqual(resultMicrobar, expectedMicrobar);
+        let resultMillibar = hethers.utils.formatUnits(tinyBars, 'millibar');
+        let expectedMillibar = ((new Hbar(tinyBars, HbarUnit.Tinybar)).to(HbarUnit.Millibar)).toNumber().toFixed(1);
+        assert.strictEqual(resultMillibar, expectedMillibar);
+        let resultHbar = hethers.utils.formatUnits(tinyBars, 'hbar');
+        let expectedHbar = ((new Hbar(tinyBars, HbarUnit.Tinybar)).to(HbarUnit.Hbar)).toNumber().toFixed(1);
+        assert.strictEqual(resultHbar, expectedHbar);
+        let resultKilobar = hethers.utils.formatUnits(tinyBars, 'kilobar');
+        let expectedKilobar = ((new Hbar(tinyBars, HbarUnit.Tinybar)).to(HbarUnit.Kilobar)).toNumber().toFixed(1);
+        assert.strictEqual(resultKilobar, expectedKilobar);
+        let resultMegabar = hethers.utils.formatUnits(tinyBars, 'megabar');
+        let expectedMegabar = ((new Hbar(tinyBars, HbarUnit.Tinybar)).to(HbarUnit.Megabar)).toString();
+        assert.strictEqual(resultMegabar, expectedMegabar);
+        let resultGigabar = hethers.utils.formatUnits(tinyBars, 'gigabar');
+        let expectedGigabar = ((new Hbar(tinyBars, HbarUnit.Tinybar)).to(HbarUnit.Gigabar)).toString();
+        assert.strictEqual(resultGigabar, expectedGigabar);
+    });
+    it("should be able to execute parseUnits()", function () {
+        const tinyBars = '1';
+        let resultTinybar = hethers.utils.parseUnits(tinyBars, 'tinybar');
+        let expectedTinybar = ((new Hbar(tinyBars, HbarUnit.Tinybar)).to(HbarUnit.Tinybar)).toString();
+        assert.strictEqual(resultTinybar.toString(), expectedTinybar);
+        let resultMicrobar = hethers.utils.parseUnits(tinyBars, 'microbar');
+        let expectedMicrobar = ((new Hbar(tinyBars, HbarUnit.Microbar)).to(HbarUnit.Tinybar)).toString();
+        assert.strictEqual(resultMicrobar.toString(), expectedMicrobar);
+        let resultMillibar = hethers.utils.parseUnits(tinyBars, 'millibar');
+        let expectedMillibar = ((new Hbar(tinyBars, HbarUnit.Millibar)).to(HbarUnit.Tinybar)).toString();
+        assert.strictEqual(resultMillibar.toString(), expectedMillibar);
+        let resultHbar = hethers.utils.parseUnits(tinyBars, 'hbar');
+        let expectedHbar = ((new Hbar(tinyBars, HbarUnit.Hbar)).to(HbarUnit.Tinybar)).toString();
+        assert.strictEqual(resultHbar.toString(), expectedHbar);
+        let resultKilobar = hethers.utils.parseUnits(tinyBars, 'kilobar');
+        let expectedKilobar = ((new Hbar(tinyBars, HbarUnit.Kilobar)).to(HbarUnit.Tinybar)).toString();
+        assert.strictEqual(resultKilobar.toString(), expectedKilobar);
+        let resultMegabar = hethers.utils.parseUnits(tinyBars, 'megabar');
+        let expectedMegabar = ((new Hbar(tinyBars, HbarUnit.Megabar)).to(HbarUnit.Tinybar)).toString();
+        assert.strictEqual(resultMegabar.toString(), expectedMegabar);
+        let resultGigabar = hethers.utils.parseUnits(tinyBars, 'gigabar');
+        let expectedGigabar = ((new Hbar(tinyBars, HbarUnit.Gigabar)).to(HbarUnit.Tinybar)).toString();
+        assert.strictEqual(resultGigabar.toString(), expectedGigabar);
+    });
+    it("should be able to execute formatHbar()", function () {
+        const result = hethers.utils.formatHbar('100000000');
+        assert.strictEqual(result, '1.0');
+    });
+    it("should be able to execute parseHbar()", function () {
+        const result = hethers.utils.parseHbar('1');
+        assert.strictEqual(result.toString(), '100000000');
     });
 });
 describe('Test ID Hash Functions', function () {
@@ -113,7 +121,7 @@ describe('Test ID Hash Functions', function () {
     tests.forEach((test) => {
         it(('computes id - ' + test.name), function () {
             this.timeout(120000);
-            let actual = ethers.utils.id(test.text);
+            let actual = hethers.utils.id(test.text);
             assert.equal(actual, test.expected, 'computes id(' + test.text + ')');
         });
     });
@@ -124,7 +132,7 @@ describe('Test Solidity Hash Functions', function () {
         it(`computes ${funcName} correctly`, function () {
             this.timeout(120000);
             tests.forEach((test, index) => {
-                let actual = (ethers.utils)['solidity' + funcName](test.types, test.values);
+                let actual = (hethers.utils)['solidity' + funcName](test.types, test.values);
                 let expected = test[testKey];
                 assert.equal(actual, expected, ('computes solidity-' + funcName + '(' + JSON.stringify(test.values) + ') - ' + test.types));
             });
@@ -145,7 +153,7 @@ describe('Test Solidity Hash Functions', function () {
     testsInvalid.forEach((type) => {
         it(`disallows invalid type "${type}"`, function () {
             assert.throws(() => {
-                ethers.utils.solidityPack([type], ["0x12"]);
+                hethers.utils.solidityPack([type], ["0x12"]);
             }, (error) => {
                 const message = error.message;
                 return (message.match(/invalid([a-z ]*) type/) && message.indexOf(type) >= 0);
@@ -158,19 +166,19 @@ describe('Test Hash Functions', function () {
     it('computes keccak256 correctly', function () {
         this.timeout(120000);
         tests.forEach(function (test) {
-            assert.equal(ethers.utils.keccak256(test.data), test.keccak256, ('Keccak256 - ' + test.data));
+            assert.equal(hethers.utils.keccak256(test.data), test.keccak256, ('Keccak256 - ' + test.data));
         });
     });
     it('computes sha2-256 correctly', function () {
         this.timeout(120000);
         tests.forEach(function (test) {
-            assert.equal(ethers.utils.sha256(test.data), test.sha256, ('SHA256 - ' + test.data));
+            assert.equal(hethers.utils.sha256(test.data), test.sha256, ('SHA256 - ' + test.data));
         });
     });
     it('computes sha2-512 correctly', function () {
         this.timeout(120000);
         tests.forEach(function (test) {
-            assert.equal(ethers.utils.sha512(test.data), test.sha512, ('SHA512 - ' + test.data));
+            assert.equal(hethers.utils.sha512(test.data), test.sha512, ('SHA512 - ' + test.data));
         });
     });
 });
@@ -180,8 +188,8 @@ describe('Test Solidity splitSignature', function () {
         let r = '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
         let s = '0xcafe1a7ecafe1a7ecafe1a7ecafe1a7ecafe1a7ecafe1a7ecafe1a7ecafe1a7e';
         for (let v = 27; v <= 28; v++) {
-            let signature = ethers.utils.concat([r, s, [v]]);
-            let sig = ethers.utils.splitSignature(signature);
+            let signature = hethers.utils.concat([r, s, [v]]);
+            let sig = hethers.utils.splitSignature(signature);
             assert.equal(sig.r, r, 'split r correctly');
             assert.equal(sig.s, s, 'split s correctly');
             assert.equal(sig.v, v, 'split v correctly');
@@ -192,8 +200,8 @@ describe('Test Solidity splitSignature', function () {
         let r = '0xdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef';
         let s = '0xcafe1a7ecafe1a7ecafe1a7ecafe1a7ecafe1a7ecafe1a7ecafe1a7ecafe1a7e';
         for (let v = 27; v <= 28; v++) {
-            let signature = ethers.utils.concat([r, s, [v - 27]]);
-            let sig = ethers.utils.splitSignature(signature);
+            let signature = hethers.utils.concat([r, s, [v - 27]]);
+            let sig = hethers.utils.splitSignature(signature);
             assert.equal(sig.r, r, 'split r correctly');
             assert.equal(sig.s, s, 'split s correctly');
             assert.equal(sig.v, v, 'split v correctly');
@@ -205,19 +213,19 @@ describe('Test Base64 coder', function () {
     it('encodes and decodes the example from wikipedia', function () {
         this.timeout(120000);
         let decodedText = 'Man is distinguished, not only by his reason, but by this singular passion from other animals, which is a lust of the mind, that by a perseverance of delight in the continued and indefatigable generation of knowledge, exceeds the short vehemence of any carnal pleasure.';
-        let decoded = ethers.utils.toUtf8Bytes(decodedText);
+        let decoded = hethers.utils.toUtf8Bytes(decodedText);
         let encoded = 'TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlzIHNpbmd1bGFyIHBhc3Npb24gZnJvbSBvdGhlciBhbmltYWxzLCB3aGljaCBpcyBhIGx1c3Qgb2YgdGhlIG1pbmQsIHRoYXQgYnkgYSBwZXJzZXZlcmFuY2Ugb2YgZGVsaWdodCBpbiB0aGUgY29udGludWVkIGFuZCBpbmRlZmF0aWdhYmxlIGdlbmVyYXRpb24gb2Yga25vd2xlZGdlLCBleGNlZWRzIHRoZSBzaG9ydCB2ZWhlbWVuY2Ugb2YgYW55IGNhcm5hbCBwbGVhc3VyZS4=';
-        assert.equal(ethers.utils.base64.encode(decoded), encoded, 'encodes to base64 string');
-        assert.equal(ethers.utils.toUtf8String(ethers.utils.base64.decode(encoded)), decodedText, 'decodes from base64 string');
+        assert.equal(hethers.utils.base64.encode(decoded), encoded, 'encodes to base64 string');
+        assert.equal(hethers.utils.toUtf8String(hethers.utils.base64.decode(encoded)), decodedText, 'decodes from base64 string');
     });
 });
 describe('Test UTF-8 coder', function () {
-    const overlong = ethers.utils.Utf8ErrorReason.OVERLONG;
-    const utf16Surrogate = ethers.utils.Utf8ErrorReason.UTF16_SURROGATE;
-    const overrun = ethers.utils.Utf8ErrorReason.OVERRUN;
-    const missingContinue = ethers.utils.Utf8ErrorReason.MISSING_CONTINUE;
-    const unexpectedContinue = ethers.utils.Utf8ErrorReason.UNEXPECTED_CONTINUE;
-    const outOfRange = ethers.utils.Utf8ErrorReason.OUT_OF_RANGE;
+    const overlong = hethers.utils.Utf8ErrorReason.OVERLONG;
+    const utf16Surrogate = hethers.utils.Utf8ErrorReason.UTF16_SURROGATE;
+    const overrun = hethers.utils.Utf8ErrorReason.OVERRUN;
+    const missingContinue = hethers.utils.Utf8ErrorReason.MISSING_CONTINUE;
+    const unexpectedContinue = hethers.utils.Utf8ErrorReason.UNEXPECTED_CONTINUE;
+    const outOfRange = hethers.utils.Utf8ErrorReason.OUT_OF_RANGE;
     let BadUTF = [
         // See: https://en.wikipedia.org/wiki/UTF-8#Overlong_encodings
         { bytes: [0xF0, 0x82, 0x82, 0xAC], reason: overlong, ignored: "", replaced: "\u20ac", name: 'wikipedia overlong encoded Euro sign' },
@@ -242,14 +250,14 @@ describe('Test UTF-8 coder', function () {
     BadUTF.forEach(function (test) {
         it('toUtf8String - ' + test.name, function () {
             // Check the string using the ignoreErrors conversion
-            const ignored = ethers.utils.toUtf8String(test.bytes, ethers.utils.Utf8ErrorFuncs.ignore);
+            const ignored = hethers.utils.toUtf8String(test.bytes, hethers.utils.Utf8ErrorFuncs.ignore);
             assert.equal(ignored, test.ignored, "ignoring errors matches");
             // Check the string using the replaceErrors conversion
-            const replaced = ethers.utils.toUtf8String(test.bytes, ethers.utils.Utf8ErrorFuncs.replace);
+            const replaced = hethers.utils.toUtf8String(test.bytes, hethers.utils.Utf8ErrorFuncs.replace);
             assert.equal(replaced, test.replaced, "replaced errors matches");
             // Check the string throws the correct error during conversion
             assert.throws(function () {
-                let result = ethers.utils.toUtf8String(test.bytes);
+                let result = hethers.utils.toUtf8String(test.bytes);
                 console.log('Result', result);
             }, function (error) {
                 return (error.message.split(";").pop().split("(")[0].trim() === test.reason);
@@ -284,9 +292,9 @@ describe('Test UTF-8 coder', function () {
         for (let i = 0; i < 100000; i++) {
             let seed = 'test-' + String(i);
             let str = randomString(seed);
-            let bytes = ethers.utils.toUtf8Bytes(str);
-            let str2 = ethers.utils.toUtf8String(bytes);
-            let escaped = JSON.parse(ethers.utils._toEscapedUtf8String(bytes));
+            let bytes = hethers.utils.toUtf8Bytes(str);
+            let str2 = hethers.utils.toUtf8String(bytes);
+            let escaped = JSON.parse(hethers.utils._toEscapedUtf8String(bytes));
             //            assert.ok(Buffer.from(str).equals(Buffer.from(bytes)), 'bytes not generated correctly - ' + bytes)
             assert.equal(str2, str, 'conversion not reflexive - ' + bytes);
             assert.equal(escaped, str, 'conversion not reflexive - ' + bytes);
@@ -297,14 +305,14 @@ describe('Test Bytes32String coder', function () {
     // @TODO: a LOT more test cases; generated from Solidity
     it("encodes an ens name", function () {
         let str = "ricmoo.firefly.eth";
-        let bytes32 = ethers.utils.formatBytes32String(str);
-        let str2 = ethers.utils.parseBytes32String(bytes32);
+        let bytes32 = hethers.utils.formatBytes32String(str);
+        let str2 = hethers.utils.parseBytes32String(bytes32);
         assert.equal(bytes32, '0x7269636d6f6f2e66697265666c792e6574680000000000000000000000000000', 'formatted correctly');
         assert.equal(str2, str, "parsed correctly");
     });
 });
 function getHex(value) {
-    return ethers.utils.hexlify(ethers.utils.toUtf8Bytes(value));
+    return hethers.utils.hexlify(hethers.utils.toUtf8Bytes(value));
 }
 describe("Test nameprep", function () {
     const Tests = loadTests("nameprep");
@@ -322,17 +330,17 @@ describe("Test nameprep", function () {
             return;
         }
         it(test.comment, function () {
-            let input = ethers.utils.toUtf8String(test.input);
+            let input = hethers.utils.toUtf8String(test.input);
             if (test.output) {
-                let expected = ethers.utils.toUtf8String(test.output);
-                let actual = ethers.utils.nameprep(input);
+                let expected = hethers.utils.toUtf8String(test.output);
+                let actual = hethers.utils.nameprep(input);
                 assert.equal(actual, expected, `actual("${getHex(actual)}") !== expected("${getHex(expected)}")`);
             }
             else {
                 let ok = true;
                 let reason = "";
                 try {
-                    let actual = ethers.utils.nameprep(input);
+                    let actual = hethers.utils.nameprep(input);
                     console.log(actual);
                     reason = `should has thrown ${test.rc} - actual("${getHex(actual)}")`;
                     ok = false;
@@ -350,25 +358,25 @@ describe("Test Signature Manipulation", function () {
     const tests = loadTests("transactions");
     tests.forEach((test) => {
         it("autofills partial signatures - " + test.name, function () {
-            const address = ethers.utils.getAddress(test.accountAddress);
-            const hash = ethers.utils.keccak256(test.unsignedTransaction);
-            const data = ethers.utils.RLP.decode(test.signedTransaction);
+            const address = hethers.utils.getAddress(test.accountAddress);
+            const hash = hethers.utils.keccak256(test.unsignedTransaction);
+            const data = hethers.utils.RLP.decode(test.signedTransaction);
             const s = data.pop(), r = data.pop(), v = parseInt(data.pop().substring(2), 16);
-            const sig = ethers.utils.splitSignature({ r: r, s: s, v: v });
+            const sig = hethers.utils.splitSignature({ r: r, s: s, v: v });
             {
-                const addr = ethers.utils.recoverAddress(hash, {
+                const addr = hethers.utils.recoverAddress(hash, {
                     r: r, s: s, v: v
                 });
                 assert.equal(addr, address, "Using r, s and v");
             }
             {
-                const addr = ethers.utils.recoverAddress(hash, {
+                const addr = hethers.utils.recoverAddress(hash, {
                     r: sig.r, _vs: sig._vs
                 });
                 assert.equal(addr, address, "Using r, _vs");
             }
             {
-                const addr = ethers.utils.recoverAddress(hash, {
+                const addr = hethers.utils.recoverAddress(hash, {
                     r: sig.r, s: sig.s, recoveryParam: sig.recoveryParam
                 });
                 assert.equal(addr, address, "Using r, s and recoveryParam");
@@ -393,7 +401,7 @@ describe("Test Typed Transactions", function () {
                 .setConstructorParameters(new ContractFunctionParameters().addAddress(getAddressFromAccount(sendingAccount)))
                 .setTransactionId(TransactionId.generate(sendingAccount))
                 .freeze();
-            const tx = yield ethers.utils.parseTransaction(cc.toBytes());
+            const tx = yield hethers.utils.parseTransaction(cc.toBytes());
             assert(tx.gasLimit.toNumber() === 1000, "Invalid gas limit");
             assert(tx.data == hexlify(cc.constructorParameters));
             assert(tx.from === getAddressFromAccount(sendingAccount), "Invalid sending account");
@@ -412,7 +420,7 @@ describe("Test Typed Transactions", function () {
                 .setTransactionId(TransactionId.generate(sendingAccount))
                 .setNodeAccountIds([new AccountId(0, 0, 3)])
                 .freeze();
-            const tx = yield ethers.utils.parseTransaction(ce.toBytes());
+            const tx = yield hethers.utils.parseTransaction(ce.toBytes());
             assert(tx.gasLimit.toNumber() === 1000, "Invalid gas");
             assert(tx.from === getAddressFromAccount(sendingAccount), "Invalid sending account");
             // remove 0x prefix
@@ -431,7 +439,7 @@ describe("Test Typed Transactions", function () {
                 .setTransactionId(TransactionId.generate(sendingAccount))
                 .freeze();
             try {
-                const tx = yield ethers.utils.parseTransaction(t.toBytes());
+                const tx = yield hethers.utils.parseTransaction(t.toBytes());
                 assert(tx == null, "unexpected tx");
             }
             catch (err) {
@@ -446,7 +454,7 @@ describe("BigNumber", function () {
         if (test.expectedValue == null) {
             it(test.testcase, function () {
                 assert.throws(() => {
-                    const value = ethers.BigNumber.from(test.value);
+                    const value = hethers.BigNumber.from(test.value);
                     console.log("ERROR", value);
                 }, (error) => {
                     return true;
@@ -455,9 +463,9 @@ describe("BigNumber", function () {
         }
         else {
             it(test.testcase, function () {
-                const value = ethers.BigNumber.from(test.value);
+                const value = hethers.BigNumber.from(test.value);
                 assert.equal(value.toHexString(), test.expectedValue);
-                const value2 = ethers.BigNumber.from(value);
+                const value2 = hethers.BigNumber.from(value);
                 assert.equal(value2.toHexString(), test.expectedValue);
             });
         }
@@ -473,8 +481,8 @@ describe("BigNumber", function () {
         { value: "-0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff", expected: "0xfffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" },
     ].forEach((test) => {
         it(`absolute value (${test.value})`, function () {
-            const value = ethers.BigNumber.from(test.value);
-            const expected = ethers.BigNumber.from(test.expected);
+            const value = hethers.BigNumber.from(test.value);
+            const expected = hethers.BigNumber.from(test.expected);
             assert.ok(value.abs().eq(expected));
         });
     });
@@ -482,7 +490,7 @@ describe("BigNumber", function () {
     it("Fails on junk with a length property", function () {
         const junk = { negative: 0, words: [1000], length: 1, red: null };
         assert.throws(() => {
-            const value = ethers.BigNumber.from("100").add(junk);
+            const value = hethers.BigNumber.from("100").add(junk);
             console.log("ERROR", value);
         }, (error) => {
             return true;
@@ -506,7 +514,7 @@ describe("FixedNumber", function () {
         ];
         Tests.forEach((test) => {
             it(`Create from=${test.value}`, function () {
-                const value = ethers.FixedNumber.from(test.value);
+                const value = hethers.FixedNumber.from(test.value);
                 assert.equal(value.toString(), test.expected);
             });
         });
@@ -530,7 +538,7 @@ describe("FixedNumber", function () {
         ];
         Tests.forEach((test) => {
             it(`Rounding value=${test.value}, decimals=${test.round}`, function () {
-                const value = ethers.FixedNumber.from(test.value).round(test.round);
+                const value = hethers.FixedNumber.from(test.value).round(test.round);
                 assert.equal(value.toString(), test.expected);
             });
         });
@@ -546,7 +554,7 @@ describe("FixedNumber", function () {
         ];
         Tests.forEach((test) => {
             it(`Clamping value=${test.value}`, function () {
-                const value = ethers.FixedNumber.from(test.value);
+                const value = hethers.FixedNumber.from(test.value);
                 assert.equal(value.floor().toString(), test.floor);
                 assert.equal(value.ceiling().toString(), test.ceiling);
             });
@@ -554,15 +562,15 @@ describe("FixedNumber", function () {
     }
 });
 describe("Logger", function () {
-    const logger = new ethers.utils.Logger("testing/0.0");
+    const logger = new hethers.utils.Logger("testing/0.0");
     it("setLogLevel", function () {
-        ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.DEBUG);
-        ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.INFO);
-        ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.WARNING);
-        ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.ERROR);
-        ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.OFF);
+        hethers.utils.Logger.setLogLevel(hethers.utils.Logger.levels.DEBUG);
+        hethers.utils.Logger.setLogLevel(hethers.utils.Logger.levels.INFO);
+        hethers.utils.Logger.setLogLevel(hethers.utils.Logger.levels.WARNING);
+        hethers.utils.Logger.setLogLevel(hethers.utils.Logger.levels.ERROR);
+        hethers.utils.Logger.setLogLevel(hethers.utils.Logger.levels.OFF);
         // Reset back to INFO when done tests
-        ethers.utils.Logger.setLogLevel(ethers.utils.Logger.levels.INFO);
+        hethers.utils.Logger.setLogLevel(hethers.utils.Logger.levels.INFO);
     });
     it("checkArgumentCount", function () {
         logger.checkArgumentCount(3, 3);
@@ -571,23 +579,23 @@ describe("Logger", function () {
         assert.throws(() => {
             logger.checkArgumentCount(1, 3);
         }, (error) => {
-            return error.code === ethers.utils.Logger.errors.MISSING_ARGUMENT;
+            return error.code === hethers.utils.Logger.errors.MISSING_ARGUMENT;
         });
     });
     it("checkArgumentCount - too many", function () {
         assert.throws(() => {
             logger.checkArgumentCount(3, 1);
         }, (error) => {
-            return error.code === ethers.utils.Logger.errors.UNEXPECTED_ARGUMENT;
+            return error.code === hethers.utils.Logger.errors.UNEXPECTED_ARGUMENT;
         });
     });
 });
 describe("Base58 Coder", function () {
     it("decodes", function () {
-        assert.equal(ethers.utils.toUtf8String(ethers.utils.base58.decode("JxF12TrwUP45BMd")), "Hello World");
+        assert.equal(hethers.utils.toUtf8String(hethers.utils.base58.decode("JxF12TrwUP45BMd")), "Hello World");
     });
     it("encodes", function () {
-        assert.equal(ethers.utils.base58.encode(ethers.utils.toUtf8Bytes("Hello World")), "JxF12TrwUP45BMd");
+        assert.equal(hethers.utils.base58.encode(hethers.utils.toUtf8Bytes("Hello World")), "JxF12TrwUP45BMd");
     });
 });
 describe("Account like to string", function () {
@@ -638,7 +646,7 @@ describe("Account like to string", function () {
 describe("Web Fetch", function() {
     it("fetches JSON", async function() {
         const url = "https:/\/api.etherscan.io/api?module=stats&action=ethprice&apikey=9D13ZE7XSBTJ94N9BNJ2MA33VMAY2YPIRB";
-        const getData = ethers.utils.fetchJson(url)
+        const getData = hethers.utils.fetchJson(url)
     });
 });
 */
@@ -647,12 +655,12 @@ describe("EIP-712", function () {
     const tests = loadTests("eip712");
     tests.forEach((test) => {
         it(`encoding ${test.name}`, function () {
-            const encoder = ethers.utils._TypedDataEncoder.from(test.types);
+            const encoder = hethers.utils._TypedDataEncoder.from(test.types);
             assert.equal(encoder.primaryType, test.primaryType, "instance.primaryType");
             assert.equal(encoder.encode(test.data), test.encoded, "instance.encode()");
             //console.log(test);
-            assert.equal(ethers.utils._TypedDataEncoder.getPrimaryType(test.types), test.primaryType, "getPrimaryType");
-            assert.equal(ethers.utils._TypedDataEncoder.hash(test.domain, test.types, test.data), test.digest, "digest");
+            assert.equal(hethers.utils._TypedDataEncoder.getPrimaryType(test.types), test.primaryType, "getPrimaryType");
+            assert.equal(hethers.utils._TypedDataEncoder.hash(test.domain, test.types, test.data), test.digest, "digest");
         });
     });
     tests.forEach((test) => {
@@ -661,7 +669,7 @@ describe("EIP-712", function () {
         }
         it(`signing ${test.name}`, function () {
             return __awaiter(this, void 0, void 0, function* () {
-                const wallet = new ethers.Wallet(test.privateKey);
+                const wallet = new hethers.Wallet(test.privateKey);
                 yield assert.rejects(wallet._signTypedData(test.domain, test.types, test.data), '_signTypedData not supported');
             });
         });
@@ -727,10 +735,10 @@ describe("EIP-2930", function () {
                 type: 1,
                 chainId: 3,
                 nonce: 13,
-                gasPrice: ethers.BigNumber.from("0x65cf89a0"),
-                gasLimit: ethers.BigNumber.from("0x5b68"),
+                gasPrice: hethers.BigNumber.from("0x65cf89a0"),
+                gasLimit: hethers.BigNumber.from("0x5b68"),
                 to: "0x32162F3581E88a5f62e8A61892B42C46E2c18f7b",
-                value: ethers.BigNumber.from("0"),
+                value: hethers.BigNumber.from("0"),
                 data: "0x",
                 accessList: [
                     {
@@ -753,10 +761,10 @@ describe("EIP-2930", function () {
                 type: 1,
                 chainId: 3,
                 nonce: 14,
-                gasPrice: ethers.BigNumber.from("0x65cf89a0"),
-                gasLimit: ethers.BigNumber.from("0x71ac"),
+                gasPrice: hethers.BigNumber.from("0x65cf89a0"),
+                gasLimit: hethers.BigNumber.from("0x71ac"),
                 to: "0x32162F3581E88a5f62e8A61892B42C46E2c18f7b",
-                value: ethers.BigNumber.from("0"),
+                value: hethers.BigNumber.from("0"),
                 data: "0x",
                 accessList: [
                     {
@@ -778,15 +786,15 @@ describe("EIP-2930", function () {
     Tests.forEach((test) => {
         it(`tx:${test.hash}`, function () {
             // FIXME
-            // const tx = ethers.utils.parseTransaction(test.data);
+            // const tx = hethers.utils.parseTransaction(test.data);
             // assert.equal(tx.hash, test.hash);
             // const reason = deepEquals(tx, test.tx);
             // assert.ok(reason == null, reason);
             //
-            // const preimageData = ethers.utils.serializeTransaction(<any>(test.tx));
+            // const preimageData = hethers.utils.serializeTransaction(<any>(test.tx));
             // assert.equal(preimageData, test.preimage);
             //
-            // const data = ethers.utils.serializeTransaction(<any>(test.tx), test.tx);
+            // const data = hethers.utils.serializeTransaction(<any>(test.tx), test.tx);
             // assert.equal(data, test.data);
         });
     });

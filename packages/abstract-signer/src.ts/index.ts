@@ -1,18 +1,18 @@
 "use strict";
 
-import { Provider, TransactionRequest, TransactionResponse } from "@ethersproject/abstract-provider";
+import { Provider, TransactionRequest, TransactionResponse } from "@hethers/abstract-provider";
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
-import { numberify } from "@ethersproject/transactions";
+import { numberify } from "@hethers/transactions";
 import { arrayify, Bytes, BytesLike, hexlify } from "@ethersproject/bytes";
 import { Deferrable, defineReadOnly, resolveProperties, shallowCopy } from "@ethersproject/properties";
-import { Logger } from "@ethersproject/logger";
+import { Logger } from "@hethers/logger";
 import { version } from "./_version";
 import {
     Account,
     asAccountString,
     getAddressFromAccount,
     getChecksumAddress
-} from "@ethersproject/address";
+} from "@hethers/address";
 import { SigningKey } from "@ethersproject/signing-key";
 import {
     AccountId,
@@ -24,7 +24,6 @@ import {
 } from "@hashgraph/sdk";
 import * as Long from "long";
 import { SignedTransaction, TransactionBody } from "@hashgraph/proto";
-import { splitInChunks } from "@ethersproject/strings";
 
 const logger = new Logger(version);
 
@@ -437,4 +436,20 @@ export function randomNumBetween(min: number, max: number): number {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+/**
+ * Splits data (utf8) into chunks with the given size
+ * @param data
+ * @param chunkSize
+ */
+function splitInChunks(data: string, chunkSize: number): string[] {
+    const chunks = [];
+    let num = 0;
+    while (num <= data.length) {
+        const slice = data.slice(num, chunkSize + num);
+        num += chunkSize;
+        chunks.push(slice);
+    }
+    return chunks;
 }

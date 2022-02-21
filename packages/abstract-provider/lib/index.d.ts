@@ -1,9 +1,9 @@
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import { BytesLike } from "@ethersproject/bytes";
-import { Network } from "@ethersproject/networks";
+import { Network } from "@hethers/networks";
 import { Deferrable } from "@ethersproject/properties";
-import { AccessListish, Transaction } from "@ethersproject/transactions";
-import { AccountLike } from "@ethersproject/address";
+import { AccessListish, Transaction } from "@hethers/transactions";
+import { AccountLike } from "@hethers/address";
 import { AccountId, Client } from '@hashgraph/sdk';
 export declare type TransactionRequest = {
     to?: AccountLike;

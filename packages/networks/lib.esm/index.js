@@ -1,5 +1,5 @@
 "use strict";
-import { Logger } from "@ethersproject/logger";
+import { Logger } from "@hethers/logger";
 import { version } from "./_version";
 const logger = new Logger(version);
 function isRenetworkable(value) {

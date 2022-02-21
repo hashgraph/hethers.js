@@ -1,8 +1,8 @@
-import { AccountLike } from "@ethersproject/address";
+import { AccountLike } from "@hethers/address";
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import { BytesLike, SignatureLike } from "@ethersproject/bytes";
 import { Transaction as HederaTransaction, PublicKey as HederaPubKey } from "@hashgraph/sdk";
-import { TransactionRequest } from "@ethersproject/abstract-provider";
+import { TransactionRequest } from "@hethers/abstract-provider";
 export declare type AccessList = Array<{
     address: string;
     storageKeys: Array<string>;
