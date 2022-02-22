@@ -38,7 +38,7 @@ Documentation
 
 Browse the [documentation](https://docs.hethers.com/) online:
 
-- [Getting Started](https://docs.hethers.com//getting-started/)
+- [Getting Started](https://docs.hethers.com/getting-started/)
 - [Full API Documentation](https://docs.hethers.com//api/)
 
 License
