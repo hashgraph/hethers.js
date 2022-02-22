@@ -339,9 +339,9 @@ describe('Contract Events', function () {
         });
         const mint = await contract.mint(BigNumber.from(`1`), { gasLimit: 300000 });
         await mint.wait();
-        await sleep(15000);
+        await sleep(20000);
         contract.removeAllListeners();
-        assert.strictEqual(enoughEventsCaptured(capturedMints.length, 1), true, "expected 5 captured events (Mint).")
+        assert.strictEqual(enoughEventsCaptured(capturedMints.length, 1), true, "expected 1 captured events (Mint).")
         for(let mint of capturedMints) {
             assert.strictEqual(mint[0].toLowerCase(), wallet.address.toLowerCase(), "address mismatch - mint");
         }
@@ -357,9 +357,9 @@ describe('Contract Events', function () {
         });
         const mint = await contract.mint(BigNumber.from(`1`), { gasLimit: 300000 });
         await mint.wait();
-        await sleep(15000);
+        await sleep(20000);
         provider.removeAllListeners();
-        assert.strictEqual(enoughEventsCaptured(capturedMints.length, 1), true, "expected 5 captured events (Mint).")
+        assert.strictEqual(enoughEventsCaptured(capturedMints.length, 1), true, "expected 1 captured events (Mint).")
     }).timeout(TIMEOUT_PERIOD * 2);
 
     it('should throw on OR topics filter', async function() {
