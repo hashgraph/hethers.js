@@ -65,6 +65,8 @@ var utils = __importStar(require("./utils"));
 var utils_1 = require("hethers/lib/utils");
 var sdk_1 = require("@hashgraph/sdk");
 var fs_1 = require("fs");
+var abi = JSON.parse((0, fs_1.readFileSync)('packages/tests/contracts/Token.json').toString());
+var abiTokenWithArgs = JSON.parse((0, fs_1.readFileSync)('packages/tests/contracts/TokenWithArgs.json').toString());
 describe('Test JSON Wallets', function () {
     var tests = (0, testcases_1.loadTests)('wallets');
     tests.forEach(function (test) {
@@ -535,138 +537,128 @@ describe("Wallet getters", function () {
 });
 describe("Wallet local calls", function () {
     return __awaiter(this, void 0, void 0, function () {
-        var hederaEoa, provider, wallet, contractAddr, abi, contract, balanceOfParams, _a, _b, _c;
-        return __generator(this, function (_d) {
-            switch (_d.label) {
-                case 0:
-                    hederaEoa = {
-                        account: '0.0.29511337',
-                        privateKey: '0x409836c5c296fe800fcac721093c68c78c4c03a1f88cb10bbdf01ecc49247132'
-                    };
-                    provider = hethers_1.hethers.providers.getDefaultProvider('testnet');
-                    wallet = new hethers_1.hethers.Wallet(hederaEoa, provider);
-                    contractAddr = '0000000000000000000000000000000001b34cbb';
-                    abi = JSON.parse((0, fs_1.readFileSync)('examples/assets/abi/GLDToken_abi.json').toString());
-                    contract = hethers_1.hethers.ContractFactory.getContract(contractAddr, abi, wallet);
-                    _b = (_a = contract.interface).encodeFunctionData;
-                    _c = ['balanceOf'];
-                    return [4 /*yield*/, wallet.getAddress()];
-                case 1:
-                    balanceOfParams = _b.apply(_a, _c.concat([[
-                            _d.sent()
-                        ]]));
-                    // skipped - no balance in account
-                    xit("Should be able to perform local call", function () {
-                        return __awaiter(this, void 0, void 0, function () {
-                            var balanceOfTx, response;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0:
-                                        balanceOfTx = {
-                                            to: contractAddr,
-                                            gasLimit: 30000,
-                                            data: (0, utils_1.arrayify)(balanceOfParams),
-                                        };
-                                        return [4 /*yield*/, wallet.call(balanceOfTx)];
-                                    case 1:
-                                        response = _a.sent();
-                                        assert_1.default.notStrictEqual(response, null);
-                                        return [2 /*return*/];
-                                }
-                            });
-                        });
+        var hederaEoa, provider, wallet, contractAddr, contract, balanceOfParams;
+        return __generator(this, function (_a) {
+            hederaEoa = {
+                account: '0.0.29511337',
+                privateKey: '0x409836c5c296fe800fcac721093c68c78c4c03a1f88cb10bbdf01ecc49247132'
+            };
+            provider = hethers_1.hethers.providers.getDefaultProvider('testnet');
+            wallet = new hethers_1.hethers.Wallet(hederaEoa, provider);
+            contractAddr = '0000000000000000000000000000000001b34cbb';
+            contract = hethers_1.hethers.ContractFactory.getContract(contractAddr, abi, wallet);
+            balanceOfParams = contract.interface.encodeFunctionData('balanceOf', [wallet.getAddress()]);
+            // skipped - no balance in account
+            xit("Should be able to perform local call", function () {
+                return __awaiter(this, void 0, void 0, function () {
+                    var balanceOfTx, response;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                balanceOfTx = {
+                                    to: contractAddr,
+                                    gasLimit: 30000,
+                                    data: (0, utils_1.arrayify)(balanceOfParams),
+                                };
+                                return [4 /*yield*/, wallet.call(balanceOfTx)];
+                            case 1:
+                                response = _a.sent();
+                                assert_1.default.notStrictEqual(response, null);
+                                return [2 /*return*/];
+                        }
                     });
-                    // skipped - no balance in account
-                    xit('should fail on contract revert', function () {
-                        return __awaiter(this, void 0, void 0, function () {
-                            var balanceOfTx, err_1;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0:
-                                        this.timeout(60000);
-                                        balanceOfTx = {
-                                            to: contractAddr,
-                                            gasLimit: 50000,
-                                            data: "0x",
-                                            nodeId: "0.0.3"
-                                        };
-                                        _a.label = 1;
-                                    case 1:
-                                        _a.trys.push([1, 3, , 4]);
-                                        return [4 /*yield*/, wallet.call(balanceOfTx)];
-                                    case 2:
-                                        _a.sent();
-                                        return [3 /*break*/, 4];
-                                    case 3:
-                                        err_1 = _a.sent();
-                                        assert_1.default.strictEqual(err_1.code, utils_1.Logger.errors.UNPREDICTABLE_GAS_LIMIT);
-                                        return [3 /*break*/, 4];
-                                    case 4: return [2 /*return*/];
-                                }
-                            });
-                        });
+                });
+            });
+            // skipped - no balance in account
+            xit('should fail on contract revert', function () {
+                return __awaiter(this, void 0, void 0, function () {
+                    var balanceOfTx, err_1;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                this.timeout(60000);
+                                balanceOfTx = {
+                                    to: contractAddr,
+                                    gasLimit: 50000,
+                                    data: "0x",
+                                    nodeId: "0.0.3"
+                                };
+                                _a.label = 1;
+                            case 1:
+                                _a.trys.push([1, 3, , 4]);
+                                return [4 /*yield*/, wallet.call(balanceOfTx)];
+                            case 2:
+                                _a.sent();
+                                return [3 /*break*/, 4];
+                            case 3:
+                                err_1 = _a.sent();
+                                assert_1.default.strictEqual(err_1.code, utils_1.Logger.errors.UNPREDICTABLE_GAS_LIMIT);
+                                return [3 /*break*/, 4];
+                            case 4: return [2 /*return*/];
+                        }
                     });
-                    it('should fail on insufficient gas', function () {
-                        return __awaiter(this, void 0, void 0, function () {
-                            var balanceOfTx, err_2;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0:
-                                        this.timeout(60000);
-                                        balanceOfTx = {
-                                            to: contractAddr,
-                                            gasLimit: 100,
-                                            data: (0, utils_1.arrayify)(balanceOfParams),
-                                            nodeId: "0.0.3"
-                                        };
-                                        _a.label = 1;
-                                    case 1:
-                                        _a.trys.push([1, 3, , 4]);
-                                        return [4 /*yield*/, wallet.call(balanceOfTx)];
-                                    case 2:
-                                        _a.sent();
-                                        return [3 /*break*/, 4];
-                                    case 3:
-                                        err_2 = _a.sent();
-                                        assert_1.default.strictEqual(err_2.code, utils_1.Logger.errors.INSUFFICIENT_FUNDS);
-                                        return [3 /*break*/, 4];
-                                    case 4: return [2 /*return*/];
-                                }
-                            });
-                        });
+                });
+            });
+            it('should fail on insufficient gas', function () {
+                return __awaiter(this, void 0, void 0, function () {
+                    var balanceOfTx, err_2;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                this.timeout(60000);
+                                balanceOfTx = {
+                                    to: contractAddr,
+                                    gasLimit: 100,
+                                    data: (0, utils_1.arrayify)(balanceOfParams),
+                                    nodeId: "0.0.3"
+                                };
+                                _a.label = 1;
+                            case 1:
+                                _a.trys.push([1, 3, , 4]);
+                                return [4 /*yield*/, wallet.call(balanceOfTx)];
+                            case 2:
+                                _a.sent();
+                                return [3 /*break*/, 4];
+                            case 3:
+                                err_2 = _a.sent();
+                                assert_1.default.strictEqual(err_2.code, utils_1.Logger.errors.INSUFFICIENT_FUNDS);
+                                return [3 /*break*/, 4];
+                            case 4: return [2 /*return*/];
+                        }
                     });
-                    it('should fail on invalid contract', function () {
-                        return __awaiter(this, void 0, void 0, function () {
-                            var balanceOfTx, err_3;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0:
-                                        this.timeout(60000);
-                                        balanceOfTx = {
-                                            // incorrect addr
-                                            to: 'z000000000000000000000000000000001b34cbb',
-                                            gasLimit: 30000,
-                                            data: (0, utils_1.arrayify)(balanceOfParams),
-                                            nodeId: "0.0.3"
-                                        };
-                                        _a.label = 1;
-                                    case 1:
-                                        _a.trys.push([1, 3, , 4]);
-                                        return [4 /*yield*/, wallet.call(balanceOfTx)];
-                                    case 2:
-                                        _a.sent();
-                                        return [3 /*break*/, 4];
-                                    case 3:
-                                        err_3 = _a.sent();
-                                        assert_1.default.strictEqual(err_3.code, utils_1.Logger.errors.INVALID_ARGUMENT);
-                                        return [3 /*break*/, 4];
-                                    case 4: return [2 /*return*/];
-                                }
-                            });
-                        });
+                });
+            });
+            it('should fail on invalid contract', function () {
+                return __awaiter(this, void 0, void 0, function () {
+                    var balanceOfTx, err_3;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                this.timeout(60000);
+                                balanceOfTx = {
+                                    // incorrect addr
+                                    to: 'z000000000000000000000000000000001b34cbb',
+                                    gasLimit: 30000,
+                                    data: (0, utils_1.arrayify)(balanceOfParams),
+                                    nodeId: "0.0.3"
+                                };
+                                _a.label = 1;
+                            case 1:
+                                _a.trys.push([1, 3, , 4]);
+                                return [4 /*yield*/, wallet.call(balanceOfTx)];
+                            case 2:
+                                _a.sent();
+                                return [3 /*break*/, 4];
+                            case 3:
+                                err_3 = _a.sent();
+                                assert_1.default.strictEqual(err_3.code, utils_1.Logger.errors.INVALID_ARGUMENT);
+                                return [3 /*break*/, 4];
+                            case 4: return [2 /*return*/];
+                        }
                     });
-                    return [2 /*return*/];
-            }
+                });
+            });
+            return [2 /*return*/];
         });
     });
 });
@@ -890,13 +882,12 @@ describe("Wallet createAccount", function () {
     }).timeout(timeout);
     it("Should make a contract call with 'to' and 'value' with provided contract address as 'to'", function () {
         return __awaiter(this, void 0, void 0, function () {
-            var abiGLDTokenWithConstructorArgs, contractByteCodeGLDTokenWithConstructorArgs, contractFactory, contract, exceptionThrown, e_4;
+            var bytecodeTokenWithArgs, contractFactory, contract, exceptionThrown, e_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        abiGLDTokenWithConstructorArgs = JSON.parse((0, fs_1.readFileSync)('examples/assets/abi/GLDTokenWithConstructorArgs_abi.json').toString());
-                        contractByteCodeGLDTokenWithConstructorArgs = (0, fs_1.readFileSync)('examples/assets/bytecode/GLDTokenWithConstructorArgs.bin').toString();
-                        contractFactory = new hethers_1.hethers.ContractFactory(abiGLDTokenWithConstructorArgs, contractByteCodeGLDTokenWithConstructorArgs, acc1Wallet);
+                        bytecodeTokenWithArgs = (0, fs_1.readFileSync)('packages/tests/contracts/TokenWithArgs.bin').toString();
+                        contractFactory = new hethers_1.hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, acc1Wallet);
                         return [4 /*yield*/, contractFactory.deploy(hethers_1.hethers.BigNumber.from('10000'), { gasLimit: 3000000 })];
                     case 1:
                         contract = _a.sent();

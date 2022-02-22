@@ -15,6 +15,9 @@ import {
 } from "@hashgraph/sdk";
 import { readFileSync } from "fs";
 
+const abi = JSON.parse(readFileSync('packages/tests/contracts/Token.json').toString());
+const abiTokenWithArgs = JSON.parse(readFileSync('packages/tests/contracts/TokenWithArgs.json').toString());
+
 describe('Test JSON Wallets', function() {
 
     let tests: Array<TestCase.Wallet> = loadTests('wallets');
@@ -465,11 +468,8 @@ describe("Wallet local calls", async function () {
     // @ts-ignore
     const wallet = new hethers.Wallet(hederaEoa, provider);
     const contractAddr = '0000000000000000000000000000000001b34cbb';
-    const abi = JSON.parse(readFileSync('examples/assets/abi/GLDToken_abi.json').toString());
     const contract = hethers.ContractFactory.getContract(contractAddr, abi, wallet);
-    const balanceOfParams = contract.interface.encodeFunctionData('balanceOf', [
-        await wallet.getAddress()
-    ]);
+    const balanceOfParams = contract.interface.encodeFunctionData('balanceOf', [ wallet.getAddress() ]);
     // skipped - no balance in account
     xit("Should be able to perform local call", async function () {
         const balanceOfTx = {
@@ -662,9 +662,8 @@ describe("Wallet createAccount", function () {
     }).timeout(timeout);
 
     it("Should make a contract call with 'to' and 'value' with provided contract address as 'to'", async function() {
-        const abiGLDTokenWithConstructorArgs = JSON.parse(readFileSync('examples/assets/abi/GLDTokenWithConstructorArgs_abi.json').toString());
-        const contractByteCodeGLDTokenWithConstructorArgs = readFileSync('examples/assets/bytecode/GLDTokenWithConstructorArgs.bin').toString();
-        const contractFactory = new hethers.ContractFactory(abiGLDTokenWithConstructorArgs, contractByteCodeGLDTokenWithConstructorArgs, acc1Wallet);
+        const bytecodeTokenWithArgs = readFileSync('packages/tests/contracts/TokenWithArgs.bin').toString();
+        const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, acc1Wallet);
         const contract = await contractFactory.deploy(hethers.BigNumber.from('10000'), {gasLimit: 3000000});
         await contract.deployed();
 
