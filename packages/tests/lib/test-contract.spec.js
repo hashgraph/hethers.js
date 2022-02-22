@@ -553,11 +553,11 @@ describe('Contract Events', function () {
                         return [4 /*yield*/, mint.wait()];
                     case 2:
                         _a.sent();
-                        return [4 /*yield*/, sleep(15000)];
+                        return [4 /*yield*/, sleep(25000)];
                     case 3:
                         _a.sent();
                         contract.removeAllListeners();
-                        assert_1.default.strictEqual(enoughEventsCaptured(capturedMints.length, 1), true, "expected 5 captured events (Mint).");
+                        assert_1.default.strictEqual(enoughEventsCaptured(capturedMints.length, 1), true, "expected 1 captured events (Mint).");
                         for (_i = 0, capturedMints_1 = capturedMints; _i < capturedMints_1.length; _i++) {
                             mint_1 = capturedMints_1[_i];
                             assert_1.default.strictEqual(mint_1[0].toLowerCase(), wallet.address.toLowerCase(), "address mismatch - mint");
@@ -566,7 +566,7 @@ describe('Contract Events', function () {
                 }
             });
         });
-    }).timeout(TIMEOUT_PERIOD * 2);
+    }).timeout(TIMEOUT_PERIOD * 3);
     it('should be able to capture events via provider', function () {
         return __awaiter(this, void 0, void 0, function () {
             var capturedMints, mint;
@@ -586,16 +586,16 @@ describe('Contract Events', function () {
                         return [4 /*yield*/, mint.wait()];
                     case 2:
                         _a.sent();
-                        return [4 /*yield*/, sleep(15000)];
+                        return [4 /*yield*/, sleep(25000)];
                     case 3:
                         _a.sent();
                         provider.removeAllListeners();
-                        assert_1.default.strictEqual(enoughEventsCaptured(capturedMints.length, 1), true, "expected 5 captured events (Mint).");
+                        assert_1.default.strictEqual(enoughEventsCaptured(capturedMints.length, 1), true, "expected 1 captured events (Mint).");
                         return [2 /*return*/];
                 }
             });
         });
-    }).timeout(TIMEOUT_PERIOD * 2);
+    }).timeout(TIMEOUT_PERIOD * 3);
     it('should throw on OR topics filter', function () {
         return __awaiter(this, void 0, void 0, function () {
             var filter, noop;

@@ -673,7 +673,7 @@ describe("Wallet local calls", function () {
 describe("Wallet createAccount", function () {
     var _this = this;
     var wallet, newAccount, newAccountPublicKey, provider, acc1Wallet, acc2Wallet, acc1Eoa, acc2Eoa;
-    var timeout = 60000;
+    var timeout = 90000;
     before(function () {
         return __awaiter(this, void 0, void 0, function () {
             var hederaEoa;
