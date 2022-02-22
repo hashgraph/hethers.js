@@ -9,6 +9,7 @@
   "include": [
     "./thirdparty.d.ts",
     "./src.ts/test-contract.json",
-    "./src.ts/*.ts"
+    "./src.ts/*.ts",
+    "./src.ts/Token.json"
   ]
 }

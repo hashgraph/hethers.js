@@ -14,6 +14,7 @@ import {
     FileCreateTransaction, PublicKey, Transaction,
 } from "@hashgraph/sdk";
 import { readFileSync } from "fs";
+import * as abi from './Token.json';
 
 describe('Test JSON Wallets', function() {
 
@@ -465,11 +466,8 @@ describe("Wallet local calls", async function () {
     // @ts-ignore
     const wallet = new hethers.Wallet(hederaEoa, provider);
     const contractAddr = '0000000000000000000000000000000001b34cbb';
-    const abi = JSON.parse(readFileSync('examples/assets/abi/GLDToken_abi.json').toString());
     const contract = hethers.ContractFactory.getContract(contractAddr, abi, wallet);
-    const balanceOfParams = contract.interface.encodeFunctionData('balanceOf', [
-        await wallet.getAddress()
-    ]);
+    const balanceOfParams = contract.interface.encodeFunctionData('balanceOf', [ wallet.getAddress() ]);
     // skipped - no balance in account
     xit("Should be able to perform local call", async function () {
         const balanceOfTx = {
