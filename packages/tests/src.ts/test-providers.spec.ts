@@ -1195,7 +1195,7 @@ describe("Test Hedera Provider", function () {
             assert.strictEqual(receipt.contractAddress, '0x'+sendTransactionResponse.customData.contractId);
             assert.strictEqual(receipt.from, getAddressFromAccount(hederaTestnetOperableAccount.operator.accountId));
             assert.strictEqual(receipt.transactionHash, sendTransactionResponse.hash);
-        }).timeout(timeout * 4);
+        }).timeout(timeout * 8);
 
         it("Should populate transaction receipt with timeout", async function (){
             const sendTransactionResponse = await provider.sendTransaction(await signedTx);

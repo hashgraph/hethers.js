@@ -345,7 +345,7 @@ describe('Contract Events', function () {
         for(let mint of capturedMints) {
             assert.strictEqual(mint[0].toLowerCase(), wallet.address.toLowerCase(), "address mismatch - mint");
         }
-    }).timeout(TIMEOUT_PERIOD * 2);
+    }).timeout(TIMEOUT_PERIOD * 3);
 
     it('should be able to capture events via provider', async function() {
         const capturedMints: any[] = [];
@@ -360,7 +360,7 @@ describe('Contract Events', function () {
         await sleep(25000);
         provider.removeAllListeners();
         assert.strictEqual(enoughEventsCaptured(capturedMints.length, 1), true, "expected 1 captured events (Mint).")
-    }).timeout(TIMEOUT_PERIOD * 2);
+    }).timeout(TIMEOUT_PERIOD * 3);
 
     it('should throw on OR topics filter', async function() {
         const filter = {

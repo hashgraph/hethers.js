@@ -566,7 +566,7 @@ describe('Contract Events', function () {
                 }
             });
         });
-    }).timeout(TIMEOUT_PERIOD * 2);
+    }).timeout(TIMEOUT_PERIOD * 3);
     it('should be able to capture events via provider', function () {
         return __awaiter(this, void 0, void 0, function () {
             var capturedMints, mint;
@@ -595,7 +595,7 @@ describe('Contract Events', function () {
                 }
             });
         });
-    }).timeout(TIMEOUT_PERIOD * 2);
+    }).timeout(TIMEOUT_PERIOD * 3);
     it('should throw on OR topics filter', function () {
         return __awaiter(this, void 0, void 0, function () {
             var filter, noop;
