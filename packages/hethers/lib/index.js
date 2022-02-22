@@ -25,8 +25,8 @@ var hethers = __importStar(require("./hethers"));
 exports.hethers = hethers;
 try {
     var anyGlobal = window;
-    if (anyGlobal._hethers == null) {
-        anyGlobal._hethers = hethers;
+    if (anyGlobal._ethers == null) {
+        anyGlobal._ethers = hethers;
     }
 }
 catch (error) { }
