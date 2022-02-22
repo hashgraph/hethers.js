@@ -24,7 +24,7 @@ The library is a modified fork of the [ethers](https://github.com/ethers-io/ethe
 Keep Updated
 ------------
 
-For the latest changes, see the [CHANGELOG](https://github.com/hashgraph/hethers.js/blob/develop/CHANGELOG.md).
+For the latest changes, see the [CHANGELOG](https://github.com/hashgraph/hethers.js/blob/master/CHANGELOG.md).
 
 Installing
 ----------
