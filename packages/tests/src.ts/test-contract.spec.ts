@@ -2,13 +2,13 @@
 
 import assert from "assert";
 
-import { BigNumber, Contract, hethers } from "hethers";
+import { BigNumber, hethers } from "hethers";
 
 import fs, {readFileSync} from "fs";
 // @ts-ignore
-import * as abi from '../../../examples/assets/abi/GLDToken_abi.json';
+import * as abi from 'Token.json';
 // @ts-ignore
-import * as abiWithArgs from '../../../examples/assets/abi/GLDTokenWithConstructorArgs_abi.json';
+import * as abiWithArgs from './TokenWithArgs.json';
 // @ts-ignore
 abi = abi.default;
 // @ts-ignore
@@ -16,41 +16,12 @@ abiWithArgs = abiWithArgs.default;
 import { arrayify } from "hethers/lib/utils";
 import {Logger} from "@hethers/logger";
 
-// const provider = new hethers.providers.InfuraProvider("rinkeby", "49a0efa3aaee4fd99797bfa94d8ce2f1");
-// @ts-ignore
-const provider = hethers.getDefaultProvider("testnet");
 
 const TIMEOUT_PERIOD = 120000;
 const hederaEoa = {
     account: '0.0.29562194',
     privateKey: '0x3b6cd41ded6986add931390d5d3efa0bb2b311a8415cfe66716cac0234de035d'
 };
-
-// @ts-ignore
-function waitForEvent(contract:Contract, eventName: string, expected: Array<any>): Promise<void> {
-    return new Promise(function(resolve, reject) {
-        let done = false;
-        contract.on(eventName, function() {
-            if (done) { return; }
-            done = true;
-
-            let args = Array.prototype.slice.call(arguments);
-            let event = args[args.length - 1];
-            event.removeListener();
-            // equals(event.event, args.slice(0, args.length - 1), expected);
-            resolve();
-        });
-
-        const timer = setTimeout(() => {
-            if (done) { return; }
-            done = true;
-
-            contract.removeAllListeners();
-            reject(new Error("timeout"));
-        }, TIMEOUT_PERIOD);
-        if (timer.unref) { timer.unref(); }
-    });
-}
 
 describe("Test Contract Transaction Population", function() {
 

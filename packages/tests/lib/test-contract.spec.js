@@ -71,51 +71,20 @@ var assert_1 = __importDefault(require("assert"));
 var hethers_1 = require("hethers");
 var fs_1 = __importStar(require("fs"));
 // @ts-ignore
-var abi = __importStar(require("../../../examples/assets/abi/GLDToken_abi.json"));
+var abi = __importStar(require("Token.json"));
 // @ts-ignore
-var abiWithArgs = __importStar(require("../../../examples/assets/abi/GLDTokenWithConstructorArgs_abi.json"));
+var abiWithArgs = __importStar(require("./TokenWithArgs.json"));
 // @ts-ignore
 abi = abi.default;
 // @ts-ignore
 abiWithArgs = abiWithArgs.default;
 var utils_1 = require("hethers/lib/utils");
 var logger_1 = require("@hethers/logger");
-// const provider = new hethers.providers.InfuraProvider("rinkeby", "49a0efa3aaee4fd99797bfa94d8ce2f1");
-// @ts-ignore
-var provider = hethers_1.hethers.getDefaultProvider("testnet");
 var TIMEOUT_PERIOD = 120000;
 var hederaEoa = {
     account: '0.0.29562194',
     privateKey: '0x3b6cd41ded6986add931390d5d3efa0bb2b311a8415cfe66716cac0234de035d'
 };
-// @ts-ignore
-function waitForEvent(contract, eventName, expected) {
-    return new Promise(function (resolve, reject) {
-        var done = false;
-        contract.on(eventName, function () {
-            if (done) {
-                return;
-            }
-            done = true;
-            var args = Array.prototype.slice.call(arguments);
-            var event = args[args.length - 1];
-            event.removeListener();
-            // equals(event.event, args.slice(0, args.length - 1), expected);
-            resolve();
-        });
-        var timer = setTimeout(function () {
-            if (done) {
-                return;
-            }
-            done = true;
-            contract.removeAllListeners();
-            reject(new Error("timeout"));
-        }, TIMEOUT_PERIOD);
-        if (timer.unref) {
-            timer.unref();
-        }
-    });
-}
 describe("Test Contract Transaction Population", function () {
     var testAddress = "0xdeadbeef00deadbeef01deadbeef02deadbeef03";
     var testAddressCheck = "0xDEAdbeeF00deAdbeEF01DeAdBEEF02DeADBEEF03";
