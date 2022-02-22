@@ -363,7 +363,7 @@ describe("contract.deployed", function() {
 
 
     it("should work if contract is just now deployed", async function() {
-        const contractFactory = new hethers.ContractFactory(abiToken, bytecodeTokenWithArgs, wallet);
+        const contractFactory = new hethers.ContractFactory(abiToken, bytecodeToken, wallet);
         const contract = await contractFactory.deploy( { gasLimit: 300000 });
 
         assert.notStrictEqual(contract, null, "nullified contract");

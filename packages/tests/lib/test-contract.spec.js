@@ -616,7 +616,7 @@ describe("contract.deployed", function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        contractFactory = new hethers_1.hethers.ContractFactory(abiToken, bytecodeTokenWithArgs, wallet);
+                        contractFactory = new hethers_1.hethers.ContractFactory(abiToken, bytecodeToken, wallet);
                         return [4 /*yield*/, contractFactory.deploy({ gasLimit: 300000 })];
                     case 1:
                         contract = _a.sent();
