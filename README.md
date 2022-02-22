@@ -16,7 +16,7 @@ The library is a modified fork of the [ethers](https://github.com/ethers-io/ethe
 - Meta-classes create JavaScript objects from any contract ABI, including **ABIv2** and **Human-Readable ABI**
 - Connect to the Hedera Network over both Consensus and Mirror nodes.
 - **Modular** packages; include only what you need
-- Extensive [documentation](https://docs.hethers.com/)
+- Extensive [documentation](https://docs.hedera.com/hethers/)
 - Large collection of **test cases** which are maintained and added to
 - Fully **TypeScript** ready, with definition files and full TypeScript source
 - **MIT License** (including ALL dependencies); completely open source to do with as you please
@@ -38,8 +38,8 @@ Documentation
 
 Browse the [documentation](https://docs.hethers.com/) online:
 
-- [Getting Started](https://docs.hethers.com/getting-started/)
-- [Full API Documentation](https://docs.hethers.com//api/)
+- [Getting Started](https://docs.hedera.com/hethers/getting-started)
+- [Full API Documentation](https://docs.hedera.com/hethers/application-programming-interface)
 
 License
 -------
