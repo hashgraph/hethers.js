@@ -9,8 +9,7 @@
     "@hethers/logger": "1.0.0",
     "@ethersproject/properties": "5.5.0",
     "@ethersproject/signing-key": "5.5.0",
-    "@hashgraph/sdk": "2.7.0-beta.4",
-    "@hethers/abstract-provider": "1.0.0"
+    "@hashgraph/sdk": "2.7.0-beta.4"
   },
   "description": "Utilities for decoding and encoding Hedera Hashgraph transactions for hethers.",
   "keywords": [
