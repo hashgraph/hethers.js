@@ -29,7 +29,7 @@ Installing
 ----------
 
 ```
-npm install --save hethers
+npm install --save @hashgraph/hethers
 ```
 
 Documentation
