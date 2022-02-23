@@ -68,9 +68,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var assert_1 = __importDefault(require("assert"));
-var hethers_1 = require("hethers");
+var hethers_1 = require("@hashgraph/hethers");
 var fs_1 = __importStar(require("fs"));
-var utils_1 = require("hethers/lib/utils");
+var bytes_1 = require("@ethersproject/bytes");
 var logger_1 = require("@hethers/logger");
 var abiToken = JSON.parse((0, fs_1.readFileSync)('packages/tests/contracts/Token.json').toString());
 var abiTokenWithArgs = JSON.parse((0, fs_1.readFileSync)('packages/tests/contracts/TokenWithArgs.json').toString());
@@ -305,7 +305,7 @@ describe("Test Contract Transaction Population", function () {
                         return [4 /*yield*/, wallet.call({
                                 from: wallet.address,
                                 to: contract.address,
-                                data: (0, utils_1.arrayify)(params),
+                                data: (0, bytes_1.arrayify)(params),
                                 gasLimit: 300000
                             })];
                     case 2:

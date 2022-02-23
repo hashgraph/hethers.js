@@ -9,9 +9,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import assert from "assert";
-import { BigNumber, hethers } from "hethers";
+import { BigNumber, hethers } from "@hashgraph/hethers";
 import fs, { readFileSync } from "fs";
-import { arrayify } from "hethers/lib/utils";
+import { arrayify } from "@ethersproject/bytes";
 import { Logger } from "@hethers/logger";
 const abiToken = JSON.parse(readFileSync('packages/tests/contracts/Token.json').toString());
 const abiTokenWithArgs = JSON.parse(readFileSync('packages/tests/contracts/TokenWithArgs.json').toString());

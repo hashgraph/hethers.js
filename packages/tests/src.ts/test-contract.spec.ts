@@ -2,10 +2,10 @@
 
 import assert from "assert";
 
-import { BigNumber, hethers } from "hethers";
+import { BigNumber, hethers } from "@hashgraph/hethers";
 
 import fs, {readFileSync} from "fs";
-import { arrayify } from "hethers/lib/utils";
+import { arrayify } from "@ethersproject/bytes";
 import {Logger} from "@hethers/logger";
 
 
