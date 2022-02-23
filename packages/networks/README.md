@@ -16,14 +16,12 @@ but for those with more specific needs, individual components can be imported.
 
 ```javascript
 const {
-
-    getNetwork,
-
-    // Types
-
     Network,
-    Networkish
-
+    Networkish,
+    HederaNetworkConfigLike,
+    HederaOperator,
+    NodeUrlEntries,
+    getNetwork
 } = require("@hethers/networks");
 ```
 

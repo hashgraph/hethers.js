@@ -17,57 +17,24 @@ but for those with more specific needs, individual components can be imported.
 
 ```javascript
 const {
-
     Provider,
     BaseProvider,
-
-    JsonRpcProvider,
-    StaticJsonRpcProvider,
-    UrlJsonRpcProvider,
-
-    FallbackProvider,
-
-    AlchemyProvider,
-    CloudflareProvider,
-    EtherscanProvider,
-    InfuraProvider,
-    NodesmithProvider,
-
-    IpcProvider,
-
-    Web3Provider,
-
-    WebSocketProvider,
-
-    JsonRpcSigner,
-
+    DefaultHederaProvider,
+    HederaProvider,
     getDefaultProvider,
-
     getNetwork,
-
+    composeHederaTimestamp,
     Formatter,
-
-    // Types
-
+    EventType,
+    FeeData,
+    Filter,
+    Log,
+    Listener,
     TransactionReceipt,
     TransactionRequest,
     TransactionResponse,
-
-    Listener,
-
-    ExternalProvider,
-
-    Block,
-    BlockTag,
-    EventType,
-    Filter,
-    Log,
-
-    JsonRpcFetchFunc,
-
     Network,
     Networkish
-
 } = require("@hethers/providers");
 ```
 

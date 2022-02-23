@@ -16,18 +16,19 @@ but for those with more specific needs, individual components can be imported.
 
 ```javascript
 const {
-
-    computeAddress,
-    recoverAddress,
-
-    serialize,
-    parse,
-
-    // Types
-
+    AccessList,
+    AccessListish,
+    TransactionTypes,
+    UnsignedTransaction,
     Transaction,
-    UnsignedTransaction
-
+    computeAddress,
+    computeAlias,
+    computeAliasFromPubKey,
+    recoverAddress,
+    accessListify,
+    serializeHederaTransaction,
+    parse,
+    numberify
 } = require("@hethers/abi");
 ```
 

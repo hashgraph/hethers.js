@@ -17,13 +17,13 @@ but for those with more specific needs, individual components can be imported.
 
 ```javascript
 const {
-
+    TypedDataDomain,
+    TypedDataField,
+    ExternallyOwnedAccount,
+    TypedDataSigner,
     Signer,
     VoidSigner,
-
-    // Types
-	ExternallyOwnedAccount
-
+    randomNumBetween
 } = require("@hethers/abstract-signer");
 ```
 

@@ -17,14 +17,18 @@ but for those with more specific needs, individual components can be imported.
 
 ```javascript
 const {
-
+    getAccountFromTransactionId,
+    asAccountString,
+    getChecksumAddress,
     getAddress,
     isAddress,
-
     getIcapAddress,
-    
-    getCreate2Address
-
+    getCreate2Address,
+    getAddressFromAccount,
+    getAccountFromAddress,
+    parseAccount,
+    Account,
+    AccountLike
 } = require("@hethers/address");
 ```
 

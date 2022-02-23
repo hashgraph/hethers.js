@@ -18,30 +18,20 @@ but for those with more specific needs, individual components can be imported.
 
 ```javascript
 const {
-
-    Contract,
-    ContractFactory,
-
-    RunningEvent,
-
-    // Types
-
-    ContractInterface,
-
     Overrides,
     PayableOverrides,
     CallOverrides,
-
     PopulatedTransaction,
-
     EventFilter,
-
     ContractFunction,
-
     Event,
     ContractReceipt,
-    ContractTransaction
-
+    ContractTransaction,
+    populateTransaction,
+    ContractInterface,
+    BaseContract,
+    Contract,
+    ContractFactory
 } = require("@hethers/contracts");
 ```
 
