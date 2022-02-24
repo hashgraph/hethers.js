@@ -22,8 +22,7 @@ const {
     ExternallyOwnedAccount,
     TypedDataSigner,
     Signer,
-    VoidSigner,
-    randomNumBetween
+    VoidSigner
 } = require("@hethers/abstract-signer");
 ```
 

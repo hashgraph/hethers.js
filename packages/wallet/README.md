@@ -18,8 +18,7 @@ but for those with more specific needs, individual components can be imported.
 ```javascript
 const {
     Wallet,
-    verifyMessage,
-    verifyTypedData
+    verifyMessage
 } = require("@hethers/wallet");
 ```
 
