@@ -491,7 +491,7 @@ describe('Contract Events', function () {
         });
     }); };
     var enoughEventsCaptured = function (n, expectedN) { return n >= expectedN; };
-    xit("should be able to capture events via contract", function () {
+    it("should be able to capture events via contract", function () {
         return __awaiter(this, void 0, void 0, function () {
             var capturedMints, mint, _i, capturedMints_1, mint_1;
             return __generator(this, function (_a) {
@@ -512,7 +512,7 @@ describe('Contract Events', function () {
                         return [4 /*yield*/, mint.wait()];
                     case 2:
                         _a.sent();
-                        return [4 /*yield*/, sleep(25000)];
+                        return [4 /*yield*/, sleep(40000)];
                     case 3:
                         _a.sent();
                         contract.removeAllListeners();
@@ -526,7 +526,7 @@ describe('Contract Events', function () {
             });
         });
     }).timeout(TIMEOUT_PERIOD * 3);
-    xit('should be able to capture events via provider', function () {
+    it('should be able to capture events via provider', function () {
         return __awaiter(this, void 0, void 0, function () {
             var capturedMints, mint;
             return __generator(this, function (_a) {
@@ -545,7 +545,7 @@ describe('Contract Events', function () {
                         return [4 /*yield*/, mint.wait()];
                     case 2:
                         _a.sent();
-                        return [4 /*yield*/, sleep(25000)];
+                        return [4 /*yield*/, sleep(40000)];
                     case 3:
                         _a.sent();
                         provider.removeAllListeners();
