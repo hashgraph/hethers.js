@@ -293,7 +293,7 @@ describe('Contract Events', function () {
     };
     const enoughEventsCaptured = (n:number, expectedN:number) => n >= expectedN;
 
-    xit("should be able to capture events via contract", async function () {
+    it("should be able to capture events via contract", async function () {
         const capturedMints: any[] = [];
         contract.on('Mint', (...args) => {
             assert.strictEqual(args.length, 3, "expected 3 arguments - [address, unit256, log].");
@@ -301,7 +301,7 @@ describe('Contract Events', function () {
         });
         const mint = await contract.mint(BigNumber.from(`1`), { gasLimit: 300000 });
         await mint.wait();
-        await sleep(25000);
+        await sleep(40000);
         contract.removeAllListeners();
         assert.strictEqual(enoughEventsCaptured(capturedMints.length, 1), true, "expected 1 captured events (Mint).")
         for(let mint of capturedMints) {
@@ -309,7 +309,7 @@ describe('Contract Events', function () {
         }
     }).timeout(TIMEOUT_PERIOD * 3);
 
-    xit('should be able to capture events via provider', async function() {
+    it('should be able to capture events via provider', async function() {
         const capturedMints: any[] = [];
         provider.on({address: contract.address, topics: [
 				'0x0f6798a560793a54c3bcfe86a93cde1e73087d944c0ea20544137d4121396885'
@@ -319,7 +319,7 @@ describe('Contract Events', function () {
         });
         const mint = await contract.mint(BigNumber.from(`1`), { gasLimit: 300000 });
         await mint.wait();
-        await sleep(25000);
+        await sleep(40000);
         provider.removeAllListeners();
         assert.strictEqual(enoughEventsCaptured(capturedMints.length, 1), true, "expected 1 captured events (Mint).")
     }).timeout(TIMEOUT_PERIOD * 3);

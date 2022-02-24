@@ -281,7 +281,7 @@ describe('Contract Events', function () {
         });
     });
     const enoughEventsCaptured = (n, expectedN) => n >= expectedN;
-    xit("should be able to capture events via contract", function () {
+    it("should be able to capture events via contract", function () {
         return __awaiter(this, void 0, void 0, function* () {
             const capturedMints = [];
             contract.on('Mint', (...args) => {
@@ -290,7 +290,7 @@ describe('Contract Events', function () {
             });
             const mint = yield contract.mint(BigNumber.from(`1`), { gasLimit: 300000 });
             yield mint.wait();
-            yield sleep(25000);
+            yield sleep(40000);
             contract.removeAllListeners();
             assert.strictEqual(enoughEventsCaptured(capturedMints.length, 1), true, "expected 1 captured events (Mint).");
             for (let mint of capturedMints) {
@@ -298,7 +298,7 @@ describe('Contract Events', function () {
             }
         });
     }).timeout(TIMEOUT_PERIOD * 3);
-    xit('should be able to capture events via provider', function () {
+    it('should be able to capture events via provider', function () {
         return __awaiter(this, void 0, void 0, function* () {
             const capturedMints = [];
             provider.on({ address: contract.address, topics: [
@@ -309,7 +309,7 @@ describe('Contract Events', function () {
             });
             const mint = yield contract.mint(BigNumber.from(`1`), { gasLimit: 300000 });
             yield mint.wait();
-            yield sleep(25000);
+            yield sleep(40000);
             provider.removeAllListeners();
             assert.strictEqual(enoughEventsCaptured(capturedMints.length, 1), true, "expected 1 captured events (Mint).");
         });
