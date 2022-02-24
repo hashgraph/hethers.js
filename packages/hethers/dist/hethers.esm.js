@@ -8993,7 +8993,7 @@ class Interface {
 
 "use strict";
 
-const version$9 = "logger/1.0.1";
+const version$9 = "logger/1.0.2";
 
 "use strict";
 let _permanentCensorErrors$1 = false;
@@ -9297,7 +9297,7 @@ class Logger$1 {
 Logger$1.errors = ErrorCode$1;
 Logger$1.levels = LogLevel$1;
 
-const version$a = "abstract-provider/1.0.1";
+const version$a = "abstract-provider/1.0.2";
 
 "use strict";
 const logger$e = new Logger$1(version$a);
@@ -9337,9 +9337,9 @@ class Provider {
     }
 }
 
-const version$b = "abstract-signer/1.0.1";
+const version$b = "abstract-signer/1.0.2";
 
-const version$c = "address/1.0.1";
+const version$c = "address/1.0.2";
 
 "use strict";
 const logger$f = new Logger$1(version$c);
@@ -80931,7 +80931,7 @@ exports.setup = setup;
 var channelz$1 = /*@__PURE__*/getDefaultExportFromCjs(channelz);
 
 var name$1 = "@grpc/grpc-js";
-var version$e = "1.5.6";
+var version$e = "1.5.5";
 var description$1 = "gRPC Library for Node - pure JS implementation";
 var homepage$1 = "https://grpc.io/";
 var repository$1 = "https://github.com/grpc/grpc-node/tree/master/packages/grpc-js";
@@ -81289,9 +81289,6 @@ class Subchannel {
     }
     flowControlTrace(text) {
         logging.trace(constants.LogVerbosity.DEBUG, FLOW_CONTROL_TRACER_NAME, '(' + this.channelzRef.id + ') ' + this.subchannelAddressString + ' ' + text);
-    }
-    internalsTrace(text) {
-        logging.trace(constants.LogVerbosity.DEBUG, 'subchannel_internals', '(' + this.channelzRef.id + ') ' + this.subchannelAddressString + ' ' + text);
     }
     handleBackoffTimer() {
         if (this.continueConnecting) {
@@ -81705,12 +81702,6 @@ class Subchannel {
             ' remote window size: ' +
             this.session.state.remoteWindowSize);
         const streamSession = this.session;
-        this.internalsTrace('session.closed=' +
-            streamSession.closed +
-            ' session.destroyed=' +
-            streamSession.destroyed +
-            ' session.socket.destroyed=' +
-            streamSession.socket.destroyed);
         let statsTracker;
         if (this.channelzEnabled) {
             this.callTracker.addCallStarted();
@@ -89587,7 +89578,7 @@ function computePublicKey(key, compressed) {
     return logger$h.throwArgumentError("invalid public or private key", "key", "[REDACTED]");
 }
 
-const version$g = "transactions/1.0.1";
+const version$g = "transactions/1.0.2";
 
 "use strict";
 function decode$7(textData) {
@@ -89811,7 +89802,7 @@ function numberify(num) {
     return BigNumber.from(num).toNumber();
 }
 
-const version$h = "contracts/1.0.1";
+const version$h = "contracts/1.0.2";
 
 "use strict";
 var __awaiter$4 = (window && window.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -91054,7 +91045,7 @@ const wordlists = {
 
 "use strict";
 
-const version$k = "hdnode/1.0.1";
+const version$k = "hdnode/1.0.2";
 
 "use strict";
 const logger$m = new Logger$1(version$k);
@@ -92814,7 +92805,7 @@ function uuidV4(randomBytes) {
     ].join("-");
 }
 
-const version$m = "json-wallets/1.0.1";
+const version$m = "json-wallets/1.0.2";
 
 "use strict";
 var __awaiter$5 = (window && window.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -93127,7 +93118,7 @@ function decryptJsonWalletSync(json, password) {
     throw new Error("invalid JSON wallet");
 }
 
-const version$n = "wallet/1.0.1";
+const version$n = "wallet/1.0.2";
 
 var __awaiter$6 = (window && window.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -93337,7 +93328,7 @@ function verifyMessage(message, signature) {
     return recoverPublicKey(arrayify(hashMessage(message)), signature);
 }
 
-const version$o = "networks/1.0.1";
+const version$o = "networks/1.0.2";
 
 "use strict";
 const logger$q = new Logger$1(version$o);
@@ -93454,7 +93445,7 @@ function getNetwork(network) {
     };
 }
 
-const version$p = "providers/1.0.1";
+const version$p = "providers/1.0.2";
 
 "use strict";
 const logger$r = new Logger$1(version$p);
@@ -98841,7 +98832,7 @@ function sha256$2(types, values) {
     return sha256$1(pack$1(types, values));
 }
 
-const version$r = "units/1.0.1";
+const version$r = "units/1.0.2";
 
 "use strict";
 const logger$v = new Logger(version$r);
@@ -99430,7 +99421,7 @@ var utils$2 = /*#__PURE__*/Object.freeze({
 	getAccountFromTransactionId: getAccountFromTransactionId
 });
 
-const version$t = "hethers/1.0.1";
+const version$t = "hethers/1.0.2";
 
 "use strict";
 const logger$x = new Logger$1(version$t);
