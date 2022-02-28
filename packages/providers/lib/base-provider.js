@@ -242,6 +242,12 @@ var MIRROR_NODE_TRANSACTIONS_ENDPOINT = '/api/v1/transactions/';
 var MIRROR_NODE_CONTRACTS_RESULTS_ENDPOINT = '/api/v1/contracts/results/';
 var MIRROR_NODE_CONTRACTS_ENDPOINT = '/api/v1/contracts/';
 var nextPollId = 1;
+function formatTimestamp(s) {
+    var _a = s.split("."), sec = _a[0], nano = _a[1];
+    sec = sec.padEnd(10, '0');
+    nano = nano.padEnd(9, '0');
+    return [sec, nano].join('.');
+}
 var BaseProvider = /** @class */ (function (_super) {
     __extends(BaseProvider, _super);
     function BaseProvider(network) {
@@ -1032,8 +1038,9 @@ var BaseProvider = /** @class */ (function (_super) {
                             var from = _this._previousPollingTimestamps[event.tag];
                             // ensure we don't get from == to
                             from = from.plusNanos(1);
-                            filter_1.fromTimestamp = from.toString();
-                            filter_1.toTimestamp = now.toString();
+                            filter_1.fromTimestamp = formatTimestamp(from.toString());
+                            filter_1.toTimestamp = formatTimestamp(now.toString());
+                            // console.log(`\x1b[33mPolling: { from: ${filter.fromTimestamp}, to: ${filter.toTimestamp}}\x1b[0m`);
                             var runner = _this.getLogs(filter_1).then(function (logs) {
                                 if (logs.length === 0) {
                                     return;

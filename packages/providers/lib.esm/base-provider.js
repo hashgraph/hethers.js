@@ -147,6 +147,12 @@ const MIRROR_NODE_TRANSACTIONS_ENDPOINT = '/api/v1/transactions/';
 const MIRROR_NODE_CONTRACTS_RESULTS_ENDPOINT = '/api/v1/contracts/results/';
 const MIRROR_NODE_CONTRACTS_ENDPOINT = '/api/v1/contracts/';
 let nextPollId = 1;
+function formatTimestamp(s) {
+    let [sec, nano] = s.split(".");
+    sec = sec.padEnd(10, '0');
+    nano = nano.padEnd(9, '0');
+    return [sec, nano].join('.');
+}
 export class BaseProvider extends Provider {
     constructor(network) {
         logger.checkNew(new.target, Provider);
@@ -786,8 +792,9 @@ export class BaseProvider extends Provider {
                         let from = this._previousPollingTimestamps[event.tag];
                         // ensure we don't get from == to
                         from = from.plusNanos(1);
-                        filter.fromTimestamp = from.toString();
-                        filter.toTimestamp = now.toString();
+                        filter.fromTimestamp = formatTimestamp(from.toString());
+                        filter.toTimestamp = formatTimestamp(now.toString());
+                        // console.log(`\x1b[33mPolling: { from: ${filter.fromTimestamp}, to: ${filter.toTimestamp}}\x1b[0m`);
                         const runner = this.getLogs(filter).then((logs) => {
                             if (logs.length === 0) {
                                 return;
