@@ -281,27 +281,26 @@ describe('Contract Events', function () {
         });
     });
     const enoughEventsCaptured = (n, expectedN) => n >= expectedN;
-    it.only("should be able to capture events via contract", function () {
+    const mintCount = 10;
+    it("should be able to capture events via contract", function () {
         return __awaiter(this, void 0, void 0, function* () {
             const capturedMints = [];
-            this.timeout(TIMEOUT_PERIOD * 3);
             contract.on('Mint', (...args) => {
                 assert.strictEqual(args.length, 3, "expected 3 arguments - [address, unit256, log].");
                 capturedMints.push([...args]);
             });
-            const mintCount = 10;
             for (let i = 0; i <= mintCount; i++) {
-                const mint = yield contract.mint(BigNumber.from(`${i}`), { gasLimit: 300000 });
+                const mint = yield contract.mint(BigNumber.from(`1`), { gasLimit: 300000 });
                 yield mint.wait();
             }
             yield sleep(mintCount * 5000);
             contract.removeAllListeners();
-            assert.strictEqual(enoughEventsCaptured(capturedMints.length, mintCount), true, "expected ~" + mintCount + " captured events (Mint). Got " + capturedMints.length);
+            assert.strictEqual(enoughEventsCaptured(capturedMints.length, mintCount), true, `expected ${mintCount} captured events (Mint). Got ${capturedMints.length}`);
             for (let mint of capturedMints) {
                 assert.strictEqual(mint[0].toLowerCase(), wallet.address.toLowerCase(), "address mismatch - mint");
             }
         });
-    }); //.timeout(TIMEOUT_PERIOD * 3);
+    }).timeout(TIMEOUT_PERIOD * 3);
     xit('should be able to capture events via provider', function () {
         return __awaiter(this, void 0, void 0, function* () {
             const capturedMints = [];
@@ -311,11 +310,13 @@ describe('Contract Events', function () {
                 assert.notStrictEqual(args, null, "expected 1 argument - log");
                 capturedMints.push([args]);
             });
-            const mint = yield contract.mint(BigNumber.from(`1`), { gasLimit: 300000 });
-            yield mint.wait();
-            yield sleep(25000);
+            for (let i = 0; i <= mintCount; i++) {
+                const mint = yield contract.mint(BigNumber.from(`1`), { gasLimit: 300000 });
+                yield mint.wait();
+            }
+            yield sleep(mintCount * 5000);
             provider.removeAllListeners();
-            assert.strictEqual(enoughEventsCaptured(capturedMints.length, 1), true, "expected 1 captured events (Mint).");
+            assert.strictEqual(enoughEventsCaptured(capturedMints.length, mintCount), true, `expected ${mintCount} captured events (Mint). Got ${capturedMints.length}`);
         });
     }).timeout(TIMEOUT_PERIOD * 3);
     it('should throw on OR topics filter', function () {

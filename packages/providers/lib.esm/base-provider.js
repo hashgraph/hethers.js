@@ -794,7 +794,6 @@ export class BaseProvider extends Provider {
                         from = from.plusNanos(1);
                         filter.fromTimestamp = formatTimestamp(from.toString());
                         filter.toTimestamp = formatTimestamp(now.toString());
-                        // console.log(`\x1b[33mPolling: { from: ${filter.fromTimestamp}, to: ${filter.toTimestamp}}\x1b[0m`);
                         const runner = this.getLogs(filter).then((logs) => {
                             if (logs.length === 0) {
                                 return;

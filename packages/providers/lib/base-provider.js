@@ -1040,7 +1040,6 @@ var BaseProvider = /** @class */ (function (_super) {
                             from = from.plusNanos(1);
                             filter_1.fromTimestamp = formatTimestamp(from.toString());
                             filter_1.toTimestamp = formatTimestamp(now.toString());
-                            // console.log(`\x1b[33mPolling: { from: ${filter.fromTimestamp}, to: ${filter.toTimestamp}}\x1b[0m`);
                             var runner = _this.getLogs(filter_1).then(function (logs) {
                                 if (logs.length === 0) {
                                     return;
