@@ -97712,10 +97712,8 @@ const MIRROR_NODE_CONTRACTS_RESULTS_ENDPOINT = '/api/v1/contracts/results/';
 const MIRROR_NODE_CONTRACTS_ENDPOINT = '/api/v1/contracts/';
 let nextPollId = 1;
 function formatTimestamp(s) {
-    let [sec, nano] = s.split(".");
-    sec = sec.padEnd(10, '0');
-    nano = nano.padEnd(9, '0');
-    return [sec, nano].join('.');
+    const [sec, nano] = s.split(".");
+    return `${sec.padEnd(10, "0")}.${nano.padEnd(9, "0")}`;
 }
 class BaseProvider extends Provider {
     constructor(network) {

@@ -281,7 +281,7 @@ describe('Contract Events', function () {
         });
     });
     const enoughEventsCaptured = (n, expectedN) => n >= expectedN;
-    const mintCount = 10;
+    const mintCount = 5;
     it("should be able to capture events via contract", function () {
         return __awaiter(this, void 0, void 0, function* () {
             const capturedMints = [];
@@ -301,7 +301,7 @@ describe('Contract Events', function () {
             }
         });
     }).timeout(TIMEOUT_PERIOD * 3);
-    xit('should be able to capture events via provider', function () {
+    it('should be able to capture events via provider', function () {
         return __awaiter(this, void 0, void 0, function* () {
             const capturedMints = [];
             provider.on({ address: contract.address, topics: [

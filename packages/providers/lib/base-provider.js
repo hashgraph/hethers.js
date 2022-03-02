@@ -244,9 +244,7 @@ var MIRROR_NODE_CONTRACTS_ENDPOINT = '/api/v1/contracts/';
 var nextPollId = 1;
 function formatTimestamp(s) {
     var _a = s.split("."), sec = _a[0], nano = _a[1];
-    sec = sec.padEnd(10, '0');
-    nano = nano.padEnd(9, '0');
-    return [sec, nano].join('.');
+    return sec.padEnd(10, "0") + "." + nano.padEnd(9, "0");
 }
 var BaseProvider = /** @class */ (function (_super) {
     __extends(BaseProvider, _super);

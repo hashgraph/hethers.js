@@ -292,7 +292,7 @@ describe('Contract Events', function () {
         });
     };
     const enoughEventsCaptured = (n:number, expectedN:number) => n >= expectedN;
-    const mintCount = 10;
+    const mintCount = 5;
 
     it("should be able to capture events via contract", async function () {
         const capturedMints: any[] = [];
@@ -315,7 +315,7 @@ describe('Contract Events', function () {
         }
     }).timeout(TIMEOUT_PERIOD * 3);
 
-    xit('should be able to capture events via provider', async function() {
+    it('should be able to capture events via provider', async function() {
         const capturedMints: any[] = [];
         provider.on({address: contract.address, topics: [
 				'0x0f6798a560793a54c3bcfe86a93cde1e73087d944c0ea20544137d4121396885'
