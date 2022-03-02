@@ -12,6 +12,10 @@ import { dirnames, getPackageJsonPath } from "../path";
 
     for (let i = 0; i < dirnames.length; i++) {
         const dirname = dirnames[i];
+        if (dirname === 'tests' || dirname === 'testcases') {
+            continue;
+        }
+
         const pLocal = local.getPackage(dirname);
 
         const deps = Object.keys(pLocal.dependencies).reduce((accum, name) => {
@@ -26,12 +30,12 @@ import { dirnames, getPackageJsonPath } from "../path";
                     version = newVersion;
                 }
             } else {
-                if (prefix === "hethers" || prefix === "@hethers") {
-                    if (version.substring(0, 1) !== "^") {
-                        throw new Error(`bad version for bumping: ${ dirname }:${ name }:${ version }`);
-                    }
-                    version = "^" + newVersion;
-                }
+                // if (prefix === "hethers" || prefix === "@hethers") {
+                //     if (version.substring(0, 1) !== "^") {
+                //         throw new Error(`bad version for bumping: ${ dirname }:${ name }:${ version }`);
+                //     }
+                //     version = "^" + newVersion;
+                // }
             }
             accum[name] = version;
 

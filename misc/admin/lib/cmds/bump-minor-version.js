@@ -42,6 +42,9 @@ const path_1 = require("../path");
         const newVersion = semver_1.default.inc(pNpm.version, "minor");
         for (let i = 0; i < path_1.dirnames.length; i++) {
             const dirname = path_1.dirnames[i];
+            if (dirname === 'tests' || dirname === 'testcases') {
+                continue;
+            }
             const pLocal = local.getPackage(dirname);
             const deps = Object.keys(pLocal.dependencies).reduce((accum, name) => {
                 let version = pLocal.dependencies[name];
@@ -55,12 +58,12 @@ const path_1 = require("../path");
                     }
                 }
                 else {
-                    if (prefix === "hethers" || prefix === "@hethers") {
-                        if (version.substring(0, 1) !== "^") {
-                            throw new Error(`bad version for bumping: ${dirname}:${name}:${version}`);
-                        }
-                        version = "^" + newVersion;
-                    }
+                    // if (prefix === "hethers" || prefix === "@hethers") {
+                    //     if (version.substring(0, 1) !== "^") {
+                    //         throw new Error(`bad version for bumping: ${ dirname }:${ name }:${ version }`);
+                    //     }
+                    //     version = "^" + newVersion;
+                    // }
                 }
                 accum[name] = version;
                 return accum;

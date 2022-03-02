@@ -80931,7 +80931,7 @@ exports.setup = setup;
 var channelz$1 = /*@__PURE__*/getDefaultExportFromCjs(channelz);
 
 var name$1 = "@grpc/grpc-js";
-var version$e = "1.5.6";
+var version$e = "1.5.7";
 var description$1 = "gRPC Library for Node - pure JS implementation";
 var homepage$1 = "https://grpc.io/";
 var repository$1 = "https://github.com/grpc/grpc-node/tree/master/packages/grpc-js";
@@ -81540,9 +81540,13 @@ class Subchannel {
         switch (newState) {
             case connectivityState.ConnectivityState.READY:
                 this.stopBackoff();
-                this.session.socket.once('close', () => {
-                    for (const listener of this.disconnectListeners) {
-                        listener();
+                const session = this.session;
+                session.socket.once('close', () => {
+                    if (this.session === session) {
+                        this.transitionToState([connectivityState.ConnectivityState.READY], connectivityState.ConnectivityState.TRANSIENT_FAILURE);
+                        for (const listener of this.disconnectListeners) {
+                            listener();
+                        }
                     }
                 });
                 if (this.keepaliveWithoutCalls) {
@@ -92814,7 +92818,7 @@ function uuidV4(randomBytes) {
     ].join("-");
 }
 
-const version$m = "json-wallets/1.0.3";
+const version$m = "json-wallets/1.0.4";
 
 "use strict";
 var __awaiter$5 = (window && window.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -93454,7 +93458,7 @@ function getNetwork(network) {
     };
 }
 
-const version$p = "providers/1.0.3";
+const version$p = "providers/1.0.4";
 
 "use strict";
 const logger$r = new Logger$1(version$p);
@@ -99430,7 +99434,7 @@ var utils$2 = /*#__PURE__*/Object.freeze({
 	getAccountFromTransactionId: getAccountFromTransactionId
 });
 
-const version$t = "hethers/1.0.3";
+const version$t = "hethers/1.0.4";
 
 "use strict";
 const logger$x = new Logger$1(version$t);
