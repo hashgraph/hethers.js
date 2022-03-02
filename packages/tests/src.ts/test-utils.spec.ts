@@ -11,11 +11,12 @@ import {
     AccountId,
     ContractCreateTransaction,
     ContractExecuteTransaction,
-    ContractFunctionParameters, Hbar, HbarUnit,
+    ContractFunctionParameters, Hbar, HbarUnit, Transaction,
     TransactionId, TransferTransaction
 } from "@hashgraph/sdk";
-import { asAccountString } from "@hethers/address";
+import {asAccountString, getAddressFromAccount} from "@hethers/address";
 import { Logger } from "@hethers/logger";
+import {hexlify} from "@ethersproject/bytes";
 
 // @ts-ignore
 function equals(a: any, b: any): boolean {
@@ -464,9 +465,6 @@ xdescribe("Test Signature Manipulation", function() {
     });
 });
 
-// FIXME
-//  FileCreate requires some of the changes made in `feat/signing-and-sending-transactions`,
-//  as it currently throws on FileCreate parsing
 describe("Test Typed Transactions", function() {
     const sendingAccount = "0.0.101010";
     it('Should parse ContractCreate', async function() {
@@ -523,7 +521,70 @@ describe("Test Typed Transactions", function() {
         } catch (err) {
             assert(err !== undefined, "expected error on parsing transfer tx");
         }
-    })
+    });
+
+    const hederaEoa = {
+        account: '0.0.29562194',
+        privateKey: '0x3b6cd41ded6986add931390d5d3efa0bb2b311a8415cfe66716cac0234de035d'
+    };
+    const provider = hethers.providers.getDefaultProvider('testnet');
+    // @ts-ignore
+    const wallet = new hethers.Wallet(hederaEoa, provider);
+
+    it('should place admin key for contracts when given', async () => {
+        const tx = {
+            data: '0x',
+            gasLimit: 30000,
+            customData: {
+                bytecodeFileId: '1.1.1',
+                contractAdminKey: wallet._signingKey().compressedPublicKey
+            }
+        };
+
+        const signedTx = await wallet.signTransaction(tx)
+        const signedBytes = hethers.utils.arrayify(signedTx);
+        const parsedHederaTx = Transaction.fromBytes(signedBytes);
+        // extract admin key in original format
+        const adminKey = hexlify((parsedHederaTx as ContractCreateTransaction).adminKey._toProtobufKey().ECDSASecp256k1);
+        assert.strictEqual(adminKey, tx.customData.contractAdminKey, 'admin key mismatch or not present');
+    });
+
+    it('should accept contract id ', async () => {
+        const tx = {
+            data: '0x',
+            gasLimit: 30000,
+            customData: {
+                bytecodeFileId: '1.1.1',
+                contractAdminKey: '0.0.2'
+            }
+        };
+
+        const signedTx = await wallet.signTransaction(tx)
+        const signedBytes = hethers.utils.arrayify(signedTx);
+        const parsedHederaTx = Transaction.fromBytes(signedBytes);
+        // extract admin key in original format
+        const adminKey = ((parsedHederaTx as ContractCreateTransaction).adminKey._toProtobufKey().contractID);
+        assert.strictEqual(`${adminKey.shardNum}.${adminKey.realmNum}.${adminKey.contractNum}`, tx.customData.contractAdminKey, 'admin key mismatch or not present');
+    });
+
+    it('should accept contract address', async () => {
+        const addr = getAddressFromAccount('0.0.2');
+        const tx = {
+            data: '0x',
+            gasLimit: 30000,
+            customData: {
+                bytecodeFileId: '1.1.1',
+                contractAdminKey: addr
+            }
+        };
+
+        const signedTx = await wallet.signTransaction(tx)
+        const signedBytes = hethers.utils.arrayify(signedTx);
+        const parsedHederaTx = Transaction.fromBytes(signedBytes);
+        // extract admin key in original format
+        const adminKey = ((parsedHederaTx as ContractCreateTransaction).adminKey._toProtobufKey().contractID);
+        assert.strictEqual(`${adminKey.shardNum}.${adminKey.realmNum}.${adminKey.contractNum}`, '0.0.2', 'admin key mismatch or not present');
+    });
 });
 
 describe("BigNumber", function() {

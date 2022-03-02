@@ -8,7 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { getAccountFromAddress, getAddress } from "@hethers/address";
+import { getAccountFromAddress, getAddress, getAddressFromAccount, isAddress } from "@hethers/address";
 import { BigNumber } from "@ethersproject/bignumber";
 import { arrayify, hexDataLength, hexDataSlice, hexlify, } from "@ethersproject/bytes";
 import { Zero } from "@hethers/constants";
@@ -17,8 +17,9 @@ import { computePublicKey, recoverPublicKey } from "@ethersproject/signing-key";
 import { Logger } from "@hethers/logger";
 import { version } from "./_version";
 import * as base64 from "@ethersproject/base64";
-import { getAddressFromAccount } from "@hethers/address";
-import { ContractCreateTransaction, ContractExecuteTransaction, ContractId, FileAppendTransaction, FileCreateTransaction, Transaction as HederaTransaction, PublicKey as HederaPubKey, TransactionId, AccountId, TransferTransaction, AccountCreateTransaction, Hbar, HbarUnit } from "@hashgraph/sdk";
+import { AccountCreateTransaction, AccountId, ContractCreateTransaction, ContractExecuteTransaction, ContractId, FileAppendTransaction, FileCreateTransaction, Hbar, HbarUnit, PublicKey as HederaPubKey, Transaction as HederaTransaction, TransactionId, TransferTransaction } from "@hashgraph/sdk";
+import { Key } from "@hashgraph/proto";
+import Long from "long";
 const logger = new Logger(version);
 export var TransactionTypes;
 (function (TransactionTypes) {
@@ -80,6 +81,11 @@ export function accessListify(value) {
     result.sort((a, b) => (a.address.localeCompare(b.address)));
     return result;
 }
+function isAccountLike(str) {
+    str = str.toString();
+    const m = str.split('.').map((e) => parseInt(e)).filter((e) => e >= 0).length;
+    return m == 3;
+}
 export function serializeHederaTransaction(transaction, pubKey) {
     var _a, _b;
     let tx;
@@ -106,6 +112,33 @@ export function serializeHederaTransaction(transaction, pubKey) {
                 .setConstructorParameters(arrayifiedData)
                 .setInitialBalance((_b = transaction.value) === null || _b === void 0 ? void 0 : _b.toString())
                 .setGas(gas);
+            if (transaction.customData.contractAdminKey) {
+                const inputKey = transaction.customData.contractAdminKey;
+                const keyInitializer = {};
+                if (inputKey.toString().startsWith('0x')) {
+                    if (isAddress(inputKey)) {
+                        const account = getAccountFromAddress(inputKey);
+                        keyInitializer.contractID = {
+                            shardNum: new Long(numberify(account.shard)),
+                            realmNum: new Long(numberify(account.realm)),
+                            contractNum: new Long(numberify(account.num))
+                        };
+                    }
+                    else {
+                        keyInitializer.ECDSASecp256k1 = arrayify(inputKey);
+                    }
+                }
+                if (isAccountLike(inputKey)) {
+                    const account = inputKey.split('.').map((e) => parseInt(e));
+                    keyInitializer.contractID = {
+                        shardNum: new Long(account[0]),
+                        realmNum: new Long(account[1]),
+                        contractNum: new Long(account[2])
+                    };
+                }
+                const key = HederaPubKey._fromProtobufKey(Key.create(keyInitializer));
+                tx.setAdminKey(key);
+            }
         }
         else {
             if (transaction.customData.fileChunk && transaction.customData.fileId) {

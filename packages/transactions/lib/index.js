@@ -65,6 +65,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parse = exports.serializeHederaTransaction = exports.accessListify = exports.recoverAddress = exports.computeAliasFromPubKey = exports.computeAlias = exports.computeAddress = exports.TransactionTypes = void 0;
 var address_1 = require("@hethers/address");
@@ -76,8 +79,9 @@ var signing_key_1 = require("@ethersproject/signing-key");
 var logger_1 = require("@hethers/logger");
 var _version_1 = require("./_version");
 var base64 = __importStar(require("@ethersproject/base64"));
-var address_2 = require("@hethers/address");
 var sdk_1 = require("@hashgraph/sdk");
+var proto_1 = require("@hashgraph/proto");
+var long_1 = __importDefault(require("long"));
 var logger = new logger_1.Logger(_version_1.version);
 var TransactionTypes;
 (function (TransactionTypes) {
@@ -144,6 +148,11 @@ function accessListify(value) {
     return result;
 }
 exports.accessListify = accessListify;
+function isAccountLike(str) {
+    str = str.toString();
+    var m = str.split('.').map(function (e) { return parseInt(e); }).filter(function (e) { return e >= 0; }).length;
+    return m == 3;
+}
 function serializeHederaTransaction(transaction, pubKey) {
     var _a, _b;
     var tx;
@@ -156,7 +165,7 @@ function serializeHederaTransaction(transaction, pubKey) {
     }
     else if (transaction.to) {
         tx = new sdk_1.ContractExecuteTransaction()
-            .setContractId(sdk_1.ContractId.fromSolidityAddress((0, address_2.getAddressFromAccount)(transaction.to)))
+            .setContractId(sdk_1.ContractId.fromSolidityAddress((0, address_1.getAddressFromAccount)(transaction.to)))
             .setFunctionParameters(arrayifiedData)
             .setGas(gas);
         if (transaction.value) {
@@ -170,6 +179,33 @@ function serializeHederaTransaction(transaction, pubKey) {
                 .setConstructorParameters(arrayifiedData)
                 .setInitialBalance((_b = transaction.value) === null || _b === void 0 ? void 0 : _b.toString())
                 .setGas(gas);
+            if (transaction.customData.contractAdminKey) {
+                var inputKey = transaction.customData.contractAdminKey;
+                var keyInitializer = {};
+                if (inputKey.toString().startsWith('0x')) {
+                    if ((0, address_1.isAddress)(inputKey)) {
+                        var account_1 = (0, address_1.getAccountFromAddress)(inputKey);
+                        keyInitializer.contractID = {
+                            shardNum: new long_1.default(numberify(account_1.shard)),
+                            realmNum: new long_1.default(numberify(account_1.realm)),
+                            contractNum: new long_1.default(numberify(account_1.num))
+                        };
+                    }
+                    else {
+                        keyInitializer.ECDSASecp256k1 = (0, bytes_1.arrayify)(inputKey);
+                    }
+                }
+                if (isAccountLike(inputKey)) {
+                    var account_2 = inputKey.split('.').map(function (e) { return parseInt(e); });
+                    keyInitializer.contractID = {
+                        shardNum: new long_1.default(account_2[0]),
+                        realmNum: new long_1.default(account_2[1]),
+                        contractNum: new long_1.default(account_2[2])
+                    };
+                }
+                var key = sdk_1.PublicKey._fromProtobufKey(proto_1.Key.create(keyInitializer));
+                tx.setAdminKey(key);
+            }
         }
         else {
             if (transaction.customData.fileChunk && transaction.customData.fileId) {
@@ -233,11 +269,11 @@ function parse(rawTransaction) {
                     return [4 /*yield*/, parsed.getTransactionHash()];
                 case 1:
                     contents = (_c.hash = _b.apply(void 0, [_d.sent()]),
-                        _c.from = (0, address_2.getAddressFromAccount)(parsed.transactionId.accountId.toString()),
+                        _c.from = (0, address_1.getAddressFromAccount)(parsed.transactionId.accountId.toString()),
                         _c);
                     if (parsed instanceof sdk_1.ContractExecuteTransaction) {
                         parsed = parsed;
-                        contents.to = (0, address_2.getAddressFromAccount)((_a = parsed.contractId) === null || _a === void 0 ? void 0 : _a.toString());
+                        contents.to = (0, address_1.getAddressFromAccount)((_a = parsed.contractId) === null || _a === void 0 ? void 0 : _a.toString());
                         contents.gasLimit = handleNumber(parsed.gas.toString());
                         contents.value = parsed.payableAmount ?
                             handleNumber(parsed.payableAmount.toBigNumber().toString()) : handleNumber('0');

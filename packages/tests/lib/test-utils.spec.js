@@ -66,6 +66,7 @@ var utils = __importStar(require("./utils"));
 var sdk_1 = require("@hashgraph/sdk");
 var address_1 = require("@hethers/address");
 var logger_1 = require("@hethers/logger");
+var bytes_1 = require("@ethersproject/bytes");
 // @ts-ignore
 function equals(a, b) {
     if (Array.isArray(a)) {
@@ -434,10 +435,8 @@ xdescribe("Test Signature Manipulation", function () {
         });
     });
 });
-// FIXME
-//  FileCreate requires some of the changes made in `feat/signing-and-sending-transactions`,
-//  as it currently throws on FileCreate parsing
 describe("Test Typed Transactions", function () {
+    var _this = this;
     var sendingAccount = "0.0.101010";
     it('Should parse ContractCreate', function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -537,6 +536,86 @@ describe("Test Typed Transactions", function () {
             });
         });
     });
+    var hederaEoa = {
+        account: '0.0.29562194',
+        privateKey: '0x3b6cd41ded6986add931390d5d3efa0bb2b311a8415cfe66716cac0234de035d'
+    };
+    var provider = hethers_1.hethers.providers.getDefaultProvider('testnet');
+    // @ts-ignore
+    var wallet = new hethers_1.hethers.Wallet(hederaEoa, provider);
+    it('should place admin key for contracts when given', function () { return __awaiter(_this, void 0, void 0, function () {
+        var tx, signedTx, signedBytes, parsedHederaTx, adminKey;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    tx = {
+                        data: '0x',
+                        gasLimit: 30000,
+                        customData: {
+                            bytecodeFileId: '1.1.1',
+                            contractAdminKey: wallet._signingKey().compressedPublicKey
+                        }
+                    };
+                    return [4 /*yield*/, wallet.signTransaction(tx)];
+                case 1:
+                    signedTx = _a.sent();
+                    signedBytes = hethers_1.hethers.utils.arrayify(signedTx);
+                    parsedHederaTx = sdk_1.Transaction.fromBytes(signedBytes);
+                    adminKey = (0, bytes_1.hexlify)(parsedHederaTx.adminKey._toProtobufKey().ECDSASecp256k1);
+                    assert_1.default.strictEqual(adminKey, tx.customData.contractAdminKey, 'admin key mismatch or not present');
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should accept contract id ', function () { return __awaiter(_this, void 0, void 0, function () {
+        var tx, signedTx, signedBytes, parsedHederaTx, adminKey;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    tx = {
+                        data: '0x',
+                        gasLimit: 30000,
+                        customData: {
+                            bytecodeFileId: '1.1.1',
+                            contractAdminKey: '0.0.2'
+                        }
+                    };
+                    return [4 /*yield*/, wallet.signTransaction(tx)];
+                case 1:
+                    signedTx = _a.sent();
+                    signedBytes = hethers_1.hethers.utils.arrayify(signedTx);
+                    parsedHederaTx = sdk_1.Transaction.fromBytes(signedBytes);
+                    adminKey = (parsedHederaTx.adminKey._toProtobufKey().contractID);
+                    assert_1.default.strictEqual(adminKey.shardNum + "." + adminKey.realmNum + "." + adminKey.contractNum, tx.customData.contractAdminKey, 'admin key mismatch or not present');
+                    return [2 /*return*/];
+            }
+        });
+    }); });
+    it('should accept contract address', function () { return __awaiter(_this, void 0, void 0, function () {
+        var addr, tx, signedTx, signedBytes, parsedHederaTx, adminKey;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    addr = (0, address_1.getAddressFromAccount)('0.0.2');
+                    tx = {
+                        data: '0x',
+                        gasLimit: 30000,
+                        customData: {
+                            bytecodeFileId: '1.1.1',
+                            contractAdminKey: addr
+                        }
+                    };
+                    return [4 /*yield*/, wallet.signTransaction(tx)];
+                case 1:
+                    signedTx = _a.sent();
+                    signedBytes = hethers_1.hethers.utils.arrayify(signedTx);
+                    parsedHederaTx = sdk_1.Transaction.fromBytes(signedBytes);
+                    adminKey = (parsedHederaTx.adminKey._toProtobufKey().contractID);
+                    assert_1.default.strictEqual(adminKey.shardNum + "." + adminKey.realmNum + "." + adminKey.contractNum, '0.0.2', 'admin key mismatch or not present');
+                    return [2 /*return*/];
+            }
+        });
+    }); });
 });
 describe("BigNumber", function () {
     var tests = (0, testcases_1.loadTests)("bignumber");
