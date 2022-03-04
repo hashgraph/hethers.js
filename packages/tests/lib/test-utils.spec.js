@@ -414,18 +414,21 @@ xdescribe("Test Signature Manipulation", function () {
             var s = data.pop(), r = data.pop(), v = parseInt(data.pop().substring(2), 16);
             var sig = hethers_1.hethers.utils.splitSignature({ r: r, s: s, v: v });
             {
+                // @ts-ignore
                 var addr = hethers_1.hethers.utils.recoverAddress(hash, {
                     r: r, s: s, v: v
                 });
                 assert_1.default.equal(addr, address, "Using r, s and v");
             }
             {
+                // @ts-ignore
                 var addr = hethers_1.hethers.utils.recoverAddress(hash, {
                     r: sig.r, _vs: sig._vs
                 });
                 assert_1.default.equal(addr, address, "Using r, _vs");
             }
             {
+                // @ts-ignore
                 var addr = hethers_1.hethers.utils.recoverAddress(hash, {
                     r: sig.r, s: sig.s, recoveryParam: sig.recoveryParam
                 });

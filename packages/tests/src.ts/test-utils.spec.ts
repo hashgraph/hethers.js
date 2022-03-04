@@ -441,6 +441,7 @@ xdescribe("Test Signature Manipulation", function() {
             const sig = hethers.utils.splitSignature({ r: r, s: s, v: v });
 
             {
+                // @ts-ignore
                 const addr = hethers.utils.recoverAddress(hash, {
                     r: r, s: s, v: v
                 });
@@ -448,6 +449,7 @@ xdescribe("Test Signature Manipulation", function() {
             }
 
             {
+                // @ts-ignore
                 const addr = hethers.utils.recoverAddress(hash, {
                     r: sig.r, _vs: sig._vs
                 });
@@ -455,6 +457,7 @@ xdescribe("Test Signature Manipulation", function() {
             }
 
             {
+                // @ts-ignore
                 const addr = hethers.utils.recoverAddress(hash, {
                     r: sig.r, s: sig.s, recoveryParam: sig.recoveryParam
                 });

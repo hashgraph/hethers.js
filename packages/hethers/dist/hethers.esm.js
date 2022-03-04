@@ -80931,7 +80931,7 @@ exports.setup = setup;
 var channelz$1 = /*@__PURE__*/getDefaultExportFromCjs(channelz);
 
 var name$1 = "@grpc/grpc-js";
-var version$e = "1.5.6";
+var version$e = "1.5.7";
 var description$1 = "gRPC Library for Node - pure JS implementation";
 var homepage$1 = "https://grpc.io/";
 var repository$1 = "https://github.com/grpc/grpc-node/tree/master/packages/grpc-js";
@@ -81540,9 +81540,13 @@ class Subchannel {
         switch (newState) {
             case connectivityState.ConnectivityState.READY:
                 this.stopBackoff();
-                this.session.socket.once('close', () => {
-                    for (const listener of this.disconnectListeners) {
-                        listener();
+                const session = this.session;
+                session.socket.once('close', () => {
+                    if (this.session === session) {
+                        this.transitionToState([connectivityState.ConnectivityState.READY], connectivityState.ConnectivityState.TRANSIENT_FAILURE);
+                        for (const listener of this.disconnectListeners) {
+                            listener();
+                        }
                     }
                 });
                 if (this.keepaliveWithoutCalls) {
@@ -99408,9 +99412,7 @@ var utils$2 = /*#__PURE__*/Object.freeze({
 	parseTransaction: parse$2,
 	get TransactionTypes () { return TransactionTypes; },
 	getJsonWalletAddress: getJsonWalletAddress,
-	computeAddress: computeAddress,
 	computeAlias: computeAlias,
-	recoverAddress: recoverAddress,
 	computePublicKey: computePublicKey,
 	recoverPublicKey: recoverPublicKey,
 	verifyMessage: verifyMessage,
