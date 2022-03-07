@@ -89643,19 +89643,12 @@ function handleNumber(value) {
     }
     return BigNumber.from(value);
 }
-function computeAddress(key) {
-    const publicKey = computePublicKey(key);
-    return getAddress$1(hexDataSlice(keccak256(hexDataSlice(publicKey, 1)), 12));
-}
 function computeAlias(key) {
     const publicKey = computePublicKey(key);
     return computeAliasFromPubKey(publicKey);
 }
 function computeAliasFromPubKey(pubKey) {
     return `0.0.${encode$6(pubKey)}`;
-}
-function recoverAddress(digest, signature) {
-    return computeAddress(recoverPublicKey(arrayify(digest), signature));
 }
 function accessSetify(addr, storageKeys) {
     return {
@@ -92818,7 +92811,7 @@ function uuidV4(randomBytes) {
     ].join("-");
 }
 
-const version$m = "json-wallets/1.0.4";
+const version$m = "json-wallets/1.0.3";
 
 "use strict";
 var __awaiter$5 = (window && window.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -93458,7 +93451,7 @@ function getNetwork(network) {
     };
 }
 
-const version$p = "providers/1.0.4";
+const version$p = "providers/1.0.3";
 
 "use strict";
 const logger$r = new Logger$1(version$p);
@@ -97947,6 +97940,10 @@ const MIRROR_NODE_TRANSACTIONS_ENDPOINT = '/api/v1/transactions/';
 const MIRROR_NODE_CONTRACTS_RESULTS_ENDPOINT = '/api/v1/contracts/results/';
 const MIRROR_NODE_CONTRACTS_ENDPOINT = '/api/v1/contracts/';
 let nextPollId = 1;
+function formatTimestamp(s) {
+    const [sec, nano] = s.split(".");
+    return `${sec.padEnd(10, "0")}.${nano.padEnd(9, "0")}`;
+}
 class BaseProvider extends Provider {
     constructor(network) {
         logger$s.checkNew(new.target, Provider);
@@ -98586,8 +98583,8 @@ class BaseProvider extends Provider {
                         let from = this._previousPollingTimestamps[event.tag];
                         // ensure we don't get from == to
                         from = from.plusNanos(1);
-                        filter.fromTimestamp = from.toString();
-                        filter.toTimestamp = now.toString();
+                        filter.fromTimestamp = formatTimestamp(from.toString());
+                        filter.toTimestamp = formatTimestamp(now.toString());
                         const runner = this.getLogs(filter).then((logs) => {
                             if (logs.length === 0) {
                                 return;
@@ -99412,9 +99409,7 @@ var utils$2 = /*#__PURE__*/Object.freeze({
 	parseTransaction: parse$2,
 	get TransactionTypes () { return TransactionTypes; },
 	getJsonWalletAddress: getJsonWalletAddress,
-	computeAddress: computeAddress,
 	computeAlias: computeAlias,
-	recoverAddress: recoverAddress,
 	computePublicKey: computePublicKey,
 	recoverPublicKey: recoverPublicKey,
 	verifyMessage: verifyMessage,
@@ -99434,7 +99429,7 @@ var utils$2 = /*#__PURE__*/Object.freeze({
 	getAccountFromTransactionId: getAccountFromTransactionId
 });
 
-const version$t = "hethers/1.0.4";
+const version$t = "hethers/1.0.3";
 
 "use strict";
 const logger$x = new Logger$1(version$t);
