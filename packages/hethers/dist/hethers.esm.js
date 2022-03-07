@@ -89643,19 +89643,12 @@ function handleNumber(value) {
     }
     return BigNumber.from(value);
 }
-function computeAddress(key) {
-    const publicKey = computePublicKey(key);
-    return getAddress$1(hexDataSlice(keccak256(hexDataSlice(publicKey, 1)), 12));
-}
 function computeAlias(key) {
     const publicKey = computePublicKey(key);
     return computeAliasFromPubKey(publicKey);
 }
 function computeAliasFromPubKey(pubKey) {
     return `0.0.${encode$6(pubKey)}`;
-}
-function recoverAddress(digest, signature) {
-    return computeAddress(recoverPublicKey(arrayify(digest), signature));
 }
 function accessSetify(addr, storageKeys) {
     return {
