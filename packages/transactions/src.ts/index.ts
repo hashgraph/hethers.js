@@ -154,6 +154,14 @@ function isAccountLike(str: any) {
     return m == 3;
 }
 
+function validateMemo(memo: string, memoType: string) {
+    if (memo.length > 100 || memo.length === 0) {
+        logger.throwArgumentError(`invalid ${memoType} memo`, Logger.errors.INVALID_ARGUMENT, {
+            memo: memo
+        });
+    }
+}
+
 export function serializeHederaTransaction(transaction: UnsignedTransaction, pubKey?: HederaPubKey) : HederaTransaction {
     let tx: HederaTransaction;
     const arrayifiedData = transaction.data ? arrayify(transaction.data) : new Uint8Array();
@@ -203,13 +211,9 @@ export function serializeHederaTransaction(transaction: UnsignedTransaction, pub
                 const key = HederaPubKey._fromProtobufKey(Key.create(keyInitializer));
                 (tx as ContractCreateTransaction).setAdminKey(key);
             }
-            if(transaction.customData.memo) {
-                if (transaction.customData.memo.length > 100 || transaction.customData.memo.length === 0) {
-                    logger.throwArgumentError("invalid contract memo", Logger.errors.INVALID_ARGUMENT, {
-                        contractMemo: transaction.customData.memo
-                    });
-                }
-                (tx as ContractCreateTransaction).setContractMemo(transaction.customData.memo);
+            if(transaction.customData.contractMemo) {
+                validateMemo(transaction.customData.contractMemo, 'contract');
+                (tx as ContractCreateTransaction).setContractMemo(transaction.customData.contractMemo);
             }
         } else {
             if (transaction.customData.fileChunk && transaction.customData.fileId) {
@@ -237,6 +241,10 @@ export function serializeHederaTransaction(transaction: UnsignedTransaction, pub
                     transaction);
             }
         }
+    }
+    if (transaction.customData.memo) {
+        validateMemo(transaction.customData.memo, 'tx');
+        tx.setTransactionMemo(transaction.customData.memo);
     }
     const account = getAccountFromAddress(transaction.from.toString());
     tx.setTransactionId(

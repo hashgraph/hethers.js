@@ -89776,6 +89776,13 @@ function isAccountLike(str) {
     const m = str.split('.').map((e) => parseInt(e)).filter((e) => e >= 0).length;
     return m == 3;
 }
+function validateMemo(memo, memoType) {
+    if (memo.length > 100 || memo.length === 0) {
+        logger$i.throwArgumentError(`invalid ${memoType} memo`, Logger$1.errors.INVALID_ARGUMENT, {
+            memo: memo
+        });
+    }
+}
 function serializeHederaTransaction(transaction, pubKey) {
     var _a, _b;
     let tx;
@@ -89829,13 +89836,9 @@ function serializeHederaTransaction(transaction, pubKey) {
                 const key = PublicKey$1._fromProtobufKey(lib$1.Key.create(keyInitializer));
                 tx.setAdminKey(key);
             }
-            if (transaction.customData.memo) {
-                if (transaction.customData.memo.length > 100 || transaction.customData.memo.length === 0) {
-                    logger$i.throwArgumentError("invalid contract memo", Logger$1.errors.INVALID_ARGUMENT, {
-                        contractMemo: transaction.customData.memo
-                    });
-                }
-                tx.setContractMemo(transaction.customData.memo);
+            if (transaction.customData.contractMemo) {
+                validateMemo(transaction.customData.contractMemo, 'contract');
+                tx.setContractMemo(transaction.customData.contractMemo);
             }
         }
         else {
@@ -89863,6 +89866,10 @@ function serializeHederaTransaction(transaction, pubKey) {
                 logger$i.throwArgumentError("Cannot determine transaction type from given custom data. Need either `to`, `fileChunk`, `fileId` or `bytecodeFileId`", Logger$1.errors.INVALID_ARGUMENT, transaction);
             }
         }
+    }
+    if (transaction.customData.memo) {
+        validateMemo(transaction.customData.memo, 'tx');
+        tx.setTransactionMemo(transaction.customData.memo);
     }
     const account = getAccountFromAddress(transaction.from.toString());
     tx.setTransactionId(TransactionId.generate(new AccountId({

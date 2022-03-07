@@ -143,6 +143,13 @@ function isAccountLike(str) {
     var m = str.split('.').map(function (e) { return parseInt(e); }).filter(function (e) { return e >= 0; }).length;
     return m == 3;
 }
+function validateMemo(memo, memoType) {
+    if (memo.length > 100 || memo.length === 0) {
+        logger.throwArgumentError("invalid " + memoType + " memo", logger_1.Logger.errors.INVALID_ARGUMENT, {
+            memo: memo
+        });
+    }
+}
 function serializeHederaTransaction(transaction, pubKey) {
     var _a, _b;
     var tx;
@@ -196,13 +203,9 @@ function serializeHederaTransaction(transaction, pubKey) {
                 var key = sdk_1.PublicKey._fromProtobufKey(proto_1.Key.create(keyInitializer));
                 tx.setAdminKey(key);
             }
-            if (transaction.customData.memo) {
-                if (transaction.customData.memo.length > 100 || transaction.customData.memo.length === 0) {
-                    logger.throwArgumentError("invalid contract memo", logger_1.Logger.errors.INVALID_ARGUMENT, {
-                        contractMemo: transaction.customData.memo
-                    });
-                }
-                tx.setContractMemo(transaction.customData.memo);
+            if (transaction.customData.contractMemo) {
+                validateMemo(transaction.customData.contractMemo, 'contract');
+                tx.setContractMemo(transaction.customData.contractMemo);
             }
         }
         else {
@@ -230,6 +233,10 @@ function serializeHederaTransaction(transaction, pubKey) {
                 logger.throwArgumentError("Cannot determine transaction type from given custom data. Need either `to`, `fileChunk`, `fileId` or `bytecodeFileId`", logger_1.Logger.errors.INVALID_ARGUMENT, transaction);
             }
         }
+    }
+    if (transaction.customData.memo) {
+        validateMemo(transaction.customData.memo, 'tx');
+        tx.setTransactionMemo(transaction.customData.memo);
     }
     var account = (0, address_1.getAccountFromAddress)(transaction.from.toString());
     tx.setTransactionId(sdk_1.TransactionId.generate(new sdk_1.AccountId({

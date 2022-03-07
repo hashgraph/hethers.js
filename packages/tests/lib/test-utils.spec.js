@@ -598,7 +598,7 @@ describe("Test Typed Transactions", function () {
                             gasLimit: 30000,
                             customData: {
                                 bytecodeFileId: '1.1.1',
-                                memo: memo
+                                contractMemo: memo
                             }
                         };
                         return [4 /*yield*/, wallet.signTransaction(tx)];
@@ -607,15 +607,15 @@ describe("Test Typed Transactions", function () {
                         signedBytes = hethers_1.hethers.utils.arrayify(signedTx);
                         parsedHederaTx = sdk_1.Transaction.fromBytes(signedBytes);
                         contractCreateTx = parsedHederaTx;
-                        assert_1.default.strictEqual(memo, contractCreateTx.contractMemo, 'invalid memo');
+                        assert_1.default.strictEqual(memo, contractCreateTx.contractMemo, 'invalid contract memo');
                         return [2 /*return*/];
                 }
             });
         });
     });
-    it('should reject invalid memo', function () {
+    it('should reject invalid memos', function () {
         return __awaiter(this, void 0, void 0, function () {
-            var invalidMemo, tx, e_1, i, e_2;
+            var invalidMemo, tx, e_1, i, e_2, e_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -625,7 +625,7 @@ describe("Test Typed Transactions", function () {
                             gasLimit: 30000,
                             customData: {
                                 bytecodeFileId: '1.1.1',
-                                memo: invalidMemo
+                                contractMemo: invalidMemo
                             }
                         };
                         _a.label = 1;
@@ -637,13 +637,14 @@ describe("Test Typed Transactions", function () {
                         return [3 /*break*/, 4];
                     case 3:
                         e_1 = _a.sent();
-                        assert_1.default.strictEqual(logger_1.Logger.errors.INVALID_ARGUMENT, e_1.code, "expected invalid memo");
+                        assert_1.default.strictEqual(logger_1.Logger.errors.INVALID_ARGUMENT, e_1.code, "expected invalid contract memo");
+                        assert_1.default.strictEqual(e_1.message.startsWith('invalid contract memo'), true, 'expected fail message on invalid memo');
                         return [3 /*break*/, 4];
                     case 4:
                         for (i = 0; i <= 101; i++) {
                             invalidMemo += '0';
                         }
-                        tx.customData.memo = invalidMemo;
+                        tx.customData.contractMemo = invalidMemo;
                         _a.label = 5;
                     case 5:
                         _a.trys.push([5, 7, , 8]);
@@ -653,9 +654,56 @@ describe("Test Typed Transactions", function () {
                         return [3 /*break*/, 8];
                     case 7:
                         e_2 = _a.sent();
-                        assert_1.default.strictEqual(logger_1.Logger.errors.INVALID_ARGUMENT, e_2.code, "expected invalid memo");
+                        assert_1.default.strictEqual(logger_1.Logger.errors.INVALID_ARGUMENT, e_2.code, "expected invalid contract memo");
+                        assert_1.default.strictEqual(e_2.message.startsWith('invalid contract memo'), true, 'expected fail message on invalid memo');
                         return [3 /*break*/, 8];
-                    case 8: return [2 /*return*/];
+                    case 8:
+                        tx.customData.contractMemo = "validContractMemo";
+                        // @ts-ignore - does not allow setting memo when not present initially
+                        tx.customData.memo = invalidMemo;
+                        _a.label = 9;
+                    case 9:
+                        _a.trys.push([9, 11, , 12]);
+                        return [4 /*yield*/, wallet.signTransaction(tx)];
+                    case 10:
+                        _a.sent();
+                        return [3 /*break*/, 12];
+                    case 11:
+                        e_3 = _a.sent();
+                        assert_1.default.strictEqual(logger_1.Logger.errors.INVALID_ARGUMENT, e_3.code, "expected invalid tx memo");
+                        assert_1.default.strictEqual(e_3.message.startsWith('invalid tx memo'), true, 'expected fail message on invalid memo');
+                        return [3 /*break*/, 12];
+                    case 12: return [2 /*return*/];
+                }
+            });
+        });
+    });
+    it('differentiates between contract memo and tx memo', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var contractMemo, txMemo, tx, signedTx, signedBytes, parsedHederaTx, contractCreateTx;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        contractMemo = 'contractMemo';
+                        txMemo = "txMemo";
+                        tx = {
+                            data: '0x',
+                            gasLimit: 30000,
+                            customData: {
+                                bytecodeFileId: '1.1.1',
+                                contractMemo: contractMemo,
+                                memo: txMemo
+                            }
+                        };
+                        return [4 /*yield*/, wallet.signTransaction(tx)];
+                    case 1:
+                        signedTx = _a.sent();
+                        signedBytes = hethers_1.hethers.utils.arrayify(signedTx);
+                        parsedHederaTx = sdk_1.Transaction.fromBytes(signedBytes);
+                        contractCreateTx = parsedHederaTx;
+                        assert_1.default.strictEqual(contractMemo, contractCreateTx.contractMemo, 'invalid contract memo');
+                        assert_1.default.strictEqual(txMemo, contractCreateTx.transactionMemo, "invalid tx memo");
+                        return [2 /*return*/];
                 }
             });
         });

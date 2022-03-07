@@ -78,6 +78,13 @@ function isAccountLike(str) {
     const m = str.split('.').map((e) => parseInt(e)).filter((e) => e >= 0).length;
     return m == 3;
 }
+function validateMemo(memo, memoType) {
+    if (memo.length > 100 || memo.length === 0) {
+        logger.throwArgumentError(`invalid ${memoType} memo`, Logger.errors.INVALID_ARGUMENT, {
+            memo: memo
+        });
+    }
+}
 export function serializeHederaTransaction(transaction, pubKey) {
     var _a, _b;
     let tx;
@@ -131,13 +138,9 @@ export function serializeHederaTransaction(transaction, pubKey) {
                 const key = HederaPubKey._fromProtobufKey(Key.create(keyInitializer));
                 tx.setAdminKey(key);
             }
-            if (transaction.customData.memo) {
-                if (transaction.customData.memo.length > 100 || transaction.customData.memo.length === 0) {
-                    logger.throwArgumentError("invalid contract memo", Logger.errors.INVALID_ARGUMENT, {
-                        contractMemo: transaction.customData.memo
-                    });
-                }
-                tx.setContractMemo(transaction.customData.memo);
+            if (transaction.customData.contractMemo) {
+                validateMemo(transaction.customData.contractMemo, 'contract');
+                tx.setContractMemo(transaction.customData.contractMemo);
             }
         }
         else {
@@ -165,6 +168,10 @@ export function serializeHederaTransaction(transaction, pubKey) {
                 logger.throwArgumentError("Cannot determine transaction type from given custom data. Need either `to`, `fileChunk`, `fileId` or `bytecodeFileId`", Logger.errors.INVALID_ARGUMENT, transaction);
             }
         }
+    }
+    if (transaction.customData.memo) {
+        validateMemo(transaction.customData.memo, 'tx');
+        tx.setTransactionMemo(transaction.customData.memo);
     }
     const account = getAccountFromAddress(transaction.from.toString());
     tx.setTransactionId(TransactionId.generate(new AccountId({

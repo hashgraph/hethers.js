@@ -559,7 +559,7 @@ describe("Test Typed Transactions", function() {
             gasLimit: 30000,
             customData: {
                 bytecodeFileId: '1.1.1',
-                memo
+                contractMemo: memo
             }
         };
 
@@ -567,11 +567,11 @@ describe("Test Typed Transactions", function() {
         const signedBytes = hethers.utils.arrayify(signedTx);
         const parsedHederaTx = Transaction.fromBytes(signedBytes);
         const contractCreateTx = (parsedHederaTx as ContractCreateTransaction);
-        assert.strictEqual(memo, contractCreateTx.contractMemo, 'invalid memo');
+        assert.strictEqual(memo, contractCreateTx.contractMemo, 'invalid contract memo');
 
     });
 
-    it('should reject invalid memo', async function() {
+    it('should reject invalid memos', async function() {
         let invalidMemo = '';
 
         const tx = {
@@ -579,26 +579,60 @@ describe("Test Typed Transactions", function() {
             gasLimit: 30000,
             customData: {
                 bytecodeFileId: '1.1.1',
-                memo: invalidMemo
+                contractMemo: invalidMemo
             }
         };
         try {
             await wallet.signTransaction(tx)
         } catch (e) {
-            assert.strictEqual(Logger.errors.INVALID_ARGUMENT, e.code, "expected invalid memo");
+            assert.strictEqual(Logger.errors.INVALID_ARGUMENT, e.code, "expected invalid contract memo");
+            assert.strictEqual( e.message.startsWith('invalid contract memo'), true, 'expected fail message on invalid memo');
         }
 
         for(let i = 0; i <= 101; i++) {
             invalidMemo+='0';
         }
-        tx.customData.memo = invalidMemo;
+        tx.customData.contractMemo = invalidMemo;
 
         try {
             await wallet.signTransaction(tx)
         } catch (e) {
-            assert.strictEqual(Logger.errors.INVALID_ARGUMENT, e.code, "expected invalid memo");
+            assert.strictEqual(Logger.errors.INVALID_ARGUMENT, e.code, "expected invalid contract memo");
+            assert.strictEqual( e.message.startsWith('invalid contract memo'), true, 'expected fail message on invalid memo');
+        }
+
+        tx.customData.contractMemo = "validContractMemo";
+        // @ts-ignore - does not allow setting memo when not present initially
+        tx.customData.memo = invalidMemo;
+        try {
+            await wallet.signTransaction(tx);
+        } catch (e) {
+            assert.strictEqual(Logger.errors.INVALID_ARGUMENT, e.code, "expected invalid tx memo");
+            assert.strictEqual( e.message.startsWith('invalid tx memo'), true, 'expected fail message on invalid memo');
         }
     });
+
+    it('differentiates between contract memo and tx memo', async function() {
+        const contractMemo = 'contractMemo';
+        const txMemo = "txMemo";
+        const tx = {
+            data: '0x',
+            gasLimit: 30000,
+            customData: {
+                bytecodeFileId: '1.1.1',
+                contractMemo: contractMemo,
+                memo: txMemo
+            }
+        };
+
+        const signedTx = await wallet.signTransaction(tx)
+        const signedBytes = hethers.utils.arrayify(signedTx);
+        const parsedHederaTx = Transaction.fromBytes(signedBytes);
+        const contractCreateTx = (parsedHederaTx as ContractCreateTransaction);
+        assert.strictEqual(contractMemo, contractCreateTx.contractMemo, 'invalid contract memo');
+        assert.strictEqual(txMemo, contractCreateTx.transactionMemo, "invalid tx memo");
+    });
+
 });
 
 describe("BigNumber", function() {
