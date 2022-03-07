@@ -616,6 +616,80 @@ describe("Test Typed Transactions", function () {
             }
         });
     }); });
+    it('should accept valid contract memo', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var memo, tx, signedTx, signedBytes, parsedHederaTx, contractCreateTx;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        memo = 'memo';
+                        tx = {
+                            data: '0x',
+                            gasLimit: 30000,
+                            customData: {
+                                bytecodeFileId: '1.1.1',
+                                contractMemo: memo
+                            }
+                        };
+                        return [4 /*yield*/, wallet.signTransaction(tx)];
+                    case 1:
+                        signedTx = _a.sent();
+                        signedBytes = hethers_1.hethers.utils.arrayify(signedTx);
+                        parsedHederaTx = sdk_1.Transaction.fromBytes(signedBytes);
+                        contractCreateTx = parsedHederaTx;
+                        assert_1.default.strictEqual(memo, contractCreateTx.contractMemo, 'invalid memo');
+                        return [2 /*return*/];
+                }
+            });
+        });
+    });
+    it('should reject invalid memo', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var invalidMemo, tx, e_1, i, e_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        invalidMemo = '';
+                        tx = {
+                            data: '0x',
+                            gasLimit: 30000,
+                            customData: {
+                                bytecodeFileId: '1.1.1',
+                                contractMemo: invalidMemo
+                            }
+                        };
+                        _a.label = 1;
+                    case 1:
+                        _a.trys.push([1, 3, , 4]);
+                        return [4 /*yield*/, wallet.signTransaction(tx)];
+                    case 2:
+                        _a.sent();
+                        return [3 /*break*/, 4];
+                    case 3:
+                        e_1 = _a.sent();
+                        assert_1.default.strictEqual(logger_1.Logger.errors.INVALID_ARGUMENT, e_1.code, "expected invalid memo");
+                        return [3 /*break*/, 4];
+                    case 4:
+                        for (i = 0; i <= 101; i++) {
+                            invalidMemo += '0';
+                        }
+                        tx.customData.contractMemo = invalidMemo;
+                        _a.label = 5;
+                    case 5:
+                        _a.trys.push([5, 7, , 8]);
+                        return [4 /*yield*/, wallet.signTransaction(tx)];
+                    case 6:
+                        _a.sent();
+                        return [3 /*break*/, 8];
+                    case 7:
+                        e_2 = _a.sent();
+                        assert_1.default.strictEqual(logger_1.Logger.errors.INVALID_ARGUMENT, e_2.code, "expected invalid memo");
+                        return [3 /*break*/, 8];
+                    case 8: return [2 /*return*/];
+                }
+            });
+        });
+    });
 });
 describe("BigNumber", function () {
     var tests = (0, testcases_1.loadTests)("bignumber");

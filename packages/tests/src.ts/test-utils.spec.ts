@@ -585,6 +585,55 @@ describe("Test Typed Transactions", function() {
         const adminKey = ((parsedHederaTx as ContractCreateTransaction).adminKey._toProtobufKey().contractID);
         assert.strictEqual(`${adminKey.shardNum}.${adminKey.realmNum}.${adminKey.contractNum}`, '0.0.2', 'admin key mismatch or not present');
     });
+
+    it('should accept valid contract memo', async function () {
+        const memo = 'memo';
+
+        const tx = {
+            data: '0x',
+            gasLimit: 30000,
+            customData: {
+                bytecodeFileId: '1.1.1',
+                contractMemo: memo
+            }
+        };
+
+        const signedTx = await wallet.signTransaction(tx)
+        const signedBytes = hethers.utils.arrayify(signedTx);
+        const parsedHederaTx = Transaction.fromBytes(signedBytes);
+        const contractCreateTx = (parsedHederaTx as ContractCreateTransaction);
+        assert.strictEqual(memo, contractCreateTx.contractMemo, 'invalid memo');
+
+    });
+
+    it('should reject invalid memo', async function() {
+        let invalidMemo = '';
+
+        const tx = {
+            data: '0x',
+            gasLimit: 30000,
+            customData: {
+                bytecodeFileId: '1.1.1',
+                contractMemo: invalidMemo
+            }
+        };
+        try {
+            await wallet.signTransaction(tx)
+        } catch (e) {
+            assert.strictEqual(Logger.errors.INVALID_ARGUMENT, e.code, "expected invalid memo");
+        }
+
+        for(let i = 0; i <= 101; i++) {
+            invalidMemo+='0';
+        }
+        tx.customData.contractMemo = invalidMemo;
+
+        try {
+            await wallet.signTransaction(tx)
+        } catch (e) {
+            assert.strictEqual(Logger.errors.INVALID_ARGUMENT, e.code, "expected invalid memo");
+        }
+    });
 });
 
 describe("BigNumber", function() {

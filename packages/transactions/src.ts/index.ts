@@ -208,6 +208,14 @@ export function serializeHederaTransaction(transaction: UnsignedTransaction, pub
                 const key = HederaPubKey._fromProtobufKey(Key.create(keyInitializer));
                 (tx as ContractCreateTransaction).setAdminKey(key);
             }
+            if(transaction.customData.contractMemo) {
+                if (transaction.customData.contractMemo.length > 100 || transaction.customData.contractMemo.length === 0) {
+                    logger.throwArgumentError("invalid contract memo", Logger.errors.INVALID_ARGUMENT, {
+                        contractMemo: transaction.customData.contractMemo
+                    });
+                }
+                (tx as ContractCreateTransaction).setContractMemo(transaction.customData.contractMemo);
+            }
         } else {
             if (transaction.customData.fileChunk && transaction.customData.fileId) {
                 tx = new FileAppendTransaction()

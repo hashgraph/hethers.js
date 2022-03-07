@@ -89836,6 +89836,14 @@ function serializeHederaTransaction(transaction, pubKey) {
                 const key = PublicKey$1._fromProtobufKey(lib$1.Key.create(keyInitializer));
                 tx.setAdminKey(key);
             }
+            if (transaction.customData.contractMemo) {
+                if (transaction.customData.contractMemo.length > 100 || transaction.customData.contractMemo.length === 0) {
+                    logger$i.throwArgumentError("invalid contract memo", Logger$1.errors.INVALID_ARGUMENT, {
+                        contractMemo: transaction.customData.contractMemo
+                    });
+                }
+                tx.setContractMemo(transaction.customData.contractMemo);
+            }
         }
         else {
             if (transaction.customData.fileChunk && transaction.customData.fileId) {
