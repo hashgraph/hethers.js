@@ -89778,11 +89778,6 @@ function accessListify(value) {
     result.sort((a, b) => (a.address.localeCompare(b.address)));
     return result;
 }
-function isAccountLike(str) {
-    str = str.toString();
-    const m = str.split('.').map((e) => parseInt(e)).filter((e) => e >= 0).length;
-    return m == 3;
-}
 function serializeHederaTransaction(transaction, pubKey) {
     var _a, _b;
     let tx;
@@ -89809,33 +89804,6 @@ function serializeHederaTransaction(transaction, pubKey) {
                 .setConstructorParameters(arrayifiedData)
                 .setInitialBalance((_b = transaction.value) === null || _b === void 0 ? void 0 : _b.toString())
                 .setGas(gas);
-            if (transaction.customData.contractAdminKey) {
-                const inputKey = transaction.customData.contractAdminKey;
-                const keyInitializer = {};
-                if (inputKey.toString().startsWith('0x')) {
-                    if (isAddress$1(inputKey)) {
-                        const account = getAccountFromAddress(inputKey);
-                        keyInitializer.contractID = {
-                            shardNum: new long_1(numberify(account.shard)),
-                            realmNum: new long_1(numberify(account.realm)),
-                            contractNum: new long_1(numberify(account.num))
-                        };
-                    }
-                    else {
-                        keyInitializer.ECDSASecp256k1 = arrayify(inputKey);
-                    }
-                }
-                if (isAccountLike(inputKey)) {
-                    const account = inputKey.split('.').map((e) => parseInt(e));
-                    keyInitializer.contractID = {
-                        shardNum: new long_1(account[0]),
-                        realmNum: new long_1(account[1]),
-                        contractNum: new long_1(account[2])
-                    };
-                }
-                const key = PublicKey$1._fromProtobufKey(lib$1.Key.create(keyInitializer));
-                tx.setAdminKey(key);
-            }
         }
         else {
             if (transaction.customData.fileChunk && transaction.customData.fileId) {
@@ -97743,6 +97711,10 @@ const MIRROR_NODE_TRANSACTIONS_ENDPOINT = '/api/v1/transactions/';
 const MIRROR_NODE_CONTRACTS_RESULTS_ENDPOINT = '/api/v1/contracts/results/';
 const MIRROR_NODE_CONTRACTS_ENDPOINT = '/api/v1/contracts/';
 let nextPollId = 1;
+function formatTimestamp(s) {
+    const [sec, nano] = s.split(".");
+    return `${sec.padEnd(10, "0")}.${nano.padEnd(9, "0")}`;
+}
 class BaseProvider extends Provider {
     constructor(network) {
         logger$s.checkNew(new.target, Provider);
@@ -98382,8 +98354,8 @@ class BaseProvider extends Provider {
                         let from = this._previousPollingTimestamps[event.tag];
                         // ensure we don't get from == to
                         from = from.plusNanos(1);
-                        filter.fromTimestamp = from.toString();
-                        filter.toTimestamp = now.toString();
+                        filter.fromTimestamp = formatTimestamp(from.toString());
+                        filter.toTimestamp = formatTimestamp(now.toString());
                         const runner = this.getLogs(filter).then((logs) => {
                             if (logs.length === 0) {
                                 return;
