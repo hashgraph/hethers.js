@@ -1,11 +1,15 @@
 "use strict";
 
-import {AccountLike, getAccountFromAddress, getAddress, getAddressFromAccount, isAddress} from "@hethers/address";
-import {BigNumber, BigNumberish} from "@ethersproject/bignumber";
-import {arrayify, BytesLike, hexDataLength, hexDataSlice, hexlify, SignatureLike,} from "@ethersproject/bytes";
+import { AccountLike, getAccountFromAddress, getAddress } from "@hethers/address";
+import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
+import {
+    arrayify,
+    BytesLike,
+    hexDataLength,
+    hexlify,
+} from "@ethersproject/bytes";
 import {Zero} from "@hethers/constants";
-import {keccak256} from "@ethersproject/keccak256";
-import {computePublicKey, recoverPublicKey} from "@ethersproject/signing-key";
+import {computePublicKey} from "@ethersproject/signing-key";
 
 import {Logger} from "@hethers/logger";
 import {version} from "./_version";
@@ -99,11 +103,6 @@ function handleNumber(value: string): BigNumber {
     return BigNumber.from(value);
 }
 
-export function computeAddress(key: BytesLike | string): string {
-    const publicKey = computePublicKey(key);
-    return getAddress(hexDataSlice(keccak256(hexDataSlice(publicKey, 1)), 12));
-}
-
 export function computeAlias(key: BytesLike | string): string {
     const publicKey = computePublicKey(key);
     return computeAliasFromPubKey(publicKey);
@@ -111,10 +110,6 @@ export function computeAlias(key: BytesLike | string): string {
 
 export function computeAliasFromPubKey(pubKey: string): string {
     return `0.0.${base64.encode(pubKey)}`;
-}
-
-export function recoverAddress(digest: BytesLike, signature: SignatureLike): string {
-    return computeAddress(recoverPublicKey(arrayify(digest), signature));
 }
 
 function accessSetify(addr: string, storageKeys: Array<string>): { address: string,storageKeys: Array<string> } {

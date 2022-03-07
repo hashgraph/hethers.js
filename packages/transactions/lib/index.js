@@ -69,12 +69,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parse = exports.serializeHederaTransaction = exports.accessListify = exports.recoverAddress = exports.computeAliasFromPubKey = exports.computeAlias = exports.computeAddress = exports.TransactionTypes = void 0;
+exports.parse = exports.serializeHederaTransaction = exports.accessListify = exports.computeAliasFromPubKey = exports.computeAlias = exports.TransactionTypes = void 0;
 var address_1 = require("@hethers/address");
 var bignumber_1 = require("@ethersproject/bignumber");
 var bytes_1 = require("@ethersproject/bytes");
 var constants_1 = require("@hethers/constants");
-var keccak256_1 = require("@ethersproject/keccak256");
 var signing_key_1 = require("@ethersproject/signing-key");
 var logger_1 = require("@hethers/logger");
 var _version_1 = require("./_version");
@@ -96,11 +95,6 @@ function handleNumber(value) {
     }
     return bignumber_1.BigNumber.from(value);
 }
-function computeAddress(key) {
-    var publicKey = (0, signing_key_1.computePublicKey)(key);
-    return (0, address_1.getAddress)((0, bytes_1.hexDataSlice)((0, keccak256_1.keccak256)((0, bytes_1.hexDataSlice)(publicKey, 1)), 12));
-}
-exports.computeAddress = computeAddress;
 function computeAlias(key) {
     var publicKey = (0, signing_key_1.computePublicKey)(key);
     return computeAliasFromPubKey(publicKey);
@@ -110,10 +104,6 @@ function computeAliasFromPubKey(pubKey) {
     return "0.0." + base64.encode(pubKey);
 }
 exports.computeAliasFromPubKey = computeAliasFromPubKey;
-function recoverAddress(digest, signature) {
-    return computeAddress((0, signing_key_1.recoverPublicKey)((0, bytes_1.arrayify)(digest), signature));
-}
-exports.recoverAddress = recoverAddress;
 function accessSetify(addr, storageKeys) {
     return {
         address: (0, address_1.getAddress)(addr),
