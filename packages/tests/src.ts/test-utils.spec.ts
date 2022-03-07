@@ -559,7 +559,7 @@ describe("Test Typed Transactions", function() {
             gasLimit: 30000,
             customData: {
                 bytecodeFileId: '1.1.1',
-                contractMemo: memo
+                memo
             }
         };
 
@@ -579,7 +579,7 @@ describe("Test Typed Transactions", function() {
             gasLimit: 30000,
             customData: {
                 bytecodeFileId: '1.1.1',
-                contractMemo: invalidMemo
+                memo: invalidMemo
             }
         };
         try {
@@ -591,7 +591,7 @@ describe("Test Typed Transactions", function() {
         for(let i = 0; i <= 101; i++) {
             invalidMemo+='0';
         }
-        tx.customData.contractMemo = invalidMemo;
+        tx.customData.memo = invalidMemo;
 
         try {
             await wallet.signTransaction(tx)

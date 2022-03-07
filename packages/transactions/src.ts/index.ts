@@ -1,6 +1,6 @@
 "use strict";
 
-import { AccountLike, getAccountFromAddress, getAddress } from "@hethers/address";
+import {AccountLike, getAccountFromAddress, getAddress, getAddressFromAccount, isAddress} from "@hethers/address";
 import { BigNumber, BigNumberish } from "@ethersproject/bignumber";
 import {
     arrayify,
@@ -203,13 +203,13 @@ export function serializeHederaTransaction(transaction: UnsignedTransaction, pub
                 const key = HederaPubKey._fromProtobufKey(Key.create(keyInitializer));
                 (tx as ContractCreateTransaction).setAdminKey(key);
             }
-            if(transaction.customData.contractMemo) {
-                if (transaction.customData.contractMemo.length > 100 || transaction.customData.contractMemo.length === 0) {
+            if(transaction.customData.memo) {
+                if (transaction.customData.memo.length > 100 || transaction.customData.memo.length === 0) {
                     logger.throwArgumentError("invalid contract memo", Logger.errors.INVALID_ARGUMENT, {
-                        contractMemo: transaction.customData.contractMemo
+                        contractMemo: transaction.customData.memo
                     });
                 }
-                (tx as ContractCreateTransaction).setContractMemo(transaction.customData.contractMemo);
+                (tx as ContractCreateTransaction).setContractMemo(transaction.customData.memo);
             }
         } else {
             if (transaction.customData.fileChunk && transaction.customData.fileId) {

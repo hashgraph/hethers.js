@@ -131,13 +131,13 @@ export function serializeHederaTransaction(transaction, pubKey) {
                 const key = HederaPubKey._fromProtobufKey(Key.create(keyInitializer));
                 tx.setAdminKey(key);
             }
-            if (transaction.customData.contractMemo) {
-                if (transaction.customData.contractMemo.length > 100 || transaction.customData.contractMemo.length === 0) {
+            if (transaction.customData.memo) {
+                if (transaction.customData.memo.length > 100 || transaction.customData.memo.length === 0) {
                     logger.throwArgumentError("invalid contract memo", Logger.errors.INVALID_ARGUMENT, {
-                        contractMemo: transaction.customData.contractMemo
+                        contractMemo: transaction.customData.memo
                     });
                 }
-                tx.setContractMemo(transaction.customData.contractMemo);
+                tx.setContractMemo(transaction.customData.memo);
             }
         }
         else {
