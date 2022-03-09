@@ -34,6 +34,9 @@ jobs:
       - name: Install dependencies (and link per package)
         run: npm install
 
+      - name: Update minor or major versions
+        run: npm run auto-update-minor-or-major -- blank $github_user $github_token
+
       - name: Update versions
         run: npm run update-versions
 

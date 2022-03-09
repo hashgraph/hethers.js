@@ -6,9 +6,11 @@ import * as local from "../local";
 import * as npm from "../npm";
 import { dirnames, getPackageJsonPath } from "../path";
 
-(async function() {
+export async function bumpVersions(versionType: string) {
     const pNpm = await npm.getPackage("hethers");
-    const newVersion = semver.inc(pNpm.version, "minor");
+
+    // @ts-ignore
+    const newVersion = semver.inc(pNpm.version, versionType);
 
     for (let i = 0; i < dirnames.length; i++) {
         const dirname = dirnames[i];
@@ -48,4 +50,4 @@ import { dirnames, getPackageJsonPath } from "../path";
             version: newVersion
         }, true);
     }
-})();
+}

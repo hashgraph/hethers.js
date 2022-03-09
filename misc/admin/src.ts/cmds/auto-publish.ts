@@ -8,8 +8,7 @@ import { publishAll, getPublishOptions } from "../npm";
         let latestRelease = await getLatestRelease('auto');
 
         if (latestRelease && latestRelease.prerelease) {
-            let result = await deleteRelease(latestRelease.id.toString(), 'auto');
-            console.log(result);
+            await deleteRelease(latestRelease.id.toString(), 'auto');
         }
 
         await createRelease('auto');

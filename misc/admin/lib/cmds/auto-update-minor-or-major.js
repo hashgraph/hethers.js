@@ -10,17 +10,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const github_1 = require("../github");
-const npm_1 = require("../npm");
+const bump_version_type_1 = require("./bump-version-type");
 (function () {
     return __awaiter(this, void 0, void 0, function* () {
-        const { publishNames } = yield (0, npm_1.getPublishOptions)();
-        yield (0, npm_1.publishAll)('auto');
-        if (publishNames.indexOf("hethers") >= 0) {
-            let latestRelease = yield (0, github_1.getLatestRelease)('auto');
-            if (latestRelease && latestRelease.prerelease) {
-                yield (0, github_1.deleteRelease)(latestRelease.id.toString(), 'auto');
+        let latestRelease = yield (0, github_1.getLatestRelease)('auto');
+        if (latestRelease && latestRelease.prerelease) {
+            let name = latestRelease.name.toLowerCase();
+            if (name.includes('minor')) {
+                yield (0, bump_version_type_1.bumpVersions)('minor');
             }
-            yield (0, github_1.createRelease)('auto');
+            else if (name.includes('major')) {
+                yield (0, bump_version_type_1.bumpVersions)('major');
+            }
         }
     });
 })();

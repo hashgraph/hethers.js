@@ -32,14 +32,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.bumpVersions = void 0;
 const semver_1 = __importDefault(require("semver"));
 const local = __importStar(require("../local"));
 const npm = __importStar(require("../npm"));
 const path_1 = require("../path");
-(function () {
+function bumpVersions(versionType) {
     return __awaiter(this, void 0, void 0, function* () {
         const pNpm = yield npm.getPackage("hethers");
-        const newVersion = semver_1.default.inc(pNpm.version, "minor");
+        // @ts-ignore
+        const newVersion = semver_1.default.inc(pNpm.version, versionType);
         for (let i = 0; i < path_1.dirnames.length; i++) {
             const dirname = path_1.dirnames[i];
             if (dirname === 'tests' || dirname === 'testcases') {
@@ -75,4 +77,5 @@ const path_1 = require("../path");
             }, true);
         }
     });
-})();
+}
+exports.bumpVersions = bumpVersions;
