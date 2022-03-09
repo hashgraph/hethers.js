@@ -140,9 +140,6 @@ describe('Test JSON Wallets', function () {
     });
 });
 describe("Test wallet keys", function () {
-    // it('Should be able to use ed25519 keys', async function() {
-    //
-    // });
     it('Should prefix non-prefixed keys(raw)', function () {
         return __awaiter(this, void 0, void 0, function () {
             var key, wallet, privKey;

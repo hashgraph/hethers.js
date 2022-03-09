@@ -32,18 +32,6 @@ function isAccount(value) {
     }
     return isHexString(privKeyCopy, 32);
 }
-/*
-
-function isAccount(value: any): value is ExternallyOwnedAccount {
-    const nullPredicate = value != null;
-    if(!value.privateKey.startsWith('0x')) {
-        value.privateKey = value.privateKey
-    }
-    const hexStringPredicate = isHexString(value.privateKey, 32);
-    return nullPredicate && hexStringPredicate;
-    // return value != null && isHexString(prepend0x(value.privateKey), 32);
-}
- */
 function hasMnemonic(value) {
     const mnemonic = value.mnemonic;
     return (mnemonic && mnemonic.phrase);
