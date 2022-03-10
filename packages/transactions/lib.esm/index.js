@@ -97,17 +97,17 @@ export function serializeHederaTransaction(transaction, pubKey) {
     }
     else if (transaction.to) {
         tx = new ContractExecuteTransaction()
+            .setContractId(ContractId.fromEvmAddress(0, 0, transaction.to.toString()))
             .setFunctionParameters(arrayifiedData)
             .setGas(gas);
         if (transaction.value) {
             tx.setPayableAmount((_a = transaction.value) === null || _a === void 0 ? void 0 : _a.toString());
         }
-        if (transaction.customData.usingContractAlias) {
-            tx.setContractId(transaction.to.toString());
-        }
-        else {
-            tx.setContractId(ContractId.fromSolidityAddress(getAddressFromAccount(transaction.to)));
-        }
+        // if(transaction.customData.usingContractAlias) {
+        //     (tx as ContractExecuteTransaction).setContractId(ContractId.fromEvmAddress(0,0, transaction.to.toString()));
+        // } else {
+        //     (tx as ContractExecuteTransaction).setContractId(ContractId.fromEvmAddress(0,0, transaction.to.toString()));
+        // }
     }
     else {
         if (transaction.customData.bytecodeFileId) {

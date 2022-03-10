@@ -14,7 +14,7 @@ import { defineReadOnly, resolveProperties, shallowCopy } from "@ethersproject/p
 import { Logger } from "@hethers/logger";
 import { version } from "./_version";
 import { asAccountString, getAddressFromAccount, getChecksumAddress } from "@hethers/address";
-import { AccountId, ContractCallQuery, Hbar, PrivateKey, PublicKey as HederaPubKey, TransactionId } from "@hashgraph/sdk";
+import { AccountId, ContractCallQuery, ContractId, Hbar, PrivateKey, PublicKey as HederaPubKey, TransactionId } from "@hashgraph/sdk";
 import * as Long from "long";
 import { SignedTransaction, TransactionBody } from "@hashgraph/proto";
 const logger = new Logger(version);
@@ -87,13 +87,12 @@ export class Signer {
             const nodeID = AccountId.fromString(asAccountString(tx.nodeId));
             const paymentTxId = TransactionId.generate(from);
             const hederaTx = new ContractCallQuery()
-                .setContractId(to)
                 .setFunctionParameters(arrayify(tx.data))
                 .setNodeAccountIds([nodeID])
                 .setGas(BigNumber.from(tx.gasLimit).toNumber())
                 .setPaymentTransactionId(paymentTxId);
             if (tx.customData.usingContractAlias) {
-                hederaTx.setContractId(tx.to.toString());
+                hederaTx.setContractId(ContractId.fromEvmAddress(0, 0, tx.to.toString()));
             }
             else {
                 hederaTx.setContractId(to);

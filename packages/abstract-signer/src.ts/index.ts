@@ -15,7 +15,7 @@ import {
 import { SigningKey } from "@ethersproject/signing-key";
 import {
     AccountId,
-    ContractCallQuery,
+    ContractCallQuery, ContractId,
     Hbar,
     PrivateKey,
     PublicKey as HederaPubKey,
@@ -176,13 +176,12 @@ export abstract class Signer {
         const paymentTxId = TransactionId.generate(from);
 
         const hederaTx = new ContractCallQuery()
-            .setContractId(to)
             .setFunctionParameters(arrayify(tx.data))
             .setNodeAccountIds([nodeID])
             .setGas(BigNumber.from(tx.gasLimit).toNumber())
             .setPaymentTransactionId(paymentTxId);
         if(tx.customData.usingContractAlias) {
-            hederaTx.setContractId(tx.to.toString())
+            hederaTx.setContractId(ContractId.fromEvmAddress(0, 0, tx.to.toString()))
         } else {
             hederaTx.setContractId(to);
         }
