@@ -97,11 +97,16 @@ export function serializeHederaTransaction(transaction, pubKey) {
     }
     else if (transaction.to) {
         tx = new ContractExecuteTransaction()
-            .setContractId(ContractId.fromSolidityAddress(getAddressFromAccount(transaction.to)))
             .setFunctionParameters(arrayifiedData)
             .setGas(gas);
         if (transaction.value) {
             tx.setPayableAmount((_a = transaction.value) === null || _a === void 0 ? void 0 : _a.toString());
+        }
+        if (transaction.customData.usingContractAlias) {
+            tx.setContractId(transaction.to.toString());
+        }
+        else {
+            tx.setContractId(ContractId.fromSolidityAddress(getAddressFromAccount(transaction.to)));
         }
     }
     else {

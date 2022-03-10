@@ -76,6 +76,7 @@ var abiToken = JSON.parse((0, fs_1.readFileSync)('packages/tests/contracts/Token
 var abiTokenWithArgs = JSON.parse((0, fs_1.readFileSync)('packages/tests/contracts/TokenWithArgs.json').toString());
 var bytecodeToken = fs_1.default.readFileSync('packages/tests/contracts/Token.bin').toString();
 var bytecodeTokenWithArgs = (0, fs_1.readFileSync)('packages/tests/contracts/TokenWithArgs.bin').toString();
+var iUniswapV2PairAbi = JSON.parse(fs_1.default.readFileSync('packages/tests/contracts/IUniswapV2Pair.abi.json').toString());
 var TIMEOUT_PERIOD = 120000;
 var hederaEoa = {
     account: '0.0.29562194',
@@ -601,6 +602,45 @@ describe('Contract Events', function () {
             });
         });
     }).timeout(TIMEOUT_PERIOD);
+});
+describe('Contract Aliases', function () {
+    var provider = hethers_1.hethers.providers.getDefaultProvider('testnet');
+    // @ts-ignore
+    var wallet = new hethers_1.hethers.Wallet(hederaEoa, provider);
+    // all of those addresses belong to a UniswapV2Pair deployed on testnet
+    var aliasAddress1 = '0xbd438E8416b13e962781eBAfE344d45DC0DBBc0c';
+    // const aliasAddress2 = '0x1E7244302B3505007AE4ACC291e5BF7B55d219e6';
+    // const aliasAddress3 = '0x3ff6c75494fb24144F5559D1d9F9072a51D482d6';
+    it.only('Should detect contract aliases', function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var c1, token0, token1, symbol;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        c1 = hethers_1.hethers.ContractFactory.getContract(aliasAddress1, iUniswapV2PairAbi.abi, wallet);
+                        return [4 /*yield*/, c1.token0({ gasLimit: 30000 })];
+                    case 1:
+                        token0 = _a.sent();
+                        assert_1.default.notStrictEqual(token0, "");
+                        assert_1.default.notStrictEqual(token0, null);
+                        console.log('token0 address', token0);
+                        return [4 /*yield*/, c1.token1({ gasLimit: 30000 })];
+                    case 2:
+                        token1 = _a.sent();
+                        assert_1.default.notStrictEqual(token1, "");
+                        assert_1.default.notStrictEqual(token1, null);
+                        console.log('token2 address', token1);
+                        return [4 /*yield*/, c1.symbol({ gasLimit: 30000 })];
+                    case 3:
+                        symbol = _a.sent();
+                        assert_1.default.notStrictEqual(symbol, "");
+                        assert_1.default.notStrictEqual(symbol, null);
+                        console.log('pair symbol', symbol);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    });
 });
 describe("contract.deployed", function () {
     var hederaEoa = {

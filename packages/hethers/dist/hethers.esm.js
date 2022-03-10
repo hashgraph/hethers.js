@@ -86841,6 +86841,12 @@ class Signer {
                 .setNodeAccountIds([nodeID])
                 .setGas(BigNumber.from(tx.gasLimit).toNumber())
                 .setPaymentTransactionId(paymentTxId);
+            if (tx.customData.usingContractAlias) {
+                hederaTx.setContractId(tx.to.toString());
+            }
+            else {
+                hederaTx.setContractId(to);
+            }
             // TODO: the exact amount here will be computed using getCost when it's implemented
             const cost = 3;
             const paymentBody = {
@@ -89795,11 +89801,16 @@ function serializeHederaTransaction(transaction, pubKey) {
     }
     else if (transaction.to) {
         tx = new ContractExecuteTransaction()
-            .setContractId(ContractId.fromSolidityAddress(getAddressFromAccount(transaction.to)))
             .setFunctionParameters(arrayifiedData)
             .setGas(gas);
         if (transaction.value) {
             tx.setPayableAmount((_a = transaction.value) === null || _a === void 0 ? void 0 : _a.toString());
+        }
+        if (transaction.customData.usingContractAlias) {
+            tx.setContractId(transaction.to.toString());
+        }
+        else {
+            tx.setContractId(ContractId.fromSolidityAddress(getAddressFromAccount(transaction.to)));
         }
     }
     else {
@@ -89963,9 +89974,13 @@ const allowedTransactionKeys$1 = {
     maxFeePerGas: true, maxPriorityFeePerGas: true,
     customData: true, nodeId: true,
 };
+function isAlias(address) {
+    address = address.replace('0x', '');
+    // shard - 4 zeroes, realm - 8 zeroes, num - typically no zeroes
+    return address.split('').filter(e => e === '0').length != 12;
+}
 function populateTransaction(contract, fragment, args) {
     return __awaiter$4(this, void 0, void 0, function* () {
-        // If an extra argument is given, it is overrides
         let overrides = {};
         if (args.length === fragment.inputs.length + 1 && typeof (args[args.length - 1]) === "object") {
             overrides = shallowCopy(args.pop());
@@ -90003,7 +90018,10 @@ function populateTransaction(contract, fragment, args) {
         const data = contract.interface.encodeFunctionData(fragment, resolved.args);
         const tx = {
             data: data,
-            to: resolved.address
+            to: resolved.address,
+            customData: {
+                usingContractAlias: isAlias(contract.address),
+            }
         };
         // Resolved Overrides
         const ro = resolved.overrides;

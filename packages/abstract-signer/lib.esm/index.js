@@ -92,6 +92,12 @@ export class Signer {
                 .setNodeAccountIds([nodeID])
                 .setGas(BigNumber.from(tx.gasLimit).toNumber())
                 .setPaymentTransactionId(paymentTxId);
+            if (tx.customData.usingContractAlias) {
+                hederaTx.setContractId(tx.to.toString());
+            }
+            else {
+                hederaTx.setContractId(to);
+            }
             // TODO: the exact amount here will be computed using getCost when it's implemented
             const cost = 3;
             const paymentBody = {

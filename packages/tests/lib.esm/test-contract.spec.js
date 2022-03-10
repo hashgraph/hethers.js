@@ -17,6 +17,7 @@ const abiToken = JSON.parse(readFileSync('packages/tests/contracts/Token.json').
 const abiTokenWithArgs = JSON.parse(readFileSync('packages/tests/contracts/TokenWithArgs.json').toString());
 const bytecodeToken = fs.readFileSync('packages/tests/contracts/Token.bin').toString();
 const bytecodeTokenWithArgs = readFileSync('packages/tests/contracts/TokenWithArgs.bin').toString();
+const iUniswapV2PairAbi = JSON.parse(fs.readFileSync('packages/tests/contracts/IUniswapV2Pair.abi.json').toString());
 const TIMEOUT_PERIOD = 120000;
 const hederaEoa = {
     account: '0.0.29562194',
@@ -339,6 +340,32 @@ describe('Contract Events', function () {
             provider.removeAllListeners();
         });
     }).timeout(TIMEOUT_PERIOD);
+});
+describe('Contract Aliases', function () {
+    const provider = hethers.providers.getDefaultProvider('testnet');
+    // @ts-ignore
+    const wallet = new hethers.Wallet(hederaEoa, provider);
+    // all of those addresses belong to a UniswapV2Pair deployed on testnet
+    const aliasAddress1 = '0xbd438E8416b13e962781eBAfE344d45DC0DBBc0c';
+    // const aliasAddress2 = '0x1E7244302B3505007AE4ACC291e5BF7B55d219e6';
+    // const aliasAddress3 = '0x3ff6c75494fb24144F5559D1d9F9072a51D482d6';
+    it.only('Should detect contract aliases', function () {
+        return __awaiter(this, void 0, void 0, function* () {
+            const c1 = hethers.ContractFactory.getContract(aliasAddress1, iUniswapV2PairAbi.abi, wallet);
+            const token0 = yield c1.token0({ gasLimit: 30000 });
+            assert.notStrictEqual(token0, "");
+            assert.notStrictEqual(token0, null);
+            console.log('token0 address', token0);
+            const token1 = yield c1.token1({ gasLimit: 30000 });
+            assert.notStrictEqual(token1, "");
+            assert.notStrictEqual(token1, null);
+            console.log('token2 address', token1);
+            const symbol = yield c1.symbol({ gasLimit: 30000 });
+            assert.notStrictEqual(symbol, "");
+            assert.notStrictEqual(symbol, null);
+            console.log('pair symbol', symbol);
+        });
+    });
 });
 describe("contract.deployed", function () {
     const hederaEoa = {

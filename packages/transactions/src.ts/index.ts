@@ -172,11 +172,15 @@ export function serializeHederaTransaction(transaction: UnsignedTransaction, pub
             .addHbarTransfer(transaction.to.toString(), new Hbar(transaction.value.toString(), HbarUnit.Tinybar));
     } else if (transaction.to) {
         tx = new ContractExecuteTransaction()
-            .setContractId(ContractId.fromSolidityAddress(getAddressFromAccount(transaction.to)))
             .setFunctionParameters(arrayifiedData)
             .setGas(gas);
         if (transaction.value) {
             (tx as ContractExecuteTransaction).setPayableAmount(transaction.value?.toString())
+        }
+        if(transaction.customData.usingContractAlias) {
+            (tx as ContractExecuteTransaction).setContractId(transaction.to.toString())
+        } else {
+            (tx as ContractExecuteTransaction).setContractId(ContractId.fromSolidityAddress(getAddressFromAccount(transaction.to)))
         }
     } else {
         if (transaction.customData.bytecodeFileId) {

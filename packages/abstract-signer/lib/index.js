@@ -198,6 +198,12 @@ var Signer = /** @class */ (function () {
                             .setNodeAccountIds([nodeID])
                             .setGas(bignumber_1.BigNumber.from(tx.gasLimit).toNumber())
                             .setPaymentTransactionId(paymentTxId);
+                        if (tx.customData.usingContractAlias) {
+                            hederaTx.setContractId(tx.to.toString());
+                        }
+                        else {
+                            hederaTx.setContractId(to);
+                        }
                         cost = 3;
                         paymentBody = {
                             transactionID: paymentTxId._toProtobuf(),
