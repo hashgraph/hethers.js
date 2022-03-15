@@ -23,7 +23,7 @@
     "@ethersproject/sha2": "5.5.0",
     "@ethersproject/strings": "5.5.0",
     "@ethersproject/web": "5.5.0",
-    "@hashgraph/proto": "2.1.2",
+    "@hashgraph/proto": "2.1.5",
     "@hashgraph/sdk": "2.10.0",
     "@hethers/abstract-provider": "1.0.2",
     "@hethers/abstract-signer": "1.0.2",

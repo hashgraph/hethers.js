@@ -91,7 +91,7 @@
     "@ethersproject/strings": "5.5.0",
     "@ethersproject/web": "5.5.0",
     "@ethersproject/wordlists": "5.5.0",
-    "@hashgraph/proto": "2.1.2",
+    "@hashgraph/proto": "2.1.5",
     "@hashgraph/sdk": "2.10.0",
     "@types/axios": "^0.14.0",
     "@types/mocha": "^5.2.0",

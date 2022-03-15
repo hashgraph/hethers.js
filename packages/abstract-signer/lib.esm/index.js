@@ -87,13 +87,15 @@ export class Signer {
             const nodeID = AccountId.fromString(asAccountString(tx.nodeId));
             const paymentTxId = TransactionId.generate(from);
             const hederaTx = new ContractCallQuery()
-                .setContractId(to)
                 .setFunctionParameters(arrayify(tx.data))
                 .setNodeAccountIds([nodeID])
                 .setGas(BigNumber.from(tx.gasLimit).toNumber())
                 .setPaymentTransactionId(paymentTxId);
             if (tx.customData.usingContractAlias) {
                 hederaTx.setContractId(ContractId.fromEvmAddress(0, 0, tx.to.toString()));
+            }
+            else {
+                hederaTx.setContractId(to);
             }
             // TODO: the exact amount here will be computed using getCost when it's implemented
             const cost = 3;

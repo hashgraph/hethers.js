@@ -193,13 +193,15 @@ var Signer = /** @class */ (function () {
                         nodeID = sdk_1.AccountId.fromString((0, address_1.asAccountString)(tx.nodeId));
                         paymentTxId = sdk_1.TransactionId.generate(from);
                         hederaTx = new sdk_1.ContractCallQuery()
-                            .setContractId(to)
                             .setFunctionParameters((0, bytes_1.arrayify)(tx.data))
                             .setNodeAccountIds([nodeID])
                             .setGas(bignumber_1.BigNumber.from(tx.gasLimit).toNumber())
                             .setPaymentTransactionId(paymentTxId);
                         if (tx.customData.usingContractAlias) {
                             hederaTx.setContractId(sdk_1.ContractId.fromEvmAddress(0, 0, tx.to.toString()));
+                        }
+                        else {
+                            hederaTx.setContractId(to);
                         }
                         cost = 3;
                         paymentBody = {
