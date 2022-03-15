@@ -72,6 +72,8 @@ var hethers_1 = require("@hashgraph/hethers");
 var fs_1 = __importStar(require("fs"));
 var bytes_1 = require("@ethersproject/bytes");
 var logger_1 = require("@hethers/logger");
+var sdk_1 = require("@hashgraph/sdk");
+var proto_1 = require("@hashgraph/proto");
 var abiToken = JSON.parse((0, fs_1.readFileSync)('packages/tests/contracts/Token.json').toString());
 var abiTokenWithArgs = JSON.parse((0, fs_1.readFileSync)('packages/tests/contracts/TokenWithArgs.json').toString());
 var bytecodeToken = fs_1.default.readFileSync('packages/tests/contracts/Token.bin').toString();
@@ -604,41 +606,76 @@ describe('Contract Events', function () {
     }).timeout(TIMEOUT_PERIOD);
 });
 describe('Contract Aliases', function () {
-    var provider = hethers_1.hethers.providers.getDefaultProvider('testnet');
-    // @ts-ignore
-    var wallet = new hethers_1.hethers.Wallet(hederaEoa, provider);
-    // all of those addresses belong to a UniswapV2Pair deployed on testnet
-    var aliasAddress1 = '0xbd438E8416b13e962781eBAfE344d45DC0DBBc0c';
-    // const aliasAddress2 = '0x1E7244302B3505007AE4ACC291e5BF7B55d219e6';
-    // const aliasAddress3 = '0x3ff6c75494fb24144F5559D1d9F9072a51D482d6';
-    it.only('Should detect contract aliases', function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var c1, token0, token1, symbol;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        c1 = hethers_1.hethers.ContractFactory.getContract(aliasAddress1, iUniswapV2PairAbi.abi, wallet);
-                        return [4 /*yield*/, c1.token0({ gasLimit: 30000 })];
-                    case 1:
-                        token0 = _a.sent();
-                        assert_1.default.notStrictEqual(token0, "");
-                        assert_1.default.notStrictEqual(token0, null);
-                        console.log('token0 address', token0);
-                        return [4 /*yield*/, c1.token1({ gasLimit: 30000 })];
-                    case 2:
-                        token1 = _a.sent();
-                        assert_1.default.notStrictEqual(token1, "");
-                        assert_1.default.notStrictEqual(token1, null);
-                        console.log('token2 address', token1);
-                        return [4 /*yield*/, c1.symbol({ gasLimit: 30000 })];
-                    case 3:
-                        symbol = _a.sent();
-                        assert_1.default.notStrictEqual(symbol, "");
-                        assert_1.default.notStrictEqual(symbol, null);
-                        console.log('pair symbol', symbol);
-                        return [2 /*return*/];
-                }
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            it.only('Should detect contract aliases', function () {
+                return __awaiter(this, void 0, void 0, function () {
+                    var network, hprovider, gaccountId, gprivateKey, client, _wallet, accountCreate, receipt, createdAcc, contractAlias, c1, token0, token1, symbol;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                this.timeout(60000);
+                                network = {
+                                    "127.0.0.1:50211": "0.0.3",
+                                };
+                                hprovider = new hethers_1.hethers.providers.HederaProvider('0.0.3', '127.0.0.1:50211', "");
+                                gaccountId = "0.0.2";
+                                gprivateKey = "302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137";
+                                client = sdk_1.Client.forNetwork(network).setOperator(gaccountId, gprivateKey);
+                                _wallet = hethers_1.hethers.Wallet.createRandom();
+                                return [4 /*yield*/, new sdk_1.AccountCreateTransaction()
+                                        .setKey(sdk_1.Key._fromProtobufKey(proto_1.Key.create({
+                                        ECDSASecp256k1: hethers_1.hethers.utils.arrayify(_wallet._signingKey().compressedPublicKey)
+                                    })))
+                                        .setTransactionId(sdk_1.TransactionId.generate(gaccountId))
+                                        .setInitialBalance(new sdk_1.Hbar(100))
+                                        .setNodeAccountIds([client._network.getNodeAccountIdsForExecute()[0]])
+                                        .freeze()
+                                        .sign(sdk_1.PrivateKey.fromString(gprivateKey))];
+                            case 1: return [4 /*yield*/, (_a.sent())
+                                    .execute(client)];
+                            case 2:
+                                accountCreate = _a.sent();
+                                return [4 /*yield*/, accountCreate.getReceipt(client)];
+                            case 3:
+                                receipt = _a.sent();
+                                createdAcc = receipt.accountId || "0.0.0";
+                                _wallet = _wallet.connect(hprovider).connectAccount(createdAcc.toString());
+                                contractAlias = '0x75e26D7A0C20C76e42519921111BCb8e97f59E11';
+                                c1 = hethers_1.hethers.ContractFactory.getContract(contractAlias, iUniswapV2PairAbi.abi, _wallet);
+                                return [4 /*yield*/, c1.token0({ gasLimit: 30000 })];
+                            case 4:
+                                token0 = _a.sent();
+                                return [4 /*yield*/, token0.wait()];
+                            case 5:
+                                _a.sent();
+                                assert_1.default.notStrictEqual(token0, "");
+                                assert_1.default.notStrictEqual(token0, null);
+                                console.log('token0 address', token0);
+                                return [4 /*yield*/, c1.token1({ gasLimit: 30000 })];
+                            case 6:
+                                token1 = _a.sent();
+                                return [4 /*yield*/, token1.wait()];
+                            case 7:
+                                _a.sent();
+                                assert_1.default.notStrictEqual(token1, "");
+                                assert_1.default.notStrictEqual(token1, null);
+                                console.log('token2 address', token1);
+                                return [4 /*yield*/, c1.symbol({ gasLimit: 30000 })];
+                            case 8:
+                                symbol = _a.sent();
+                                return [4 /*yield*/, symbol.wait()];
+                            case 9:
+                                _a.sent();
+                                assert_1.default.notStrictEqual(symbol, "");
+                                assert_1.default.notStrictEqual(symbol, null);
+                                console.log('pair symbol', symbol);
+                                return [2 /*return*/];
+                        }
+                    });
+                });
             });
+            return [2 /*return*/];
         });
     });
 });

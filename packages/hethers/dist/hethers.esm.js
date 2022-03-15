@@ -73365,6 +73365,9 @@ class Http2CallStream {
     addFilters(extraFilters) {
         this.filterStack.push(extraFilters);
     }
+    getCallNumber() {
+        return this.callNumber;
+    }
     startRead() {
         /* If the stream has ended with an error, we should not emit any more
          * messages and we should communicate that the stream has ended */
@@ -86319,9 +86322,9 @@ exports.setup = setup;
 var channelz$1 = /*@__PURE__*/getDefaultExportFromCjs(channelz);
 
 var _from$1 = "@grpc/grpc-js@^1.5.3";
-var _id$1 = "@grpc/grpc-js@1.5.7";
+var _id$1 = "@grpc/grpc-js@1.5.8";
 var _inBundle$1 = false;
-var _integrity$1 = "sha512-RAlSbZ9LXo0wNoHKeUlwP9dtGgVBDUbnBKFpfAv5iSqMG4qWz9um2yLH215+Wow1I48etIa1QMS+WAGmsE/7HQ==";
+var _integrity$1 = "sha512-sfoF2yMVJcqEoX8E3o9+idUckv/w4cM+lt3U7Qz6GUBLgxAh1NS/3fEZKOMhwdvOEgWvPqbls/EgLXGKI0sm2A==";
 var _location$1 = "/@grpc/grpc-js";
 var _phantomChildren$1 = {
 };
@@ -86339,8 +86342,8 @@ var _requested$1 = {
 var _requiredBy$1 = [
 	"/@hashgraph/sdk"
 ];
-var _resolved$1 = "https://registry.npmjs.org/@grpc/grpc-js/-/grpc-js-1.5.7.tgz";
-var _shasum$1 = "c83a5dc1d0cf7b8aa82371cfa7125955d1f25a96";
+var _resolved$1 = "https://registry.npmjs.org/@grpc/grpc-js/-/grpc-js-1.5.8.tgz";
+var _shasum$1 = "ae42b78a1de8dfabeb638d93dabb1c2e27ca0e34";
 var _spec$1 = "@grpc/grpc-js@^1.5.3";
 var _where$1 = "/home/yoan/WebstormProjects/hethers.js/node_modules/@hashgraph/sdk";
 var author$1 = {
@@ -86424,7 +86427,7 @@ var scripts$1 = {
 	test: "gulp test"
 };
 var types = "build/src/index.d.ts";
-var version$j = "1.5.7";
+var version$j = "1.5.8";
 var require$$0$2 = {
 	_from: _from$1,
 	_id: _id$1,
@@ -87131,7 +87134,7 @@ class Subchannel {
         for (const header of Object.keys(headers)) {
             headersString += '\t\t' + header + ': ' + headers[header] + '\n';
         }
-        logging.trace(constants.LogVerbosity.DEBUG, 'call_stream', 'Starting stream on subchannel ' +
+        logging.trace(constants.LogVerbosity.DEBUG, 'call_stream', 'Starting stream [' + callStream.getCallNumber() + '] on subchannel ' +
             '(' + this.channelzRef.id + ') ' +
             this.subchannelAddressString +
             ' with headers\n' +
@@ -88355,16 +88358,22 @@ class ChannelImplementation {
      * @param callMetadata
      */
     tryPick(callStream, callMetadata, callConfig, dynamicFilters) {
-        var _a, _b, _c;
+        var _a, _b;
         const pickResult = this.currentPicker.pick({
             metadata: callMetadata,
             extraPickInfo: callConfig.pickInformation,
         });
-        this.trace('Pick result: ' +
+        const subchannelString = pickResult.subchannel ?
+            '(' + pickResult.subchannel.getChannelzRef().id + ') ' + pickResult.subchannel.getAddress() :
+            '' + pickResult.subchannel;
+        this.trace('Pick result for call [' +
+            callStream.getCallNumber() +
+            ']: ' +
             picker.PickResultType[pickResult.pickResultType] +
-            ' subchannel: ' + ((_a = pickResult.subchannel) === null || _a === void 0 ? void 0 : _a.getAddress()) +
-            ' status: ' + ((_b = pickResult.status) === null || _b === void 0 ? void 0 : _b.code) +
-            ' ' + ((_c = pickResult.status) === null || _c === void 0 ? void 0 : _c.details));
+            ' subchannel: ' +
+            subchannelString +
+            ' status: ' + ((_a = pickResult.status) === null || _a === void 0 ? void 0 : _a.code) +
+            ' ' + ((_b = pickResult.status) === null || _b === void 0 ? void 0 : _b.details));
         switch (pickResult.pickResultType) {
             case picker.PickResultType.COMPLETE:
                 if (pickResult.subchannel === null) {
@@ -88378,7 +88387,7 @@ class ChannelImplementation {
                     if (pickResult.subchannel.getConnectivityState() !==
                         connectivityState.ConnectivityState.READY) {
                         logging.log(constants.LogVerbosity.ERROR, 'Error: COMPLETE pick result subchannel ' +
-                            pickResult.subchannel.getAddress() +
+                            subchannelString +
                             ' has state ' +
                             connectivityState.ConnectivityState[pickResult.subchannel.getConnectivityState()]);
                         this.pushPick(callStream, callMetadata, callConfig, dynamicFilters);
@@ -88418,7 +88427,7 @@ class ChannelImplementation {
                                      * re-queueing instead, based on the logic in the rest of
                                      * tryPick */
                                     this.trace('Failed to start call on picked subchannel ' +
-                                        pickResult.subchannel.getAddress() +
+                                        subchannelString +
                                         ' with error ' +
                                         error.message +
                                         '. Retrying pick', constants.LogVerbosity.INFO);
@@ -88426,7 +88435,7 @@ class ChannelImplementation {
                                 }
                                 else {
                                     this.trace('Failed to start call on picked subchanel ' +
-                                        pickResult.subchannel.getAddress() +
+                                        subchannelString +
                                         ' with error ' +
                                         error.message +
                                         '. Ending call', constants.LogVerbosity.INFO);
@@ -88438,7 +88447,7 @@ class ChannelImplementation {
                             /* The logic for doing this here is the same as in the catch
                              * block above */
                             this.trace('Picked subchannel ' +
-                                pickResult.subchannel.getAddress() +
+                                subchannelString +
                                 ' has state ' +
                                 connectivityState.ConnectivityState[subchannelState] +
                                 ' after metadata filters. Retrying pick', constants.LogVerbosity.INFO);
@@ -92206,15 +92215,13 @@ class Signer {
             const nodeID = AccountId.fromString(asAccountString(tx.nodeId));
             const paymentTxId = TransactionId.generate(from);
             const hederaTx = new ContractCallQuery()
+                .setContractId(to)
                 .setFunctionParameters(arrayify(tx.data))
                 .setNodeAccountIds([nodeID])
                 .setGas(BigNumber.from(tx.gasLimit).toNumber())
                 .setPaymentTransactionId(paymentTxId);
             if (tx.customData.usingContractAlias) {
                 hederaTx.setContractId(ContractId.fromEvmAddress(0, 0, tx.to.toString()));
-            }
-            else {
-                hederaTx.setContractId(to);
             }
             // TODO: the exact amount here will be computed using getCost when it's implemented
             const cost = 3;
@@ -92258,7 +92265,7 @@ class Signer {
                 return hexlify(response.bytes);
             }
             catch (error) {
-                return checkError('call', error, txRequest);
+                return checkError('call', error, tx);
             }
         });
     }
@@ -92275,7 +92282,7 @@ class Signer {
             }
             else {
                 const contractByteCode = tx.data;
-                let chunks = splitInChunks(Buffer.from(contractByteCode).toString(), 4096);
+                let chunks = splitInChunks(Buffer.from(contractByteCode.toString()).toString(), 4096);
                 const fileCreate = {
                     customData: {
                         fileChunk: chunks[0],
@@ -95346,7 +95353,7 @@ const allowedTransactionKeys$1 = {
 function isAlias(address) {
     address = address.replace('0x', '');
     // shard - 4 zeroes, realm - 8 zeroes, num - typically no zeroes
-    return address.split('').filter(e => e === '0').length != 12;
+    return address.split('').filter(e => e === '0').length < 12;
 }
 function populateTransaction(contract, fragment, args) {
     return __awaiter$4(this, void 0, void 0, function* () {

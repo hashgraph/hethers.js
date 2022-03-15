@@ -24,7 +24,7 @@
     "@ethersproject/strings": "5.5.0",
     "@ethersproject/web": "5.5.0",
     "@hashgraph/proto": "2.1.2",
-    "@hashgraph/sdk": "^2.10.1",
+    "@hashgraph/sdk": "2.10.0",
     "@hethers/abstract-provider": "1.0.2",
     "@hethers/abstract-signer": "1.0.2",
     "@hethers/address": "1.0.2",
