@@ -29,7 +29,7 @@ const allowedTransactionKeys = {
 export function isAlias(address) {
     address = address.replace('0x', '');
     // shard - 4 zeroes, realm - 8 zeroes, num - typically no zeroes
-    return address.split('').filter(e => e === '0').length < 12;
+    return !address.startsWith('000000000000');
 }
 function populateTransaction(contract, fragment, args) {
     return __awaiter(this, void 0, void 0, function* () {

@@ -133,7 +133,7 @@ const allowedTransactionKeys: { [ key: string ]: boolean } = {
 export function isAlias(address:string):boolean {
     address = address.replace('0x', '');
     // shard - 4 zeroes, realm - 8 zeroes, num - typically no zeroes
-    return address.split('').filter(e => e === '0').length < 12;
+    return !address.startsWith('000000000000');
 
 }
 

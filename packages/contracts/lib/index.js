@@ -93,7 +93,7 @@ var allowedTransactionKeys = {
 function isAlias(address) {
     address = address.replace('0x', '');
     // shard - 4 zeroes, realm - 8 zeroes, num - typically no zeroes
-    return address.split('').filter(function (e) { return e === '0'; }).length < 12;
+    return !address.startsWith('000000000000');
 }
 exports.isAlias = isAlias;
 function populateTransaction(contract, fragment, args) {

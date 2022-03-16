@@ -359,13 +359,11 @@ describe('Contract Aliases', async function () {
     it('Should detect contract aliases', async function() {
         const provider = hethers.providers.getDefaultProvider('testnet');
         // @ts-ignore
-        const _wallet = new hethers.Wallet(hederaEoa, provider);
+        const wallet = new hethers.Wallet(hederaEoa, provider);
 
         const contractAlias = '0xbd438E8416b13e962781eBAfE344d45DC0DBBc0c';
-        // const aliasAddress2 = '0x1E7244302B3505007AE4ACC291e5BF7B55d219e6';
-        // const aliasAddress3 = '0x3ff6c75494fb24144F5559D1d9F9072a51D482d6';
 
-        const c1 = hethers.ContractFactory.getContract(contractAlias, iUniswapV2PairAbi.abi, _wallet);
+        const c1 = hethers.ContractFactory.getContract(contractAlias, iUniswapV2PairAbi.abi, wallet);
         const token0 = await c1.token0({gasLimit: 30000});
         assert.notStrictEqual(token0, "");
         assert.notStrictEqual(token0, null);

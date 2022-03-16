@@ -608,14 +608,14 @@ describe('Contract Aliases', function () {
         return __generator(this, function (_a) {
             it('Should detect contract aliases', function () {
                 return __awaiter(this, void 0, void 0, function () {
-                    var provider, _wallet, contractAlias, c1, token0, token1, symbol;
+                    var provider, wallet, contractAlias, c1, token0, token1, symbol;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
                                 provider = hethers_1.hethers.providers.getDefaultProvider('testnet');
-                                _wallet = new hethers_1.hethers.Wallet(hederaEoa, provider);
+                                wallet = new hethers_1.hethers.Wallet(hederaEoa, provider);
                                 contractAlias = '0xbd438E8416b13e962781eBAfE344d45DC0DBBc0c';
-                                c1 = hethers_1.hethers.ContractFactory.getContract(contractAlias, iUniswapV2PairAbi.abi, _wallet);
+                                c1 = hethers_1.hethers.ContractFactory.getContract(contractAlias, iUniswapV2PairAbi.abi, wallet);
                                 return [4 /*yield*/, c1.token0({ gasLimit: 30000 })];
                             case 1:
                                 token0 = _a.sent();
