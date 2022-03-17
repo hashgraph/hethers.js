@@ -124,9 +124,7 @@ function addAuthOptions(reqOptions: any, user: string, password: string): any {
     }
     else {
         if (!reqOptions.headers) reqOptions.headers = {};
-
-        // @ts-ignore
-        options.headers.authorization = `Bearer ${password}`;
+        reqOptions.headers.authorization = `Bearer ${password}`;
     }
 
     return reqOptions;
