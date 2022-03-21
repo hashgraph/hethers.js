@@ -188,7 +188,7 @@ export abstract class Signer {
         }
 
         // TODO: the exact amount here will be computed using getCost when it's implemented
-        const cost = 3;
+        const cost = 0.01;
         const paymentBody = {
             transactionID: paymentTxId._toProtobuf(),
             nodeAccountID: nodeID._toProtobuf(),

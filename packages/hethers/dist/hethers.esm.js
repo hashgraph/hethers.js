@@ -25194,6 +25194,12 @@ const keccak = (/** @type {number} */ bits) => (/** @type {string} */ str) => {
  */
 const keccak256$2 = keccak(256);
 
+var _args = [
+	[
+		"elliptic@6.5.4",
+		"/home/yoan/WebstormProjects/hethers.js"
+	]
+];
 var _from = "elliptic@6.5.4";
 var _id = "elliptic@6.5.4";
 var _inBundle = false;
@@ -25217,9 +25223,8 @@ var _requiredBy = [
 	"/@hashgraph/cryptography"
 ];
 var _resolved = "https://registry.npmjs.org/elliptic/-/elliptic-6.5.4.tgz";
-var _shasum = "da37cebd31e79a1367e941b592ed1fbebd58abbb";
-var _spec = "elliptic@6.5.4";
-var _where = "/Users/runner/work/hethers.js/hethers.js/node_modules/@ethersproject/transactions/node_modules/@ethersproject/signing-key";
+var _spec = "6.5.4";
+var _where = "/home/yoan/WebstormProjects/hethers.js";
 var author = {
 	name: "Fedor Indutny",
 	email: "fedor@indutny.com"
@@ -25227,7 +25232,6 @@ var author = {
 var bugs = {
 	url: "https://github.com/indutny/elliptic/issues"
 };
-var bundleDependencies = false;
 var dependencies = {
 	"bn.js": "^4.11.9",
 	brorand: "^1.1.0",
@@ -25237,7 +25241,6 @@ var dependencies = {
 	"minimalistic-assert": "^1.0.1",
 	"minimalistic-crypto-utils": "^1.0.1"
 };
-var deprecated = false;
 var description = "EC cryptography";
 var devDependencies = {
 	brfs: "^2.0.2",
@@ -25280,6 +25283,7 @@ var scripts = {
 };
 var version$i = "6.5.4";
 var require$$0 = {
+	_args: _args,
 	_from: _from,
 	_id: _id,
 	_inBundle: _inBundle,
@@ -25289,14 +25293,11 @@ var require$$0 = {
 	_requested: _requested,
 	_requiredBy: _requiredBy,
 	_resolved: _resolved,
-	_shasum: _shasum,
 	_spec: _spec,
 	_where: _where,
 	author: author,
 	bugs: bugs,
-	bundleDependencies: bundleDependencies,
 	dependencies: dependencies,
-	deprecated: deprecated,
 	description: description,
 	devDependencies: devDependencies,
 	files: files,
@@ -88027,7 +88028,13 @@ exports.setup = setup;
 
 var channelz$1 = /*@__PURE__*/getDefaultExportFromCjs(channelz);
 
-var _from$1 = "@grpc/grpc-js@^1.5.3";
+var _args$1 = [
+	[
+		"@grpc/grpc-js@1.5.9",
+		"/home/yoan/WebstormProjects/hethers.js"
+	]
+];
+var _from$1 = "@grpc/grpc-js@1.5.9";
 var _id$1 = "@grpc/grpc-js@1.5.9";
 var _inBundle$1 = false;
 var _integrity$1 = "sha512-un+cXqErq5P4p3+WgYVNVh7FB51MSnaoRef7QWDcMXKR6FX2R6Z/bltcJMxNNdTUMC85lkOQcpnAAetFziPSng==";
@@ -88035,27 +88042,25 @@ var _location$1 = "/@grpc/grpc-js";
 var _phantomChildren$1 = {
 };
 var _requested$1 = {
-	type: "range",
+	type: "version",
 	registry: true,
-	raw: "@grpc/grpc-js@^1.5.3",
+	raw: "@grpc/grpc-js@1.5.9",
 	name: "@grpc/grpc-js",
 	escapedName: "@grpc%2fgrpc-js",
 	scope: "@grpc",
-	rawSpec: "^1.5.3",
+	rawSpec: "1.5.9",
 	saveSpec: null,
-	fetchSpec: "^1.5.3"
+	fetchSpec: "1.5.9"
 };
 var _requiredBy$1 = [
 	"/@hashgraph/sdk"
 ];
 var _resolved$1 = "https://registry.npmjs.org/@grpc/grpc-js/-/grpc-js-1.5.9.tgz";
-var _shasum$1 = "df44b3d6bc1d5eb4779aab96e00f6084fd07a3c8";
-var _spec$1 = "@grpc/grpc-js@^1.5.3";
-var _where$1 = "/Users/runner/work/hethers.js/hethers.js/node_modules/@hashgraph/sdk";
+var _spec$1 = "1.5.9";
+var _where$1 = "/home/yoan/WebstormProjects/hethers.js";
 var author$1 = {
 	name: "Google Inc."
 };
-var bundleDependencies$1 = false;
 var contributors = [
 	{
 		name: "Google Inc."
@@ -88065,7 +88070,6 @@ var dependencies$1 = {
 	"@grpc/proto-loader": "^0.6.4",
 	"@types/node": ">=12.12.47"
 };
-var deprecated$1 = false;
 var description$1 = "gRPC Library for Node - pure JS implementation";
 var devDependencies$1 = {
 	"@types/gulp": "^4.0.6",
@@ -88135,6 +88139,7 @@ var scripts$1 = {
 var types = "build/src/index.d.ts";
 var version$j = "1.5.9";
 var require$$0$2 = {
+	_args: _args$1,
 	_from: _from$1,
 	_id: _id$1,
 	_inBundle: _inBundle$1,
@@ -88144,14 +88149,11 @@ var require$$0$2 = {
 	_requested: _requested$1,
 	_requiredBy: _requiredBy$1,
 	_resolved: _resolved$1,
-	_shasum: _shasum$1,
 	_spec: _spec$1,
 	_where: _where$1,
 	author: author$1,
-	bundleDependencies: bundleDependencies$1,
 	contributors: contributors,
 	dependencies: dependencies$1,
-	deprecated: deprecated$1,
 	description: description$1,
 	devDependencies: devDependencies$1,
 	engines: engines,
@@ -94264,7 +94266,7 @@ class Signer$1 {
                 hederaTx.setContractId(to);
             }
             // TODO: the exact amount here will be computed using getCost when it's implemented
-            const cost = 3;
+            const cost = 0.001;
             const paymentBody = {
                 transactionID: paymentTxId._toProtobuf(),
                 nodeAccountID: nodeID._toProtobuf(),

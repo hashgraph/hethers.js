@@ -203,7 +203,7 @@ var Signer = /** @class */ (function () {
                         else {
                             hederaTx.setContractId(to);
                         }
-                        cost = 3;
+                        cost = 0.001;
                         paymentBody = {
                             transactionID: paymentTxId._toProtobuf(),
                             nodeAccountID: nodeID._toProtobuf(),
