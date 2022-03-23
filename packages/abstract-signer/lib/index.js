@@ -96,6 +96,9 @@ var allowedTransactionKeys = [
     "accessList", "chainId", "customData", "data", "from", "gasLimit", "maxFeePerGas", "maxPriorityFeePerGas", "to", "type", "value",
     "nodeId"
 ];
+// oversize cost for 1 gas in ContractCallQuery
+var CALL_GAS_PRICE_TINYBARS = 100;
+var DEFAULT_HEDERA_CALL_TX_FEE = 143083413;
 ;
 ;
 function checkError(method, error, txRequest) {
@@ -177,7 +180,7 @@ var Signer = /** @class */ (function () {
     // super classes should override this for now
     Signer.prototype.call = function (txRequest) {
         return __awaiter(this, void 0, void 0, function () {
-            var tx, to, from, _a, nodeID, paymentTxId, hederaTx, cost, paymentBody, signed, walletKey, signature, transferSignedTransactionBytes, response, error_1;
+            var tx, to, from, _a, nodeID, paymentTxId, hederaTx, gasLimit, cost, paymentBody, signed, walletKey, signature, transferSignedTransactionBytes, response, error_1;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -203,11 +206,12 @@ var Signer = /** @class */ (function () {
                         else {
                             hederaTx.setContractId(to);
                         }
-                        cost = 0.001;
+                        gasLimit = bignumber_1.BigNumber.from(tx.gasLimit).toNumber();
+                        cost = DEFAULT_HEDERA_CALL_TX_FEE * 10 + gasLimit * CALL_GAS_PRICE_TINYBARS;
                         paymentBody = {
                             transactionID: paymentTxId._toProtobuf(),
                             nodeAccountID: nodeID._toProtobuf(),
-                            transactionFee: new sdk_1.Hbar(0.005).toTinybars(),
+                            transactionFee: sdk_1.Hbar.fromTinybars(DEFAULT_HEDERA_CALL_TX_FEE).toTinybars(),
                             transactionValidDuration: {
                                 seconds: Long.fromInt(120),
                             },
@@ -216,11 +220,11 @@ var Signer = /** @class */ (function () {
                                     accountAmounts: [
                                         {
                                             accountID: sdk_1.AccountId.fromString(from)._toProtobuf(),
-                                            amount: new sdk_1.Hbar(cost).negated().toTinybars()
+                                            amount: sdk_1.Hbar.fromTinybars(cost).negated().toTinybars()
                                         },
                                         {
                                             accountID: nodeID._toProtobuf(),
-                                            amount: new sdk_1.Hbar(cost).toTinybars()
+                                            amount: sdk_1.Hbar.fromTinybars(cost).toTinybars()
                                         }
                                     ],
                                 },
@@ -260,7 +264,7 @@ var Signer = /** @class */ (function () {
      */
     Signer.prototype.sendTransaction = function (transaction) {
         return __awaiter(this, void 0, void 0, function () {
-            var tx, signed, contractByteCode, chunks, fileCreate, signedFileCreate, resp, _i, _a, chunk, fileAppend, signedFileAppend, contractCreate, signedContractCreate;
+            var tx, signed, contractByteCode, chunks, fileCreate, signedFileCreate, resp, _i, _a, chunk, fileAppend, signedFileAppend, contractCreate, signedContractCreate, ccResponse;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0: return [4 /*yield*/, (0, properties_1.resolveProperties)(transaction)];
@@ -319,7 +323,9 @@ var Signer = /** @class */ (function () {
                     case 12:
                         signedContractCreate = _b.sent();
                         return [4 /*yield*/, this.provider.sendTransaction(signedContractCreate)];
-                    case 13: return [2 /*return*/, _b.sent()];
+                    case 13:
+                        ccResponse = _b.sent();
+                        return [2 /*return*/, ccResponse];
                 }
             });
         });

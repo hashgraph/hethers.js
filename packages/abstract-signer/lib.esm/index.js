@@ -22,6 +22,9 @@ const allowedTransactionKeys = [
     "accessList", "chainId", "customData", "data", "from", "gasLimit", "maxFeePerGas", "maxPriorityFeePerGas", "to", "type", "value",
     "nodeId"
 ];
+// oversize cost for 1 gas in ContractCallQuery
+const CALL_GAS_PRICE_TINYBARS = 100;
+const DEFAULT_HEDERA_CALL_TX_FEE = 143083413;
 ;
 ;
 function checkError(method, error, txRequest) {
@@ -97,12 +100,12 @@ export class Signer {
             else {
                 hederaTx.setContractId(to);
             }
-            // TODO: the exact amount here will be computed using getCost when it's implemented
-            const cost = 0.001;
+            const gasLimit = BigNumber.from(tx.gasLimit).toNumber();
+            const cost = DEFAULT_HEDERA_CALL_TX_FEE * 10 + gasLimit * CALL_GAS_PRICE_TINYBARS;
             const paymentBody = {
                 transactionID: paymentTxId._toProtobuf(),
                 nodeAccountID: nodeID._toProtobuf(),
-                transactionFee: new Hbar(0.005).toTinybars(),
+                transactionFee: Hbar.fromTinybars(DEFAULT_HEDERA_CALL_TX_FEE).toTinybars(),
                 transactionValidDuration: {
                     seconds: Long.fromInt(120),
                 },
@@ -111,11 +114,11 @@ export class Signer {
                         accountAmounts: [
                             {
                                 accountID: AccountId.fromString(from)._toProtobuf(),
-                                amount: new Hbar(cost).negated().toTinybars()
+                                amount: Hbar.fromTinybars(cost).negated().toTinybars()
                             },
                             {
                                 accountID: nodeID._toProtobuf(),
-                                amount: new Hbar(cost).toTinybars()
+                                amount: Hbar.fromTinybars(cost).toTinybars()
                             }
                         ],
                     },
@@ -182,7 +185,8 @@ export class Signer {
                     }
                 };
                 const signedContractCreate = yield this.signTransaction(contractCreate);
-                return yield this.provider.sendTransaction(signedContractCreate);
+                const ccResponse = yield this.provider.sendTransaction(signedContractCreate);
+                return ccResponse;
             }
         });
     }

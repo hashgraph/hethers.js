@@ -21,10 +21,10 @@ const hederaEoa = {
 };
 
 describe("Test Contract Transaction Population", function() {
+    this.retries(3);
     const provider = hethers.providers.getDefaultProvider('testnet');
     // @ts-ignore
     const wallet = new hethers.Wallet(hederaEoa, provider);
-
     it("should return an array of transactions on getDeployTransaction call", async function () {
         const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, wallet);
         const transaction = contractFactory.getDeployTransaction(hethers.BigNumber.from("1000000"), {
@@ -47,6 +47,7 @@ describe("Test Contract Transaction Population", function() {
     }).timeout(300000);
 
     it("should be able to call contract methods", async function () {
+        this.timeout(3000000);
         const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, wallet);
         const contract = await contractFactory.deploy(hethers.BigNumber.from('10000'), {gasLimit: 3000000});
         await contract.deployed();
@@ -82,7 +83,7 @@ describe("Test Contract Transaction Population", function() {
         const transferMethodCall = await contract.transfer(clientWallet.address, 10, {gasLimit: 300000});
         await transferMethodCall.wait();
         assert.strictEqual((await contract.balanceOf(clientWallet.address, {gasLimit: 300000})).toString(), '20');
-    }).timeout(300000);
+    });
 
     it('should have a .wait function', async function() {
        const contractFactory = new hethers.ContractFactory(abiToken, bytecodeToken, wallet);
@@ -91,8 +92,7 @@ describe("Test Contract Transaction Population", function() {
        try {
            await contract.deployTransaction.wait(10);
            assert.notStrictEqual(true, false, "It should go in the catch block");
-       }
-       catch(err) {
+       } catch(err) {
            assert.notStrictEqual(err, null, "An error is thrown when the specified timeout is exceeded");
            assert.strictEqual(err.code, 'TIMEOUT');
        }
@@ -154,6 +154,7 @@ describe("Test Contract Transaction Population", function() {
 });
 
 describe('Contract Events', function () {
+    this.retries(3);
     const provider = hethers.providers.getDefaultProvider('testnet');
     // @ts-ignore
     const wallet = new hethers.Wallet(hederaEoa, provider);
@@ -231,22 +232,24 @@ describe('Contract Events', function () {
 });
 
 describe('Contract Aliases', async function () {
+    this.retries(3);
     const provider = hethers.providers.getDefaultProvider('testnet');
+    const gasLimit = 300000000;
     // @ts-ignore
     const wallet = new hethers.Wallet(hederaEoa, provider);
     it('Should detect contract aliases', async function() {
         const contractAlias = '0xbd438E8416b13e962781eBAfE344d45DC0DBBc0c';
 
         const c1 = hethers.ContractFactory.getContract(contractAlias, iUniswapV2PairAbi.abi, wallet);
-        const token0 = await c1.token0({gasLimit: 300000});
+        const token0 = await c1.token0({gasLimit});
         assert.notStrictEqual(token0, "");
         assert.notStrictEqual(token0, null);
 
-        const token1 = await c1.token1({gasLimit: 300000});
+        const token1 = await c1.token1({gasLimit});
         assert.notStrictEqual(token1, "");
         assert.notStrictEqual(token1, null);
 
-        const symbol = await c1.symbol({gasLimit: 300000});
+        const symbol = await c1.symbol({gasLimit});
         assert.notStrictEqual(symbol, "");
         assert.notStrictEqual(symbol, null);
 
@@ -261,22 +264,22 @@ describe('Contract Aliases', async function () {
         const salt = 1111;
 
         const factoryCFactory = new hethers.ContractFactory(factoryAbi, factoryBytecode, wallet);
-        const _factory = await factoryCFactory.deploy({gasLimit: 300000});
+        const _factory = await factoryCFactory.deploy({gasLimit});
         const factory = hethers.ContractFactory.getContract(_factory.address, factoryAbi, wallet);
         // the second argument is the salt we have used, and we can skip it as we defined it above
         factory.on('Deployed', async (addr:string, _:any) => {
             const account = hethers.ContractFactory.getContract(addr, accAbi, wallet);
-            let owner = await account.getOwner({gasLimit: 300000});
+            let owner = await account.getOwner({gasLimit});
             assert.strictEqual(owner, hethers.constants.AddressZero);
-            const resp = await account.setOwner(wallet.address, {gasLimit: 300000});
+            const resp = await account.setOwner(wallet.address, {gasLimit});
             assert.notStrictEqual(resp, null, 'expected a defined tx response');
 
-            owner = await account.getOwner({gasLimit: 300000});
+            owner = await account.getOwner({gasLimit});
             assert.strictEqual(owner, wallet.address, "expected owner to be changed after `setOwner` call");
             factory.removeAllListeners();
         });
         const deployArgs = hexlify(`0x${accBytecode}`);
-        const deployTx = await factory.deploy(deployArgs, salt, {gasLimit: 300000});
+        const deployTx = await factory.deploy(deployArgs, salt, {gasLimit:3000000});
         await deployTx.wait();
         await new Promise((resolve => setTimeout(resolve, 10000)));
     });

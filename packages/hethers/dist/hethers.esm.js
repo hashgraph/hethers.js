@@ -12208,6 +12208,20 @@ class KeyList extends Key {
 }
 
 /**
+ * @typedef {import("./PrivateKey.js").default} PrivateKey
+ * @typedef {import("./Ed25519PrivateKey.js").default} Ed25519PrivateKey
+ * @typedef {import("./EcdsaPrivateKey.js").default} EcdsaPrivateKey
+ */
+
+const CACHE = {
+    /** @type {((key: Ed25519PrivateKey | EcdsaPrivateKey) => PrivateKey) | null} */
+    privateKeyConstructor: null,
+
+    /** @type {((bytes: Uint8Array) => PrivateKey) | null} */
+    privateKeyFromBytes: null,
+};
+
+/**
  * Signals that a key could not be realized from the input.
  */
 class BadKeyError extends Error {
@@ -12224,7 +12238,7 @@ class BadKeyError extends Error {
         this.name = "BadKeyError";
 
         if (messageOrCause instanceof Error) {
-            /** @type {?Error} */
+            /** @type {Error=} */
             this.cause = messageOrCause;
             this.stack = messageOrCause.stack;
         }
@@ -24427,7 +24441,9 @@ function bytesToBits(data) {
     return bits;
 }
 
-// import EcdsaPrivateKey from "./EcdsaPrivateKey.js";
+/**
+ * @typedef {import("./PrivateKey.js").default} PrivateKey
+ */
 
 /**
  * Multi-word mnemonic phrase (BIP-39).
@@ -24724,7 +24740,13 @@ class Mnemonic {
 
         const keyPair = naclFast.sign.keyPair.fromSeed(keyData);
 
-        return new PrivateKey(new Ed25519PrivateKey(keyPair, chainCode));
+        if (CACHE.privateKeyConstructor == null) {
+            throw new Error("PrivateKey not found in cache");
+        }
+
+        return CACHE.privateKeyConstructor(
+            new Ed25519PrivateKey(keyPair, chainCode)
+        );
     }
 
     /**
@@ -24738,7 +24760,11 @@ class Mnemonic {
             seed = await legacy2(this.words, bip39Words);
         }
 
-        return PrivateKey.fromBytes(seed);
+        if (CACHE.privateKeyFromBytes == null) {
+            throw new Error("PrivateKey not found in cache");
+        }
+
+        return CACHE.privateKeyFromBytes(seed);
     }
 
     /**
@@ -25194,54 +25220,36 @@ const keccak = (/** @type {number} */ bits) => (/** @type {string} */ str) => {
  */
 const keccak256$2 = keccak(256);
 
-var _args = [
-	[
-		"elliptic@6.5.4",
-		"/home/yoan/WebstormProjects/hethers.js"
-	]
+var name = "elliptic";
+var version$i = "6.5.4";
+var description = "EC cryptography";
+var main = "lib/elliptic.js";
+var files = [
+	"lib"
 ];
-var _from = "elliptic@6.5.4";
-var _id = "elliptic@6.5.4";
-var _inBundle = false;
-var _integrity = "sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==";
-var _location = "/elliptic";
-var _phantomChildren = {
+var scripts = {
+	lint: "eslint lib test",
+	"lint:fix": "npm run lint -- --fix",
+	unit: "istanbul test _mocha --reporter=spec test/index.js",
+	test: "npm run lint && npm run unit",
+	version: "grunt dist && git add dist/"
 };
-var _requested = {
-	type: "version",
-	registry: true,
-	raw: "elliptic@6.5.4",
-	name: "elliptic",
-	escapedName: "elliptic",
-	rawSpec: "6.5.4",
-	saveSpec: null,
-	fetchSpec: "6.5.4"
+var repository = {
+	type: "git",
+	url: "git@github.com:indutny/elliptic"
 };
-var _requiredBy = [
-	"/@ethersproject/signing-key",
-	"/@ethersproject/transactions/@ethersproject/signing-key",
-	"/@hashgraph/cryptography"
+var keywords = [
+	"EC",
+	"Elliptic",
+	"curve",
+	"Cryptography"
 ];
-var _resolved = "https://registry.npmjs.org/elliptic/-/elliptic-6.5.4.tgz";
-var _spec = "6.5.4";
-var _where = "/home/yoan/WebstormProjects/hethers.js";
-var author = {
-	name: "Fedor Indutny",
-	email: "fedor@indutny.com"
-};
+var author = "Fedor Indutny <fedor@indutny.com>";
+var license = "MIT";
 var bugs = {
 	url: "https://github.com/indutny/elliptic/issues"
 };
-var dependencies = {
-	"bn.js": "^4.11.9",
-	brorand: "^1.1.0",
-	"hash.js": "^1.0.0",
-	"hmac-drbg": "^1.0.1",
-	inherits: "^2.0.4",
-	"minimalistic-assert": "^1.0.1",
-	"minimalistic-crypto-utils": "^1.0.1"
-};
-var description = "EC cryptography";
+var homepage = "https://github.com/indutny/elliptic";
 var devDependencies = {
 	brfs: "^2.0.2",
 	coveralls: "^3.1.0",
@@ -25257,58 +25265,36 @@ var devDependencies = {
 	istanbul: "^0.4.5",
 	mocha: "^8.0.1"
 };
-var files = [
-	"lib"
-];
-var homepage = "https://github.com/indutny/elliptic";
-var keywords = [
-	"EC",
-	"Elliptic",
-	"curve",
-	"Cryptography"
-];
-var license = "MIT";
-var main = "lib/elliptic.js";
-var name = "elliptic";
-var repository = {
-	type: "git",
-	url: "git+ssh://git@github.com/indutny/elliptic.git"
+var dependencies = {
+	"bn.js": "^4.11.9",
+	brorand: "^1.1.0",
+	"hash.js": "^1.0.0",
+	"hmac-drbg": "^1.0.1",
+	inherits: "^2.0.4",
+	"minimalistic-assert": "^1.0.1",
+	"minimalistic-crypto-utils": "^1.0.1"
 };
-var scripts = {
-	lint: "eslint lib test",
-	"lint:fix": "npm run lint -- --fix",
-	test: "npm run lint && npm run unit",
-	unit: "istanbul test _mocha --reporter=spec test/index.js",
-	version: "grunt dist && git add dist/"
-};
-var version$i = "6.5.4";
+var _resolved = "https://registry.npmjs.org/elliptic/-/elliptic-6.5.4.tgz";
+var _integrity = "sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==";
+var _from = "elliptic@6.5.4";
 var require$$0 = {
-	_args: _args,
-	_from: _from,
-	_id: _id,
-	_inBundle: _inBundle,
-	_integrity: _integrity,
-	_location: _location,
-	_phantomChildren: _phantomChildren,
-	_requested: _requested,
-	_requiredBy: _requiredBy,
-	_resolved: _resolved,
-	_spec: _spec,
-	_where: _where,
-	author: author,
-	bugs: bugs,
-	dependencies: dependencies,
-	description: description,
-	devDependencies: devDependencies,
-	files: files,
-	homepage: homepage,
-	keywords: keywords,
-	license: license,
-	main: main,
 	name: name,
-	repository: repository,
+	version: version$i,
+	description: description,
+	main: main,
+	files: files,
 	scripts: scripts,
-	version: version$i
+	repository: repository,
+	keywords: keywords,
+	author: author,
+	license: license,
+	bugs: bugs,
+	homepage: homepage,
+	devDependencies: devDependencies,
+	dependencies: dependencies,
+	_resolved: _resolved,
+	_integrity: _integrity,
+	_from: _from
 };
 
 var minimalisticAssert = assert;
@@ -32579,6 +32565,9 @@ class PrivateKey extends Key {
     }
 }
 
+CACHE.privateKeyConstructor = (key) => new PrivateKey(key);
+CACHE.privateKeyFromBytes = (bytes) => PrivateKey.fromBytes(bytes);
+
 /**
  * @typedef {import("./contract/ContractId.js").default} ContractId
  * @typedef {import("./account/AccountId.js").default} AccountId
@@ -32606,7 +32595,7 @@ class PrivateKey extends Key {
  * @typedef {{ (proto: ProtobufT): SdkT }} FromProtobufKeyFuncT
  */
 
-const CACHE = {
+const CACHE$1 = {
     /** @type {FromProtobufKeyFuncT<proto.IContractID, ContractId> | null} */
     contractId: null,
 
@@ -32697,11 +32686,11 @@ class Mnemonic$1 {
      * @returns {Promise<PrivateKey>}
      */
     async toPrivateKey(passphrase = "") {
-        if (CACHE.privateKeyConstructor == null) {
+        if (CACHE$1.privateKeyConstructor == null) {
             throw new Error("`PrivateKey` has not been loaded");
         }
 
-        return CACHE.privateKeyConstructor(
+        return CACHE$1.privateKeyConstructor(
             await this._mnemonic.toPrivateKey(passphrase)
         );
     }
@@ -32720,11 +32709,11 @@ class Mnemonic$1 {
      * @returns {Promise<PrivateKey>}
      */
     async toLegacyPrivateKey() {
-        if (CACHE.privateKeyConstructor == null) {
+        if (CACHE$1.privateKeyConstructor == null) {
             throw new Error("`PrivateKey` has not been loaded");
         }
 
-        return CACHE.privateKeyConstructor(
+        return CACHE$1.privateKeyConstructor(
             await this._mnemonic.toLegacyPrivateKey()
         );
     }
@@ -32817,63 +32806,63 @@ class Key$1 {
      */
     static _fromProtobufKey(key) {
         if (key.contractID != null) {
-            if (CACHE.contractId == null) {
+            if (CACHE$1.contractId == null) {
                 throw new Error(
                     "`ContractId` was not loaded before decoding `Key`"
                 );
             }
 
-            return CACHE.contractId(key.contractID);
+            return CACHE$1.contractId(key.contractID);
         }
 
         if (key.delegatableContractId != null) {
-            if (CACHE.delegateContractId == null) {
+            if (CACHE$1.delegateContractId == null) {
                 throw new Error(
                     "`ContractId` was not loaded before decoding `Key`"
                 );
             }
 
-            return CACHE.delegateContractId(key.delegatableContractId);
+            return CACHE$1.delegateContractId(key.delegatableContractId);
         }
 
         if (key.ed25519 != null && key.ed25519.byteLength > 0) {
-            if (CACHE.publicKeyED25519 == null) {
+            if (CACHE$1.publicKeyED25519 == null) {
                 throw new Error(
                     "`PublicKey` was not loaded before decoding `Key`"
                 );
             }
 
-            return CACHE.publicKeyED25519(key.ed25519);
+            return CACHE$1.publicKeyED25519(key.ed25519);
         }
 
         if (key.ECDSASecp256k1 != null && key.ECDSASecp256k1.byteLength > 0) {
-            if (CACHE.publicKeyECDSA == null) {
+            if (CACHE$1.publicKeyECDSA == null) {
                 throw new Error(
                     "`PublicKey` was not loaded before decoding `Key`"
                 );
             }
 
-            return CACHE.publicKeyECDSA(key.ECDSASecp256k1);
+            return CACHE$1.publicKeyECDSA(key.ECDSASecp256k1);
         }
 
         if (key.thresholdKey != null && key.thresholdKey.threshold != null) {
-            if (CACHE.thresholdKey == null) {
+            if (CACHE$1.thresholdKey == null) {
                 throw new Error(
                     "`PublicKey` was not loaded before decoding `Key`"
                 );
             }
 
-            return CACHE.thresholdKey(key.thresholdKey);
+            return CACHE$1.thresholdKey(key.thresholdKey);
         }
 
         if (key.keyList != null) {
-            if (CACHE.keyList == null) {
+            if (CACHE$1.keyList == null) {
                 throw new Error(
                     "`PublicKey` was not loaded before decoding `Key`"
                 );
             }
 
-            return CACHE.keyList(key.keyList);
+            return CACHE$1.keyList(key.keyList);
         }
 
         throw new Error(
@@ -33106,16 +33095,16 @@ class PublicKey$1 extends Key$1 {
      * @returns {AccountId}
      */
     toAccountId(shard, realm) {
-        if (CACHE.accountIdConstructor == null) {
+        if (CACHE$1.accountIdConstructor == null) {
             throw new Error("`AccountId` not loaded");
         }
 
-        return CACHE.accountIdConstructor(shard, realm, this);
+        return CACHE$1.accountIdConstructor(shard, realm, this);
     }
 }
 
-CACHE.publicKeyED25519 = (key) => PublicKey$1.fromBytesED25519(key);
-CACHE.publicKeyECDSA = (key) => PublicKey$1.fromBytesECDSA(key);
+CACHE$1.publicKeyED25519 = (key) => PublicKey$1.fromBytesED25519(key);
+CACHE$1.publicKeyECDSA = (key) => PublicKey$1.fromBytesECDSA(key);
 
 /**
  * @typedef {import("./transaction/Transaction.js").default} Transaction
@@ -33466,7 +33455,7 @@ class PrivateKey$1 extends Key$1 {
     }
 }
 
-CACHE.privateKeyConstructor = (key) => new PrivateKey$1(key);
+CACHE$1.privateKeyConstructor = (key) => new PrivateKey$1(key);
 
 /**
  * @namespace proto
@@ -33633,8 +33622,8 @@ class KeyList$1 extends Key$1 {
     }
 }
 
-CACHE.keyList = (key) => KeyList$1.__fromProtobufKeyList(key);
-CACHE.thresholdKey = (key) => KeyList$1.__fromProtobufThresoldKey(key);
+CACHE$1.keyList = (key) => KeyList$1.__fromProtobufKeyList(key);
+CACHE$1.thresholdKey = (key) => KeyList$1.__fromProtobufThresoldKey(key);
 
 /**
  * @typedef {{low: number, high: number, unsigned: boolean}} LongObject
@@ -41297,7 +41286,7 @@ class AccountId {
     }
 }
 
-CACHE.accountIdConstructor = (shard, realm, key) =>
+CACHE$1.accountIdConstructor = (shard, realm, key) =>
     new AccountId(shard, realm, long_1.ZERO, key);
 
 class GrpcStatus {
@@ -43475,7 +43464,7 @@ class ContractId extends Key$1 {
     }
 }
 
-CACHE.contractId = (key) => ContractId.__fromProtobufKey(key);
+CACHE$1.contractId = (key) => ContractId.__fromProtobufKey(key);
 
 /**
  * @typedef {import("long").Long} Long
@@ -58538,7 +58527,7 @@ class DelegateContractId extends ContractId {
     }
 }
 
-CACHE.delegateContractId = (key) => DelegateContractId.__fromProtobufKey(key);
+CACHE$1.delegateContractId = (key) => DelegateContractId.__fromProtobufKey(key);
 
 class ExchangeRates {
     /**
@@ -88028,49 +88017,22 @@ exports.setup = setup;
 
 var channelz$1 = /*@__PURE__*/getDefaultExportFromCjs(channelz);
 
-var _args$1 = [
-	[
-		"@grpc/grpc-js@1.5.9",
-		"/home/yoan/WebstormProjects/hethers.js"
-	]
-];
-var _from$1 = "@grpc/grpc-js@1.5.9";
-var _id$1 = "@grpc/grpc-js@1.5.9";
-var _inBundle$1 = false;
-var _integrity$1 = "sha512-un+cXqErq5P4p3+WgYVNVh7FB51MSnaoRef7QWDcMXKR6FX2R6Z/bltcJMxNNdTUMC85lkOQcpnAAetFziPSng==";
-var _location$1 = "/@grpc/grpc-js";
-var _phantomChildren$1 = {
+var name$1 = "@grpc/grpc-js";
+var version$j = "1.5.9";
+var description$1 = "gRPC Library for Node - pure JS implementation";
+var homepage$1 = "https://grpc.io/";
+var repository$1 = "https://github.com/grpc/grpc-node/tree/master/packages/grpc-js";
+var main$1 = "build/src/index.js";
+var engines = {
+	node: "^8.13.0 || >=10.10.0"
 };
-var _requested$1 = {
-	type: "version",
-	registry: true,
-	raw: "@grpc/grpc-js@1.5.9",
-	name: "@grpc/grpc-js",
-	escapedName: "@grpc%2fgrpc-js",
-	scope: "@grpc",
-	rawSpec: "1.5.9",
-	saveSpec: null,
-	fetchSpec: "1.5.9"
-};
-var _requiredBy$1 = [
-	"/@hashgraph/sdk"
+var keywords$1 = [
 ];
-var _resolved$1 = "https://registry.npmjs.org/@grpc/grpc-js/-/grpc-js-1.5.9.tgz";
-var _spec$1 = "1.5.9";
-var _where$1 = "/home/yoan/WebstormProjects/hethers.js";
 var author$1 = {
 	name: "Google Inc."
 };
-var contributors = [
-	{
-		name: "Google Inc."
-	}
-];
-var dependencies$1 = {
-	"@grpc/proto-loader": "^0.6.4",
-	"@types/node": ">=12.12.47"
-};
-var description$1 = "gRPC Library for Node - pure JS implementation";
+var types = "build/src/index.d.ts";
+var license$1 = "Apache-2.0";
 var devDependencies$1 = {
 	"@types/gulp": "^4.0.6",
 	"@types/gulp-mocha": "0.0.32",
@@ -88094,8 +88056,29 @@ var devDependencies$1 = {
 	"ts-node": "^8.3.0",
 	typescript: "^3.7.2"
 };
-var engines = {
-	node: "^8.13.0 || >=10.10.0"
+var contributors = [
+	{
+		name: "Google Inc."
+	}
+];
+var scripts$1 = {
+	build: "npm run compile",
+	clean: "rimraf ./build",
+	compile: "tsc -p .",
+	format: "clang-format -i -style=\"{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}\" src/*.ts test/*.ts",
+	lint: "npm run check",
+	prepare: "npm run generate-types && npm run compile",
+	test: "gulp test",
+	check: "gts check src/**/*.ts",
+	fix: "gts fix src/*.ts",
+	pretest: "npm run generate-types && npm run generate-test-types && npm run compile",
+	posttest: "npm run check && madge -c ./build/src",
+	"generate-types": "proto-loader-gen-types --keepCase --longs String --enums String --defaults --oneofs --includeComments --includeDirs proto/ --include-dirs test/fixtures/ -O src/generated/ --grpcLib ../index channelz.proto",
+	"generate-test-types": "proto-loader-gen-types --keepCase --longs String --enums String --defaults --oneofs --includeComments --include-dirs test/fixtures/ -O test/generated/ --grpcLib ../../src/index test_service.proto"
+};
+var dependencies$1 = {
+	"@grpc/proto-loader": "^0.6.4",
+	"@types/node": ">=12.12.47"
 };
 var files$1 = [
 	"src/**/*.ts",
@@ -88111,62 +88094,29 @@ var files$1 = [
 	"deps/googleapis/google/rpc/*.proto",
 	"deps/protoc-gen-validate/validate/**/*.proto"
 ];
-var homepage$1 = "https://grpc.io/";
-var keywords$1 = [
-];
-var license$1 = "Apache-2.0";
-var main$1 = "build/src/index.js";
-var name$1 = "@grpc/grpc-js";
-var repository$1 = {
-	type: "git",
-	url: "https://github.com/grpc/grpc-node/tree/master/packages/grpc-js"
-};
-var scripts$1 = {
-	build: "npm run compile",
-	check: "gts check src/**/*.ts",
-	clean: "rimraf ./build",
-	compile: "tsc -p .",
-	fix: "gts fix src/*.ts",
-	format: "clang-format -i -style=\"{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}\" src/*.ts test/*.ts",
-	"generate-test-types": "proto-loader-gen-types --keepCase --longs String --enums String --defaults --oneofs --includeComments --include-dirs test/fixtures/ -O test/generated/ --grpcLib ../../src/index test_service.proto",
-	"generate-types": "proto-loader-gen-types --keepCase --longs String --enums String --defaults --oneofs --includeComments --includeDirs proto/ --include-dirs test/fixtures/ -O src/generated/ --grpcLib ../index channelz.proto",
-	lint: "npm run check",
-	posttest: "npm run check && madge -c ./build/src",
-	prepare: "npm run generate-types && npm run compile",
-	pretest: "npm run generate-types && npm run generate-test-types && npm run compile",
-	test: "gulp test"
-};
-var types = "build/src/index.d.ts";
-var version$j = "1.5.9";
+var _resolved$1 = "https://registry.npmjs.org/@grpc/grpc-js/-/grpc-js-1.5.9.tgz";
+var _integrity$1 = "sha512-un+cXqErq5P4p3+WgYVNVh7FB51MSnaoRef7QWDcMXKR6FX2R6Z/bltcJMxNNdTUMC85lkOQcpnAAetFziPSng==";
+var _from$1 = "@grpc/grpc-js@1.5.9";
 var require$$0$2 = {
-	_args: _args$1,
-	_from: _from$1,
-	_id: _id$1,
-	_inBundle: _inBundle$1,
-	_integrity: _integrity$1,
-	_location: _location$1,
-	_phantomChildren: _phantomChildren$1,
-	_requested: _requested$1,
-	_requiredBy: _requiredBy$1,
-	_resolved: _resolved$1,
-	_spec: _spec$1,
-	_where: _where$1,
-	author: author$1,
-	contributors: contributors,
-	dependencies: dependencies$1,
-	description: description$1,
-	devDependencies: devDependencies$1,
-	engines: engines,
-	files: files$1,
-	homepage: homepage$1,
-	keywords: keywords$1,
-	license: license$1,
-	main: main$1,
 	name: name$1,
+	version: version$j,
+	description: description$1,
+	homepage: homepage$1,
 	repository: repository$1,
-	scripts: scripts$1,
+	main: main$1,
+	engines: engines,
+	keywords: keywords$1,
+	author: author$1,
 	types: types,
-	version: version$j
+	license: license$1,
+	devDependencies: devDependencies$1,
+	contributors: contributors,
+	scripts: scripts$1,
+	dependencies: dependencies$1,
+	files: files$1,
+	_resolved: _resolved$1,
+	_integrity: _integrity$1,
+	_from: _from$1
 };
 
 var subchannel = createCommonjsModule(function (module, exports) {
@@ -94190,6 +94140,9 @@ const allowedTransactionKeys = [
     "accessList", "chainId", "customData", "data", "from", "gasLimit", "maxFeePerGas", "maxPriorityFeePerGas", "to", "type", "value",
     "nodeId"
 ];
+// oversize cost for 1 gas in ContractCallQuery
+const CALL_GAS_PRICE_TINYBARS = 100;
+const DEFAULT_HEDERA_CALL_TX_FEE = 143083413;
 ;
 ;
 function checkError(method, error, txRequest) {
@@ -94265,12 +94218,12 @@ class Signer$1 {
             else {
                 hederaTx.setContractId(to);
             }
-            // TODO: the exact amount here will be computed using getCost when it's implemented
-            const cost = 0.001;
+            const gasLimit = BigNumber.from(tx.gasLimit).toNumber();
+            const cost = DEFAULT_HEDERA_CALL_TX_FEE * 10 + gasLimit * CALL_GAS_PRICE_TINYBARS;
             const paymentBody = {
                 transactionID: paymentTxId._toProtobuf(),
                 nodeAccountID: nodeID._toProtobuf(),
-                transactionFee: new Hbar(0.005).toTinybars(),
+                transactionFee: Hbar.fromTinybars(DEFAULT_HEDERA_CALL_TX_FEE).toTinybars(),
                 transactionValidDuration: {
                     seconds: long_1.fromInt(120),
                 },
@@ -94279,11 +94232,11 @@ class Signer$1 {
                         accountAmounts: [
                             {
                                 accountID: AccountId.fromString(from)._toProtobuf(),
-                                amount: new Hbar(cost).negated().toTinybars()
+                                amount: Hbar.fromTinybars(cost).negated().toTinybars()
                             },
                             {
                                 accountID: nodeID._toProtobuf(),
-                                amount: new Hbar(cost).toTinybars()
+                                amount: Hbar.fromTinybars(cost).toTinybars()
                             }
                         ],
                     },
@@ -94350,7 +94303,8 @@ class Signer$1 {
                     }
                 };
                 const signedContractCreate = yield this.signTransaction(contractCreate);
-                return yield this.provider.sendTransaction(signedContractCreate);
+                const ccResponse = yield this.provider.sendTransaction(signedContractCreate);
+                return ccResponse;
             }
         });
     }
