@@ -24,6 +24,7 @@ const allowedTransactionKeys = [
 ];
 // oversize cost for 1 gas in ContractCallQuery
 const CALL_GAS_PRICE_TINYBARS = 100;
+// the average default cost of a signed hedera ContractCallQuery
 const DEFAULT_HEDERA_CALL_TX_FEE = 143083413;
 ;
 ;
@@ -185,8 +186,7 @@ export class Signer {
                     }
                 };
                 const signedContractCreate = yield this.signTransaction(contractCreate);
-                const ccResponse = yield this.provider.sendTransaction(signedContractCreate);
-                return ccResponse;
+                return yield this.provider.sendTransaction(signedContractCreate);
             }
         });
     }

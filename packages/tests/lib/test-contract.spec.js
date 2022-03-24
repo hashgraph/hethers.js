@@ -462,7 +462,7 @@ describe('Contract Aliases', function () {
                                 accAbi = JSON.parse(fs_1.default.readFileSync('packages/tests/contracts/Account.abi.json').toString());
                                 salt = 1111;
                                 factoryCFactory = new hethers_1.hethers.ContractFactory(factoryAbi, factoryBytecode, wallet);
-                                return [4 /*yield*/, factoryCFactory.deploy({ gasLimit: gasLimit })];
+                                return [4 /*yield*/, factoryCFactory.deploy({ gasLimit: 3000000 })];
                             case 1:
                                 _factory = _a.sent();
                                 factory = hethers_1.hethers.ContractFactory.getContract(_factory.address, factoryAbi, wallet);
@@ -477,7 +477,7 @@ describe('Contract Aliases', function () {
                                             case 1:
                                                 owner = _a.sent();
                                                 assert_1.default.strictEqual(owner, hethers_1.hethers.constants.AddressZero);
-                                                return [4 /*yield*/, account.setOwner(wallet.address, { gasLimit: gasLimit })];
+                                                return [4 /*yield*/, account.setOwner(wallet.address, { gasLimit: 300000 })];
                                             case 2:
                                                 resp = _a.sent();
                                                 assert_1.default.notStrictEqual(resp, null, 'expected a defined tx response');

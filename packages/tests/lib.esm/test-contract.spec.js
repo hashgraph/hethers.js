@@ -247,14 +247,14 @@ describe('Contract Aliases', function () {
                 const accAbi = JSON.parse(fs.readFileSync('packages/tests/contracts/Account.abi.json').toString());
                 const salt = 1111;
                 const factoryCFactory = new hethers.ContractFactory(factoryAbi, factoryBytecode, wallet);
-                const _factory = yield factoryCFactory.deploy({ gasLimit });
+                const _factory = yield factoryCFactory.deploy({ gasLimit: 3000000 });
                 const factory = hethers.ContractFactory.getContract(_factory.address, factoryAbi, wallet);
                 // the second argument is the salt we have used, and we can skip it as we defined it above
                 factory.on('Deployed', (addr, _) => __awaiter(this, void 0, void 0, function* () {
                     const account = hethers.ContractFactory.getContract(addr, accAbi, wallet);
                     let owner = yield account.getOwner({ gasLimit });
                     assert.strictEqual(owner, hethers.constants.AddressZero);
-                    const resp = yield account.setOwner(wallet.address, { gasLimit });
+                    const resp = yield account.setOwner(wallet.address, { gasLimit: 300000 });
                     assert.notStrictEqual(resp, null, 'expected a defined tx response');
                     owner = yield account.getOwner({ gasLimit });
                     assert.strictEqual(owner, wallet.address, "expected owner to be changed after `setOwner` call");

@@ -98,6 +98,7 @@ var allowedTransactionKeys = [
 ];
 // oversize cost for 1 gas in ContractCallQuery
 var CALL_GAS_PRICE_TINYBARS = 100;
+// the average default cost of a signed hedera ContractCallQuery
 var DEFAULT_HEDERA_CALL_TX_FEE = 143083413;
 ;
 ;
@@ -264,7 +265,7 @@ var Signer = /** @class */ (function () {
      */
     Signer.prototype.sendTransaction = function (transaction) {
         return __awaiter(this, void 0, void 0, function () {
-            var tx, signed, contractByteCode, chunks, fileCreate, signedFileCreate, resp, _i, _a, chunk, fileAppend, signedFileAppend, contractCreate, signedContractCreate, ccResponse;
+            var tx, signed, contractByteCode, chunks, fileCreate, signedFileCreate, resp, _i, _a, chunk, fileAppend, signedFileAppend, contractCreate, signedContractCreate;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0: return [4 /*yield*/, (0, properties_1.resolveProperties)(transaction)];
@@ -323,9 +324,7 @@ var Signer = /** @class */ (function () {
                     case 12:
                         signedContractCreate = _b.sent();
                         return [4 /*yield*/, this.provider.sendTransaction(signedContractCreate)];
-                    case 13:
-                        ccResponse = _b.sent();
-                        return [2 /*return*/, ccResponse];
+                    case 13: return [2 /*return*/, _b.sent()];
                 }
             });
         });
