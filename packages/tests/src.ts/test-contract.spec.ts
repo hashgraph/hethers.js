@@ -232,9 +232,8 @@ describe('Contract Events', function () {
 });
 
 describe('Contract Aliases', async function () {
-    this.retries(3);
     const provider = hethers.providers.getDefaultProvider('testnet');
-    const gasLimit = 300000000;
+    const gasLimit = 3000000;
     // @ts-ignore
     const wallet = new hethers.Wallet(hederaEoa, provider);
     it('Should detect contract aliases', async function() {
@@ -268,12 +267,12 @@ describe('Contract Aliases', async function () {
         // the second argument is the salt we have used, and we can skip it as we defined it above
         factory.on('Deployed', async (addr:string, _:any) => {
             const account = hethers.ContractFactory.getContract(addr, accAbi, wallet);
-            let owner = await account.getOwner({gasLimit});
+            let owner = await account.getOwner({gasLimit: 3000000});
             assert.strictEqual(owner, hethers.constants.AddressZero);
-            const resp = await account.setOwner(wallet.address, {gasLimit:300000});
+            const resp = await account.setOwner(wallet.address, {gasLimit:3000000});
             assert.notStrictEqual(resp, null, 'expected a defined tx response');
 
-            owner = await account.getOwner({gasLimit});
+            owner = await account.getOwner({gasLimit: 3000000});
             assert.strictEqual(owner, wallet.address, "expected owner to be changed after `setOwner` call");
             factory.removeAllListeners();
         });

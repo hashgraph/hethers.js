@@ -416,9 +416,8 @@ describe('Contract Aliases', function () {
     return __awaiter(this, void 0, void 0, function () {
         var provider, gasLimit, wallet;
         return __generator(this, function (_a) {
-            this.retries(3);
             provider = hethers_1.hethers.providers.getDefaultProvider('testnet');
-            gasLimit = 300000000;
+            gasLimit = 3000000;
             wallet = new hethers_1.hethers.Wallet(hederaEoa, provider);
             it('Should detect contract aliases', function () {
                 return __awaiter(this, void 0, void 0, function () {
@@ -473,15 +472,15 @@ describe('Contract Aliases', function () {
                                         switch (_a.label) {
                                             case 0:
                                                 account = hethers_1.hethers.ContractFactory.getContract(addr, accAbi, wallet);
-                                                return [4 /*yield*/, account.getOwner({ gasLimit: gasLimit })];
+                                                return [4 /*yield*/, account.getOwner({ gasLimit: 3000000 })];
                                             case 1:
                                                 owner = _a.sent();
                                                 assert_1.default.strictEqual(owner, hethers_1.hethers.constants.AddressZero);
-                                                return [4 /*yield*/, account.setOwner(wallet.address, { gasLimit: 300000 })];
+                                                return [4 /*yield*/, account.setOwner(wallet.address, { gasLimit: 3000000 })];
                                             case 2:
                                                 resp = _a.sent();
                                                 assert_1.default.notStrictEqual(resp, null, 'expected a defined tx response');
-                                                return [4 /*yield*/, account.getOwner({ gasLimit: gasLimit })];
+                                                return [4 /*yield*/, account.getOwner({ gasLimit: 3000000 })];
                                             case 3:
                                                 owner = _a.sent();
                                                 assert_1.default.strictEqual(owner, wallet.address, "expected owner to be changed after `setOwner` call");

@@ -212,7 +212,7 @@ var Signer = /** @class */ (function () {
                         paymentBody = {
                             transactionID: paymentTxId._toProtobuf(),
                             nodeAccountID: nodeID._toProtobuf(),
-                            transactionFee: sdk_1.Hbar.fromTinybars(DEFAULT_HEDERA_CALL_TX_FEE).toTinybars(),
+                            transactionFee: sdk_1.Hbar.fromTinybars(DEFAULT_HEDERA_CALL_TX_FEE * 10).toTinybars(),
                             transactionValidDuration: {
                                 seconds: Long.fromInt(120),
                             },

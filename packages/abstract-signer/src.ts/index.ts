@@ -192,7 +192,7 @@ export abstract class Signer {
         const paymentBody = {
             transactionID: paymentTxId._toProtobuf(),
             nodeAccountID: nodeID._toProtobuf(),
-            transactionFee: Hbar.fromTinybars(DEFAULT_HEDERA_CALL_TX_FEE).toTinybars(),
+            transactionFee: Hbar.fromTinybars(DEFAULT_HEDERA_CALL_TX_FEE*10).toTinybars(),
             transactionValidDuration: {
                 seconds: Long.fromInt(120),
             },
