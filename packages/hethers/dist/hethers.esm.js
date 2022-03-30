@@ -94144,6 +94144,7 @@ const allowedTransactionKeys = [
 const CALL_GAS_PRICE_TINYBARS = 100;
 // the average default cost of a signed hedera ContractCallQuery
 const DEFAULT_HEDERA_CALL_TX_FEE = 143083413;
+const TX_FEE_BUFFER_MULTIPLIER = 10;
 ;
 ;
 function checkError(method, error, txRequest) {
@@ -94220,11 +94221,12 @@ class Signer$1 {
                 hederaTx.setContractId(to);
             }
             const gasLimit = BigNumber.from(tx.gasLimit).toNumber();
-            const cost = DEFAULT_HEDERA_CALL_TX_FEE * 10 + gasLimit * CALL_GAS_PRICE_TINYBARS;
+            const priorityCost = DEFAULT_HEDERA_CALL_TX_FEE * TX_FEE_BUFFER_MULTIPLIER;
+            const cost = priorityCost + gasLimit * CALL_GAS_PRICE_TINYBARS;
             const paymentBody = {
                 transactionID: paymentTxId._toProtobuf(),
                 nodeAccountID: nodeID._toProtobuf(),
-                transactionFee: Hbar.fromTinybars(DEFAULT_HEDERA_CALL_TX_FEE * 10).toTinybars(),
+                transactionFee: Hbar.fromTinybars(priorityCost).toTinybars(),
                 transactionValidDuration: {
                     seconds: long_1.fromInt(120),
                 },

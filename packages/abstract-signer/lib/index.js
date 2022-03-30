@@ -100,6 +100,7 @@ var allowedTransactionKeys = [
 var CALL_GAS_PRICE_TINYBARS = 100;
 // the average default cost of a signed hedera ContractCallQuery
 var DEFAULT_HEDERA_CALL_TX_FEE = 143083413;
+var TX_FEE_BUFFER_MULTIPLIER = 10;
 ;
 ;
 function checkError(method, error, txRequest) {
@@ -181,7 +182,7 @@ var Signer = /** @class */ (function () {
     // super classes should override this for now
     Signer.prototype.call = function (txRequest) {
         return __awaiter(this, void 0, void 0, function () {
-            var tx, to, from, _a, nodeID, paymentTxId, hederaTx, gasLimit, cost, paymentBody, signed, walletKey, signature, transferSignedTransactionBytes, response, error_1;
+            var tx, to, from, _a, nodeID, paymentTxId, hederaTx, gasLimit, priorityCost, cost, paymentBody, signed, walletKey, signature, transferSignedTransactionBytes, response, error_1;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -208,11 +209,12 @@ var Signer = /** @class */ (function () {
                             hederaTx.setContractId(to);
                         }
                         gasLimit = bignumber_1.BigNumber.from(tx.gasLimit).toNumber();
-                        cost = DEFAULT_HEDERA_CALL_TX_FEE * 10 + gasLimit * CALL_GAS_PRICE_TINYBARS;
+                        priorityCost = DEFAULT_HEDERA_CALL_TX_FEE * TX_FEE_BUFFER_MULTIPLIER;
+                        cost = priorityCost + gasLimit * CALL_GAS_PRICE_TINYBARS;
                         paymentBody = {
                             transactionID: paymentTxId._toProtobuf(),
                             nodeAccountID: nodeID._toProtobuf(),
-                            transactionFee: sdk_1.Hbar.fromTinybars(DEFAULT_HEDERA_CALL_TX_FEE * 10).toTinybars(),
+                            transactionFee: sdk_1.Hbar.fromTinybars(priorityCost).toTinybars(),
                             transactionValidDuration: {
                                 seconds: Long.fromInt(120),
                             },
