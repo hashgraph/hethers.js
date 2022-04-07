@@ -94221,12 +94221,12 @@ class Signer$1 {
                 hederaTx.setContractId(to);
             }
             const gasLimit = BigNumber.from(tx.gasLimit).toNumber();
-            const priorityCost = DEFAULT_HEDERA_CALL_TX_FEE * TX_FEE_BUFFER_MULTIPLIER;
-            const cost = priorityCost + gasLimit * CALL_GAS_PRICE_TINYBARS;
+            const baseCost = DEFAULT_HEDERA_CALL_TX_FEE * TX_FEE_BUFFER_MULTIPLIER;
+            const cost = baseCost + gasLimit * CALL_GAS_PRICE_TINYBARS;
             const paymentBody = {
                 transactionID: paymentTxId._toProtobuf(),
                 nodeAccountID: nodeID._toProtobuf(),
-                transactionFee: Hbar.fromTinybars(priorityCost).toTinybars(),
+                transactionFee: Hbar.fromTinybars(baseCost).toTinybars(),
                 transactionValidDuration: {
                     seconds: long_1.fromInt(120),
                 },

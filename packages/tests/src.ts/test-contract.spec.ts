@@ -21,7 +21,6 @@ const hederaEoa = {
 };
 
 describe("Test Contract Transaction Population", function() {
-    this.retries(3);
     const provider = hethers.providers.getDefaultProvider('testnet');
     // @ts-ignore
     const wallet = new hethers.Wallet(hederaEoa, provider);
@@ -66,23 +65,23 @@ describe("Test Contract Transaction Population", function() {
         });
 
         // test if initial balance of the client is zero
-        assert.strictEqual((await contract.balanceOf(clientWallet.address, {gasLimit: 300000})).toString(), '0');
+        assert.strictEqual((await contract.balanceOf(clientWallet.address, {gasLimit: 3000000})).toString(), '0');
 
         // test calling a contract view method
-        const viewMethodCall = await contract.getInternalCounter({gasLimit: 300000});
+        const viewMethodCall = await contract.getInternalCounter({gasLimit: 3000000});
         assert.strictEqual(viewMethodCall.toString(), '29');
 
         // test sending hbars via populateTransaction.transfer
-        const populatedTx = await contract.populateTransaction.transfer(clientWallet.address, 10, {gasLimit: 300000});
+        const populatedTx = await contract.populateTransaction.transfer(clientWallet.address, 10, {gasLimit: 3000000});
         const signedTransaction = await wallet.signTransaction(populatedTx);
         const tx = await wallet.provider.sendTransaction(signedTransaction);
         await tx.wait();
-        assert.strictEqual((await contract.balanceOf(clientWallet.address, {gasLimit: 300000})).toString(), '10');
+        assert.strictEqual((await contract.balanceOf(clientWallet.address, {gasLimit: 3000000})).toString(), '10');
 
         // test sending hbars via contract.transfer
-        const transferMethodCall = await contract.transfer(clientWallet.address, 10, {gasLimit: 300000});
+        const transferMethodCall = await contract.transfer(clientWallet.address, 10, {gasLimit: 3000000});
         await transferMethodCall.wait();
-        assert.strictEqual((await contract.balanceOf(clientWallet.address, {gasLimit: 300000})).toString(), '20');
+        assert.strictEqual((await contract.balanceOf(clientWallet.address, {gasLimit: 3000000})).toString(), '20');
     });
 
     it('should have a .wait function', async function() {

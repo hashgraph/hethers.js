@@ -24,7 +24,6 @@ const hederaEoa = {
     privateKey: '0x3b6cd41ded6986add931390d5d3efa0bb2b311a8415cfe66716cac0234de035d'
 };
 describe("Test Contract Transaction Population", function () {
-    this.retries(3);
     const provider = hethers.providers.getDefaultProvider('testnet');
     // @ts-ignore
     const wallet = new hethers.Wallet(hederaEoa, provider);
@@ -69,20 +68,20 @@ describe("Test Contract Transaction Population", function () {
                 gasLimit: 300000
             });
             // test if initial balance of the client is zero
-            assert.strictEqual((yield contract.balanceOf(clientWallet.address, { gasLimit: 300000 })).toString(), '0');
+            assert.strictEqual((yield contract.balanceOf(clientWallet.address, { gasLimit: 3000000 })).toString(), '0');
             // test calling a contract view method
-            const viewMethodCall = yield contract.getInternalCounter({ gasLimit: 300000 });
+            const viewMethodCall = yield contract.getInternalCounter({ gasLimit: 3000000 });
             assert.strictEqual(viewMethodCall.toString(), '29');
             // test sending hbars via populateTransaction.transfer
-            const populatedTx = yield contract.populateTransaction.transfer(clientWallet.address, 10, { gasLimit: 300000 });
+            const populatedTx = yield contract.populateTransaction.transfer(clientWallet.address, 10, { gasLimit: 3000000 });
             const signedTransaction = yield wallet.signTransaction(populatedTx);
             const tx = yield wallet.provider.sendTransaction(signedTransaction);
             yield tx.wait();
-            assert.strictEqual((yield contract.balanceOf(clientWallet.address, { gasLimit: 300000 })).toString(), '10');
+            assert.strictEqual((yield contract.balanceOf(clientWallet.address, { gasLimit: 3000000 })).toString(), '10');
             // test sending hbars via contract.transfer
-            const transferMethodCall = yield contract.transfer(clientWallet.address, 10, { gasLimit: 300000 });
+            const transferMethodCall = yield contract.transfer(clientWallet.address, 10, { gasLimit: 3000000 });
             yield transferMethodCall.wait();
-            assert.strictEqual((yield contract.balanceOf(clientWallet.address, { gasLimit: 300000 })).toString(), '20');
+            assert.strictEqual((yield contract.balanceOf(clientWallet.address, { gasLimit: 3000000 })).toString(), '20');
         });
     });
     it('should have a .wait function', function () {

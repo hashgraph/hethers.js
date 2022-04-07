@@ -83,7 +83,6 @@ var hederaEoa = {
     privateKey: '0x3b6cd41ded6986add931390d5d3efa0bb2b311a8415cfe66716cac0234de035d'
 };
 describe("Test Contract Transaction Population", function () {
-    this.retries(3);
     var provider = hethers_1.hethers.providers.getDefaultProvider('testnet');
     // @ts-ignore
     var wallet = new hethers_1.hethers.Wallet(hederaEoa, provider);
@@ -156,15 +155,15 @@ describe("Test Contract Transaction Population", function () {
                         _g.sent();
                         // test if initial balance of the client is zero
                         _b = (_a = assert_1.default).strictEqual;
-                        return [4 /*yield*/, contract.balanceOf(clientWallet.address, { gasLimit: 300000 })];
+                        return [4 /*yield*/, contract.balanceOf(clientWallet.address, { gasLimit: 3000000 })];
                     case 5:
                         // test if initial balance of the client is zero
                         _b.apply(_a, [(_g.sent()).toString(), '0']);
-                        return [4 /*yield*/, contract.getInternalCounter({ gasLimit: 300000 })];
+                        return [4 /*yield*/, contract.getInternalCounter({ gasLimit: 3000000 })];
                     case 6:
                         viewMethodCall = _g.sent();
                         assert_1.default.strictEqual(viewMethodCall.toString(), '29');
-                        return [4 /*yield*/, contract.populateTransaction.transfer(clientWallet.address, 10, { gasLimit: 300000 })];
+                        return [4 /*yield*/, contract.populateTransaction.transfer(clientWallet.address, 10, { gasLimit: 3000000 })];
                     case 7:
                         populatedTx = _g.sent();
                         return [4 /*yield*/, wallet.signTransaction(populatedTx)];
@@ -177,17 +176,17 @@ describe("Test Contract Transaction Population", function () {
                     case 10:
                         _g.sent();
                         _d = (_c = assert_1.default).strictEqual;
-                        return [4 /*yield*/, contract.balanceOf(clientWallet.address, { gasLimit: 300000 })];
+                        return [4 /*yield*/, contract.balanceOf(clientWallet.address, { gasLimit: 3000000 })];
                     case 11:
                         _d.apply(_c, [(_g.sent()).toString(), '10']);
-                        return [4 /*yield*/, contract.transfer(clientWallet.address, 10, { gasLimit: 300000 })];
+                        return [4 /*yield*/, contract.transfer(clientWallet.address, 10, { gasLimit: 3000000 })];
                     case 12:
                         transferMethodCall = _g.sent();
                         return [4 /*yield*/, transferMethodCall.wait()];
                     case 13:
                         _g.sent();
                         _f = (_e = assert_1.default).strictEqual;
-                        return [4 /*yield*/, contract.balanceOf(clientWallet.address, { gasLimit: 300000 })];
+                        return [4 /*yield*/, contract.balanceOf(clientWallet.address, { gasLimit: 3000000 })];
                     case 14:
                         _f.apply(_e, [(_g.sent()).toString(), '20']);
                         return [2 /*return*/];
