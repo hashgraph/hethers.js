@@ -282,6 +282,74 @@ describe('Contract Aliases', async function () {
     });
 });
 
+describe("contract.deployed with ED25519 keys", function () {
+    const hederaEoa = {
+        account: "0.0.34100425",
+        alias: "0.0.QsxEYZU82YPvQqrZ8DAfOktZjmbcfjaPwVATlsaJCCM=",
+        privateKey: "302e020100300506032b65700422042006bd0453347618988f1e1c60bd3e57892a4b8603969827d65b1a87d13b463d70",
+        isED25519Type: true
+    };
+    const provider = hethers.providers.getDefaultProvider('testnet');
+    // @ts-ignore
+    const wallet = new hethers.Wallet(hederaEoa, provider);
+
+    it("should deploy a contract", async function () {
+        const contractFactory = new hethers.ContractFactory(abiToken, bytecodeToken, wallet);
+        const contract = await contractFactory.deploy({ gasLimit: 300000 });
+        assert.notStrictEqual(contract, null, "nullified contract");
+        assert.notStrictEqual(contract.deployTransaction, "missing deploy transaction");
+        assert.notStrictEqual(contract.address, null, 'missing address');
+
+        const contractDeployed = await contract.deployed();
+
+        assert.notStrictEqual(contractDeployed, null, "deployed returns the contract");
+        assert.strictEqual(contractDeployed.address, contract.address, "deployed returns the same contract instance");
+
+    }).timeout(60000);
+
+    it("should deploy a contract from newly created account", async function () {
+        const newAccount = hethers.Wallet.createRandom({ isED25519Type: true });
+        const clientAccountId = (await wallet.createAccount(newAccount._signingKey().compressedPublicKey, BigInt("1000000000"))).customData.accountId;
+        const newWallet = newAccount.connect(provider).connectAccount(clientAccountId.toString());
+
+        const newAccountAddress = hethers.utils.getAddressFromAccount(clientAccountId.toString());
+        const newAccBalance = await provider.getBalance(newAccountAddress);
+
+        assert.strictEqual(newAccBalance.toNumber(), 1000000000);
+
+        const contractFactory = new hethers.ContractFactory(abiToken, bytecodeToken, newWallet);
+        const contract = await contractFactory.deploy({ gasLimit: 300000 });
+        assert.notStrictEqual(contract, null, "nullified contract");
+        assert.notStrictEqual(contract.deployTransaction, "missing deploy transaction");
+        assert.notStrictEqual(contract.address, null, 'missing address');
+
+        const contractDeployed = await contract.deployed();
+
+        assert.notStrictEqual(contractDeployed, null, "deployed returns the contract");
+        assert.strictEqual(contractDeployed.address, contract.address, "deployed returns the same contract instance");
+    }).timeout(60000);
+
+    it("should throw error for unsufficient balanc on newly created account", async function () {
+        let exceptionThrown = false;
+        let errorCode = null;
+
+        const newAccount = hethers.Wallet.createRandom({ isED25519Type: true });
+        const clientAccountId = (await wallet.createAccount(newAccount._signingKey().compressedPublicKey)).customData.accountId;
+        const newWallet = newAccount.connect(provider).connectAccount(clientAccountId.toString());
+        try {
+            const contractFactory = new hethers.ContractFactory(abiToken, bytecodeToken, newWallet);
+            await contractFactory.deploy({ gasLimit: 300000 });
+        } catch (e: any) {
+            errorCode = e.code;
+            exceptionThrown = true;
+        }
+
+        assert.strictEqual(errorCode, 'INSUFFICIENT_PAYER_BALANCE');
+        assert.strictEqual(exceptionThrown, true);
+    }).timeout(60000);
+
+});
+
 describe("contract.deployed", function() {
     const hederaEoa = {
         account: '0.0.29562194',

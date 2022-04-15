@@ -12,7 +12,7 @@ import {
     getAddressFromAccount,
     getChecksumAddress
 } from "@hethers/address";
-import { SigningKey } from "@ethersproject/signing-key";
+import { SigningKey } from "@hethers/signing-key";
 import {
     AccountId,
     ContractCallQuery, ContractId,
@@ -58,6 +58,7 @@ export interface ExternallyOwnedAccount {
     readonly account?: Account;
     readonly alias?: string;
     readonly privateKey: string;
+    readonly isED25519Type?: boolean;
 }
 
 // Sub-Class Notes:
