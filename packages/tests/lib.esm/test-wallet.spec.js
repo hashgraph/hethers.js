@@ -16,7 +16,7 @@ import { PrivateKey, PublicKey, Transaction, } from "@hashgraph/sdk";
 import { readFileSync } from "fs";
 const abi = JSON.parse(readFileSync('packages/tests/contracts/Token.json').toString());
 const abiTokenWithArgs = JSON.parse(readFileSync('packages/tests/contracts/TokenWithArgs.json').toString());
-describe.only('Test JSON Wallets', function () {
+describe('Test JSON Wallets', function () {
     let tests = loadTests('wallets');
     tests.forEach(function (test) {
         it(('decrypts wallet - ' + test.name), function () {

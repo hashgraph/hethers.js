@@ -6031,7 +6031,7 @@ class Reader {
     }
 }
 
-const version$5 = "bytes/5.6.0";
+const version$5 = "bytes/5.6.1";
 
 "use strict";
 const logger$6 = new Logger(version$5);
@@ -6102,7 +6102,7 @@ function arrayify$1(value, options) {
         let hex = value.substring(2);
         if (hex.length % 2) {
             if (options.hexPad === "left") {
-                hex = "0x0" + hex.substring(2);
+                hex = "0" + hex;
             }
             else if (options.hexPad === "right") {
                 hex += "0";
@@ -7759,7 +7759,7 @@ function keccak256(data) {
     return '0x' + sha3.keccak_256(arrayify$1(data));
 }
 
-const version$7 = "bytes/5.6.0";
+const version$7 = "bytes/5.6.1";
 
 "use strict";
 const logger$9 = new Logger(version$7);
@@ -7830,7 +7830,7 @@ function arrayify$2(value, options) {
         let hex = value.substring(2);
         if (hex.length % 2) {
             if (options.hexPad === "left") {
-                hex = "0x0" + hex.substring(2);
+                hex = "0" + hex;
             }
             else if (options.hexPad === "right") {
                 hex += "0";
@@ -8749,7 +8749,7 @@ class NullCoder extends Coder {
 
 const AddressZero = "0x0000000000000000000000000000000000000000";
 
-const version$a = "bytes/5.6.0";
+const version$a = "bytes/5.6.1";
 
 "use strict";
 const logger$d = new Logger(version$a);
@@ -8820,7 +8820,7 @@ function arrayify$3(value, options) {
         let hex = value.substring(2);
         if (hex.length % 2) {
             if (options.hexPad === "left") {
-                hex = "0x0" + hex.substring(2);
+                hex = "0" + hex;
             }
             else if (options.hexPad === "right") {
                 hex += "0";
@@ -12208,6 +12208,20 @@ class KeyList extends Key {
 }
 
 /**
+ * @typedef {import("./PrivateKey.js").default} PrivateKey
+ * @typedef {import("./Ed25519PrivateKey.js").default} Ed25519PrivateKey
+ * @typedef {import("./EcdsaPrivateKey.js").default} EcdsaPrivateKey
+ */
+
+const CACHE = {
+    /** @type {((key: Ed25519PrivateKey | EcdsaPrivateKey) => PrivateKey) | null} */
+    privateKeyConstructor: null,
+
+    /** @type {((bytes: Uint8Array) => PrivateKey) | null} */
+    privateKeyFromBytes: null,
+};
+
+/**
  * Signals that a key could not be realized from the input.
  */
 class BadKeyError extends Error {
@@ -12224,7 +12238,7 @@ class BadKeyError extends Error {
         this.name = "BadKeyError";
 
         if (messageOrCause instanceof Error) {
-            /** @type {?Error} */
+            /** @type {Error=} */
             this.cause = messageOrCause;
             this.stack = messageOrCause.stack;
         }
@@ -24427,7 +24441,9 @@ function bytesToBits(data) {
     return bits;
 }
 
-// import EcdsaPrivateKey from "./EcdsaPrivateKey.js";
+/**
+ * @typedef {import("./PrivateKey.js").default} PrivateKey
+ */
 
 /**
  * Multi-word mnemonic phrase (BIP-39).
@@ -24724,7 +24740,13 @@ class Mnemonic {
 
         const keyPair = naclFast.sign.keyPair.fromSeed(keyData);
 
-        return new PrivateKey(new Ed25519PrivateKey(keyPair, chainCode));
+        if (CACHE.privateKeyConstructor == null) {
+            throw new Error("PrivateKey not found in cache");
+        }
+
+        return CACHE.privateKeyConstructor(
+            new Ed25519PrivateKey(keyPair, chainCode)
+        );
     }
 
     /**
@@ -24738,7 +24760,11 @@ class Mnemonic {
             seed = await legacy2(this.words, bip39Words);
         }
 
-        return PrivateKey.fromBytes(seed);
+        if (CACHE.privateKeyFromBytes == null) {
+            throw new Error("PrivateKey not found in cache");
+        }
+
+        return CACHE.privateKeyFromBytes(seed);
     }
 
     /**
@@ -25194,55 +25220,36 @@ const keccak = (/** @type {number} */ bits) => (/** @type {string} */ str) => {
  */
 const keccak256$2 = keccak(256);
 
-var _args = [
-	[
-		"elliptic@6.5.4",
-		"/Users/antonrusev/Documents/Workspace/hashgraph/hethers.js"
-	]
+var name = "elliptic";
+var version$i = "6.5.4";
+var description = "EC cryptography";
+var main = "lib/elliptic.js";
+var files = [
+	"lib"
 ];
-var _from = "elliptic@6.5.4";
-var _id = "elliptic@6.5.4";
-var _inBundle = false;
-var _integrity = "sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==";
-var _location = "/elliptic";
-var _phantomChildren = {
+var scripts = {
+	lint: "eslint lib test",
+	"lint:fix": "npm run lint -- --fix",
+	unit: "istanbul test _mocha --reporter=spec test/index.js",
+	test: "npm run lint && npm run unit",
+	version: "grunt dist && git add dist/"
 };
-var _requested = {
-	type: "version",
-	registry: true,
-	raw: "elliptic@6.5.4",
-	name: "elliptic",
-	escapedName: "elliptic",
-	rawSpec: "6.5.4",
-	saveSpec: null,
-	fetchSpec: "6.5.4"
+var repository = {
+	type: "git",
+	url: "git@github.com:indutny/elliptic"
 };
-var _requiredBy = [
-	"/",
-	"/@ethersproject/signing-key",
-	"/@ethersproject/transactions/@ethersproject/signing-key",
-	"/@hashgraph/cryptography"
+var keywords = [
+	"EC",
+	"Elliptic",
+	"curve",
+	"Cryptography"
 ];
-var _resolved = "https://registry.npmjs.org/elliptic/-/elliptic-6.5.4.tgz";
-var _spec = "6.5.4";
-var _where = "/Users/antonrusev/Documents/Workspace/hashgraph/hethers.js";
-var author = {
-	name: "Fedor Indutny",
-	email: "fedor@indutny.com"
-};
+var author = "Fedor Indutny <fedor@indutny.com>";
+var license = "MIT";
 var bugs = {
 	url: "https://github.com/indutny/elliptic/issues"
 };
-var dependencies = {
-	"bn.js": "^4.11.9",
-	brorand: "^1.1.0",
-	"hash.js": "^1.0.0",
-	"hmac-drbg": "^1.0.1",
-	inherits: "^2.0.4",
-	"minimalistic-assert": "^1.0.1",
-	"minimalistic-crypto-utils": "^1.0.1"
-};
-var description = "EC cryptography";
+var homepage = "https://github.com/indutny/elliptic";
 var devDependencies = {
 	brfs: "^2.0.2",
 	coveralls: "^3.1.0",
@@ -25258,58 +25265,36 @@ var devDependencies = {
 	istanbul: "^0.4.5",
 	mocha: "^8.0.1"
 };
-var files = [
-	"lib"
-];
-var homepage = "https://github.com/indutny/elliptic";
-var keywords = [
-	"EC",
-	"Elliptic",
-	"curve",
-	"Cryptography"
-];
-var license = "MIT";
-var main = "lib/elliptic.js";
-var name = "elliptic";
-var repository = {
-	type: "git",
-	url: "git+ssh://git@github.com/indutny/elliptic.git"
+var dependencies = {
+	"bn.js": "^4.11.9",
+	brorand: "^1.1.0",
+	"hash.js": "^1.0.0",
+	"hmac-drbg": "^1.0.1",
+	inherits: "^2.0.4",
+	"minimalistic-assert": "^1.0.1",
+	"minimalistic-crypto-utils": "^1.0.1"
 };
-var scripts = {
-	lint: "eslint lib test",
-	"lint:fix": "npm run lint -- --fix",
-	test: "npm run lint && npm run unit",
-	unit: "istanbul test _mocha --reporter=spec test/index.js",
-	version: "grunt dist && git add dist/"
-};
-var version$i = "6.5.4";
+var _resolved = "https://registry.npmjs.org/elliptic/-/elliptic-6.5.4.tgz";
+var _integrity = "sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==";
+var _from = "elliptic@6.5.4";
 var require$$0 = {
-	_args: _args,
-	_from: _from,
-	_id: _id,
-	_inBundle: _inBundle,
-	_integrity: _integrity,
-	_location: _location,
-	_phantomChildren: _phantomChildren,
-	_requested: _requested,
-	_requiredBy: _requiredBy,
-	_resolved: _resolved,
-	_spec: _spec,
-	_where: _where,
-	author: author,
-	bugs: bugs,
-	dependencies: dependencies,
-	description: description,
-	devDependencies: devDependencies,
-	files: files,
-	homepage: homepage,
-	keywords: keywords,
-	license: license,
-	main: main,
 	name: name,
-	repository: repository,
+	version: version$i,
+	description: description,
+	main: main,
+	files: files,
 	scripts: scripts,
-	version: version$i
+	repository: repository,
+	keywords: keywords,
+	author: author,
+	license: license,
+	bugs: bugs,
+	homepage: homepage,
+	devDependencies: devDependencies,
+	dependencies: dependencies,
+	_resolved: _resolved,
+	_integrity: _integrity,
+	_from: _from
 };
 
 var minimalisticAssert = assert;
@@ -32580,6 +32565,9 @@ class PrivateKey extends Key {
     }
 }
 
+CACHE.privateKeyConstructor = (key) => new PrivateKey(key);
+CACHE.privateKeyFromBytes = (bytes) => PrivateKey.fromBytes(bytes);
+
 /**
  * @typedef {import("./contract/ContractId.js").default} ContractId
  * @typedef {import("./account/AccountId.js").default} AccountId
@@ -32607,7 +32595,7 @@ class PrivateKey extends Key {
  * @typedef {{ (proto: ProtobufT): SdkT }} FromProtobufKeyFuncT
  */
 
-const CACHE = {
+const CACHE$1 = {
     /** @type {FromProtobufKeyFuncT<proto.IContractID, ContractId> | null} */
     contractId: null,
 
@@ -32698,11 +32686,11 @@ class Mnemonic$1 {
      * @returns {Promise<PrivateKey>}
      */
     async toPrivateKey(passphrase = "") {
-        if (CACHE.privateKeyConstructor == null) {
+        if (CACHE$1.privateKeyConstructor == null) {
             throw new Error("`PrivateKey` has not been loaded");
         }
 
-        return CACHE.privateKeyConstructor(
+        return CACHE$1.privateKeyConstructor(
             await this._mnemonic.toPrivateKey(passphrase)
         );
     }
@@ -32721,11 +32709,11 @@ class Mnemonic$1 {
      * @returns {Promise<PrivateKey>}
      */
     async toLegacyPrivateKey() {
-        if (CACHE.privateKeyConstructor == null) {
+        if (CACHE$1.privateKeyConstructor == null) {
             throw new Error("`PrivateKey` has not been loaded");
         }
 
-        return CACHE.privateKeyConstructor(
+        return CACHE$1.privateKeyConstructor(
             await this._mnemonic.toLegacyPrivateKey()
         );
     }
@@ -32818,63 +32806,63 @@ class Key$1 {
      */
     static _fromProtobufKey(key) {
         if (key.contractID != null) {
-            if (CACHE.contractId == null) {
+            if (CACHE$1.contractId == null) {
                 throw new Error(
                     "`ContractId` was not loaded before decoding `Key`"
                 );
             }
 
-            return CACHE.contractId(key.contractID);
+            return CACHE$1.contractId(key.contractID);
         }
 
         if (key.delegatableContractId != null) {
-            if (CACHE.delegateContractId == null) {
+            if (CACHE$1.delegateContractId == null) {
                 throw new Error(
                     "`ContractId` was not loaded before decoding `Key`"
                 );
             }
 
-            return CACHE.delegateContractId(key.delegatableContractId);
+            return CACHE$1.delegateContractId(key.delegatableContractId);
         }
 
         if (key.ed25519 != null && key.ed25519.byteLength > 0) {
-            if (CACHE.publicKeyED25519 == null) {
+            if (CACHE$1.publicKeyED25519 == null) {
                 throw new Error(
                     "`PublicKey` was not loaded before decoding `Key`"
                 );
             }
 
-            return CACHE.publicKeyED25519(key.ed25519);
+            return CACHE$1.publicKeyED25519(key.ed25519);
         }
 
         if (key.ECDSASecp256k1 != null && key.ECDSASecp256k1.byteLength > 0) {
-            if (CACHE.publicKeyECDSA == null) {
+            if (CACHE$1.publicKeyECDSA == null) {
                 throw new Error(
                     "`PublicKey` was not loaded before decoding `Key`"
                 );
             }
 
-            return CACHE.publicKeyECDSA(key.ECDSASecp256k1);
+            return CACHE$1.publicKeyECDSA(key.ECDSASecp256k1);
         }
 
         if (key.thresholdKey != null && key.thresholdKey.threshold != null) {
-            if (CACHE.thresholdKey == null) {
+            if (CACHE$1.thresholdKey == null) {
                 throw new Error(
                     "`PublicKey` was not loaded before decoding `Key`"
                 );
             }
 
-            return CACHE.thresholdKey(key.thresholdKey);
+            return CACHE$1.thresholdKey(key.thresholdKey);
         }
 
         if (key.keyList != null) {
-            if (CACHE.keyList == null) {
+            if (CACHE$1.keyList == null) {
                 throw new Error(
                     "`PublicKey` was not loaded before decoding `Key`"
                 );
             }
 
-            return CACHE.keyList(key.keyList);
+            return CACHE$1.keyList(key.keyList);
         }
 
         throw new Error(
@@ -33107,16 +33095,16 @@ class PublicKey$1 extends Key$1 {
      * @returns {AccountId}
      */
     toAccountId(shard, realm) {
-        if (CACHE.accountIdConstructor == null) {
+        if (CACHE$1.accountIdConstructor == null) {
             throw new Error("`AccountId` not loaded");
         }
 
-        return CACHE.accountIdConstructor(shard, realm, this);
+        return CACHE$1.accountIdConstructor(shard, realm, this);
     }
 }
 
-CACHE.publicKeyED25519 = (key) => PublicKey$1.fromBytesED25519(key);
-CACHE.publicKeyECDSA = (key) => PublicKey$1.fromBytesECDSA(key);
+CACHE$1.publicKeyED25519 = (key) => PublicKey$1.fromBytesED25519(key);
+CACHE$1.publicKeyECDSA = (key) => PublicKey$1.fromBytesECDSA(key);
 
 /**
  * @typedef {import("./transaction/Transaction.js").default} Transaction
@@ -33467,7 +33455,7 @@ class PrivateKey$1 extends Key$1 {
     }
 }
 
-CACHE.privateKeyConstructor = (key) => new PrivateKey$1(key);
+CACHE$1.privateKeyConstructor = (key) => new PrivateKey$1(key);
 
 /**
  * @namespace proto
@@ -33634,8 +33622,8 @@ class KeyList$1 extends Key$1 {
     }
 }
 
-CACHE.keyList = (key) => KeyList$1.__fromProtobufKeyList(key);
-CACHE.thresholdKey = (key) => KeyList$1.__fromProtobufThresoldKey(key);
+CACHE$1.keyList = (key) => KeyList$1.__fromProtobufKeyList(key);
+CACHE$1.thresholdKey = (key) => KeyList$1.__fromProtobufThresoldKey(key);
 
 /**
  * @typedef {{low: number, high: number, unsigned: boolean}} LongObject
@@ -41298,7 +41286,7 @@ class AccountId {
     }
 }
 
-CACHE.accountIdConstructor = (shard, realm, key) =>
+CACHE$1.accountIdConstructor = (shard, realm, key) =>
     new AccountId(shard, realm, long_1.ZERO, key);
 
 class GrpcStatus {
@@ -43476,7 +43464,7 @@ class ContractId extends Key$1 {
     }
 }
 
-CACHE.contractId = (key) => ContractId.__fromProtobufKey(key);
+CACHE$1.contractId = (key) => ContractId.__fromProtobufKey(key);
 
 /**
  * @typedef {import("long").Long} Long
@@ -58539,7 +58527,7 @@ class DelegateContractId extends ContractId {
     }
 }
 
-CACHE.delegateContractId = (key) => DelegateContractId.__fromProtobufKey(key);
+CACHE$1.delegateContractId = (key) => DelegateContractId.__fromProtobufKey(key);
 
 class ExchangeRates {
     /**
@@ -75108,13 +75096,22 @@ class Http2CallStream {
         }
     }
     sendMessageWithContext(context, message) {
-        var _a;
         this.trace('write() called with message of length ' + message.length);
         const writeObj = {
             message,
             flags: context.flags,
         };
-        const cb = (_a = context.callback) !== null && _a !== void 0 ? _a : (() => { });
+        const cb = (error) => {
+            var _a, _b;
+            let code = constants.Status.UNAVAILABLE;
+            if (((_a = error) === null || _a === void 0 ? void 0 : _a.code) === 'ERR_STREAM_WRITE_AFTER_END') {
+                code = constants.Status.INTERNAL;
+            }
+            if (error) {
+                this.cancelWithStatus(code, `Write error: ${error.message}`);
+            }
+            (_b = context.callback) === null || _b === void 0 ? void 0 : _b.call(context);
+        };
         this.isWriteFilterPending = true;
         this.filterStack.sendMessage(Promise.resolve(writeObj)).then((message) => {
             this.isWriteFilterPending = false;
@@ -75249,8 +75246,10 @@ class ChannelCredentials {
      * @param rootCerts The root certificate data.
      * @param privateKey The client certificate private key, if available.
      * @param certChain The client certificate key chain, if available.
+     * @param verifyOptions Additional options to modify certificate verification
      */
     static createSsl(rootCerts, privateKey, certChain, verifyOptions) {
+        var _a;
         verifyIsBufferOrNull(rootCerts, 'Root certificate');
         verifyIsBufferOrNull(privateKey, 'Private key');
         verifyIsBufferOrNull(certChain, 'Certificate chain');
@@ -75260,7 +75259,26 @@ class ChannelCredentials {
         if (!privateKey && certChain) {
             throw new Error('Certificate chain must be given with accompanying private key');
         }
-        return new SecureChannelCredentialsImpl(rootCerts || tlsHelpers.getDefaultRootsData(), privateKey || null, certChain || null, verifyOptions || {});
+        const secureContext = tls_1.createSecureContext({
+            ca: (_a = rootCerts !== null && rootCerts !== void 0 ? rootCerts : tlsHelpers.getDefaultRootsData()) !== null && _a !== void 0 ? _a : undefined,
+            key: privateKey !== null && privateKey !== void 0 ? privateKey : undefined,
+            cert: certChain !== null && certChain !== void 0 ? certChain : undefined,
+            ciphers: tlsHelpers.CIPHER_SUITES,
+        });
+        return new SecureChannelCredentialsImpl(secureContext, verifyOptions !== null && verifyOptions !== void 0 ? verifyOptions : {});
+    }
+    /**
+     * Return a new ChannelCredentials instance with credentials created using
+     * the provided secureContext. The resulting instances can be used to
+     * construct a Channel that communicates over TLS. gRPC will not override
+     * anything in the provided secureContext, so the environment variables
+     * GRPC_SSL_CIPHER_SUITES and GRPC_DEFAULT_SSL_ROOTS_FILE_PATH will
+     * not be applied.
+     * @param secureContext The return value of tls.createSecureContext()
+     * @param verifyOptions Additional options to modify certificate verification
+     */
+    static createFromSecureContext(secureContext, verifyOptions) {
+        return new SecureChannelCredentialsImpl(secureContext, verifyOptions !== null && verifyOptions !== void 0 ? verifyOptions : {});
     }
     /**
      * Return a new ChannelCredentials instance with no credentials.
@@ -75288,18 +75306,10 @@ class InsecureChannelCredentialsImpl extends ChannelCredentials {
     }
 }
 class SecureChannelCredentialsImpl extends ChannelCredentials {
-    constructor(rootCerts, privateKey, certChain, verifyOptions) {
+    constructor(secureContext, verifyOptions) {
         super();
-        this.rootCerts = rootCerts;
-        this.privateKey = privateKey;
-        this.certChain = certChain;
+        this.secureContext = secureContext;
         this.verifyOptions = verifyOptions;
-        const secureContext = tls_1.createSecureContext({
-            ca: rootCerts || undefined,
-            key: privateKey || undefined,
-            cert: certChain || undefined,
-            ciphers: tlsHelpers.CIPHER_SUITES,
-        });
         this.connectionOptions = {
             secureContext
         };
@@ -75324,17 +75334,8 @@ class SecureChannelCredentialsImpl extends ChannelCredentials {
             return true;
         }
         if (other instanceof SecureChannelCredentialsImpl) {
-            if (!bufferOrNullEqual(this.rootCerts, other.rootCerts)) {
-                return false;
-            }
-            if (!bufferOrNullEqual(this.privateKey, other.privateKey)) {
-                return false;
-            }
-            if (!bufferOrNullEqual(this.certChain, other.certChain)) {
-                return false;
-            }
-            return (this.verifyOptions.checkServerIdentity ===
-                other.verifyOptions.checkServerIdentity);
+            return (this.secureContext === other.secureContext &&
+                this.verifyOptions.checkServerIdentity === other.verifyOptions.checkServerIdentity);
         }
         else {
             return false;
@@ -76140,12 +76141,37 @@ function uniformRandom(min, max) {
 class BackoffTimeout {
     constructor(callback, options) {
         this.callback = callback;
+        /**
+         * The delay time at the start, and after each reset.
+         */
         this.initialDelay = INITIAL_BACKOFF_MS;
+        /**
+         * The exponential backoff multiplier.
+         */
         this.multiplier = BACKOFF_MULTIPLIER;
+        /**
+         * The maximum delay time
+         */
         this.maxDelay = MAX_BACKOFF_MS;
+        /**
+         * The maximum fraction by which the delay time can randomly vary after
+         * applying the multiplier.
+         */
         this.jitter = BACKOFF_JITTER;
+        /**
+         * Indicates whether the timer is currently running.
+         */
         this.running = false;
+        /**
+         * Indicates whether the timer should keep the Node process running if no
+         * other async operation is doing so.
+         */
         this.hasRef = true;
+        /**
+         * The time that the currently running timer was started. Only valid if
+         * running is true.
+         */
+        this.startTime = new Date();
         if (options) {
             if (options.initialDelay) {
                 this.initialDelay = options.initialDelay;
@@ -76164,19 +76190,23 @@ class BackoffTimeout {
         this.timerId = setTimeout(() => { }, 0);
         clearTimeout(this.timerId);
     }
+    runTimer(delay) {
+        var _a, _b;
+        this.timerId = setTimeout(() => {
+            this.callback();
+            this.running = false;
+        }, delay);
+        if (!this.hasRef) {
+            (_b = (_a = this.timerId).unref) === null || _b === void 0 ? void 0 : _b.call(_a);
+        }
+    }
     /**
      * Call the callback after the current amount of delay time
      */
     runOnce() {
-        var _a, _b;
         this.running = true;
-        this.timerId = setTimeout(() => {
-            this.callback();
-            this.running = false;
-        }, this.nextDelay);
-        if (!this.hasRef) {
-            (_b = (_a = this.timerId).unref) === null || _b === void 0 ? void 0 : _b.call(_a);
-        }
+        this.startTime = new Date();
+        this.runTimer(this.nextDelay);
         const nextBackoff = Math.min(this.nextDelay * this.multiplier, this.maxDelay);
         const jitterMagnitude = nextBackoff * this.jitter;
         this.nextDelay =
@@ -76191,19 +76221,43 @@ class BackoffTimeout {
         this.running = false;
     }
     /**
-     * Reset the delay time to its initial value.
+     * Reset the delay time to its initial value. If the timer is still running,
+     * retroactively apply that reset to the current timer.
      */
     reset() {
         this.nextDelay = this.initialDelay;
+        if (this.running) {
+            const now = new Date();
+            const newEndTime = this.startTime;
+            newEndTime.setMilliseconds(newEndTime.getMilliseconds() + this.nextDelay);
+            clearTimeout(this.timerId);
+            if (now < newEndTime) {
+                this.runTimer(newEndTime.getTime() - now.getTime());
+            }
+            else {
+                this.running = false;
+            }
+        }
     }
+    /**
+     * Check whether the timer is currently running.
+     */
     isRunning() {
         return this.running;
     }
+    /**
+     * Set that while the timer is running, it should keep the Node process
+     * running.
+     */
     ref() {
         var _a, _b;
         this.hasRef = true;
         (_b = (_a = this.timerId).ref) === null || _b === void 0 ? void 0 : _b.call(_a);
     }
+    /**
+     * Set that while the timer is running, it should not keep the Node process
+     * running.
+     */
     unref() {
         var _a, _b;
         this.hasRef = false;
@@ -76567,6 +76621,7 @@ class ResolvingLoadBalancer {
         if (this.currentState === connectivityState.ConnectivityState.IDLE) {
             this.updateState(connectivityState.ConnectivityState.CONNECTING, new picker.QueuePicker(this));
         }
+        this.backoffTimeout.runOnce();
     }
     updateState(connectivityState$1, picker$1) {
         trace(uriParser.uriToString(this.target) +
@@ -76586,18 +76641,16 @@ class ResolvingLoadBalancer {
             this.updateState(connectivityState.ConnectivityState.TRANSIENT_FAILURE, new picker.UnavailablePicker(error));
             this.onFailedResolution(error);
         }
-        this.backoffTimeout.runOnce();
     }
     exitIdle() {
         this.childLoadBalancer.exitIdle();
-        if (this.currentState === connectivityState.ConnectivityState.IDLE) {
+        if (this.currentState === connectivityState.ConnectivityState.IDLE || this.currentState === connectivityState.ConnectivityState.TRANSIENT_FAILURE) {
             if (this.backoffTimeout.isRunning()) {
                 this.continueResolving = true;
             }
             else {
                 this.updateResolution();
             }
-            this.updateState(connectivityState.ConnectivityState.CONNECTING, new picker.QueuePicker(this));
         }
     }
     updateAddressList(addressList, lbConfig) {
@@ -76663,6 +76716,7 @@ exports.recognizedOptions = {
     'grpc.max_receive_message_length': true,
     'grpc.enable_http_proxy': true,
     'grpc.enable_channelz': true,
+    'grpc.dns_min_time_between_resolutions_ms': true,
     'grpc-node.max_session_memory': true,
 };
 function channelOptionsEqual(options1, options2) {
@@ -78126,6 +78180,7 @@ function makeClientConstructor(methods, serviceName, classOptions) {
         }
     });
     ServiceClientImpl.service = methods;
+    ServiceClientImpl.serviceName = serviceName;
     return ServiceClientImpl;
 }
 exports.makeClientConstructor = makeClientConstructor;
@@ -87632,31 +87687,39 @@ const channels = [];
 const subchannels = [];
 const servers = [];
 const sockets = [];
-function registerChannelzChannel(name, getInfo) {
+function registerChannelzChannel(name, getInfo, channelzEnabled) {
     const id = getNextId();
     const ref = { id, name, kind: 'channel' };
-    channels[id] = { ref, getInfo };
+    if (channelzEnabled) {
+        channels[id] = { ref, getInfo };
+    }
     return ref;
 }
 exports.registerChannelzChannel = registerChannelzChannel;
-function registerChannelzSubchannel(name, getInfo) {
+function registerChannelzSubchannel(name, getInfo, channelzEnabled) {
     const id = getNextId();
     const ref = { id, name, kind: 'subchannel' };
-    subchannels[id] = { ref, getInfo };
+    if (channelzEnabled) {
+        subchannels[id] = { ref, getInfo };
+    }
     return ref;
 }
 exports.registerChannelzSubchannel = registerChannelzSubchannel;
-function registerChannelzServer(getInfo) {
+function registerChannelzServer(getInfo, channelzEnabled) {
     const id = getNextId();
     const ref = { id, kind: 'server' };
-    servers[id] = { ref, getInfo };
+    if (channelzEnabled) {
+        servers[id] = { ref, getInfo };
+    }
     return ref;
 }
 exports.registerChannelzServer = registerChannelzServer;
-function registerChannelzSocket(name, getInfo) {
+function registerChannelzSocket(name, getInfo, channelzEnabled) {
     const id = getNextId();
     const ref = { id, name, kind: 'socket' };
-    sockets[id] = { ref, getInfo };
+    if (channelzEnabled) {
+        sockets[id] = { ref, getInfo };
+    }
     return ref;
 }
 exports.registerChannelzSocket = registerChannelzSocket;
@@ -88029,49 +88092,22 @@ exports.setup = setup;
 
 var channelz$1 = /*@__PURE__*/getDefaultExportFromCjs(channelz);
 
-var _args$1 = [
-	[
-		"@grpc/grpc-js@1.5.9",
-		"/Users/antonrusev/Documents/Workspace/hashgraph/hethers.js"
-	]
-];
-var _from$1 = "@grpc/grpc-js@1.5.9";
-var _id$1 = "@grpc/grpc-js@1.5.9";
-var _inBundle$1 = false;
-var _integrity$1 = "sha512-un+cXqErq5P4p3+WgYVNVh7FB51MSnaoRef7QWDcMXKR6FX2R6Z/bltcJMxNNdTUMC85lkOQcpnAAetFziPSng==";
-var _location$1 = "/@grpc/grpc-js";
-var _phantomChildren$1 = {
+var name$1 = "@grpc/grpc-js";
+var version$j = "1.6.4";
+var description$1 = "gRPC Library for Node - pure JS implementation";
+var homepage$1 = "https://grpc.io/";
+var repository$1 = "https://github.com/grpc/grpc-node/tree/master/packages/grpc-js";
+var main$1 = "build/src/index.js";
+var engines = {
+	node: "^8.13.0 || >=10.10.0"
 };
-var _requested$1 = {
-	type: "version",
-	registry: true,
-	raw: "@grpc/grpc-js@1.5.9",
-	name: "@grpc/grpc-js",
-	escapedName: "@grpc%2fgrpc-js",
-	scope: "@grpc",
-	rawSpec: "1.5.9",
-	saveSpec: null,
-	fetchSpec: "1.5.9"
-};
-var _requiredBy$1 = [
-	"/@hashgraph/sdk"
+var keywords$1 = [
 ];
-var _resolved$1 = "https://registry.npmjs.org/@grpc/grpc-js/-/grpc-js-1.5.9.tgz";
-var _spec$1 = "1.5.9";
-var _where$1 = "/Users/antonrusev/Documents/Workspace/hashgraph/hethers.js";
 var author$1 = {
 	name: "Google Inc."
 };
-var contributors = [
-	{
-		name: "Google Inc."
-	}
-];
-var dependencies$1 = {
-	"@grpc/proto-loader": "^0.6.4",
-	"@types/node": ">=12.12.47"
-};
-var description$1 = "gRPC Library for Node - pure JS implementation";
+var types = "build/src/index.d.ts";
+var license$1 = "Apache-2.0";
 var devDependencies$1 = {
 	"@types/gulp": "^4.0.6",
 	"@types/gulp-mocha": "0.0.32",
@@ -88095,8 +88131,29 @@ var devDependencies$1 = {
 	"ts-node": "^8.3.0",
 	typescript: "^3.7.2"
 };
-var engines = {
-	node: "^8.13.0 || >=10.10.0"
+var contributors = [
+	{
+		name: "Google Inc."
+	}
+];
+var scripts$1 = {
+	build: "npm run compile",
+	clean: "rimraf ./build",
+	compile: "tsc -p .",
+	format: "clang-format -i -style=\"{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}\" src/*.ts test/*.ts",
+	lint: "npm run check",
+	prepare: "npm run generate-types && npm run compile",
+	test: "gulp test",
+	check: "gts check src/**/*.ts",
+	fix: "gts fix src/*.ts",
+	pretest: "npm run generate-types && npm run generate-test-types && npm run compile",
+	posttest: "npm run check && madge -c ./build/src",
+	"generate-types": "proto-loader-gen-types --keepCase --longs String --enums String --defaults --oneofs --includeComments --includeDirs proto/ --include-dirs test/fixtures/ -O src/generated/ --grpcLib ../index channelz.proto",
+	"generate-test-types": "proto-loader-gen-types --keepCase --longs String --enums String --defaults --oneofs --includeComments --include-dirs test/fixtures/ -O test/generated/ --grpcLib ../../src/index test_service.proto"
+};
+var dependencies$1 = {
+	"@grpc/proto-loader": "^0.6.4",
+	"@types/node": ">=12.12.47"
 };
 var files$1 = [
 	"src/**/*.ts",
@@ -88112,62 +88169,29 @@ var files$1 = [
 	"deps/googleapis/google/rpc/*.proto",
 	"deps/protoc-gen-validate/validate/**/*.proto"
 ];
-var homepage$1 = "https://grpc.io/";
-var keywords$1 = [
-];
-var license$1 = "Apache-2.0";
-var main$1 = "build/src/index.js";
-var name$1 = "@grpc/grpc-js";
-var repository$1 = {
-	type: "git",
-	url: "https://github.com/grpc/grpc-node/tree/master/packages/grpc-js"
-};
-var scripts$1 = {
-	build: "npm run compile",
-	check: "gts check src/**/*.ts",
-	clean: "rimraf ./build",
-	compile: "tsc -p .",
-	fix: "gts fix src/*.ts",
-	format: "clang-format -i -style=\"{Language: JavaScript, BasedOnStyle: Google, ColumnLimit: 80}\" src/*.ts test/*.ts",
-	"generate-test-types": "proto-loader-gen-types --keepCase --longs String --enums String --defaults --oneofs --includeComments --include-dirs test/fixtures/ -O test/generated/ --grpcLib ../../src/index test_service.proto",
-	"generate-types": "proto-loader-gen-types --keepCase --longs String --enums String --defaults --oneofs --includeComments --includeDirs proto/ --include-dirs test/fixtures/ -O src/generated/ --grpcLib ../index channelz.proto",
-	lint: "npm run check",
-	posttest: "npm run check && madge -c ./build/src",
-	prepare: "npm run generate-types && npm run compile",
-	pretest: "npm run generate-types && npm run generate-test-types && npm run compile",
-	test: "gulp test"
-};
-var types = "build/src/index.d.ts";
-var version$j = "1.5.9";
+var _resolved$1 = "https://registry.npmjs.org/@grpc/grpc-js/-/grpc-js-1.6.4.tgz";
+var _integrity$1 = "sha512-Jqq8t3ylPLPK4XXnYPj2uuESirRCAaQ0//GxRLPK6Xq2TBHb2DlmSzJUh15a6R4uUIjBwA8wI69JuKleZXz4jQ==";
+var _from$1 = "@grpc/grpc-js@1.6.4";
 var require$$0$2 = {
-	_args: _args$1,
-	_from: _from$1,
-	_id: _id$1,
-	_inBundle: _inBundle$1,
-	_integrity: _integrity$1,
-	_location: _location$1,
-	_phantomChildren: _phantomChildren$1,
-	_requested: _requested$1,
-	_requiredBy: _requiredBy$1,
-	_resolved: _resolved$1,
-	_spec: _spec$1,
-	_where: _where$1,
-	author: author$1,
-	contributors: contributors,
-	dependencies: dependencies$1,
-	description: description$1,
-	devDependencies: devDependencies$1,
-	engines: engines,
-	files: files$1,
-	homepage: homepage$1,
-	keywords: keywords$1,
-	license: license$1,
-	main: main$1,
 	name: name$1,
+	version: version$j,
+	description: description$1,
+	homepage: homepage$1,
 	repository: repository$1,
-	scripts: scripts$1,
+	main: main$1,
+	engines: engines,
+	keywords: keywords$1,
+	author: author$1,
 	types: types,
-	version: version$j
+	license: license$1,
+	devDependencies: devDependencies$1,
+	contributors: contributors,
+	scripts: scripts$1,
+	dependencies: dependencies$1,
+	files: files$1,
+	_resolved: _resolved$1,
+	_integrity: _integrity$1,
+	_from: _from$1
 };
 
 var subchannel = createCommonjsModule(function (module, exports) {
@@ -88341,17 +88365,9 @@ class Subchannel {
             this.channelzEnabled = false;
         }
         this.channelzTrace = new channelz.ChannelzTrace();
+        this.channelzRef = channelz.registerChannelzSubchannel(this.subchannelAddressString, () => this.getChannelzInfo(), this.channelzEnabled);
         if (this.channelzEnabled) {
-            this.channelzRef = channelz.registerChannelzSubchannel(this.subchannelAddressString, () => this.getChannelzInfo());
             this.channelzTrace.addTrace('CT_INFO', 'Subchannel created');
-        }
-        else {
-            // Dummy channelz ref that will never be used
-            this.channelzRef = {
-                kind: 'subchannel',
-                id: -1,
-                name: ''
-            };
         }
         this.trace('Subchannel constructed with options ' + JSON.stringify(options, undefined, 2));
     }
@@ -88437,6 +88453,9 @@ class Subchannel {
     internalsTrace(text) {
         logging.trace(constants.LogVerbosity.DEBUG, 'subchannel_internals', '(' + this.channelzRef.id + ') ' + this.subchannelAddressString + ' ' + text);
     }
+    keepaliveTrace(text) {
+        logging.trace(constants.LogVerbosity.DEBUG, 'keepalive', '(' + this.channelzRef.id + ') ' + this.subchannelAddressString + ' ' + text);
+    }
     handleBackoffTimer() {
         if (this.continueConnecting) {
             this.transitionToState([connectivityState.ConnectivityState.TRANSIENT_FAILURE], connectivityState.ConnectivityState.CONNECTING);
@@ -88460,13 +88479,14 @@ class Subchannel {
         if (this.channelzEnabled) {
             this.keepalivesSent += 1;
         }
-        logging.trace(constants.LogVerbosity.DEBUG, 'keepalive', '(' + this.channelzRef.id + ') ' + this.subchannelAddressString + ' ' +
-            'Sending ping');
+        this.keepaliveTrace('Sending ping with timeout ' + this.keepaliveTimeoutMs + 'ms');
         this.keepaliveTimeoutId = setTimeout(() => {
+            this.keepaliveTrace('Ping timeout passed without response');
             this.transitionToState([connectivityState.ConnectivityState.READY], connectivityState.ConnectivityState.IDLE);
         }, this.keepaliveTimeoutMs);
         (_b = (_a = this.keepaliveTimeoutId).unref) === null || _b === void 0 ? void 0 : _b.call(_a);
         this.session.ping((err, duration, payload) => {
+            this.keepaliveTrace('Received ping response');
             clearTimeout(this.keepaliveTimeoutId);
         });
     }
@@ -88479,6 +88499,11 @@ class Subchannel {
         /* Don't send a ping immediately because whatever caused us to start
          * sending pings should also involve some network activity. */
     }
+    /**
+     * Stop keepalive pings when terminating a connection. This discards the
+     * outstanding ping timeout, so it should not be called if the same
+     * connection will still be used.
+     */
     stopKeepalivePings() {
         clearInterval(this.keepaliveIntervalId);
         clearTimeout(this.keepaliveTimeoutId);
@@ -88498,6 +88523,13 @@ class Subchannel {
         connectionOptions.maxSendHeaderBlockLength = Number.MAX_SAFE_INTEGER;
         if ('grpc-node.max_session_memory' in this.options) {
             connectionOptions.maxSessionMemory = this.options['grpc-node.max_session_memory'];
+        }
+        else {
+            /* By default, set a very large max session memory limit, to effectively
+             * disable enforcement of the limit. Some testing indicates that Node's
+             * behavior degrades badly when this limit is reached, so we solve that
+             * by disabling the check entirely. */
+            connectionOptions.maxSessionMemory = Number.MAX_SAFE_INTEGER;
         }
         let addressScheme = 'http://';
         if ('secureContext' in connectionOptions) {
@@ -88564,8 +88596,8 @@ class Subchannel {
          */
         const session = http2.connect(addressScheme + targetAuthority, connectionOptions);
         this.session = session;
+        this.channelzSocketRef = channelz.registerChannelzSocket(this.subchannelAddressString, () => this.getChannelzSocketInfo(), this.channelzEnabled);
         if (this.channelzEnabled) {
-            this.channelzSocketRef = channelz.registerChannelzSocket(this.subchannelAddressString, () => this.getChannelzSocketInfo());
             this.childrenTracker.refChild(this.channelzSocketRef);
         }
         session.unref();
@@ -88781,7 +88813,7 @@ class Subchannel {
             }
             this.backoffTimeout.unref();
             if (!this.keepaliveWithoutCalls) {
-                this.stopKeepalivePings();
+                clearInterval(this.keepaliveIntervalId);
             }
             this.checkBothRefcounts();
         }
@@ -88962,6 +88994,9 @@ class Subchannel {
     }
     getChannelzRef() {
         return this.channelzRef;
+    }
+    getRealSubchannel() {
+        return this;
     }
 }
 exports.Subchannel = Subchannel;
@@ -89888,6 +89923,14 @@ class ChannelImplementation {
         this.pickQueue = [];
         this.connectivityStateWatchers = [];
         this.configSelector = null;
+        /**
+         * This is the error from the name resolver if it failed most recently. It
+         * is only used to end calls that start while there is no config selector
+         * and the name resolver is in backoff, so it should be nulled if
+         * configSelector becomes set or the channel state becomes anything other
+         * than TRANSIENT_FAILURE.
+         */
+        this.currentResolutionError = null;
         // Channelz info
         this.channelzEnabled = true;
         this.callTracker = new channelz.ChannelzCallTracker();
@@ -89920,17 +89963,9 @@ class ChannelImplementation {
             this.channelzEnabled = false;
         }
         this.channelzTrace = new channelz.ChannelzTrace();
+        this.channelzRef = channelz.registerChannelzChannel(target, () => this.getChannelzInfo(), this.channelzEnabled);
         if (this.channelzEnabled) {
-            this.channelzRef = channelz.registerChannelzChannel(target, () => this.getChannelzInfo());
             this.channelzTrace.addTrace('CT_INFO', 'Channel created');
-        }
-        else {
-            // Dummy channelz ref that will never be used
-            this.channelzRef = {
-                kind: 'channel',
-                id: -1,
-                name: ''
-            };
         }
         if (this.options['grpc.default_authority']) {
             this.defaultAuthority = this.options['grpc.default_authority'];
@@ -89982,6 +90017,7 @@ class ChannelImplementation {
                 this.channelzTrace.addTrace('CT_INFO', 'Address resolution succeeded');
             }
             this.configSelector = configSelector;
+            this.currentResolutionError = null;
             /* We process the queue asynchronously to ensure that the corresponding
              * load balancer update has completed. */
             process.nextTick(() => {
@@ -89999,6 +90035,9 @@ class ChannelImplementation {
             }
             if (this.configSelectionQueue.length > 0) {
                 this.trace('Name resolution failed with calls queued for config selection');
+            }
+            if (this.configSelector === null) {
+                this.currentResolutionError = status;
             }
             const localQueue = this.configSelectionQueue;
             this.configSelectionQueue = [];
@@ -90110,16 +90149,16 @@ class ChannelImplementation {
                     callStream.filterStack
                         .sendMetadata(Promise.resolve(callMetadata.clone()))
                         .then((finalMetadata) => {
-                        var _a, _b;
+                        var _a, _b, _c;
                         const subchannelState = pickResult.subchannel.getConnectivityState();
                         if (subchannelState === connectivityState.ConnectivityState.READY) {
                             try {
                                 const pickExtraFilters = pickResult.extraFilterFactories.map(factory => factory.createFilter(callStream));
-                                pickResult.subchannel.startCallStream(finalMetadata, callStream, [...dynamicFilters, ...pickExtraFilters]);
+                                (_a = pickResult.subchannel) === null || _a === void 0 ? void 0 : _a.getRealSubchannel().startCallStream(finalMetadata, callStream, [...dynamicFilters, ...pickExtraFilters]);
                                 /* If we reach this point, the call stream has started
                                  * successfully */
-                                (_a = callConfig.onCommitted) === null || _a === void 0 ? void 0 : _a.call(callConfig);
-                                (_b = pickResult.onCallStarted) === null || _b === void 0 ? void 0 : _b.call(pickResult);
+                                (_b = callConfig.onCommitted) === null || _b === void 0 ? void 0 : _b.call(callConfig);
+                                (_c = pickResult.onCallStarted) === null || _c === void 0 ? void 0 : _c.call(pickResult);
                             }
                             catch (error) {
                                 const errorCode = error.code;
@@ -90216,6 +90255,9 @@ class ChannelImplementation {
                 watcherObject.callback();
             }
         }
+        if (newState !== connectivityState.ConnectivityState.TRANSIENT_FAILURE) {
+            this.currentResolutionError = null;
+        }
     }
     tryGetConfig(stream, metadata) {
         if (stream.getStatus() !== null) {
@@ -90229,11 +90271,16 @@ class ChannelImplementation {
              * ResolvingLoadBalancer may be idle and if so it needs to be kicked
              * because it now has a pending request. */
             this.resolvingLoadBalancer.exitIdle();
-            this.configSelectionQueue.push({
-                callStream: stream,
-                callMetadata: metadata,
-            });
-            this.callRefTimerRef();
+            if (this.currentResolutionError && !metadata.getOptions().waitForReady) {
+                stream.cancelWithStatus(this.currentResolutionError.code, this.currentResolutionError.details);
+            }
+            else {
+                this.configSelectionQueue.push({
+                    callStream: stream,
+                    callMetadata: metadata,
+                });
+                this.callRefTimerRef();
+            }
         }
         else {
             const callConfig = this.configSelector(stream.getMethod(), metadata);
@@ -91161,18 +91208,11 @@ class Server {
         if (this.options['grpc.enable_channelz'] === 0) {
             this.channelzEnabled = false;
         }
+        this.channelzRef = channelz.registerChannelzServer(() => this.getChannelzInfo(), this.channelzEnabled);
         if (this.channelzEnabled) {
-            this.channelzRef = channelz.registerChannelzServer(() => this.getChannelzInfo());
             this.channelzTrace.addTrace('CT_INFO', 'Server created');
-            this.trace('Server constructed');
         }
-        else {
-            // Dummy channelz ref that will never be used
-            this.channelzRef = {
-                kind: 'server',
-                id: -1
-            };
-        }
+        this.trace('Server constructed');
     }
     getChannelzInfo() {
         return {
@@ -91384,7 +91424,8 @@ class Server {
                                 port: boundAddress.port
                             };
                         }
-                        const channelzRef = channelz.registerChannelzSocket(subchannelAddress.subchannelAddressToString(boundSubchannelAddress), () => {
+                        let channelzRef;
+                        channelzRef = channelz.registerChannelzSocket(subchannelAddress.subchannelAddressToString(boundSubchannelAddress), () => {
                             return {
                                 localAddress: boundSubchannelAddress,
                                 remoteAddress: null,
@@ -91403,8 +91444,10 @@ class Server {
                                 localFlowControlWindow: null,
                                 remoteFlowControlWindow: null
                             };
-                        });
-                        this.listenerChildrenTracker.refChild(channelzRef);
+                        }, this.channelzEnabled);
+                        if (this.channelzEnabled) {
+                            this.listenerChildrenTracker.refChild(channelzRef);
+                        }
                         this.http2ServerList.push({ server: http2Server, channelzRef: channelzRef });
                         this.trace('Successfully bound ' + subchannelAddress.subchannelAddressToString(boundSubchannelAddress));
                         resolve('port' in boundSubchannelAddress ? boundSubchannelAddress.port : portNum);
@@ -91445,7 +91488,8 @@ class Server {
                         host: boundAddress.address,
                         port: boundAddress.port
                     };
-                    const channelzRef = channelz.registerChannelzSocket(subchannelAddress.subchannelAddressToString(boundSubchannelAddress), () => {
+                    let channelzRef;
+                    channelzRef = channelz.registerChannelzSocket(subchannelAddress.subchannelAddressToString(boundSubchannelAddress), () => {
                         return {
                             localAddress: boundSubchannelAddress,
                             remoteAddress: null,
@@ -91464,8 +91508,10 @@ class Server {
                             localFlowControlWindow: null,
                             remoteFlowControlWindow: null
                         };
-                    });
-                    this.listenerChildrenTracker.refChild(channelzRef);
+                    }, this.channelzEnabled);
+                    if (this.channelzEnabled) {
+                        this.listenerChildrenTracker.refChild(channelzRef);
+                    }
                     this.http2ServerList.push({ server: http2Server, channelzRef: channelzRef });
                     this.trace('Successfully bound ' + subchannelAddress.subchannelAddressToString(boundSubchannelAddress));
                     resolve(bindSpecificPort(addressList.slice(1), boundAddress.port, 1));
@@ -91524,8 +91570,10 @@ class Server {
         for (const { server: http2Server, channelzRef: ref } of this.http2ServerList) {
             if (http2Server.listening) {
                 http2Server.close(() => {
-                    this.listenerChildrenTracker.unrefChild(ref);
-                    channelz.unregisterChannelzRef(ref);
+                    if (this.channelzEnabled) {
+                        this.listenerChildrenTracker.unrefChild(ref);
+                        channelz.unregisterChannelzRef(ref);
+                    }
                 });
             }
         }
@@ -91539,7 +91587,9 @@ class Server {
             session.destroy(http2.constants.NGHTTP2_CANCEL);
         });
         this.sessions.clear();
-        channelz.unregisterChannelzRef(this.channelzRef);
+        if (this.channelzEnabled) {
+            channelz.unregisterChannelzRef(this.channelzRef);
+        }
     }
     register(name, handler, serialize, deserialize, type) {
         if (this.handlers.has(name)) {
@@ -91572,7 +91622,9 @@ class Server {
     }
     tryShutdown(callback) {
         const wrappedCallback = (error) => {
-            channelz.unregisterChannelzRef(this.channelzRef);
+            if (this.channelzEnabled) {
+                channelz.unregisterChannelzRef(this.channelzRef);
+            }
             callback(error);
         };
         let pendingChecks = 0;
@@ -91588,8 +91640,10 @@ class Server {
             if (http2Server.listening) {
                 pendingChecks++;
                 http2Server.close(() => {
-                    this.listenerChildrenTracker.unrefChild(ref);
-                    channelz.unregisterChannelzRef(ref);
+                    if (this.channelzEnabled) {
+                        this.listenerChildrenTracker.unrefChild(ref);
+                        channelz.unregisterChannelzRef(ref);
+                    }
                     maybeCallback();
                 });
             }
@@ -91622,8 +91676,10 @@ class Server {
         http2Server.on('stream', (stream, headers) => {
             var _a;
             const channelzSessionInfo = this.sessions.get(stream.session);
-            this.callTracker.addCallStarted();
-            channelzSessionInfo === null || channelzSessionInfo === void 0 ? void 0 : channelzSessionInfo.streamTracker.addCallStarted();
+            if (this.channelzEnabled) {
+                this.callTracker.addCallStarted();
+                channelzSessionInfo === null || channelzSessionInfo === void 0 ? void 0 : channelzSessionInfo.streamTracker.addCallStarted();
+            }
             const contentType = headers[http2.constants.HTTP2_HEADER_CONTENT_TYPE];
             if (typeof contentType !== 'string' ||
                 !contentType.startsWith('application/grpc')) {
@@ -91631,7 +91687,9 @@ class Server {
                     [http2.constants.HTTP2_HEADER_STATUS]: http2.constants.HTTP_STATUS_UNSUPPORTED_MEDIA_TYPE,
                 }, { endStream: true });
                 this.callTracker.addCallFailed();
-                channelzSessionInfo === null || channelzSessionInfo === void 0 ? void 0 : channelzSessionInfo.streamTracker.addCallFailed();
+                if (this.channelzEnabled) {
+                    channelzSessionInfo === null || channelzSessionInfo === void 0 ? void 0 : channelzSessionInfo.streamTracker.addCallFailed();
+                }
                 return;
             }
             let call = null;
@@ -91668,7 +91726,7 @@ class Server {
                         this.callTracker.addCallFailed();
                     }
                 });
-                if (channelzSessionInfo) {
+                if (this.channelzEnabled && channelzSessionInfo) {
                     call.once('streamEnd', (success) => {
                         if (success) {
                             channelzSessionInfo.streamTracker.addCallSucceeded();
@@ -91709,8 +91767,10 @@ class Server {
             catch (err) {
                 if (!call) {
                     call = new serverCall.Http2ServerCallStream(stream, null, this.options);
-                    this.callTracker.addCallFailed();
-                    channelzSessionInfo === null || channelzSessionInfo === void 0 ? void 0 : channelzSessionInfo.streamTracker.addCallFailed();
+                    if (this.channelzEnabled) {
+                        this.callTracker.addCallFailed();
+                        channelzSessionInfo === null || channelzSessionInfo === void 0 ? void 0 : channelzSessionInfo.streamTracker.addCallFailed();
+                    }
                 }
                 if (err.code === undefined) {
                     err.code = constants.Status.INTERNAL;
@@ -91724,7 +91784,8 @@ class Server {
                 session.destroy();
                 return;
             }
-            const channelzRef = channelz.registerChannelzSocket((_a = session.socket.remoteAddress) !== null && _a !== void 0 ? _a : 'unknown', this.getChannelzSessionInfoGetter(session));
+            let channelzRef;
+            channelzRef = channelz.registerChannelzSocket((_a = session.socket.remoteAddress) !== null && _a !== void 0 ? _a : 'unknown', this.getChannelzSessionInfoGetter(session), this.channelzEnabled);
             const channelzSessionInfo = {
                 ref: channelzRef,
                 streamTracker: new channelz.ChannelzCallTracker(),
@@ -91866,6 +91927,608 @@ exports.StatusBuilder = StatusBuilder;
 
 var statusBuilder$1 = /*@__PURE__*/getDefaultExportFromCjs(statusBuilder);
 
+var duration = createCommonjsModule(function (module, exports) {
+"use strict";
+/*
+ * Copyright 2022 gRPC authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.isDuration = exports.durationToMs = exports.msToDuration = void 0;
+function msToDuration(millis) {
+    return {
+        seconds: (millis / 1000) | 0,
+        nanos: (millis % 1000) * 1000000 | 0
+    };
+}
+exports.msToDuration = msToDuration;
+function durationToMs(duration) {
+    return (duration.seconds * 1000 + duration.nanos / 1000000) | 0;
+}
+exports.durationToMs = durationToMs;
+function isDuration(value) {
+    return (typeof value.seconds === 'number') && (typeof value.nanos === 'number');
+}
+exports.isDuration = isDuration;
+
+});
+
+var duration$1 = /*@__PURE__*/getDefaultExportFromCjs(duration);
+
+var subchannelInterface = createCommonjsModule(function (module, exports) {
+"use strict";
+/*
+ * Copyright 2022 gRPC authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.BaseSubchannelWrapper = void 0;
+class BaseSubchannelWrapper {
+    constructor(child) {
+        this.child = child;
+    }
+    getConnectivityState() {
+        return this.child.getConnectivityState();
+    }
+    addConnectivityStateListener(listener) {
+        this.child.addConnectivityStateListener(listener);
+    }
+    removeConnectivityStateListener(listener) {
+        this.child.removeConnectivityStateListener(listener);
+    }
+    startConnecting() {
+        this.child.startConnecting();
+    }
+    getAddress() {
+        return this.child.getAddress();
+    }
+    ref() {
+        this.child.ref();
+    }
+    unref() {
+        this.child.unref();
+    }
+    getChannelzRef() {
+        return this.child.getChannelzRef();
+    }
+    getRealSubchannel() {
+        return this.child.getRealSubchannel();
+    }
+}
+exports.BaseSubchannelWrapper = BaseSubchannelWrapper;
+
+});
+
+var subchannelInterface$1 = /*@__PURE__*/getDefaultExportFromCjs(subchannelInterface);
+
+var loadBalancerOutlierDetection = createCommonjsModule(function (module, exports) {
+"use strict";
+/*
+ * Copyright 2022 gRPC authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.setup = exports.OutlierDetectionLoadBalancer = exports.OutlierDetectionLoadBalancingConfig = void 0;
+
+
+
+
+
+
+
+
+
+
+const TYPE_NAME = 'outlier_detection';
+const OUTLIER_DETECTION_ENABLED = process.env.GRPC_EXPERIMENTAL_ENABLE_OUTLIER_DETECTION === 'true';
+const defaultSuccessRateEjectionConfig = {
+    stdev_factor: 1900,
+    enforcement_percentage: 100,
+    minimum_hosts: 5,
+    request_volume: 100
+};
+const defaultFailurePercentageEjectionConfig = {
+    threshold: 85,
+    enforcement_percentage: 100,
+    minimum_hosts: 5,
+    request_volume: 50
+};
+function validateFieldType(obj, fieldName, expectedType, objectName) {
+    if (fieldName in obj && typeof obj[fieldName] !== expectedType) {
+        const fullFieldName = objectName ? `${objectName}.${fieldName}` : fieldName;
+        throw new Error(`outlier detection config ${fullFieldName} parse error: expected ${expectedType}, got ${typeof obj[fieldName]}`);
+    }
+}
+function validatePositiveDuration(obj, fieldName, objectName) {
+    const fullFieldName = objectName ? `${objectName}.${fieldName}` : fieldName;
+    if (fieldName in obj) {
+        if (!duration.isDuration(obj[fieldName])) {
+            throw new Error(`outlier detection config ${fullFieldName} parse error: expected Duration, got ${typeof obj[fieldName]}`);
+        }
+        if (!(obj[fieldName].seconds >= 0 && obj[fieldName].seconds <= 315576000000 && obj[fieldName].nanos >= 0 && obj[fieldName].nanos <= 999999999)) {
+            throw new Error(`outlier detection config ${fullFieldName} parse error: values out of range for non-negative Duaration`);
+        }
+    }
+}
+function validatePercentage(obj, fieldName, objectName) {
+    const fullFieldName = objectName ? `${objectName}.${fieldName}` : fieldName;
+    validateFieldType(obj, fieldName, 'number', objectName);
+    if (fieldName in obj && !(obj[fieldName] >= 0 && obj[fieldName] <= 100)) {
+        throw new Error(`outlier detection config ${fullFieldName} parse error: value out of range for percentage (0-100)`);
+    }
+}
+class OutlierDetectionLoadBalancingConfig {
+    constructor(intervalMs, baseEjectionTimeMs, maxEjectionTimeMs, maxEjectionPercent, successRateEjection, failurePercentageEjection, childPolicy) {
+        this.childPolicy = childPolicy;
+        this.intervalMs = intervalMs !== null && intervalMs !== void 0 ? intervalMs : 10000;
+        this.baseEjectionTimeMs = baseEjectionTimeMs !== null && baseEjectionTimeMs !== void 0 ? baseEjectionTimeMs : 30000;
+        this.maxEjectionTimeMs = maxEjectionTimeMs !== null && maxEjectionTimeMs !== void 0 ? maxEjectionTimeMs : 300000;
+        this.maxEjectionPercent = maxEjectionPercent !== null && maxEjectionPercent !== void 0 ? maxEjectionPercent : 10;
+        this.successRateEjection = successRateEjection ? Object.assign(Object.assign({}, defaultSuccessRateEjectionConfig), successRateEjection) : null;
+        this.failurePercentageEjection = failurePercentageEjection ? Object.assign(Object.assign({}, defaultFailurePercentageEjectionConfig), failurePercentageEjection) : null;
+    }
+    getLoadBalancerName() {
+        return TYPE_NAME;
+    }
+    toJsonObject() {
+        return {
+            interval: duration.msToDuration(this.intervalMs),
+            base_ejection_time: duration.msToDuration(this.baseEjectionTimeMs),
+            max_ejection_time: duration.msToDuration(this.maxEjectionTimeMs),
+            max_ejection_percent: this.maxEjectionPercent,
+            success_rate_ejection: this.successRateEjection,
+            failure_percentage_ejection: this.failurePercentageEjection,
+            child_policy: this.childPolicy.map(policy => policy.toJsonObject())
+        };
+    }
+    getIntervalMs() {
+        return this.intervalMs;
+    }
+    getBaseEjectionTimeMs() {
+        return this.baseEjectionTimeMs;
+    }
+    getMaxEjectionTimeMs() {
+        return this.maxEjectionTimeMs;
+    }
+    getMaxEjectionPercent() {
+        return this.maxEjectionPercent;
+    }
+    getSuccessRateEjectionConfig() {
+        return this.successRateEjection;
+    }
+    getFailurePercentageEjectionConfig() {
+        return this.failurePercentageEjection;
+    }
+    getChildPolicy() {
+        return this.childPolicy;
+    }
+    copyWithChildPolicy(childPolicy) {
+        return new OutlierDetectionLoadBalancingConfig(this.intervalMs, this.baseEjectionTimeMs, this.maxEjectionTimeMs, this.maxEjectionPercent, this.successRateEjection, this.failurePercentageEjection, childPolicy);
+    }
+    static createFromJson(obj) {
+        var _a;
+        validatePositiveDuration(obj, 'interval');
+        validatePositiveDuration(obj, 'base_ejection_time');
+        validatePositiveDuration(obj, 'max_ejection_time');
+        validatePercentage(obj, 'max_ejection_percent');
+        if ('success_rate_ejection' in obj) {
+            if (typeof obj.success_rate_ejection !== 'object') {
+                throw new Error('outlier detection config success_rate_ejection must be an object');
+            }
+            validateFieldType(obj.success_rate_ejection, 'stdev_factor', 'number', 'success_rate_ejection');
+            validatePercentage(obj.success_rate_ejection, 'enforcement_percentage', 'success_rate_ejection');
+            validateFieldType(obj.success_rate_ejection, 'minimum_hosts', 'number', 'success_rate_ejection');
+            validateFieldType(obj.success_rate_ejection, 'request_volume', 'number', 'success_rate_ejection');
+        }
+        if ('failure_percentage_ejection' in obj) {
+            if (typeof obj.failure_percentage_ejection !== 'object') {
+                throw new Error('outlier detection config failure_percentage_ejection must be an object');
+            }
+            validatePercentage(obj.failure_percentage_ejection, 'threshold', 'failure_percentage_ejection');
+            validatePercentage(obj.failure_percentage_ejection, 'enforcement_percentage', 'failure_percentage_ejection');
+            validateFieldType(obj.failure_percentage_ejection, 'minimum_hosts', 'number', 'failure_percentage_ejection');
+            validateFieldType(obj.failure_percentage_ejection, 'request_volume', 'number', 'failure_percentage_ejection');
+        }
+        return new OutlierDetectionLoadBalancingConfig(obj.interval ? duration.durationToMs(obj.interval) : null, obj.base_ejection_time ? duration.durationToMs(obj.base_ejection_time) : null, obj.max_ejection_time ? duration.durationToMs(obj.max_ejection_time) : null, (_a = obj.max_ejection_percent) !== null && _a !== void 0 ? _a : null, obj.success_rate_ejection, obj.failure_percentage_ejection, obj.child_policy.map(loadBalancer.validateLoadBalancingConfig));
+    }
+}
+exports.OutlierDetectionLoadBalancingConfig = OutlierDetectionLoadBalancingConfig;
+class OutlierDetectionSubchannelWrapper extends subchannelInterface.BaseSubchannelWrapper {
+    constructor(childSubchannel, mapEntry) {
+        super(childSubchannel);
+        this.mapEntry = mapEntry;
+        this.childSubchannelState = connectivityState.ConnectivityState.IDLE;
+        this.stateListeners = [];
+        this.ejected = false;
+        this.refCount = 0;
+        childSubchannel.addConnectivityStateListener((subchannel, previousState, newState) => {
+            this.childSubchannelState = newState;
+            if (!this.ejected) {
+                for (const listener of this.stateListeners) {
+                    listener(this, previousState, newState);
+                }
+            }
+        });
+    }
+    /**
+     * Add a listener function to be called whenever the wrapper's
+     * connectivity state changes.
+     * @param listener
+     */
+    addConnectivityStateListener(listener) {
+        this.stateListeners.push(listener);
+    }
+    /**
+     * Remove a listener previously added with `addConnectivityStateListener`
+     * @param listener A reference to a function previously passed to
+     *     `addConnectivityStateListener`
+     */
+    removeConnectivityStateListener(listener) {
+        const listenerIndex = this.stateListeners.indexOf(listener);
+        if (listenerIndex > -1) {
+            this.stateListeners.splice(listenerIndex, 1);
+        }
+    }
+    ref() {
+        this.child.ref();
+        this.refCount += 1;
+    }
+    unref() {
+        this.child.unref();
+        this.refCount -= 1;
+        if (this.refCount <= 0) {
+            if (this.mapEntry) {
+                const index = this.mapEntry.subchannelWrappers.indexOf(this);
+                if (index >= 0) {
+                    this.mapEntry.subchannelWrappers.splice(index, 1);
+                }
+            }
+        }
+    }
+    eject() {
+        this.ejected = true;
+        for (const listener of this.stateListeners) {
+            listener(this, this.childSubchannelState, connectivityState.ConnectivityState.TRANSIENT_FAILURE);
+        }
+    }
+    uneject() {
+        this.ejected = false;
+        for (const listener of this.stateListeners) {
+            listener(this, connectivityState.ConnectivityState.TRANSIENT_FAILURE, this.childSubchannelState);
+        }
+    }
+    getMapEntry() {
+        return this.mapEntry;
+    }
+    getWrappedSubchannel() {
+        return this.child;
+    }
+}
+function createEmptyBucket() {
+    return {
+        success: 0,
+        failure: 0
+    };
+}
+class CallCounter {
+    constructor() {
+        this.activeBucket = createEmptyBucket();
+        this.inactiveBucket = createEmptyBucket();
+    }
+    addSuccess() {
+        this.activeBucket.success += 1;
+    }
+    addFailure() {
+        this.activeBucket.failure += 1;
+    }
+    switchBuckets() {
+        this.inactiveBucket = this.activeBucket;
+        this.activeBucket = createEmptyBucket();
+    }
+    getLastSuccesses() {
+        return this.inactiveBucket.success;
+    }
+    getLastFailures() {
+        return this.inactiveBucket.failure;
+    }
+}
+class OutlierDetectionCounterFilter extends filter.BaseFilter {
+    constructor(callCounter) {
+        super();
+        this.callCounter = callCounter;
+    }
+    receiveTrailers(status) {
+        if (status.code === constants.Status.OK) {
+            this.callCounter.addSuccess();
+        }
+        else {
+            this.callCounter.addFailure();
+        }
+        return status;
+    }
+}
+class OutlierDetectionCounterFilterFactory {
+    constructor(callCounter) {
+        this.callCounter = callCounter;
+    }
+    createFilter(callStream) {
+        return new OutlierDetectionCounterFilter(this.callCounter);
+    }
+}
+class OutlierDetectionPicker {
+    constructor(wrappedPicker) {
+        this.wrappedPicker = wrappedPicker;
+    }
+    pick(pickArgs) {
+        const wrappedPick = this.wrappedPicker.pick(pickArgs);
+        if (wrappedPick.pickResultType === picker.PickResultType.COMPLETE) {
+            const subchannelWrapper = wrappedPick.subchannel;
+            const mapEntry = subchannelWrapper.getMapEntry();
+            if (mapEntry) {
+                return Object.assign(Object.assign({}, wrappedPick), { subchannel: subchannelWrapper.getWrappedSubchannel(), extraFilterFactories: [...wrappedPick.extraFilterFactories, new OutlierDetectionCounterFilterFactory(mapEntry.counter)] });
+            }
+            else {
+                return wrappedPick;
+            }
+        }
+        else {
+            return wrappedPick;
+        }
+    }
+}
+class OutlierDetectionLoadBalancer {
+    constructor(channelControlHelper) {
+        this.addressMap = new Map();
+        this.latestConfig = null;
+        this.childBalancer = new loadBalancerChildHandler.ChildLoadBalancerHandler(experimental.createChildChannelControlHelper(channelControlHelper, {
+            createSubchannel: (subchannelAddress$1, subchannelArgs) => {
+                const originalSubchannel = channelControlHelper.createSubchannel(subchannelAddress$1, subchannelArgs);
+                const mapEntry = this.addressMap.get(subchannelAddress.subchannelAddressToString(subchannelAddress$1));
+                const subchannelWrapper = new OutlierDetectionSubchannelWrapper(originalSubchannel, mapEntry);
+                mapEntry === null || mapEntry === void 0 ? void 0 : mapEntry.subchannelWrappers.push(subchannelWrapper);
+                return subchannelWrapper;
+            },
+            updateState: (connectivityState$1, picker) => {
+                if (connectivityState$1 === connectivityState.ConnectivityState.READY) {
+                    channelControlHelper.updateState(connectivityState$1, new OutlierDetectionPicker(picker));
+                }
+                else {
+                    channelControlHelper.updateState(connectivityState$1, picker);
+                }
+            }
+        }));
+        this.ejectionTimer = setInterval(() => { }, 0);
+        clearInterval(this.ejectionTimer);
+    }
+    getCurrentEjectionPercent() {
+        let ejectionCount = 0;
+        for (const mapEntry of this.addressMap.values()) {
+            if (mapEntry.currentEjectionTimestamp !== null) {
+                ejectionCount += 1;
+            }
+        }
+        return (ejectionCount * 100) / this.addressMap.size;
+    }
+    runSuccessRateCheck(ejectionTimestamp) {
+        if (!this.latestConfig) {
+            return;
+        }
+        const successRateConfig = this.latestConfig.getSuccessRateEjectionConfig();
+        if (!successRateConfig) {
+            return;
+        }
+        // Step 1
+        const targetRequestVolume = successRateConfig.request_volume;
+        let addresesWithTargetVolume = 0;
+        const successRates = [];
+        for (const mapEntry of this.addressMap.values()) {
+            const successes = mapEntry.counter.getLastSuccesses();
+            const failures = mapEntry.counter.getLastFailures();
+            if (successes + failures >= targetRequestVolume) {
+                addresesWithTargetVolume += 1;
+                successRates.push(successes / (successes + failures));
+            }
+        }
+        if (addresesWithTargetVolume < successRateConfig.minimum_hosts) {
+            return;
+        }
+        // Step 2
+        const successRateMean = successRates.reduce((a, b) => a + b);
+        let successRateVariance = 0;
+        for (const rate of successRates) {
+            const deviation = rate - successRateMean;
+            successRateVariance += deviation * deviation;
+        }
+        const successRateStdev = Math.sqrt(successRateVariance);
+        const ejectionThreshold = successRateMean - successRateStdev * (successRateConfig.stdev_factor / 1000);
+        // Step 3
+        for (const mapEntry of this.addressMap.values()) {
+            // Step 3.i
+            if (this.getCurrentEjectionPercent() > this.latestConfig.getMaxEjectionPercent()) {
+                break;
+            }
+            // Step 3.ii
+            const successes = mapEntry.counter.getLastSuccesses();
+            const failures = mapEntry.counter.getLastFailures();
+            if (successes + failures < targetRequestVolume) {
+                continue;
+            }
+            // Step 3.iii
+            const successRate = successes / (successes + failures);
+            if (successRate < ejectionThreshold) {
+                const randomNumber = Math.random() * 100;
+                if (randomNumber < successRateConfig.enforcement_percentage) {
+                    this.eject(mapEntry, ejectionTimestamp);
+                }
+            }
+        }
+    }
+    runFailurePercentageCheck(ejectionTimestamp) {
+        if (!this.latestConfig) {
+            return;
+        }
+        const failurePercentageConfig = this.latestConfig.getFailurePercentageEjectionConfig();
+        if (!failurePercentageConfig) {
+            return;
+        }
+        // Step 1
+        if (this.addressMap.size < failurePercentageConfig.minimum_hosts) {
+            return;
+        }
+        // Step 2
+        for (const mapEntry of this.addressMap.values()) {
+            // Step 2.i
+            if (this.getCurrentEjectionPercent() > this.latestConfig.getMaxEjectionPercent()) {
+                break;
+            }
+            // Step 2.ii
+            const successes = mapEntry.counter.getLastSuccesses();
+            const failures = mapEntry.counter.getLastFailures();
+            if (successes + failures < failurePercentageConfig.request_volume) {
+                continue;
+            }
+            // Step 2.iii
+            const failurePercentage = (failures * 100) / (failures + successes);
+            if (failurePercentage > failurePercentageConfig.threshold) {
+                const randomNumber = Math.random() * 100;
+                if (randomNumber < failurePercentageConfig.enforcement_percentage) {
+                    this.eject(mapEntry, ejectionTimestamp);
+                }
+            }
+        }
+    }
+    eject(mapEntry, ejectionTimestamp) {
+        mapEntry.currentEjectionTimestamp = new Date();
+        mapEntry.ejectionTimeMultiplier += 1;
+        for (const subchannelWrapper of mapEntry.subchannelWrappers) {
+            subchannelWrapper.eject();
+        }
+    }
+    uneject(mapEntry) {
+        mapEntry.currentEjectionTimestamp = null;
+        for (const subchannelWrapper of mapEntry.subchannelWrappers) {
+            subchannelWrapper.uneject();
+        }
+    }
+    runChecks() {
+        const ejectionTimestamp = new Date();
+        for (const mapEntry of this.addressMap.values()) {
+            mapEntry.counter.switchBuckets();
+        }
+        if (!this.latestConfig) {
+            return;
+        }
+        this.runSuccessRateCheck(ejectionTimestamp);
+        this.runFailurePercentageCheck(ejectionTimestamp);
+        for (const mapEntry of this.addressMap.values()) {
+            if (mapEntry.currentEjectionTimestamp === null) {
+                if (mapEntry.ejectionTimeMultiplier > 0) {
+                    mapEntry.ejectionTimeMultiplier -= 1;
+                }
+            }
+            else {
+                const baseEjectionTimeMs = this.latestConfig.getBaseEjectionTimeMs();
+                const maxEjectionTimeMs = this.latestConfig.getMaxEjectionTimeMs();
+                const returnTime = new Date(mapEntry.currentEjectionTimestamp.getTime());
+                returnTime.setMilliseconds(returnTime.getMilliseconds() + Math.min(baseEjectionTimeMs * mapEntry.ejectionTimeMultiplier, Math.max(baseEjectionTimeMs, maxEjectionTimeMs)));
+                if (returnTime < new Date()) {
+                    this.uneject(mapEntry);
+                }
+            }
+        }
+    }
+    updateAddressList(addressList, lbConfig, attributes) {
+        if (!(lbConfig instanceof OutlierDetectionLoadBalancingConfig)) {
+            return;
+        }
+        const subchannelAddresses = new Set();
+        for (const address of addressList) {
+            subchannelAddresses.add(subchannelAddress.subchannelAddressToString(address));
+        }
+        for (const address of subchannelAddresses) {
+            if (!this.addressMap.has(address)) {
+                this.addressMap.set(address, {
+                    counter: new CallCounter(),
+                    currentEjectionTimestamp: null,
+                    ejectionTimeMultiplier: 0,
+                    subchannelWrappers: []
+                });
+            }
+        }
+        for (const key of this.addressMap.keys()) {
+            if (!subchannelAddresses.has(key)) {
+                this.addressMap.delete(key);
+            }
+        }
+        const childPolicy = loadBalancer.getFirstUsableConfig(lbConfig.getChildPolicy(), true);
+        this.childBalancer.updateAddressList(addressList, childPolicy, attributes);
+        if (this.latestConfig === null || this.latestConfig.getIntervalMs() !== lbConfig.getIntervalMs()) {
+            clearInterval(this.ejectionTimer);
+            this.ejectionTimer = setInterval(() => this.runChecks(), lbConfig.getIntervalMs());
+        }
+        this.latestConfig = lbConfig;
+    }
+    exitIdle() {
+        this.childBalancer.exitIdle();
+    }
+    resetBackoff() {
+        this.childBalancer.resetBackoff();
+    }
+    destroy() {
+        this.childBalancer.destroy();
+    }
+    getTypeName() {
+        return TYPE_NAME;
+    }
+}
+exports.OutlierDetectionLoadBalancer = OutlierDetectionLoadBalancer;
+function setup() {
+    if (OUTLIER_DETECTION_ENABLED) {
+        experimental.registerLoadBalancerType(TYPE_NAME, OutlierDetectionLoadBalancer, OutlierDetectionLoadBalancingConfig);
+    }
+}
+exports.setup = setup;
+
+});
+
+var loadBalancerOutlierDetection$1 = /*@__PURE__*/getDefaultExportFromCjs(loadBalancerOutlierDetection);
+
 var experimental = createCommonjsModule(function (module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -91875,6 +92538,8 @@ Object.defineProperty(exports, "trace", { enumerable: true, get: function () { r
 Object.defineProperty(exports, "registerResolver", { enumerable: true, get: function () { return resolver.registerResolver; } });
 
 Object.defineProperty(exports, "uriToString", { enumerable: true, get: function () { return uriParser.uriToString; } });
+
+Object.defineProperty(exports, "durationToMs", { enumerable: true, get: function () { return duration.durationToMs; } });
 
 Object.defineProperty(exports, "BackoffTimeout", { enumerable: true, get: function () { return backoffTimeout.BackoffTimeout; } });
 
@@ -91896,6 +92561,10 @@ Object.defineProperty(exports, "BaseFilter", { enumerable: true, get: function (
 Object.defineProperty(exports, "FilterStackFactory", { enumerable: true, get: function () { return filterStack.FilterStackFactory; } });
 
 Object.defineProperty(exports, "registerAdminService", { enumerable: true, get: function () { return admin.registerAdminService; } });
+
+Object.defineProperty(exports, "BaseSubchannelWrapper", { enumerable: true, get: function () { return subchannelInterface.BaseSubchannelWrapper; } });
+
+Object.defineProperty(exports, "OutlierDetectionLoadBalancingConfig", { enumerable: true, get: function () { return loadBalancerOutlierDetection.OutlierDetectionLoadBalancingConfig; } });
 
 });
 
@@ -91939,6 +92608,7 @@ function trace(text) {
  * The default TCP port to connect to if not explicitly specified in the target.
  */
 const DEFAULT_PORT = 443;
+const DEFAULT_MIN_TIME_BETWEEN_RESOLUTIONS_MS = 30000;
 const resolveTxtPromise = util$2.promisify(dns.resolveTxt);
 const dnsLookupPromise = util$2.promisify(dns.lookup);
 /**
@@ -91962,7 +92632,7 @@ function mergeArrays(...arrays) {
  */
 class DnsResolver {
     constructor(target, listener, channelOptions) {
-        var _a, _b;
+        var _a, _b, _c;
         this.target = target;
         this.listener = listener;
         this.pendingLookupPromise = null;
@@ -91971,6 +92641,7 @@ class DnsResolver {
         this.latestServiceConfig = null;
         this.latestServiceConfigError = null;
         this.continueResolving = false;
+        this.isNextResolutionTimerRunning = false;
         trace('Resolver constructed for target ' + uriParser.uriToString(target));
         const hostPort = uriParser.splitHostPort(target.path);
         if (hostPort === null) {
@@ -92011,6 +92682,9 @@ class DnsResolver {
             }
         }, backoffOptions);
         this.backoff.unref();
+        this.minTimeBetweenResolutionsMs = (_c = channelOptions['grpc.dns_min_time_between_resolutions_ms']) !== null && _c !== void 0 ? _c : DEFAULT_MIN_TIME_BETWEEN_RESOLUTIONS_MS;
+        this.nextResolutionTimer = setTimeout(() => { }, 0);
+        clearTimeout(this.nextResolutionTimer);
     }
     /**
      * If the target is an IP address, just provide that address as a result.
@@ -92053,6 +92727,7 @@ class DnsResolver {
             this.pendingLookupPromise.then((addressList) => {
                 this.pendingLookupPromise = null;
                 this.backoff.reset();
+                this.backoff.stop();
                 const ip4Addresses = addressList.filter((addr) => addr.family === 4);
                 const ip6Addresses = addressList.filter((addr) => addr.family === 6);
                 this.latestLookupResult = mergeArrays(ip6Addresses, ip4Addresses).map((addr) => ({ host: addr.address, port: +this.port }));
@@ -92080,6 +92755,7 @@ class DnsResolver {
                     ': ' +
                     err.message);
                 this.pendingLookupPromise = null;
+                this.stopNextResolutionTimer();
                 this.listener.onError(this.defaultResolutionError);
             });
             /* If there already is a still-pending TXT resolution, we can just use
@@ -92120,16 +92796,32 @@ class DnsResolver {
             }
         }
     }
+    startNextResolutionTimer() {
+        var _a, _b;
+        this.nextResolutionTimer = (_b = (_a = setTimeout(() => {
+            this.stopNextResolutionTimer();
+            if (this.continueResolving) {
+                this.startResolutionWithBackoff();
+            }
+        }, this.minTimeBetweenResolutionsMs)).unref) === null || _b === void 0 ? void 0 : _b.call(_a);
+        this.isNextResolutionTimerRunning = true;
+    }
+    stopNextResolutionTimer() {
+        clearTimeout(this.nextResolutionTimer);
+        this.isNextResolutionTimerRunning = false;
+    }
     startResolutionWithBackoff() {
         this.startResolution();
         this.backoff.runOnce();
+        this.startNextResolutionTimer();
     }
     updateResolution() {
         /* If there is a pending lookup, just let it finish. Otherwise, if the
-         * backoff timer is running, do another lookup when it ends, and if not,
-         * do another lookup immeidately. */
+         * nextResolutionTimer or backoff timer is running, set the
+         * continueResolving flag to resolve when whichever of those timers
+         * fires. Otherwise, start resolving immediately. */
         if (this.pendingLookupPromise === null) {
-            if (this.backoff.isRunning()) {
+            if (this.isNextResolutionTimerRunning || this.backoff.isRunning()) {
                 this.continueResolving = true;
             }
             else {
@@ -92138,9 +92830,9 @@ class DnsResolver {
         }
     }
     destroy() {
-        /* Do nothing. There is not a practical way to cancel in-flight DNS
-         * requests, and after this function is called we can expect that
-         * updateResolution will not be called again. */
+        this.continueResolving = false;
+        this.backoff.stop();
+        this.stopNextResolutionTimer();
     }
     /**
      * Get the default authority for the given target. For IP targets, that is
@@ -92963,6 +93655,7 @@ exports.credentials = {
     // from channel-credentials.ts
     createInsecure: channelCredentials.ChannelCredentials.createInsecure,
     createSsl: channelCredentials.ChannelCredentials.createSsl,
+    createFromSecureContext: channelCredentials.ChannelCredentials.createFromSecureContext,
     // from call-credentials.ts
     createFromMetadataGenerator: callCredentials.CallCredentials.createFromMetadataGenerator,
     createFromGoogleCredential: callCredentials.CallCredentials.createFromGoogleCredential,
@@ -93009,6 +93702,7 @@ exports.experimental = experimental;
 
 
 
+
 const channelz$1 = channelz;
 const clientVersion = require$$0$2.version;
 (() => {
@@ -93018,6 +93712,7 @@ const clientVersion = require$$0$2.version;
     resolverIp.setup();
     loadBalancerPickFirst.setup();
     loadBalancerRoundRobin.setup();
+    loadBalancerOutlierDetection.setup();
     channelz$1.setup();
 })();
 
@@ -104210,6 +104905,7 @@ var utils$2 = /*#__PURE__*/Object.freeze({
 	defaultPath: defaultPath,
 	HDNode: HDNode,
 	SigningKey: SigningKey,
+	SigningKeyED: SigningKeyED,
 	Interface: Interface,
 	LogDescription: LogDescription,
 	TransactionDescription: TransactionDescription,

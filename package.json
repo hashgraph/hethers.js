@@ -88,7 +88,6 @@
     "@ethersproject/properties": "5.5.0",
     "@ethersproject/random": "5.5.0",
     "@ethersproject/sha2": "5.5.0",
-    "@hethers/signing-key": "1.1.0",
     "@ethersproject/solidity": "5.5.0",
     "@ethersproject/strings": "5.5.0",
     "@ethersproject/web": "5.5.0",

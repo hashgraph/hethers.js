@@ -77,7 +77,7 @@ var sdk_1 = require("@hashgraph/sdk");
 var fs_1 = require("fs");
 var abi = JSON.parse((0, fs_1.readFileSync)('packages/tests/contracts/Token.json').toString());
 var abiTokenWithArgs = JSON.parse((0, fs_1.readFileSync)('packages/tests/contracts/TokenWithArgs.json').toString());
-describe.only('Test JSON Wallets', function () {
+describe('Test JSON Wallets', function () {
     var tests = (0, testcases_1.loadTests)('wallets');
     tests.forEach(function (test) {
         it(('decrypts wallet - ' + test.name), function () {
