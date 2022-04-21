@@ -28,6 +28,7 @@ export interface TypedDataSigner {
 export declare abstract class Signer {
     readonly provider?: Provider;
     readonly _signingKey: () => SigningKey;
+    readonly isED25519Type?: boolean;
     abstract getAddress(): Promise<string>;
     abstract signMessage(message: Bytes | string): Promise<string>;
     /**

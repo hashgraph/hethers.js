@@ -94989,7 +94989,9 @@ class Signer$1 {
                 bodyBytes: lib.TransactionBody.encode(paymentBody).finish(),
                 sigMap: {}
             };
-            const walletKey = PrivateKey$1.fromStringECDSA(this._signingKey().privateKey);
+            const walletKey = this.isED25519Type
+                ? PrivateKey$1.fromStringED25519(this._signingKey().privateKey)
+                : PrivateKey$1.fromStringECDSA(this._signingKey().privateKey);
             const signature = walletKey.sign(signed.bodyBytes);
             signed.sigMap = {
                 sigPair: [walletKey.publicKey._toProtobufSignature(signature)]
