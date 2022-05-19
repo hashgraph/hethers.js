@@ -916,6 +916,34 @@ describe("Test Basic Authentication", function () {
         }, "throws an exception for insecure connections");
     });
 });
+// describe("Test Events", function() {
+//     this.retries(3);
+//
+//     async function testBlockEvent(provider: hethers.providers.Provider) {
+//         return new Promise((resolve, reject) => {
+//             let firstBlockNumber: number = null;
+//             const handler = (blockNumber: number) => {
+//                 if (firstBlockNumber == null) {
+//                     firstBlockNumber = blockNumber;
+//                     return;
+//                 }
+//                 provider.removeListener("block", handler);
+//                 if (firstBlockNumber + 1 === blockNumber) {
+//                     resolve(true);
+//                 } else {
+//                     reject(new Error("blockNumber fail"));
+//                 }
+//             };
+//             provider.on("block", handler);
+//         });
+//     }
+//
+//     it("InfuraProvider", async function() {
+//         this.timeout(60000);
+//         const provider = new hethers.providers.InfuraProvider("rinkeby");
+//         await testBlockEvent(provider);
+//     });
+// });
 describe("Test Hedera Provider", function () {
     const provider = new DefaultHederaProvider(HederaNetworks.TESTNET);
     const accountConfig = { shard: BigInt(0), realm: BigInt(0), num: BigInt(98) };
@@ -1008,11 +1036,11 @@ describe("Test Hedera Provider", function () {
                 assert.strictEqual(logs2[1].transactionIndex, logsResponse[1].index);
             });
         }).timeout(timeout * 4);
-        // FIXME: skipped as of mirror node problem - query can never return more than 100 logs.
-        //  Will be enabled when the mirror node team fixes it
-        xit('Should throw query result size limit exceeded', function () {
+        // The hardcoded max limit per query in the mirror node rest api is 100,
+        // so `size limit exceeded` error is impossible to be tested right now.
+        it('Should throw query result size limit exceeded', function () {
             return __awaiter(this, void 0, void 0, function* () {
-                const address = "0x104ceaC64AB4193d840989375B7dD75F3ce228BF";
+                const address = "0x000000000000000000000000000000000186fb1a";
                 const filterParams = {
                     address: address,
                 };

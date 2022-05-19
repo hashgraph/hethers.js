@@ -1108,10 +1108,10 @@ describe("Test Hedera Provider", function () {
             assert.strictEqual(logs2[1].transactionIndex, logsResponse[1].index);
         }).timeout(timeout * 4);
 
-        // FIXME: skipped as of mirror node problem - query can never return more than 100 logs.
-        //  Will be enabled when the mirror node team fixes it
-        xit('Should throw query result size limit exceeded', async function () {
-            const address = "0x104ceaC64AB4193d840989375B7dD75F3ce228BF";
+        // The hardcoded max limit per query in the mirror node rest api is 100,
+        // so `size limit exceeded` error is impossible to be tested right now.
+        it('Should throw query result size limit exceeded', async function () {
+            const address = "0x000000000000000000000000000000000186fb1a";
             const filterParams = {
                 address: address,
             }
