@@ -1086,14 +1086,16 @@ describe("Test Hedera Provider", function () {
                 });
             });
         }).timeout(timeout * 4);
-        it('Should throw query result size limit exceeded', function () {
+        // FIXME: skipped as of mirror node problem - query can never return more than 100 logs.
+        //  Will be enabled when the mirror node team fixes it
+        xit('Should throw query result size limit exceeded', function () {
             return __awaiter(this, void 0, void 0, function () {
                 var address, filterParams;
                 var _this = this;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            address = "0x000000000000000000000000000000000186fb1a";
+                            address = "0x104ceaC64AB4193d840989375B7dD75F3ce228BF";
                             filterParams = {
                                 address: address,
                             };

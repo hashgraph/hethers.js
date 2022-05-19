@@ -6031,7 +6031,7 @@ class Reader {
     }
 }
 
-const version$5 = "bytes/5.6.1";
+const version$5 = "bytes/5.6.0";
 
 "use strict";
 const logger$6 = new Logger(version$5);
@@ -6102,7 +6102,7 @@ function arrayify$1(value, options) {
         let hex = value.substring(2);
         if (hex.length % 2) {
             if (options.hexPad === "left") {
-                hex = "0" + hex;
+                hex = "0x0" + hex.substring(2);
             }
             else if (options.hexPad === "right") {
                 hex += "0";
@@ -6440,7 +6440,7 @@ function joinSignature$1(signature) {
     ]));
 }
 
-const version$6 = "bignumber/5.6.1";
+const version$6 = "bignumber/5.6.0";
 
 "use strict";
 var BN$1 = bn.BN;
@@ -6459,6 +6459,7 @@ function isBigNumberish$1(value) {
 let _warnedToStringRadix$1 = false;
 class BigNumber$1 {
     constructor(constructorGuard, hex) {
+        logger$7.checkNew(new.target, BigNumber$1);
         if (constructorGuard !== _constructorGuard$3) {
             logger$7.throwError("cannot call constructor directly; use BigNumber.from", Logger.errors.UNSUPPORTED_OPERATION, {
                 operation: "new (BigNumber)"
@@ -6913,6 +6914,7 @@ class FixedFormat$1 {
 }
 class FixedNumber$1 {
     constructor(constructorGuard, hex, value, format) {
+        logger$8.checkNew(new.target, FixedNumber$1);
         if (constructorGuard !== _constructorGuard$4) {
             logger$8.throwError("cannot use FixedNumber constructor; use FixedNumber.from", Logger.errors.UNSUPPORTED_OPERATION, {
                 operation: "new FixedFormat"
@@ -7757,7 +7759,7 @@ function keccak256(data) {
     return '0x' + sha3.keccak_256(arrayify$1(data));
 }
 
-const version$7 = "bytes/5.6.1";
+const version$7 = "bytes/5.6.0";
 
 "use strict";
 const logger$9 = new Logger(version$7);
@@ -7828,7 +7830,7 @@ function arrayify$2(value, options) {
         let hex = value.substring(2);
         if (hex.length % 2) {
             if (options.hexPad === "left") {
-                hex = "0" + hex;
+                hex = "0x0" + hex.substring(2);
             }
             else if (options.hexPad === "right") {
                 hex += "0";
@@ -8747,7 +8749,7 @@ class NullCoder extends Coder {
 
 const AddressZero = "0x0000000000000000000000000000000000000000";
 
-const version$a = "bytes/5.6.1";
+const version$a = "bytes/5.6.0";
 
 "use strict";
 const logger$d = new Logger(version$a);
@@ -8818,7 +8820,7 @@ function arrayify$3(value, options) {
         let hex = value.substring(2);
         if (hex.length % 2) {
             if (options.hexPad === "left") {
-                hex = "0" + hex;
+                hex = "0x0" + hex.substring(2);
             }
             else if (options.hexPad === "right") {
                 hex += "0";
@@ -9156,7 +9158,7 @@ function joinSignature$3(signature) {
     ]));
 }
 
-const version$b = "bignumber/5.6.1";
+const version$b = "bignumber/5.6.0";
 
 "use strict";
 var BN$2 = bn.BN;
@@ -9175,6 +9177,7 @@ function isBigNumberish$2(value) {
 let _warnedToStringRadix$2 = false;
 class BigNumber$2 {
     constructor(constructorGuard, hex) {
+        logger$e.checkNew(new.target, BigNumber$2);
         if (constructorGuard !== _constructorGuard$5) {
             logger$e.throwError("cannot call constructor directly; use BigNumber.from", Logger.errors.UNSUPPORTED_OPERATION, {
                 operation: "new (BigNumber)"
@@ -9629,6 +9632,7 @@ class FixedFormat$2 {
 }
 class FixedNumber$2 {
     constructor(constructorGuard, hex, value, format) {
+        logger$f.checkNew(new.target, FixedNumber$2);
         if (constructorGuard !== _constructorGuard$6) {
             logger$f.throwError("cannot use FixedNumber constructor; use FixedNumber.from", Logger.errors.UNSUPPORTED_OPERATION, {
                 operation: "new FixedFormat"
@@ -25270,6 +25274,9 @@ var dependencies = {
 	"minimalistic-assert": "^1.0.1",
 	"minimalistic-crypto-utils": "^1.0.1"
 };
+var _resolved = "https://registry.npmjs.org/elliptic/-/elliptic-6.5.4.tgz";
+var _integrity = "sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==";
+var _from = "elliptic@6.5.4";
 var require$$0 = {
 	name: name,
 	version: version$i,
@@ -25284,7 +25291,10 @@ var require$$0 = {
 	bugs: bugs,
 	homepage: homepage,
 	devDependencies: devDependencies,
-	dependencies: dependencies
+	dependencies: dependencies,
+	_resolved: _resolved,
+	_integrity: _integrity,
+	_from: _from
 };
 
 var minimalisticAssert = assert;
@@ -75086,22 +75096,13 @@ class Http2CallStream {
         }
     }
     sendMessageWithContext(context, message) {
+        var _a;
         this.trace('write() called with message of length ' + message.length);
         const writeObj = {
             message,
             flags: context.flags,
         };
-        const cb = (error) => {
-            var _a, _b;
-            let code = constants.Status.UNAVAILABLE;
-            if (((_a = error) === null || _a === void 0 ? void 0 : _a.code) === 'ERR_STREAM_WRITE_AFTER_END') {
-                code = constants.Status.INTERNAL;
-            }
-            if (error) {
-                this.cancelWithStatus(code, `Write error: ${error.message}`);
-            }
-            (_b = context.callback) === null || _b === void 0 ? void 0 : _b.call(context);
-        };
+        const cb = (_a = context.callback) !== null && _a !== void 0 ? _a : (() => { });
         this.isWriteFilterPending = true;
         this.filterStack.sendMessage(Promise.resolve(writeObj)).then((message) => {
             this.isWriteFilterPending = false;
@@ -75236,10 +75237,8 @@ class ChannelCredentials {
      * @param rootCerts The root certificate data.
      * @param privateKey The client certificate private key, if available.
      * @param certChain The client certificate key chain, if available.
-     * @param verifyOptions Additional options to modify certificate verification
      */
     static createSsl(rootCerts, privateKey, certChain, verifyOptions) {
-        var _a;
         verifyIsBufferOrNull(rootCerts, 'Root certificate');
         verifyIsBufferOrNull(privateKey, 'Private key');
         verifyIsBufferOrNull(certChain, 'Certificate chain');
@@ -75249,26 +75248,7 @@ class ChannelCredentials {
         if (!privateKey && certChain) {
             throw new Error('Certificate chain must be given with accompanying private key');
         }
-        const secureContext = tls_1.createSecureContext({
-            ca: (_a = rootCerts !== null && rootCerts !== void 0 ? rootCerts : tlsHelpers.getDefaultRootsData()) !== null && _a !== void 0 ? _a : undefined,
-            key: privateKey !== null && privateKey !== void 0 ? privateKey : undefined,
-            cert: certChain !== null && certChain !== void 0 ? certChain : undefined,
-            ciphers: tlsHelpers.CIPHER_SUITES,
-        });
-        return new SecureChannelCredentialsImpl(secureContext, verifyOptions !== null && verifyOptions !== void 0 ? verifyOptions : {});
-    }
-    /**
-     * Return a new ChannelCredentials instance with credentials created using
-     * the provided secureContext. The resulting instances can be used to
-     * construct a Channel that communicates over TLS. gRPC will not override
-     * anything in the provided secureContext, so the environment variables
-     * GRPC_SSL_CIPHER_SUITES and GRPC_DEFAULT_SSL_ROOTS_FILE_PATH will
-     * not be applied.
-     * @param secureContext The return value of tls.createSecureContext()
-     * @param verifyOptions Additional options to modify certificate verification
-     */
-    static createFromSecureContext(secureContext, verifyOptions) {
-        return new SecureChannelCredentialsImpl(secureContext, verifyOptions !== null && verifyOptions !== void 0 ? verifyOptions : {});
+        return new SecureChannelCredentialsImpl(rootCerts || tlsHelpers.getDefaultRootsData(), privateKey || null, certChain || null, verifyOptions || {});
     }
     /**
      * Return a new ChannelCredentials instance with no credentials.
@@ -75296,10 +75276,18 @@ class InsecureChannelCredentialsImpl extends ChannelCredentials {
     }
 }
 class SecureChannelCredentialsImpl extends ChannelCredentials {
-    constructor(secureContext, verifyOptions) {
+    constructor(rootCerts, privateKey, certChain, verifyOptions) {
         super();
-        this.secureContext = secureContext;
+        this.rootCerts = rootCerts;
+        this.privateKey = privateKey;
+        this.certChain = certChain;
         this.verifyOptions = verifyOptions;
+        const secureContext = tls_1.createSecureContext({
+            ca: rootCerts || undefined,
+            key: privateKey || undefined,
+            cert: certChain || undefined,
+            ciphers: tlsHelpers.CIPHER_SUITES,
+        });
         this.connectionOptions = {
             secureContext
         };
@@ -75324,8 +75312,17 @@ class SecureChannelCredentialsImpl extends ChannelCredentials {
             return true;
         }
         if (other instanceof SecureChannelCredentialsImpl) {
-            return (this.secureContext === other.secureContext &&
-                this.verifyOptions.checkServerIdentity === other.verifyOptions.checkServerIdentity);
+            if (!bufferOrNullEqual(this.rootCerts, other.rootCerts)) {
+                return false;
+            }
+            if (!bufferOrNullEqual(this.privateKey, other.privateKey)) {
+                return false;
+            }
+            if (!bufferOrNullEqual(this.certChain, other.certChain)) {
+                return false;
+            }
+            return (this.verifyOptions.checkServerIdentity ===
+                other.verifyOptions.checkServerIdentity);
         }
         else {
             return false;
@@ -76131,37 +76128,12 @@ function uniformRandom(min, max) {
 class BackoffTimeout {
     constructor(callback, options) {
         this.callback = callback;
-        /**
-         * The delay time at the start, and after each reset.
-         */
         this.initialDelay = INITIAL_BACKOFF_MS;
-        /**
-         * The exponential backoff multiplier.
-         */
         this.multiplier = BACKOFF_MULTIPLIER;
-        /**
-         * The maximum delay time
-         */
         this.maxDelay = MAX_BACKOFF_MS;
-        /**
-         * The maximum fraction by which the delay time can randomly vary after
-         * applying the multiplier.
-         */
         this.jitter = BACKOFF_JITTER;
-        /**
-         * Indicates whether the timer is currently running.
-         */
         this.running = false;
-        /**
-         * Indicates whether the timer should keep the Node process running if no
-         * other async operation is doing so.
-         */
         this.hasRef = true;
-        /**
-         * The time that the currently running timer was started. Only valid if
-         * running is true.
-         */
-        this.startTime = new Date();
         if (options) {
             if (options.initialDelay) {
                 this.initialDelay = options.initialDelay;
@@ -76180,24 +76152,19 @@ class BackoffTimeout {
         this.timerId = setTimeout(() => { }, 0);
         clearTimeout(this.timerId);
     }
-    runTimer(delay) {
-        var _a, _b;
-        clearTimeout(this.timerId);
-        this.timerId = setTimeout(() => {
-            this.callback();
-            this.running = false;
-        }, delay);
-        if (!this.hasRef) {
-            (_b = (_a = this.timerId).unref) === null || _b === void 0 ? void 0 : _b.call(_a);
-        }
-    }
     /**
      * Call the callback after the current amount of delay time
      */
     runOnce() {
+        var _a, _b;
         this.running = true;
-        this.startTime = new Date();
-        this.runTimer(this.nextDelay);
+        this.timerId = setTimeout(() => {
+            this.callback();
+            this.running = false;
+        }, this.nextDelay);
+        if (!this.hasRef) {
+            (_b = (_a = this.timerId).unref) === null || _b === void 0 ? void 0 : _b.call(_a);
+        }
         const nextBackoff = Math.min(this.nextDelay * this.multiplier, this.maxDelay);
         const jitterMagnitude = nextBackoff * this.jitter;
         this.nextDelay =
@@ -76212,43 +76179,19 @@ class BackoffTimeout {
         this.running = false;
     }
     /**
-     * Reset the delay time to its initial value. If the timer is still running,
-     * retroactively apply that reset to the current timer.
+     * Reset the delay time to its initial value.
      */
     reset() {
         this.nextDelay = this.initialDelay;
-        if (this.running) {
-            const now = new Date();
-            const newEndTime = this.startTime;
-            newEndTime.setMilliseconds(newEndTime.getMilliseconds() + this.nextDelay);
-            clearTimeout(this.timerId);
-            if (now < newEndTime) {
-                this.runTimer(newEndTime.getTime() - now.getTime());
-            }
-            else {
-                this.running = false;
-            }
-        }
     }
-    /**
-     * Check whether the timer is currently running.
-     */
     isRunning() {
         return this.running;
     }
-    /**
-     * Set that while the timer is running, it should keep the Node process
-     * running.
-     */
     ref() {
         var _a, _b;
         this.hasRef = true;
         (_b = (_a = this.timerId).ref) === null || _b === void 0 ? void 0 : _b.call(_a);
     }
-    /**
-     * Set that while the timer is running, it should not keep the Node process
-     * running.
-     */
     unref() {
         var _a, _b;
         this.hasRef = false;
@@ -76612,7 +76555,6 @@ class ResolvingLoadBalancer {
         if (this.currentState === connectivityState.ConnectivityState.IDLE) {
             this.updateState(connectivityState.ConnectivityState.CONNECTING, new picker.QueuePicker(this));
         }
-        this.backoffTimeout.runOnce();
     }
     updateState(connectivityState$1, picker$1) {
         trace(uriParser.uriToString(this.target) +
@@ -76632,17 +76574,19 @@ class ResolvingLoadBalancer {
             this.updateState(connectivityState.ConnectivityState.TRANSIENT_FAILURE, new picker.UnavailablePicker(error));
             this.onFailedResolution(error);
         }
+        this.backoffTimeout.runOnce();
     }
     exitIdle() {
-        if (this.currentState === connectivityState.ConnectivityState.IDLE || this.currentState === connectivityState.ConnectivityState.TRANSIENT_FAILURE) {
+        this.childLoadBalancer.exitIdle();
+        if (this.currentState === connectivityState.ConnectivityState.IDLE) {
             if (this.backoffTimeout.isRunning()) {
                 this.continueResolving = true;
             }
             else {
                 this.updateResolution();
             }
+            this.updateState(connectivityState.ConnectivityState.CONNECTING, new picker.QueuePicker(this));
         }
-        this.childLoadBalancer.exitIdle();
     }
     updateAddressList(addressList, lbConfig) {
         throw new Error('updateAddressList not supported on ResolvingLoadBalancer');
@@ -76707,7 +76651,6 @@ exports.recognizedOptions = {
     'grpc.max_receive_message_length': true,
     'grpc.enable_http_proxy': true,
     'grpc.enable_channelz': true,
-    'grpc.dns_min_time_between_resolutions_ms': true,
     'grpc-node.max_session_memory': true,
 };
 function channelOptionsEqual(options1, options2) {
@@ -77845,16 +77788,7 @@ class Client {
                 }
                 receivedStatus = true;
                 if (status.code === constants.Status.OK) {
-                    if (responseMessage === null) {
-                        callProperties.callback(call.callErrorFromStatus({
-                            code: constants.Status.INTERNAL,
-                            details: 'No message received',
-                            metadata: status.metadata
-                        }));
-                    }
-                    else {
-                        callProperties.callback(null, responseMessage);
-                    }
+                    callProperties.callback(null, responseMessage);
                 }
                 else {
                     callProperties.callback(call.callErrorFromStatus(status));
@@ -77922,16 +77856,7 @@ class Client {
                 }
                 receivedStatus = true;
                 if (status.code === constants.Status.OK) {
-                    if (responseMessage === null) {
-                        callProperties.callback(call.callErrorFromStatus({
-                            code: constants.Status.INTERNAL,
-                            details: 'No message received',
-                            metadata: status.metadata
-                        }));
-                    }
-                    else {
-                        callProperties.callback(null, responseMessage);
-                    }
+                    callProperties.callback(null, responseMessage);
                 }
                 else {
                     callProperties.callback(call.callErrorFromStatus(status));
@@ -78189,7 +78114,6 @@ function makeClientConstructor(methods, serviceName, classOptions) {
         }
     });
     ServiceClientImpl.service = methods;
-    ServiceClientImpl.serviceName = serviceName;
     return ServiceClientImpl;
 }
 exports.makeClientConstructor = makeClientConstructor;
@@ -87289,8 +87213,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 
 
 
-
-exports.Long = long_1;
 function isAnyExtension(obj) {
     return ('@type' in obj) && (typeof obj['@type'] === 'string');
 }
@@ -87698,39 +87620,31 @@ const channels = [];
 const subchannels = [];
 const servers = [];
 const sockets = [];
-function registerChannelzChannel(name, getInfo, channelzEnabled) {
+function registerChannelzChannel(name, getInfo) {
     const id = getNextId();
     const ref = { id, name, kind: 'channel' };
-    if (channelzEnabled) {
-        channels[id] = { ref, getInfo };
-    }
+    channels[id] = { ref, getInfo };
     return ref;
 }
 exports.registerChannelzChannel = registerChannelzChannel;
-function registerChannelzSubchannel(name, getInfo, channelzEnabled) {
+function registerChannelzSubchannel(name, getInfo) {
     const id = getNextId();
     const ref = { id, name, kind: 'subchannel' };
-    if (channelzEnabled) {
-        subchannels[id] = { ref, getInfo };
-    }
+    subchannels[id] = { ref, getInfo };
     return ref;
 }
 exports.registerChannelzSubchannel = registerChannelzSubchannel;
-function registerChannelzServer(getInfo, channelzEnabled) {
+function registerChannelzServer(getInfo) {
     const id = getNextId();
     const ref = { id, kind: 'server' };
-    if (channelzEnabled) {
-        servers[id] = { ref, getInfo };
-    }
+    servers[id] = { ref, getInfo };
     return ref;
 }
 exports.registerChannelzServer = registerChannelzServer;
-function registerChannelzSocket(name, getInfo, channelzEnabled) {
+function registerChannelzSocket(name, getInfo) {
     const id = getNextId();
     const ref = { id, name, kind: 'socket' };
-    if (channelzEnabled) {
-        sockets[id] = { ref, getInfo };
-    }
+    sockets[id] = { ref, getInfo };
     return ref;
 }
 exports.registerChannelzSocket = registerChannelzSocket;
@@ -88104,7 +88018,7 @@ exports.setup = setup;
 var channelz$1 = /*@__PURE__*/getDefaultExportFromCjs(channelz);
 
 var name$1 = "@grpc/grpc-js";
-var version$j = "1.6.7";
+var version$j = "1.5.9";
 var description$1 = "gRPC Library for Node - pure JS implementation";
 var homepage$1 = "https://grpc.io/";
 var repository$1 = "https://github.com/grpc/grpc-node/tree/master/packages/grpc-js";
@@ -88180,6 +88094,9 @@ var files$1 = [
 	"deps/googleapis/google/rpc/*.proto",
 	"deps/protoc-gen-validate/validate/**/*.proto"
 ];
+var _resolved$1 = "https://registry.npmjs.org/@grpc/grpc-js/-/grpc-js-1.5.9.tgz";
+var _integrity$1 = "sha512-un+cXqErq5P4p3+WgYVNVh7FB51MSnaoRef7QWDcMXKR6FX2R6Z/bltcJMxNNdTUMC85lkOQcpnAAetFziPSng==";
+var _from$1 = "@grpc/grpc-js@1.5.9";
 var require$$0$2 = {
 	name: name$1,
 	version: version$j,
@@ -88196,7 +88113,10 @@ var require$$0$2 = {
 	contributors: contributors,
 	scripts: scripts$1,
 	dependencies: dependencies$1,
-	files: files$1
+	files: files$1,
+	_resolved: _resolved$1,
+	_integrity: _integrity$1,
+	_from: _from$1
 };
 
 var subchannel = createCommonjsModule(function (module, exports) {
@@ -88370,9 +88290,17 @@ class Subchannel {
             this.channelzEnabled = false;
         }
         this.channelzTrace = new channelz.ChannelzTrace();
-        this.channelzRef = channelz.registerChannelzSubchannel(this.subchannelAddressString, () => this.getChannelzInfo(), this.channelzEnabled);
         if (this.channelzEnabled) {
+            this.channelzRef = channelz.registerChannelzSubchannel(this.subchannelAddressString, () => this.getChannelzInfo());
             this.channelzTrace.addTrace('CT_INFO', 'Subchannel created');
+        }
+        else {
+            // Dummy channelz ref that will never be used
+            this.channelzRef = {
+                kind: 'subchannel',
+                id: -1,
+                name: ''
+            };
         }
         this.trace('Subchannel constructed with options ' + JSON.stringify(options, undefined, 2));
     }
@@ -88458,9 +88386,6 @@ class Subchannel {
     internalsTrace(text) {
         logging.trace(constants.LogVerbosity.DEBUG, 'subchannel_internals', '(' + this.channelzRef.id + ') ' + this.subchannelAddressString + ' ' + text);
     }
-    keepaliveTrace(text) {
-        logging.trace(constants.LogVerbosity.DEBUG, 'keepalive', '(' + this.channelzRef.id + ') ' + this.subchannelAddressString + ' ' + text);
-    }
     handleBackoffTimer() {
         if (this.continueConnecting) {
             this.transitionToState([connectivityState.ConnectivityState.TRANSIENT_FAILURE], connectivityState.ConnectivityState.CONNECTING);
@@ -88484,14 +88409,13 @@ class Subchannel {
         if (this.channelzEnabled) {
             this.keepalivesSent += 1;
         }
-        this.keepaliveTrace('Sending ping with timeout ' + this.keepaliveTimeoutMs + 'ms');
+        logging.trace(constants.LogVerbosity.DEBUG, 'keepalive', '(' + this.channelzRef.id + ') ' + this.subchannelAddressString + ' ' +
+            'Sending ping');
         this.keepaliveTimeoutId = setTimeout(() => {
-            this.keepaliveTrace('Ping timeout passed without response');
-            this.handleDisconnect();
+            this.transitionToState([connectivityState.ConnectivityState.READY], connectivityState.ConnectivityState.IDLE);
         }, this.keepaliveTimeoutMs);
         (_b = (_a = this.keepaliveTimeoutId).unref) === null || _b === void 0 ? void 0 : _b.call(_a);
         this.session.ping((err, duration, payload) => {
-            this.keepaliveTrace('Received ping response');
             clearTimeout(this.keepaliveTimeoutId);
         });
     }
@@ -88504,11 +88428,6 @@ class Subchannel {
         /* Don't send a ping immediately because whatever caused us to start
          * sending pings should also involve some network activity. */
     }
-    /**
-     * Stop keepalive pings when terminating a connection. This discards the
-     * outstanding ping timeout, so it should not be called if the same
-     * connection will still be used.
-     */
     stopKeepalivePings() {
         clearInterval(this.keepaliveIntervalId);
         clearTimeout(this.keepaliveTimeoutId);
@@ -88528,13 +88447,6 @@ class Subchannel {
         connectionOptions.maxSendHeaderBlockLength = Number.MAX_SAFE_INTEGER;
         if ('grpc-node.max_session_memory' in this.options) {
             connectionOptions.maxSessionMemory = this.options['grpc-node.max_session_memory'];
-        }
-        else {
-            /* By default, set a very large max session memory limit, to effectively
-             * disable enforcement of the limit. Some testing indicates that Node's
-             * behavior degrades badly when this limit is reached, so we solve that
-             * by disabling the check entirely. */
-            connectionOptions.maxSessionMemory = Number.MAX_SAFE_INTEGER;
         }
         let addressScheme = 'http://';
         if ('secureContext' in connectionOptions) {
@@ -88601,8 +88513,8 @@ class Subchannel {
          */
         const session = http2.connect(addressScheme + targetAuthority, connectionOptions);
         this.session = session;
-        this.channelzSocketRef = channelz.registerChannelzSocket(this.subchannelAddressString, () => this.getChannelzSocketInfo(), this.channelzEnabled);
         if (this.channelzEnabled) {
+            this.channelzSocketRef = channelz.registerChannelzSocket(this.subchannelAddressString, () => this.getChannelzSocketInfo());
             this.childrenTracker.refChild(this.channelzSocketRef);
         }
         session.unref();
@@ -88699,12 +88611,6 @@ class Subchannel {
             this.transitionToState([connectivityState.ConnectivityState.CONNECTING], connectivityState.ConnectivityState.TRANSIENT_FAILURE);
         });
     }
-    handleDisconnect() {
-        this.transitionToState([connectivityState.ConnectivityState.READY], connectivityState.ConnectivityState.TRANSIENT_FAILURE);
-        for (const listener of this.disconnectListeners) {
-            listener();
-        }
-    }
     /**
      * Initiate a state transition from any element of oldStates to the new
      * state. If the current connectivityState is not in oldStates, do nothing.
@@ -88730,7 +88636,10 @@ class Subchannel {
                 const session = this.session;
                 session.socket.once('close', () => {
                     if (this.session === session) {
-                        this.handleDisconnect();
+                        this.transitionToState([connectivityState.ConnectivityState.READY], connectivityState.ConnectivityState.TRANSIENT_FAILURE);
+                        for (const listener of this.disconnectListeners) {
+                            listener();
+                        }
                     }
                 });
                 if (this.keepaliveWithoutCalls) {
@@ -88787,7 +88696,7 @@ class Subchannel {
             if (this.channelzEnabled) {
                 this.channelzTrace.addTrace('CT_INFO', 'Shutting down');
             }
-            this.transitionToState([connectivityState.ConnectivityState.CONNECTING, connectivityState.ConnectivityState.READY], connectivityState.ConnectivityState.IDLE);
+            this.transitionToState([connectivityState.ConnectivityState.CONNECTING, connectivityState.ConnectivityState.READY], connectivityState.ConnectivityState.TRANSIENT_FAILURE);
             if (this.channelzEnabled) {
                 channelz.unregisterChannelzRef(this.channelzRef);
             }
@@ -88821,7 +88730,7 @@ class Subchannel {
             }
             this.backoffTimeout.unref();
             if (!this.keepaliveWithoutCalls) {
-                clearInterval(this.keepaliveIntervalId);
+                this.stopKeepalivePings();
             }
             this.checkBothRefcounts();
         }
@@ -89003,9 +88912,6 @@ class Subchannel {
     getChannelzRef() {
         return this.channelzRef;
     }
-    getRealSubchannel() {
-        return this;
-    }
 }
 exports.Subchannel = Subchannel;
 
@@ -89047,8 +88953,11 @@ class SubchannelPool {
     /**
      * A pool of subchannels use for making connections. Subchannels with the
      * exact same parameters will be reused.
+     * @param global If true, this is the global subchannel pool. Otherwise, it
+     * is the pool for a single channel.
      */
-    constructor() {
+    constructor(global) {
+        this.global = global;
         this.pool = Object.create(null);
         /**
          * A timer of a task performing a periodic subchannel cleanup.
@@ -89089,7 +88998,7 @@ class SubchannelPool {
      */
     ensureCleanupTask() {
         var _a, _b;
-        if (this.cleanupTimer === null) {
+        if (this.global && this.cleanupTimer === null) {
             this.cleanupTimer = setInterval(() => {
                 this.unrefUnusedSubchannels();
             }, REF_CHECK_INTERVAL);
@@ -89130,12 +89039,14 @@ class SubchannelPool {
             channelCredentials,
             subchannel: subchannel$1,
         });
-        subchannel$1.ref();
+        if (this.global) {
+            subchannel$1.ref();
+        }
         return subchannel$1;
     }
 }
 exports.SubchannelPool = SubchannelPool;
-const globalSubchannelPool = new SubchannelPool();
+const globalSubchannelPool = new SubchannelPool(true);
 /**
  * Get either the global subchannel pool, or a new subchannel pool.
  * @param global
@@ -89145,7 +89056,7 @@ function getSubchannelPool(global) {
         return globalSubchannelPool;
     }
     else {
-        return new SubchannelPool();
+        return new SubchannelPool(false);
     }
 }
 exports.getSubchannelPool = getSubchannelPool;
@@ -89926,14 +89837,6 @@ class ChannelImplementation {
         this.pickQueue = [];
         this.connectivityStateWatchers = [];
         this.configSelector = null;
-        /**
-         * This is the error from the name resolver if it failed most recently. It
-         * is only used to end calls that start while there is no config selector
-         * and the name resolver is in backoff, so it should be nulled if
-         * configSelector becomes set or the channel state becomes anything other
-         * than TRANSIENT_FAILURE.
-         */
-        this.currentResolutionError = null;
         // Channelz info
         this.channelzEnabled = true;
         this.callTracker = new channelz.ChannelzCallTracker();
@@ -89966,9 +89869,17 @@ class ChannelImplementation {
             this.channelzEnabled = false;
         }
         this.channelzTrace = new channelz.ChannelzTrace();
-        this.channelzRef = channelz.registerChannelzChannel(target, () => this.getChannelzInfo(), this.channelzEnabled);
         if (this.channelzEnabled) {
+            this.channelzRef = channelz.registerChannelzChannel(target, () => this.getChannelzInfo());
             this.channelzTrace.addTrace('CT_INFO', 'Channel created');
+        }
+        else {
+            // Dummy channelz ref that will never be used
+            this.channelzRef = {
+                kind: 'channel',
+                id: -1,
+                name: ''
+            };
         }
         if (this.options['grpc.default_authority']) {
             this.defaultAuthority = this.options['grpc.default_authority'];
@@ -90020,7 +89931,6 @@ class ChannelImplementation {
                 this.channelzTrace.addTrace('CT_INFO', 'Address resolution succeeded');
             }
             this.configSelector = configSelector;
-            this.currentResolutionError = null;
             /* We process the queue asynchronously to ensure that the corresponding
              * load balancer update has completed. */
             process.nextTick(() => {
@@ -90038,9 +89948,6 @@ class ChannelImplementation {
             }
             if (this.configSelectionQueue.length > 0) {
                 this.trace('Name resolution failed with calls queued for config selection');
-            }
-            if (this.configSelector === null) {
-                this.currentResolutionError = status;
             }
             const localQueue = this.configSelectionQueue;
             this.configSelectionQueue = [];
@@ -90152,16 +90059,16 @@ class ChannelImplementation {
                     callStream.filterStack
                         .sendMetadata(Promise.resolve(callMetadata.clone()))
                         .then((finalMetadata) => {
-                        var _a, _b, _c;
+                        var _a, _b;
                         const subchannelState = pickResult.subchannel.getConnectivityState();
                         if (subchannelState === connectivityState.ConnectivityState.READY) {
                             try {
                                 const pickExtraFilters = pickResult.extraFilterFactories.map(factory => factory.createFilter(callStream));
-                                (_a = pickResult.subchannel) === null || _a === void 0 ? void 0 : _a.getRealSubchannel().startCallStream(finalMetadata, callStream, [...dynamicFilters, ...pickExtraFilters]);
+                                pickResult.subchannel.startCallStream(finalMetadata, callStream, [...dynamicFilters, ...pickExtraFilters]);
                                 /* If we reach this point, the call stream has started
                                  * successfully */
-                                (_b = callConfig.onCommitted) === null || _b === void 0 ? void 0 : _b.call(callConfig);
-                                (_c = pickResult.onCallStarted) === null || _c === void 0 ? void 0 : _c.call(pickResult);
+                                (_a = callConfig.onCommitted) === null || _a === void 0 ? void 0 : _a.call(callConfig);
+                                (_b = pickResult.onCallStarted) === null || _b === void 0 ? void 0 : _b.call(pickResult);
                             }
                             catch (error) {
                                 const errorCode = error.code;
@@ -90258,9 +90165,6 @@ class ChannelImplementation {
                 watcherObject.callback();
             }
         }
-        if (newState !== connectivityState.ConnectivityState.TRANSIENT_FAILURE) {
-            this.currentResolutionError = null;
-        }
     }
     tryGetConfig(stream, metadata) {
         if (stream.getStatus() !== null) {
@@ -90274,16 +90178,11 @@ class ChannelImplementation {
              * ResolvingLoadBalancer may be idle and if so it needs to be kicked
              * because it now has a pending request. */
             this.resolvingLoadBalancer.exitIdle();
-            if (this.currentResolutionError && !metadata.getOptions().waitForReady) {
-                stream.cancelWithStatus(this.currentResolutionError.code, this.currentResolutionError.details);
-            }
-            else {
-                this.configSelectionQueue.push({
-                    callStream: stream,
-                    callMetadata: metadata,
-                });
-                this.callRefTimerRef();
-            }
+            this.configSelectionQueue.push({
+                callStream: stream,
+                callMetadata: metadata,
+            });
+            this.callRefTimerRef();
         }
         else {
             const callConfig = this.configSelector(stream.getMethod(), metadata);
@@ -91211,11 +91110,18 @@ class Server {
         if (this.options['grpc.enable_channelz'] === 0) {
             this.channelzEnabled = false;
         }
-        this.channelzRef = channelz.registerChannelzServer(() => this.getChannelzInfo(), this.channelzEnabled);
         if (this.channelzEnabled) {
+            this.channelzRef = channelz.registerChannelzServer(() => this.getChannelzInfo());
             this.channelzTrace.addTrace('CT_INFO', 'Server created');
+            this.trace('Server constructed');
         }
-        this.trace('Server constructed');
+        else {
+            // Dummy channelz ref that will never be used
+            this.channelzRef = {
+                kind: 'server',
+                id: -1
+            };
+        }
     }
     getChannelzInfo() {
         return {
@@ -91427,8 +91333,7 @@ class Server {
                                 port: boundAddress.port
                             };
                         }
-                        let channelzRef;
-                        channelzRef = channelz.registerChannelzSocket(subchannelAddress.subchannelAddressToString(boundSubchannelAddress), () => {
+                        const channelzRef = channelz.registerChannelzSocket(subchannelAddress.subchannelAddressToString(boundSubchannelAddress), () => {
                             return {
                                 localAddress: boundSubchannelAddress,
                                 remoteAddress: null,
@@ -91447,10 +91352,8 @@ class Server {
                                 localFlowControlWindow: null,
                                 remoteFlowControlWindow: null
                             };
-                        }, this.channelzEnabled);
-                        if (this.channelzEnabled) {
-                            this.listenerChildrenTracker.refChild(channelzRef);
-                        }
+                        });
+                        this.listenerChildrenTracker.refChild(channelzRef);
                         this.http2ServerList.push({ server: http2Server, channelzRef: channelzRef });
                         this.trace('Successfully bound ' + subchannelAddress.subchannelAddressToString(boundSubchannelAddress));
                         resolve('port' in boundSubchannelAddress ? boundSubchannelAddress.port : portNum);
@@ -91491,8 +91394,7 @@ class Server {
                         host: boundAddress.address,
                         port: boundAddress.port
                     };
-                    let channelzRef;
-                    channelzRef = channelz.registerChannelzSocket(subchannelAddress.subchannelAddressToString(boundSubchannelAddress), () => {
+                    const channelzRef = channelz.registerChannelzSocket(subchannelAddress.subchannelAddressToString(boundSubchannelAddress), () => {
                         return {
                             localAddress: boundSubchannelAddress,
                             remoteAddress: null,
@@ -91511,10 +91413,8 @@ class Server {
                             localFlowControlWindow: null,
                             remoteFlowControlWindow: null
                         };
-                    }, this.channelzEnabled);
-                    if (this.channelzEnabled) {
-                        this.listenerChildrenTracker.refChild(channelzRef);
-                    }
+                    });
+                    this.listenerChildrenTracker.refChild(channelzRef);
                     this.http2ServerList.push({ server: http2Server, channelzRef: channelzRef });
                     this.trace('Successfully bound ' + subchannelAddress.subchannelAddressToString(boundSubchannelAddress));
                     resolve(bindSpecificPort(addressList.slice(1), boundAddress.port, 1));
@@ -91573,10 +91473,8 @@ class Server {
         for (const { server: http2Server, channelzRef: ref } of this.http2ServerList) {
             if (http2Server.listening) {
                 http2Server.close(() => {
-                    if (this.channelzEnabled) {
-                        this.listenerChildrenTracker.unrefChild(ref);
-                        channelz.unregisterChannelzRef(ref);
-                    }
+                    this.listenerChildrenTracker.unrefChild(ref);
+                    channelz.unregisterChannelzRef(ref);
                 });
             }
         }
@@ -91590,9 +91488,7 @@ class Server {
             session.destroy(http2.constants.NGHTTP2_CANCEL);
         });
         this.sessions.clear();
-        if (this.channelzEnabled) {
-            channelz.unregisterChannelzRef(this.channelzRef);
-        }
+        channelz.unregisterChannelzRef(this.channelzRef);
     }
     register(name, handler, serialize, deserialize, type) {
         if (this.handlers.has(name)) {
@@ -91625,9 +91521,7 @@ class Server {
     }
     tryShutdown(callback) {
         const wrappedCallback = (error) => {
-            if (this.channelzEnabled) {
-                channelz.unregisterChannelzRef(this.channelzRef);
-            }
+            channelz.unregisterChannelzRef(this.channelzRef);
             callback(error);
         };
         let pendingChecks = 0;
@@ -91643,10 +91537,8 @@ class Server {
             if (http2Server.listening) {
                 pendingChecks++;
                 http2Server.close(() => {
-                    if (this.channelzEnabled) {
-                        this.listenerChildrenTracker.unrefChild(ref);
-                        channelz.unregisterChannelzRef(ref);
-                    }
+                    this.listenerChildrenTracker.unrefChild(ref);
+                    channelz.unregisterChannelzRef(ref);
                     maybeCallback();
                 });
             }
@@ -91679,10 +91571,8 @@ class Server {
         http2Server.on('stream', (stream, headers) => {
             var _a;
             const channelzSessionInfo = this.sessions.get(stream.session);
-            if (this.channelzEnabled) {
-                this.callTracker.addCallStarted();
-                channelzSessionInfo === null || channelzSessionInfo === void 0 ? void 0 : channelzSessionInfo.streamTracker.addCallStarted();
-            }
+            this.callTracker.addCallStarted();
+            channelzSessionInfo === null || channelzSessionInfo === void 0 ? void 0 : channelzSessionInfo.streamTracker.addCallStarted();
             const contentType = headers[http2.constants.HTTP2_HEADER_CONTENT_TYPE];
             if (typeof contentType !== 'string' ||
                 !contentType.startsWith('application/grpc')) {
@@ -91690,9 +91580,7 @@ class Server {
                     [http2.constants.HTTP2_HEADER_STATUS]: http2.constants.HTTP_STATUS_UNSUPPORTED_MEDIA_TYPE,
                 }, { endStream: true });
                 this.callTracker.addCallFailed();
-                if (this.channelzEnabled) {
-                    channelzSessionInfo === null || channelzSessionInfo === void 0 ? void 0 : channelzSessionInfo.streamTracker.addCallFailed();
-                }
+                channelzSessionInfo === null || channelzSessionInfo === void 0 ? void 0 : channelzSessionInfo.streamTracker.addCallFailed();
                 return;
             }
             let call = null;
@@ -91729,7 +91617,7 @@ class Server {
                         this.callTracker.addCallFailed();
                     }
                 });
-                if (this.channelzEnabled && channelzSessionInfo) {
+                if (channelzSessionInfo) {
                     call.once('streamEnd', (success) => {
                         if (success) {
                             channelzSessionInfo.streamTracker.addCallSucceeded();
@@ -91770,10 +91658,8 @@ class Server {
             catch (err) {
                 if (!call) {
                     call = new serverCall.Http2ServerCallStream(stream, null, this.options);
-                    if (this.channelzEnabled) {
-                        this.callTracker.addCallFailed();
-                        channelzSessionInfo === null || channelzSessionInfo === void 0 ? void 0 : channelzSessionInfo.streamTracker.addCallFailed();
-                    }
+                    this.callTracker.addCallFailed();
+                    channelzSessionInfo === null || channelzSessionInfo === void 0 ? void 0 : channelzSessionInfo.streamTracker.addCallFailed();
                 }
                 if (err.code === undefined) {
                     err.code = constants.Status.INTERNAL;
@@ -91787,8 +91673,7 @@ class Server {
                 session.destroy();
                 return;
             }
-            let channelzRef;
-            channelzRef = channelz.registerChannelzSocket((_a = session.socket.remoteAddress) !== null && _a !== void 0 ? _a : 'unknown', this.getChannelzSessionInfoGetter(session), this.channelzEnabled);
+            const channelzRef = channelz.registerChannelzSocket((_a = session.socket.remoteAddress) !== null && _a !== void 0 ? _a : 'unknown', this.getChannelzSessionInfoGetter(session));
             const channelzSessionInfo = {
                 ref: channelzRef,
                 streamTracker: new channelz.ChannelzCallTracker(),
@@ -91930,608 +91815,6 @@ exports.StatusBuilder = StatusBuilder;
 
 var statusBuilder$1 = /*@__PURE__*/getDefaultExportFromCjs(statusBuilder);
 
-var duration = createCommonjsModule(function (module, exports) {
-"use strict";
-/*
- * Copyright 2022 gRPC authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.isDuration = exports.durationToMs = exports.msToDuration = void 0;
-function msToDuration(millis) {
-    return {
-        seconds: (millis / 1000) | 0,
-        nanos: (millis % 1000) * 1000000 | 0
-    };
-}
-exports.msToDuration = msToDuration;
-function durationToMs(duration) {
-    return (duration.seconds * 1000 + duration.nanos / 1000000) | 0;
-}
-exports.durationToMs = durationToMs;
-function isDuration(value) {
-    return (typeof value.seconds === 'number') && (typeof value.nanos === 'number');
-}
-exports.isDuration = isDuration;
-
-});
-
-var duration$1 = /*@__PURE__*/getDefaultExportFromCjs(duration);
-
-var subchannelInterface = createCommonjsModule(function (module, exports) {
-"use strict";
-/*
- * Copyright 2022 gRPC authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.BaseSubchannelWrapper = void 0;
-class BaseSubchannelWrapper {
-    constructor(child) {
-        this.child = child;
-    }
-    getConnectivityState() {
-        return this.child.getConnectivityState();
-    }
-    addConnectivityStateListener(listener) {
-        this.child.addConnectivityStateListener(listener);
-    }
-    removeConnectivityStateListener(listener) {
-        this.child.removeConnectivityStateListener(listener);
-    }
-    startConnecting() {
-        this.child.startConnecting();
-    }
-    getAddress() {
-        return this.child.getAddress();
-    }
-    ref() {
-        this.child.ref();
-    }
-    unref() {
-        this.child.unref();
-    }
-    getChannelzRef() {
-        return this.child.getChannelzRef();
-    }
-    getRealSubchannel() {
-        return this.child.getRealSubchannel();
-    }
-}
-exports.BaseSubchannelWrapper = BaseSubchannelWrapper;
-
-});
-
-var subchannelInterface$1 = /*@__PURE__*/getDefaultExportFromCjs(subchannelInterface);
-
-var loadBalancerOutlierDetection = createCommonjsModule(function (module, exports) {
-"use strict";
-/*
- * Copyright 2022 gRPC authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.setup = exports.OutlierDetectionLoadBalancer = exports.OutlierDetectionLoadBalancingConfig = void 0;
-
-
-
-
-
-
-
-
-
-
-const TYPE_NAME = 'outlier_detection';
-const OUTLIER_DETECTION_ENABLED = process.env.GRPC_EXPERIMENTAL_ENABLE_OUTLIER_DETECTION === 'true';
-const defaultSuccessRateEjectionConfig = {
-    stdev_factor: 1900,
-    enforcement_percentage: 100,
-    minimum_hosts: 5,
-    request_volume: 100
-};
-const defaultFailurePercentageEjectionConfig = {
-    threshold: 85,
-    enforcement_percentage: 100,
-    minimum_hosts: 5,
-    request_volume: 50
-};
-function validateFieldType(obj, fieldName, expectedType, objectName) {
-    if (fieldName in obj && typeof obj[fieldName] !== expectedType) {
-        const fullFieldName = objectName ? `${objectName}.${fieldName}` : fieldName;
-        throw new Error(`outlier detection config ${fullFieldName} parse error: expected ${expectedType}, got ${typeof obj[fieldName]}`);
-    }
-}
-function validatePositiveDuration(obj, fieldName, objectName) {
-    const fullFieldName = objectName ? `${objectName}.${fieldName}` : fieldName;
-    if (fieldName in obj) {
-        if (!duration.isDuration(obj[fieldName])) {
-            throw new Error(`outlier detection config ${fullFieldName} parse error: expected Duration, got ${typeof obj[fieldName]}`);
-        }
-        if (!(obj[fieldName].seconds >= 0 && obj[fieldName].seconds <= 315576000000 && obj[fieldName].nanos >= 0 && obj[fieldName].nanos <= 999999999)) {
-            throw new Error(`outlier detection config ${fullFieldName} parse error: values out of range for non-negative Duaration`);
-        }
-    }
-}
-function validatePercentage(obj, fieldName, objectName) {
-    const fullFieldName = objectName ? `${objectName}.${fieldName}` : fieldName;
-    validateFieldType(obj, fieldName, 'number', objectName);
-    if (fieldName in obj && !(obj[fieldName] >= 0 && obj[fieldName] <= 100)) {
-        throw new Error(`outlier detection config ${fullFieldName} parse error: value out of range for percentage (0-100)`);
-    }
-}
-class OutlierDetectionLoadBalancingConfig {
-    constructor(intervalMs, baseEjectionTimeMs, maxEjectionTimeMs, maxEjectionPercent, successRateEjection, failurePercentageEjection, childPolicy) {
-        this.childPolicy = childPolicy;
-        this.intervalMs = intervalMs !== null && intervalMs !== void 0 ? intervalMs : 10000;
-        this.baseEjectionTimeMs = baseEjectionTimeMs !== null && baseEjectionTimeMs !== void 0 ? baseEjectionTimeMs : 30000;
-        this.maxEjectionTimeMs = maxEjectionTimeMs !== null && maxEjectionTimeMs !== void 0 ? maxEjectionTimeMs : 300000;
-        this.maxEjectionPercent = maxEjectionPercent !== null && maxEjectionPercent !== void 0 ? maxEjectionPercent : 10;
-        this.successRateEjection = successRateEjection ? Object.assign(Object.assign({}, defaultSuccessRateEjectionConfig), successRateEjection) : null;
-        this.failurePercentageEjection = failurePercentageEjection ? Object.assign(Object.assign({}, defaultFailurePercentageEjectionConfig), failurePercentageEjection) : null;
-    }
-    getLoadBalancerName() {
-        return TYPE_NAME;
-    }
-    toJsonObject() {
-        return {
-            interval: duration.msToDuration(this.intervalMs),
-            base_ejection_time: duration.msToDuration(this.baseEjectionTimeMs),
-            max_ejection_time: duration.msToDuration(this.maxEjectionTimeMs),
-            max_ejection_percent: this.maxEjectionPercent,
-            success_rate_ejection: this.successRateEjection,
-            failure_percentage_ejection: this.failurePercentageEjection,
-            child_policy: this.childPolicy.map(policy => policy.toJsonObject())
-        };
-    }
-    getIntervalMs() {
-        return this.intervalMs;
-    }
-    getBaseEjectionTimeMs() {
-        return this.baseEjectionTimeMs;
-    }
-    getMaxEjectionTimeMs() {
-        return this.maxEjectionTimeMs;
-    }
-    getMaxEjectionPercent() {
-        return this.maxEjectionPercent;
-    }
-    getSuccessRateEjectionConfig() {
-        return this.successRateEjection;
-    }
-    getFailurePercentageEjectionConfig() {
-        return this.failurePercentageEjection;
-    }
-    getChildPolicy() {
-        return this.childPolicy;
-    }
-    copyWithChildPolicy(childPolicy) {
-        return new OutlierDetectionLoadBalancingConfig(this.intervalMs, this.baseEjectionTimeMs, this.maxEjectionTimeMs, this.maxEjectionPercent, this.successRateEjection, this.failurePercentageEjection, childPolicy);
-    }
-    static createFromJson(obj) {
-        var _a;
-        validatePositiveDuration(obj, 'interval');
-        validatePositiveDuration(obj, 'base_ejection_time');
-        validatePositiveDuration(obj, 'max_ejection_time');
-        validatePercentage(obj, 'max_ejection_percent');
-        if ('success_rate_ejection' in obj) {
-            if (typeof obj.success_rate_ejection !== 'object') {
-                throw new Error('outlier detection config success_rate_ejection must be an object');
-            }
-            validateFieldType(obj.success_rate_ejection, 'stdev_factor', 'number', 'success_rate_ejection');
-            validatePercentage(obj.success_rate_ejection, 'enforcement_percentage', 'success_rate_ejection');
-            validateFieldType(obj.success_rate_ejection, 'minimum_hosts', 'number', 'success_rate_ejection');
-            validateFieldType(obj.success_rate_ejection, 'request_volume', 'number', 'success_rate_ejection');
-        }
-        if ('failure_percentage_ejection' in obj) {
-            if (typeof obj.failure_percentage_ejection !== 'object') {
-                throw new Error('outlier detection config failure_percentage_ejection must be an object');
-            }
-            validatePercentage(obj.failure_percentage_ejection, 'threshold', 'failure_percentage_ejection');
-            validatePercentage(obj.failure_percentage_ejection, 'enforcement_percentage', 'failure_percentage_ejection');
-            validateFieldType(obj.failure_percentage_ejection, 'minimum_hosts', 'number', 'failure_percentage_ejection');
-            validateFieldType(obj.failure_percentage_ejection, 'request_volume', 'number', 'failure_percentage_ejection');
-        }
-        return new OutlierDetectionLoadBalancingConfig(obj.interval ? duration.durationToMs(obj.interval) : null, obj.base_ejection_time ? duration.durationToMs(obj.base_ejection_time) : null, obj.max_ejection_time ? duration.durationToMs(obj.max_ejection_time) : null, (_a = obj.max_ejection_percent) !== null && _a !== void 0 ? _a : null, obj.success_rate_ejection, obj.failure_percentage_ejection, obj.child_policy.map(loadBalancer.validateLoadBalancingConfig));
-    }
-}
-exports.OutlierDetectionLoadBalancingConfig = OutlierDetectionLoadBalancingConfig;
-class OutlierDetectionSubchannelWrapper extends subchannelInterface.BaseSubchannelWrapper {
-    constructor(childSubchannel, mapEntry) {
-        super(childSubchannel);
-        this.mapEntry = mapEntry;
-        this.childSubchannelState = connectivityState.ConnectivityState.IDLE;
-        this.stateListeners = [];
-        this.ejected = false;
-        this.refCount = 0;
-        childSubchannel.addConnectivityStateListener((subchannel, previousState, newState) => {
-            this.childSubchannelState = newState;
-            if (!this.ejected) {
-                for (const listener of this.stateListeners) {
-                    listener(this, previousState, newState);
-                }
-            }
-        });
-    }
-    /**
-     * Add a listener function to be called whenever the wrapper's
-     * connectivity state changes.
-     * @param listener
-     */
-    addConnectivityStateListener(listener) {
-        this.stateListeners.push(listener);
-    }
-    /**
-     * Remove a listener previously added with `addConnectivityStateListener`
-     * @param listener A reference to a function previously passed to
-     *     `addConnectivityStateListener`
-     */
-    removeConnectivityStateListener(listener) {
-        const listenerIndex = this.stateListeners.indexOf(listener);
-        if (listenerIndex > -1) {
-            this.stateListeners.splice(listenerIndex, 1);
-        }
-    }
-    ref() {
-        this.child.ref();
-        this.refCount += 1;
-    }
-    unref() {
-        this.child.unref();
-        this.refCount -= 1;
-        if (this.refCount <= 0) {
-            if (this.mapEntry) {
-                const index = this.mapEntry.subchannelWrappers.indexOf(this);
-                if (index >= 0) {
-                    this.mapEntry.subchannelWrappers.splice(index, 1);
-                }
-            }
-        }
-    }
-    eject() {
-        this.ejected = true;
-        for (const listener of this.stateListeners) {
-            listener(this, this.childSubchannelState, connectivityState.ConnectivityState.TRANSIENT_FAILURE);
-        }
-    }
-    uneject() {
-        this.ejected = false;
-        for (const listener of this.stateListeners) {
-            listener(this, connectivityState.ConnectivityState.TRANSIENT_FAILURE, this.childSubchannelState);
-        }
-    }
-    getMapEntry() {
-        return this.mapEntry;
-    }
-    getWrappedSubchannel() {
-        return this.child;
-    }
-}
-function createEmptyBucket() {
-    return {
-        success: 0,
-        failure: 0
-    };
-}
-class CallCounter {
-    constructor() {
-        this.activeBucket = createEmptyBucket();
-        this.inactiveBucket = createEmptyBucket();
-    }
-    addSuccess() {
-        this.activeBucket.success += 1;
-    }
-    addFailure() {
-        this.activeBucket.failure += 1;
-    }
-    switchBuckets() {
-        this.inactiveBucket = this.activeBucket;
-        this.activeBucket = createEmptyBucket();
-    }
-    getLastSuccesses() {
-        return this.inactiveBucket.success;
-    }
-    getLastFailures() {
-        return this.inactiveBucket.failure;
-    }
-}
-class OutlierDetectionCounterFilter extends filter.BaseFilter {
-    constructor(callCounter) {
-        super();
-        this.callCounter = callCounter;
-    }
-    receiveTrailers(status) {
-        if (status.code === constants.Status.OK) {
-            this.callCounter.addSuccess();
-        }
-        else {
-            this.callCounter.addFailure();
-        }
-        return status;
-    }
-}
-class OutlierDetectionCounterFilterFactory {
-    constructor(callCounter) {
-        this.callCounter = callCounter;
-    }
-    createFilter(callStream) {
-        return new OutlierDetectionCounterFilter(this.callCounter);
-    }
-}
-class OutlierDetectionPicker {
-    constructor(wrappedPicker) {
-        this.wrappedPicker = wrappedPicker;
-    }
-    pick(pickArgs) {
-        const wrappedPick = this.wrappedPicker.pick(pickArgs);
-        if (wrappedPick.pickResultType === picker.PickResultType.COMPLETE) {
-            const subchannelWrapper = wrappedPick.subchannel;
-            const mapEntry = subchannelWrapper.getMapEntry();
-            if (mapEntry) {
-                return Object.assign(Object.assign({}, wrappedPick), { subchannel: subchannelWrapper.getWrappedSubchannel(), extraFilterFactories: [...wrappedPick.extraFilterFactories, new OutlierDetectionCounterFilterFactory(mapEntry.counter)] });
-            }
-            else {
-                return wrappedPick;
-            }
-        }
-        else {
-            return wrappedPick;
-        }
-    }
-}
-class OutlierDetectionLoadBalancer {
-    constructor(channelControlHelper) {
-        this.addressMap = new Map();
-        this.latestConfig = null;
-        this.childBalancer = new loadBalancerChildHandler.ChildLoadBalancerHandler(experimental.createChildChannelControlHelper(channelControlHelper, {
-            createSubchannel: (subchannelAddress$1, subchannelArgs) => {
-                const originalSubchannel = channelControlHelper.createSubchannel(subchannelAddress$1, subchannelArgs);
-                const mapEntry = this.addressMap.get(subchannelAddress.subchannelAddressToString(subchannelAddress$1));
-                const subchannelWrapper = new OutlierDetectionSubchannelWrapper(originalSubchannel, mapEntry);
-                mapEntry === null || mapEntry === void 0 ? void 0 : mapEntry.subchannelWrappers.push(subchannelWrapper);
-                return subchannelWrapper;
-            },
-            updateState: (connectivityState$1, picker) => {
-                if (connectivityState$1 === connectivityState.ConnectivityState.READY) {
-                    channelControlHelper.updateState(connectivityState$1, new OutlierDetectionPicker(picker));
-                }
-                else {
-                    channelControlHelper.updateState(connectivityState$1, picker);
-                }
-            }
-        }));
-        this.ejectionTimer = setInterval(() => { }, 0);
-        clearInterval(this.ejectionTimer);
-    }
-    getCurrentEjectionPercent() {
-        let ejectionCount = 0;
-        for (const mapEntry of this.addressMap.values()) {
-            if (mapEntry.currentEjectionTimestamp !== null) {
-                ejectionCount += 1;
-            }
-        }
-        return (ejectionCount * 100) / this.addressMap.size;
-    }
-    runSuccessRateCheck(ejectionTimestamp) {
-        if (!this.latestConfig) {
-            return;
-        }
-        const successRateConfig = this.latestConfig.getSuccessRateEjectionConfig();
-        if (!successRateConfig) {
-            return;
-        }
-        // Step 1
-        const targetRequestVolume = successRateConfig.request_volume;
-        let addresesWithTargetVolume = 0;
-        const successRates = [];
-        for (const mapEntry of this.addressMap.values()) {
-            const successes = mapEntry.counter.getLastSuccesses();
-            const failures = mapEntry.counter.getLastFailures();
-            if (successes + failures >= targetRequestVolume) {
-                addresesWithTargetVolume += 1;
-                successRates.push(successes / (successes + failures));
-            }
-        }
-        if (addresesWithTargetVolume < successRateConfig.minimum_hosts) {
-            return;
-        }
-        // Step 2
-        const successRateMean = successRates.reduce((a, b) => a + b);
-        let successRateVariance = 0;
-        for (const rate of successRates) {
-            const deviation = rate - successRateMean;
-            successRateVariance += deviation * deviation;
-        }
-        const successRateStdev = Math.sqrt(successRateVariance);
-        const ejectionThreshold = successRateMean - successRateStdev * (successRateConfig.stdev_factor / 1000);
-        // Step 3
-        for (const mapEntry of this.addressMap.values()) {
-            // Step 3.i
-            if (this.getCurrentEjectionPercent() > this.latestConfig.getMaxEjectionPercent()) {
-                break;
-            }
-            // Step 3.ii
-            const successes = mapEntry.counter.getLastSuccesses();
-            const failures = mapEntry.counter.getLastFailures();
-            if (successes + failures < targetRequestVolume) {
-                continue;
-            }
-            // Step 3.iii
-            const successRate = successes / (successes + failures);
-            if (successRate < ejectionThreshold) {
-                const randomNumber = Math.random() * 100;
-                if (randomNumber < successRateConfig.enforcement_percentage) {
-                    this.eject(mapEntry, ejectionTimestamp);
-                }
-            }
-        }
-    }
-    runFailurePercentageCheck(ejectionTimestamp) {
-        if (!this.latestConfig) {
-            return;
-        }
-        const failurePercentageConfig = this.latestConfig.getFailurePercentageEjectionConfig();
-        if (!failurePercentageConfig) {
-            return;
-        }
-        // Step 1
-        if (this.addressMap.size < failurePercentageConfig.minimum_hosts) {
-            return;
-        }
-        // Step 2
-        for (const mapEntry of this.addressMap.values()) {
-            // Step 2.i
-            if (this.getCurrentEjectionPercent() > this.latestConfig.getMaxEjectionPercent()) {
-                break;
-            }
-            // Step 2.ii
-            const successes = mapEntry.counter.getLastSuccesses();
-            const failures = mapEntry.counter.getLastFailures();
-            if (successes + failures < failurePercentageConfig.request_volume) {
-                continue;
-            }
-            // Step 2.iii
-            const failurePercentage = (failures * 100) / (failures + successes);
-            if (failurePercentage > failurePercentageConfig.threshold) {
-                const randomNumber = Math.random() * 100;
-                if (randomNumber < failurePercentageConfig.enforcement_percentage) {
-                    this.eject(mapEntry, ejectionTimestamp);
-                }
-            }
-        }
-    }
-    eject(mapEntry, ejectionTimestamp) {
-        mapEntry.currentEjectionTimestamp = new Date();
-        mapEntry.ejectionTimeMultiplier += 1;
-        for (const subchannelWrapper of mapEntry.subchannelWrappers) {
-            subchannelWrapper.eject();
-        }
-    }
-    uneject(mapEntry) {
-        mapEntry.currentEjectionTimestamp = null;
-        for (const subchannelWrapper of mapEntry.subchannelWrappers) {
-            subchannelWrapper.uneject();
-        }
-    }
-    runChecks() {
-        const ejectionTimestamp = new Date();
-        for (const mapEntry of this.addressMap.values()) {
-            mapEntry.counter.switchBuckets();
-        }
-        if (!this.latestConfig) {
-            return;
-        }
-        this.runSuccessRateCheck(ejectionTimestamp);
-        this.runFailurePercentageCheck(ejectionTimestamp);
-        for (const mapEntry of this.addressMap.values()) {
-            if (mapEntry.currentEjectionTimestamp === null) {
-                if (mapEntry.ejectionTimeMultiplier > 0) {
-                    mapEntry.ejectionTimeMultiplier -= 1;
-                }
-            }
-            else {
-                const baseEjectionTimeMs = this.latestConfig.getBaseEjectionTimeMs();
-                const maxEjectionTimeMs = this.latestConfig.getMaxEjectionTimeMs();
-                const returnTime = new Date(mapEntry.currentEjectionTimestamp.getTime());
-                returnTime.setMilliseconds(returnTime.getMilliseconds() + Math.min(baseEjectionTimeMs * mapEntry.ejectionTimeMultiplier, Math.max(baseEjectionTimeMs, maxEjectionTimeMs)));
-                if (returnTime < new Date()) {
-                    this.uneject(mapEntry);
-                }
-            }
-        }
-    }
-    updateAddressList(addressList, lbConfig, attributes) {
-        if (!(lbConfig instanceof OutlierDetectionLoadBalancingConfig)) {
-            return;
-        }
-        const subchannelAddresses = new Set();
-        for (const address of addressList) {
-            subchannelAddresses.add(subchannelAddress.subchannelAddressToString(address));
-        }
-        for (const address of subchannelAddresses) {
-            if (!this.addressMap.has(address)) {
-                this.addressMap.set(address, {
-                    counter: new CallCounter(),
-                    currentEjectionTimestamp: null,
-                    ejectionTimeMultiplier: 0,
-                    subchannelWrappers: []
-                });
-            }
-        }
-        for (const key of this.addressMap.keys()) {
-            if (!subchannelAddresses.has(key)) {
-                this.addressMap.delete(key);
-            }
-        }
-        const childPolicy = loadBalancer.getFirstUsableConfig(lbConfig.getChildPolicy(), true);
-        this.childBalancer.updateAddressList(addressList, childPolicy, attributes);
-        if (this.latestConfig === null || this.latestConfig.getIntervalMs() !== lbConfig.getIntervalMs()) {
-            clearInterval(this.ejectionTimer);
-            this.ejectionTimer = setInterval(() => this.runChecks(), lbConfig.getIntervalMs());
-        }
-        this.latestConfig = lbConfig;
-    }
-    exitIdle() {
-        this.childBalancer.exitIdle();
-    }
-    resetBackoff() {
-        this.childBalancer.resetBackoff();
-    }
-    destroy() {
-        this.childBalancer.destroy();
-    }
-    getTypeName() {
-        return TYPE_NAME;
-    }
-}
-exports.OutlierDetectionLoadBalancer = OutlierDetectionLoadBalancer;
-function setup() {
-    if (OUTLIER_DETECTION_ENABLED) {
-        experimental.registerLoadBalancerType(TYPE_NAME, OutlierDetectionLoadBalancer, OutlierDetectionLoadBalancingConfig);
-    }
-}
-exports.setup = setup;
-
-});
-
-var loadBalancerOutlierDetection$1 = /*@__PURE__*/getDefaultExportFromCjs(loadBalancerOutlierDetection);
-
 var experimental = createCommonjsModule(function (module, exports) {
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -92541,8 +91824,6 @@ Object.defineProperty(exports, "trace", { enumerable: true, get: function () { r
 Object.defineProperty(exports, "registerResolver", { enumerable: true, get: function () { return resolver.registerResolver; } });
 
 Object.defineProperty(exports, "uriToString", { enumerable: true, get: function () { return uriParser.uriToString; } });
-
-Object.defineProperty(exports, "durationToMs", { enumerable: true, get: function () { return duration.durationToMs; } });
 
 Object.defineProperty(exports, "BackoffTimeout", { enumerable: true, get: function () { return backoffTimeout.BackoffTimeout; } });
 
@@ -92564,10 +91845,6 @@ Object.defineProperty(exports, "BaseFilter", { enumerable: true, get: function (
 Object.defineProperty(exports, "FilterStackFactory", { enumerable: true, get: function () { return filterStack.FilterStackFactory; } });
 
 Object.defineProperty(exports, "registerAdminService", { enumerable: true, get: function () { return admin.registerAdminService; } });
-
-Object.defineProperty(exports, "BaseSubchannelWrapper", { enumerable: true, get: function () { return subchannelInterface.BaseSubchannelWrapper; } });
-
-Object.defineProperty(exports, "OutlierDetectionLoadBalancingConfig", { enumerable: true, get: function () { return loadBalancerOutlierDetection.OutlierDetectionLoadBalancingConfig; } });
 
 });
 
@@ -92611,7 +91888,6 @@ function trace(text) {
  * The default TCP port to connect to if not explicitly specified in the target.
  */
 const DEFAULT_PORT = 443;
-const DEFAULT_MIN_TIME_BETWEEN_RESOLUTIONS_MS = 30000;
 const resolveTxtPromise = util$2.promisify(dns.resolveTxt);
 const dnsLookupPromise = util$2.promisify(dns.lookup);
 /**
@@ -92635,7 +91911,7 @@ function mergeArrays(...arrays) {
  */
 class DnsResolver {
     constructor(target, listener, channelOptions) {
-        var _a, _b, _c;
+        var _a, _b;
         this.target = target;
         this.listener = listener;
         this.pendingLookupPromise = null;
@@ -92644,7 +91920,6 @@ class DnsResolver {
         this.latestServiceConfig = null;
         this.latestServiceConfigError = null;
         this.continueResolving = false;
-        this.isNextResolutionTimerRunning = false;
         trace('Resolver constructed for target ' + uriParser.uriToString(target));
         const hostPort = uriParser.splitHostPort(target.path);
         if (hostPort === null) {
@@ -92685,9 +91960,6 @@ class DnsResolver {
             }
         }, backoffOptions);
         this.backoff.unref();
-        this.minTimeBetweenResolutionsMs = (_c = channelOptions['grpc.dns_min_time_between_resolutions_ms']) !== null && _c !== void 0 ? _c : DEFAULT_MIN_TIME_BETWEEN_RESOLUTIONS_MS;
-        this.nextResolutionTimer = setTimeout(() => { }, 0);
-        clearTimeout(this.nextResolutionTimer);
     }
     /**
      * If the target is an IP address, just provide that address as a result.
@@ -92697,10 +91969,9 @@ class DnsResolver {
         if (this.ipResult !== null) {
             trace('Returning IP address for target ' + uriParser.uriToString(this.target));
             setImmediate(() => {
+                this.backoff.reset();
                 this.listener.onSuccessfulResolution(this.ipResult, null, null, null, {});
             });
-            this.backoff.stop();
-            this.backoff.reset();
             return;
         }
         if (this.dnsHostname === null) {
@@ -92712,12 +91983,8 @@ class DnsResolver {
                     metadata: new metadata.Metadata(),
                 });
             });
-            this.stopNextResolutionTimer();
         }
         else {
-            if (this.pendingLookupPromise !== null) {
-                return;
-            }
             trace('Looking up DNS hostname ' + this.dnsHostname);
             /* We clear out latestLookupResult here to ensure that it contains the
              * latest result since the last time we started resolving. That way, the
@@ -92735,7 +92002,6 @@ class DnsResolver {
             this.pendingLookupPromise.then((addressList) => {
                 this.pendingLookupPromise = null;
                 this.backoff.reset();
-                this.backoff.stop();
                 const ip4Addresses = addressList.filter((addr) => addr.family === 4);
                 const ip6Addresses = addressList.filter((addr) => addr.family === 6);
                 this.latestLookupResult = mergeArrays(ip6Addresses, ip4Addresses).map((addr) => ({ host: addr.address, port: +this.port }));
@@ -92763,7 +92029,6 @@ class DnsResolver {
                     ': ' +
                     err.message);
                 this.pendingLookupPromise = null;
-                this.stopNextResolutionTimer();
                 this.listener.onError(this.defaultResolutionError);
             });
             /* If there already is a still-pending TXT resolution, we can just use
@@ -92804,36 +92069,16 @@ class DnsResolver {
             }
         }
     }
-    startNextResolutionTimer() {
-        var _a, _b;
-        clearTimeout(this.nextResolutionTimer);
-        this.nextResolutionTimer = (_b = (_a = setTimeout(() => {
-            this.stopNextResolutionTimer();
-            if (this.continueResolving) {
-                this.startResolutionWithBackoff();
-            }
-        }, this.minTimeBetweenResolutionsMs)).unref) === null || _b === void 0 ? void 0 : _b.call(_a);
-        this.isNextResolutionTimerRunning = true;
-    }
-    stopNextResolutionTimer() {
-        clearTimeout(this.nextResolutionTimer);
-        this.isNextResolutionTimerRunning = false;
-    }
     startResolutionWithBackoff() {
-        if (this.pendingLookupPromise === null) {
-            this.continueResolving = false;
-            this.startResolution();
-            this.backoff.runOnce();
-            this.startNextResolutionTimer();
-        }
+        this.startResolution();
+        this.backoff.runOnce();
     }
     updateResolution() {
         /* If there is a pending lookup, just let it finish. Otherwise, if the
-         * nextResolutionTimer or backoff timer is running, set the
-         * continueResolving flag to resolve when whichever of those timers
-         * fires. Otherwise, start resolving immediately. */
+         * backoff timer is running, do another lookup when it ends, and if not,
+         * do another lookup immeidately. */
         if (this.pendingLookupPromise === null) {
-            if (this.isNextResolutionTimerRunning || this.backoff.isRunning()) {
+            if (this.backoff.isRunning()) {
                 this.continueResolving = true;
             }
             else {
@@ -92842,9 +92087,9 @@ class DnsResolver {
         }
     }
     destroy() {
-        this.continueResolving = false;
-        this.backoff.stop();
-        this.stopNextResolutionTimer();
+        /* Do nothing. There is not a practical way to cancel in-flight DNS
+         * requests, and after this function is called we can expect that
+         * updateResolution will not be called again. */
     }
     /**
      * Get the default authority for the given target. For IP targets, that is
@@ -93161,10 +92406,8 @@ class PickFirstLoadBalancer {
                         this.subchannels.length) {
                     /* If all of the subchannels are IDLE we should go back to a
                      * basic IDLE state where there is no subchannel list to avoid
-                     * holding unused resources. We do not reset triedAllSubchannels
-                     * because that is a reminder to request reresolution the next time
-                     * this LB policy needs to connect. */
-                    this.resetSubchannelList(false);
+                     * holding unused resources */
+                    this.resetSubchannelList();
                     this.updateState(connectivityState.ConnectivityState.IDLE, new picker.QueuePicker(this));
                     return;
                 }
@@ -93294,7 +92537,7 @@ class PickFirstLoadBalancer {
         this.currentState = newState;
         this.channelControlHelper.updateState(newState, picker);
     }
-    resetSubchannelList(resetTriedAllSubchannels = true) {
+    resetSubchannelList() {
         for (const subchannel of this.subchannels) {
             subchannel.removeConnectivityStateListener(this.subchannelStateListener);
             subchannel.unref();
@@ -93309,9 +92552,7 @@ class PickFirstLoadBalancer {
             [connectivityState.ConnectivityState.TRANSIENT_FAILURE]: 0,
         };
         this.subchannels = [];
-        if (resetTriedAllSubchannels) {
-            this.triedAllSubchannels = false;
-        }
+        this.triedAllSubchannels = false;
     }
     /**
      * Start connecting to the address list most recently passed to
@@ -93363,10 +92604,6 @@ class PickFirstLoadBalancer {
         }
     }
     exitIdle() {
-        if (this.currentState === connectivityState.ConnectivityState.IDLE ||
-            this.triedAllSubchannels) {
-            this.channelControlHelper.requestReresolution();
-        }
         for (const subchannel of this.subchannels) {
             subchannel.startConnecting();
         }
@@ -93374,6 +92611,10 @@ class PickFirstLoadBalancer {
             if (this.latestAddressList.length > 0) {
                 this.connectToAddressList();
             }
+        }
+        if (this.currentState === connectivityState.ConnectivityState.IDLE ||
+            this.triedAllSubchannels) {
+            this.channelControlHelper.requestReresolution();
         }
     }
     resetBackoff() {
@@ -93671,7 +92912,6 @@ exports.credentials = {
     // from channel-credentials.ts
     createInsecure: channelCredentials.ChannelCredentials.createInsecure,
     createSsl: channelCredentials.ChannelCredentials.createSsl,
-    createFromSecureContext: channelCredentials.ChannelCredentials.createFromSecureContext,
     // from call-credentials.ts
     createFromMetadataGenerator: callCredentials.CallCredentials.createFromMetadataGenerator,
     createFromGoogleCredential: callCredentials.CallCredentials.createFromGoogleCredential,
@@ -93718,7 +92958,6 @@ exports.experimental = experimental;
 
 
 
-
 const channelz$1 = channelz;
 const clientVersion = require$$0$2.version;
 (() => {
@@ -93728,7 +92967,6 @@ const clientVersion = require$$0$2.version;
     resolverIp.setup();
     loadBalancerPickFirst.setup();
     loadBalancerRoundRobin.setup();
-    loadBalancerOutlierDetection.setup();
     channelz$1.setup();
 })();
 
@@ -94902,6 +94140,11 @@ const allowedTransactionKeys = [
     "accessList", "chainId", "customData", "data", "from", "gasLimit", "maxFeePerGas", "maxPriorityFeePerGas", "to", "type", "value",
     "nodeId"
 ];
+// oversize cost for 1 gas in ContractCallQuery
+const CALL_GAS_PRICE_TINYBARS = 100;
+// the average default cost of a signed hedera ContractCallQuery
+const DEFAULT_HEDERA_CALL_TX_FEE = 143083413;
+const TX_FEE_BUFFER_MULTIPLIER = 10;
 ;
 ;
 function checkError(method, error, txRequest) {
@@ -94977,12 +94220,13 @@ class Signer$1 {
             else {
                 hederaTx.setContractId(to);
             }
-            // TODO: the exact amount here will be computed using getCost when it's implemented
-            const cost = 3;
+            const gasLimit = BigNumber.from(tx.gasLimit).toNumber();
+            const baseCost = DEFAULT_HEDERA_CALL_TX_FEE * TX_FEE_BUFFER_MULTIPLIER;
+            const cost = baseCost + gasLimit * CALL_GAS_PRICE_TINYBARS;
             const paymentBody = {
                 transactionID: paymentTxId._toProtobuf(),
                 nodeAccountID: nodeID._toProtobuf(),
-                transactionFee: new Hbar(0.005).toTinybars(),
+                transactionFee: Hbar.fromTinybars(baseCost).toTinybars(),
                 transactionValidDuration: {
                     seconds: long_1.fromInt(120),
                 },
@@ -94991,11 +94235,11 @@ class Signer$1 {
                         accountAmounts: [
                             {
                                 accountID: AccountId.fromString(from)._toProtobuf(),
-                                amount: new Hbar(cost).negated().toTinybars()
+                                amount: Hbar.fromTinybars(cost).negated().toTinybars()
                             },
                             {
                                 accountID: nodeID._toProtobuf(),
-                                amount: new Hbar(cost).toTinybars()
+                                amount: Hbar.fromTinybars(cost).toTinybars()
                             }
                         ],
                     },
@@ -103213,7 +102457,6 @@ var s$1 = 1000;
 var m = s$1 * 60;
 var h = m * 60;
 var d = h * 24;
-var w = d * 7;
 var y = d * 365.25;
 
 /**
@@ -103235,7 +102478,7 @@ var ms = function(val, options) {
   var type = typeof val;
   if (type === 'string' && val.length > 0) {
     return parse$3(val);
-  } else if (type === 'number' && isFinite(val)) {
+  } else if (type === 'number' && isNaN(val) === false) {
     return options.long ? fmtLong(val) : fmtShort(val);
   }
   throw new Error(
@@ -103257,7 +102500,7 @@ function parse$3(str) {
   if (str.length > 100) {
     return;
   }
-  var match = /^(-?(?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|weeks?|w|years?|yrs?|y)?$/i.exec(
+  var match = /^((?:\d+)?\.?\d+) *(milliseconds?|msecs?|ms|seconds?|secs?|s|minutes?|mins?|m|hours?|hrs?|h|days?|d|years?|yrs?|y)?$/i.exec(
     str
   );
   if (!match) {
@@ -103272,10 +102515,6 @@ function parse$3(str) {
     case 'yr':
     case 'y':
       return n * y;
-    case 'weeks':
-    case 'week':
-    case 'w':
-      return n * w;
     case 'days':
     case 'day':
     case 'd':
@@ -103318,17 +102557,16 @@ function parse$3(str) {
  */
 
 function fmtShort(ms) {
-  var msAbs = Math.abs(ms);
-  if (msAbs >= d) {
+  if (ms >= d) {
     return Math.round(ms / d) + 'd';
   }
-  if (msAbs >= h) {
+  if (ms >= h) {
     return Math.round(ms / h) + 'h';
   }
-  if (msAbs >= m) {
+  if (ms >= m) {
     return Math.round(ms / m) + 'm';
   }
-  if (msAbs >= s$1) {
+  if (ms >= s$1) {
     return Math.round(ms / s$1) + 's';
   }
   return ms + 'ms';
@@ -103343,409 +102581,260 @@ function fmtShort(ms) {
  */
 
 function fmtLong(ms) {
-  var msAbs = Math.abs(ms);
-  if (msAbs >= d) {
-    return plural(ms, msAbs, d, 'day');
-  }
-  if (msAbs >= h) {
-    return plural(ms, msAbs, h, 'hour');
-  }
-  if (msAbs >= m) {
-    return plural(ms, msAbs, m, 'minute');
-  }
-  if (msAbs >= s$1) {
-    return plural(ms, msAbs, s$1, 'second');
-  }
-  return ms + ' ms';
+  return plural(ms, d, 'day') ||
+    plural(ms, h, 'hour') ||
+    plural(ms, m, 'minute') ||
+    plural(ms, s$1, 'second') ||
+    ms + ' ms';
 }
 
 /**
  * Pluralization helper.
  */
 
-function plural(ms, msAbs, n, name) {
-  var isPlural = msAbs >= n * 1.5;
-  return Math.round(ms / n) + ' ' + name + (isPlural ? 's' : '');
+function plural(ms, n, name) {
+  if (ms < n) {
+    return;
+  }
+  if (ms < n * 1.5) {
+    return Math.floor(ms / n) + ' ' + name;
+  }
+  return Math.ceil(ms / n) + ' ' + name + 's';
 }
 
+var debug = createCommonjsModule(function (module, exports) {
 /**
  * This is the common logic for both the Node.js and web browser
  * implementations of `debug()`.
+ *
+ * Expose `debug()` as the module.
  */
 
-function setup(env) {
-	createDebug.debug = createDebug;
-	createDebug.default = createDebug;
-	createDebug.coerce = coerce;
-	createDebug.disable = disable;
-	createDebug.enable = enable;
-	createDebug.enabled = enabled;
-	createDebug.humanize = ms;
-	createDebug.destroy = destroy;
-
-	Object.keys(env).forEach(key => {
-		createDebug[key] = env[key];
-	});
-
-	/**
-	* The currently active debug mode names, and names to skip.
-	*/
-
-	createDebug.names = [];
-	createDebug.skips = [];
-
-	/**
-	* Map of special "%n" handling functions, for the debug "format" argument.
-	*
-	* Valid key names are a single, lower or upper-case letter, i.e. "n" and "N".
-	*/
-	createDebug.formatters = {};
-
-	/**
-	* Selects a color for a debug namespace
-	* @param {String} namespace The namespace string for the debug instance to be colored
-	* @return {Number|String} An ANSI color code for the given namespace
-	* @api private
-	*/
-	function selectColor(namespace) {
-		let hash = 0;
-
-		for (let i = 0; i < namespace.length; i++) {
-			hash = ((hash << 5) - hash) + namespace.charCodeAt(i);
-			hash |= 0; // Convert to 32bit integer
-		}
-
-		return createDebug.colors[Math.abs(hash) % createDebug.colors.length];
-	}
-	createDebug.selectColor = selectColor;
-
-	/**
-	* Create a debugger with the given `namespace`.
-	*
-	* @param {String} namespace
-	* @return {Function}
-	* @api public
-	*/
-	function createDebug(namespace) {
-		let prevTime;
-		let enableOverride = null;
-		let namespacesCache;
-		let enabledCache;
-
-		function debug(...args) {
-			// Disabled?
-			if (!debug.enabled) {
-				return;
-			}
-
-			const self = debug;
-
-			// Set `diff` timestamp
-			const curr = Number(new Date());
-			const ms = curr - (prevTime || curr);
-			self.diff = ms;
-			self.prev = prevTime;
-			self.curr = curr;
-			prevTime = curr;
-
-			args[0] = createDebug.coerce(args[0]);
-
-			if (typeof args[0] !== 'string') {
-				// Anything else let's inspect with %O
-				args.unshift('%O');
-			}
-
-			// Apply any `formatters` transformations
-			let index = 0;
-			args[0] = args[0].replace(/%([a-zA-Z%])/g, (match, format) => {
-				// If we encounter an escaped % then don't increase the array index
-				if (match === '%%') {
-					return '%';
-				}
-				index++;
-				const formatter = createDebug.formatters[format];
-				if (typeof formatter === 'function') {
-					const val = args[index];
-					match = formatter.call(self, val);
-
-					// Now we need to remove `args[index]` since it's inlined in the `format`
-					args.splice(index, 1);
-					index--;
-				}
-				return match;
-			});
-
-			// Apply env-specific formatting (colors, etc.)
-			createDebug.formatArgs.call(self, args);
-
-			const logFn = self.log || createDebug.log;
-			logFn.apply(self, args);
-		}
-
-		debug.namespace = namespace;
-		debug.useColors = createDebug.useColors();
-		debug.color = createDebug.selectColor(namespace);
-		debug.extend = extend;
-		debug.destroy = createDebug.destroy; // XXX Temporary. Will be removed in the next major release.
-
-		Object.defineProperty(debug, 'enabled', {
-			enumerable: true,
-			configurable: false,
-			get: () => {
-				if (enableOverride !== null) {
-					return enableOverride;
-				}
-				if (namespacesCache !== createDebug.namespaces) {
-					namespacesCache = createDebug.namespaces;
-					enabledCache = createDebug.enabled(namespace);
-				}
-
-				return enabledCache;
-			},
-			set: v => {
-				enableOverride = v;
-			}
-		});
-
-		// Env-specific initialization logic for debug instances
-		if (typeof createDebug.init === 'function') {
-			createDebug.init(debug);
-		}
-
-		return debug;
-	}
-
-	function extend(namespace, delimiter) {
-		const newDebug = createDebug(this.namespace + (typeof delimiter === 'undefined' ? ':' : delimiter) + namespace);
-		newDebug.log = this.log;
-		return newDebug;
-	}
-
-	/**
-	* Enables a debug mode by namespaces. This can include modes
-	* separated by a colon and wildcards.
-	*
-	* @param {String} namespaces
-	* @api public
-	*/
-	function enable(namespaces) {
-		createDebug.save(namespaces);
-		createDebug.namespaces = namespaces;
-
-		createDebug.names = [];
-		createDebug.skips = [];
-
-		let i;
-		const split = (typeof namespaces === 'string' ? namespaces : '').split(/[\s,]+/);
-		const len = split.length;
-
-		for (i = 0; i < len; i++) {
-			if (!split[i]) {
-				// ignore empty strings
-				continue;
-			}
-
-			namespaces = split[i].replace(/\*/g, '.*?');
-
-			if (namespaces[0] === '-') {
-				createDebug.skips.push(new RegExp('^' + namespaces.slice(1) + '$'));
-			} else {
-				createDebug.names.push(new RegExp('^' + namespaces + '$'));
-			}
-		}
-	}
-
-	/**
-	* Disable debug output.
-	*
-	* @return {String} namespaces
-	* @api public
-	*/
-	function disable() {
-		const namespaces = [
-			...createDebug.names.map(toNamespace),
-			...createDebug.skips.map(toNamespace).map(namespace => '-' + namespace)
-		].join(',');
-		createDebug.enable('');
-		return namespaces;
-	}
-
-	/**
-	* Returns true if the given mode name is enabled, false otherwise.
-	*
-	* @param {String} name
-	* @return {Boolean}
-	* @api public
-	*/
-	function enabled(name) {
-		if (name[name.length - 1] === '*') {
-			return true;
-		}
-
-		let i;
-		let len;
-
-		for (i = 0, len = createDebug.skips.length; i < len; i++) {
-			if (createDebug.skips[i].test(name)) {
-				return false;
-			}
-		}
-
-		for (i = 0, len = createDebug.names.length; i < len; i++) {
-			if (createDebug.names[i].test(name)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	* Convert regexp to namespace
-	*
-	* @param {RegExp} regxep
-	* @return {String} namespace
-	* @api private
-	*/
-	function toNamespace(regexp) {
-		return regexp.toString()
-			.substring(2, regexp.toString().length - 2)
-			.replace(/\.\*\?$/, '*');
-	}
-
-	/**
-	* Coerce `val`.
-	*
-	* @param {Mixed} val
-	* @return {Mixed}
-	* @api private
-	*/
-	function coerce(val) {
-		if (val instanceof Error) {
-			return val.stack || val.message;
-		}
-		return val;
-	}
-
-	/**
-	* XXX DO NOT USE. This is a temporary stub function.
-	* XXX It WILL be removed in the next major release.
-	*/
-	function destroy() {
-		console.warn('Instance method `debug.destroy()` is deprecated and no longer does anything. It will be removed in the next major version of `debug`.');
-	}
-
-	createDebug.enable(createDebug.load());
-
-	return createDebug;
-}
-
-var common$4 = setup;
-
-var browser = createCommonjsModule(function (module, exports) {
-/* eslint-env browser */
+exports = module.exports = createDebug.debug = createDebug['default'] = createDebug;
+exports.coerce = coerce;
+exports.disable = disable;
+exports.enable = enable;
+exports.enabled = enabled;
+exports.humanize = ms;
 
 /**
- * This is the web browser implementation of `debug()`.
+ * The currently active debug mode names, and names to skip.
  */
 
+exports.names = [];
+exports.skips = [];
+
+/**
+ * Map of special "%n" handling functions, for the debug "format" argument.
+ *
+ * Valid key names are a single, lower or upper-case letter, i.e. "n" and "N".
+ */
+
+exports.formatters = {};
+
+/**
+ * Previous log timestamp.
+ */
+
+var prevTime;
+
+/**
+ * Select a color.
+ * @param {String} namespace
+ * @return {Number}
+ * @api private
+ */
+
+function selectColor(namespace) {
+  var hash = 0, i;
+
+  for (i in namespace) {
+    hash  = ((hash << 5) - hash) + namespace.charCodeAt(i);
+    hash |= 0; // Convert to 32bit integer
+  }
+
+  return exports.colors[Math.abs(hash) % exports.colors.length];
+}
+
+/**
+ * Create a debugger with the given `namespace`.
+ *
+ * @param {String} namespace
+ * @return {Function}
+ * @api public
+ */
+
+function createDebug(namespace) {
+
+  function debug() {
+    // disabled?
+    if (!debug.enabled) return;
+
+    var self = debug;
+
+    // set `diff` timestamp
+    var curr = +new Date();
+    var ms = curr - (prevTime || curr);
+    self.diff = ms;
+    self.prev = prevTime;
+    self.curr = curr;
+    prevTime = curr;
+
+    // turn the `arguments` into a proper Array
+    var args = new Array(arguments.length);
+    for (var i = 0; i < args.length; i++) {
+      args[i] = arguments[i];
+    }
+
+    args[0] = exports.coerce(args[0]);
+
+    if ('string' !== typeof args[0]) {
+      // anything else let's inspect with %O
+      args.unshift('%O');
+    }
+
+    // apply any `formatters` transformations
+    var index = 0;
+    args[0] = args[0].replace(/%([a-zA-Z%])/g, function(match, format) {
+      // if we encounter an escaped % then don't increase the array index
+      if (match === '%%') return match;
+      index++;
+      var formatter = exports.formatters[format];
+      if ('function' === typeof formatter) {
+        var val = args[index];
+        match = formatter.call(self, val);
+
+        // now we need to remove `args[index]` since it's inlined in the `format`
+        args.splice(index, 1);
+        index--;
+      }
+      return match;
+    });
+
+    // apply env-specific formatting (colors, etc.)
+    exports.formatArgs.call(self, args);
+
+    var logFn = debug.log || exports.log || console.log.bind(console);
+    logFn.apply(self, args);
+  }
+
+  debug.namespace = namespace;
+  debug.enabled = exports.enabled(namespace);
+  debug.useColors = exports.useColors();
+  debug.color = selectColor(namespace);
+
+  // env-specific initialization logic for debug instances
+  if ('function' === typeof exports.init) {
+    exports.init(debug);
+  }
+
+  return debug;
+}
+
+/**
+ * Enables a debug mode by namespaces. This can include modes
+ * separated by a colon and wildcards.
+ *
+ * @param {String} namespaces
+ * @api public
+ */
+
+function enable(namespaces) {
+  exports.save(namespaces);
+
+  exports.names = [];
+  exports.skips = [];
+
+  var split = (typeof namespaces === 'string' ? namespaces : '').split(/[\s,]+/);
+  var len = split.length;
+
+  for (var i = 0; i < len; i++) {
+    if (!split[i]) continue; // ignore empty strings
+    namespaces = split[i].replace(/\*/g, '.*?');
+    if (namespaces[0] === '-') {
+      exports.skips.push(new RegExp('^' + namespaces.substr(1) + '$'));
+    } else {
+      exports.names.push(new RegExp('^' + namespaces + '$'));
+    }
+  }
+}
+
+/**
+ * Disable debug output.
+ *
+ * @api public
+ */
+
+function disable() {
+  exports.enable('');
+}
+
+/**
+ * Returns true if the given mode name is enabled, false otherwise.
+ *
+ * @param {String} name
+ * @return {Boolean}
+ * @api public
+ */
+
+function enabled(name) {
+  var i, len;
+  for (i = 0, len = exports.skips.length; i < len; i++) {
+    if (exports.skips[i].test(name)) {
+      return false;
+    }
+  }
+  for (i = 0, len = exports.names.length; i < len; i++) {
+    if (exports.names[i].test(name)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Coerce `val`.
+ *
+ * @param {Mixed} val
+ * @return {Mixed}
+ * @api private
+ */
+
+function coerce(val) {
+  if (val instanceof Error) return val.stack || val.message;
+  return val;
+}
+});
+
+var browser = createCommonjsModule(function (module, exports) {
+/**
+ * This is the web browser implementation of `debug()`.
+ *
+ * Expose `debug()` as the module.
+ */
+
+exports = module.exports = debug;
+exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
 exports.load = load;
 exports.useColors = useColors;
-exports.storage = localstorage();
-exports.destroy = (() => {
-	let warned = false;
-
-	return () => {
-		if (!warned) {
-			warned = true;
-			console.warn('Instance method `debug.destroy()` is deprecated and no longer does anything. It will be removed in the next major version of `debug`.');
-		}
-	};
-})();
+exports.storage = 'undefined' != typeof chrome
+               && 'undefined' != typeof chrome.storage
+                  ? chrome.storage.local
+                  : localstorage();
 
 /**
  * Colors.
  */
 
 exports.colors = [
-	'#0000CC',
-	'#0000FF',
-	'#0033CC',
-	'#0033FF',
-	'#0066CC',
-	'#0066FF',
-	'#0099CC',
-	'#0099FF',
-	'#00CC00',
-	'#00CC33',
-	'#00CC66',
-	'#00CC99',
-	'#00CCCC',
-	'#00CCFF',
-	'#3300CC',
-	'#3300FF',
-	'#3333CC',
-	'#3333FF',
-	'#3366CC',
-	'#3366FF',
-	'#3399CC',
-	'#3399FF',
-	'#33CC00',
-	'#33CC33',
-	'#33CC66',
-	'#33CC99',
-	'#33CCCC',
-	'#33CCFF',
-	'#6600CC',
-	'#6600FF',
-	'#6633CC',
-	'#6633FF',
-	'#66CC00',
-	'#66CC33',
-	'#9900CC',
-	'#9900FF',
-	'#9933CC',
-	'#9933FF',
-	'#99CC00',
-	'#99CC33',
-	'#CC0000',
-	'#CC0033',
-	'#CC0066',
-	'#CC0099',
-	'#CC00CC',
-	'#CC00FF',
-	'#CC3300',
-	'#CC3333',
-	'#CC3366',
-	'#CC3399',
-	'#CC33CC',
-	'#CC33FF',
-	'#CC6600',
-	'#CC6633',
-	'#CC9900',
-	'#CC9933',
-	'#CCCC00',
-	'#CCCC33',
-	'#FF0000',
-	'#FF0033',
-	'#FF0066',
-	'#FF0099',
-	'#FF00CC',
-	'#FF00FF',
-	'#FF3300',
-	'#FF3333',
-	'#FF3366',
-	'#FF3399',
-	'#FF33CC',
-	'#FF33FF',
-	'#FF6600',
-	'#FF6633',
-	'#FF9900',
-	'#FF9933',
-	'#FFCC00',
-	'#FFCC33'
+  'lightseagreen',
+  'forestgreen',
+  'goldenrod',
+  'dodgerblue',
+  'darkorchid',
+  'crimson'
 ];
 
 /**
@@ -103756,31 +102845,38 @@ exports.colors = [
  * TODO: add a `localStorage` variable to explicitly enable/disable colors
  */
 
-// eslint-disable-next-line complexity
 function useColors() {
-	// NB: In an Electron preload script, document will be defined but not fully
-	// initialized. Since we know we're in Chrome, we'll just detect this case
-	// explicitly
-	if (typeof window !== 'undefined' && window.process && (window.process.type === 'renderer' || window.process.__nwjs)) {
-		return true;
-	}
+  // NB: In an Electron preload script, document will be defined but not fully
+  // initialized. Since we know we're in Chrome, we'll just detect this case
+  // explicitly
+  if (typeof window !== 'undefined' && window.process && window.process.type === 'renderer') {
+    return true;
+  }
 
-	// Internet Explorer and Edge do not support colors.
-	if (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/(edge|trident)\/(\d+)/)) {
-		return false;
-	}
-
-	// Is webkit? http://stackoverflow.com/a/16459606/376773
-	// document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
-	return (typeof document !== 'undefined' && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance) ||
-		// Is firebug? http://stackoverflow.com/a/398120/376773
-		(typeof window !== 'undefined' && window.console && (window.console.firebug || (window.console.exception && window.console.table))) ||
-		// Is firefox >= v31?
-		// https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
-		(typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31) ||
-		// Double check webkit in userAgent just in case we are in a worker
-		(typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/));
+  // is webkit? http://stackoverflow.com/a/16459606/376773
+  // document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
+  return (typeof document !== 'undefined' && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance) ||
+    // is firebug? http://stackoverflow.com/a/398120/376773
+    (typeof window !== 'undefined' && window.console && (window.console.firebug || (window.console.exception && window.console.table))) ||
+    // is firefox >= v31?
+    // https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
+    (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31) ||
+    // double check webkit in userAgent just in case we are in a worker
+    (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/));
 }
+
+/**
+ * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
+ */
+
+exports.formatters.j = function(v) {
+  try {
+    return JSON.stringify(v);
+  } catch (err) {
+    return '[UnexpectedJSONParseError]: ' + err.message;
+  }
+};
+
 
 /**
  * Colorize log arguments if enabled.
@@ -103789,49 +102885,52 @@ function useColors() {
  */
 
 function formatArgs(args) {
-	args[0] = (this.useColors ? '%c' : '') +
-		this.namespace +
-		(this.useColors ? ' %c' : ' ') +
-		args[0] +
-		(this.useColors ? '%c ' : ' ') +
-		'+' + module.exports.humanize(this.diff);
+  var useColors = this.useColors;
 
-	if (!this.useColors) {
-		return;
-	}
+  args[0] = (useColors ? '%c' : '')
+    + this.namespace
+    + (useColors ? ' %c' : ' ')
+    + args[0]
+    + (useColors ? '%c ' : ' ')
+    + '+' + exports.humanize(this.diff);
 
-	const c = 'color: ' + this.color;
-	args.splice(1, 0, c, 'color: inherit');
+  if (!useColors) return;
 
-	// The final "%c" is somewhat tricky, because there could be other
-	// arguments passed either before or after the %c, so we need to
-	// figure out the correct index to insert the CSS into
-	let index = 0;
-	let lastC = 0;
-	args[0].replace(/%[a-zA-Z%]/g, match => {
-		if (match === '%%') {
-			return;
-		}
-		index++;
-		if (match === '%c') {
-			// We only are interested in the *last* %c
-			// (the user may have provided their own)
-			lastC = index;
-		}
-	});
+  var c = 'color: ' + this.color;
+  args.splice(1, 0, c, 'color: inherit');
 
-	args.splice(lastC, 0, c);
+  // the final "%c" is somewhat tricky, because there could be other
+  // arguments passed either before or after the %c, so we need to
+  // figure out the correct index to insert the CSS into
+  var index = 0;
+  var lastC = 0;
+  args[0].replace(/%[a-zA-Z%]/g, function(match) {
+    if ('%%' === match) return;
+    index++;
+    if ('%c' === match) {
+      // we only are interested in the *last* %c
+      // (the user may have provided their own)
+      lastC = index;
+    }
+  });
+
+  args.splice(lastC, 0, c);
 }
 
 /**
- * Invokes `console.debug()` when available.
- * No-op when `console.debug` is not a "function".
- * If `console.debug` is not available, falls back
- * to `console.log`.
+ * Invokes `console.log()` when available.
+ * No-op when `console.log` is not a "function".
  *
  * @api public
  */
-exports.log = console.debug || console.log || (() => {});
+
+function log() {
+  // this hackery is required for IE8/9, where
+  // the `console.log` function doesn't have 'apply'
+  return 'object' === typeof console
+    && console.log
+    && Function.prototype.apply.call(console.log, console, arguments);
+}
 
 /**
  * Save `namespaces`.
@@ -103839,17 +102938,15 @@ exports.log = console.debug || console.log || (() => {});
  * @param {String} namespaces
  * @api private
  */
+
 function save(namespaces) {
-	try {
-		if (namespaces) {
-			exports.storage.setItem('debug', namespaces);
-		} else {
-			exports.storage.removeItem('debug');
-		}
-	} catch (error) {
-		// Swallow
-		// XXX (@Qix-) should we be logging these?
-	}
+  try {
+    if (null == namespaces) {
+      exports.storage.removeItem('debug');
+    } else {
+      exports.storage.debug = namespaces;
+    }
+  } catch(e) {}
 }
 
 /**
@@ -103858,22 +102955,26 @@ function save(namespaces) {
  * @return {String} returns the previously persisted debug modes
  * @api private
  */
+
 function load() {
-	let r;
-	try {
-		r = exports.storage.getItem('debug');
-	} catch (error) {
-		// Swallow
-		// XXX (@Qix-) should we be logging these?
-	}
+  var r;
+  try {
+    r = exports.storage.debug;
+  } catch(e) {}
 
-	// If debug isn't set in LS, and we're in Electron, try to load $DEBUG
-	if (!r && typeof process !== 'undefined' && 'env' in process) {
-		r = process.env.DEBUG;
-	}
+  // If debug isn't set in LS, and we're in Electron, try to load $DEBUG
+  if (!r && typeof process !== 'undefined' && 'env' in process) {
+    r = process.env.DEBUG;
+  }
 
-	return r;
+  return r;
 }
+
+/**
+ * Enable namespaces listed in `localStorage.debug` initially.
+ */
+
+exports.enable(load());
 
 /**
  * Localstorage attempts to return the localstorage.
@@ -103887,177 +102988,11 @@ function load() {
  */
 
 function localstorage() {
-	try {
-		// TVMLKit (Apple TV JS Runtime) does not have a window object, just localStorage in the global context
-		// The Browser also has localStorage in the global context.
-		return localStorage;
-	} catch (error) {
-		// Swallow
-		// XXX (@Qix-) should we be logging these?
-	}
+  try {
+    return window.localStorage;
+  } catch (e) {}
 }
-
-module.exports = common$4(exports);
-
-const {formatters} = module.exports;
-
-/**
- * Map %j to `JSON.stringify()`, since no Web Inspectors do that by default.
- */
-
-formatters.j = function (v) {
-	try {
-		return JSON.stringify(v);
-	} catch (error) {
-		return '[UnexpectedJSONParseError]: ' + error.message;
-	}
-};
 });
-
-'use strict';
-
-var hasFlag = (flag, argv = process.argv) => {
-	const prefix = flag.startsWith('-') ? '' : (flag.length === 1 ? '-' : '--');
-	const position = argv.indexOf(prefix + flag);
-	const terminatorPosition = argv.indexOf('--');
-	return position !== -1 && (terminatorPosition === -1 || position < terminatorPosition);
-};
-
-'use strict';
-
-
-
-
-const {env} = process;
-
-let forceColor;
-if (hasFlag('no-color') ||
-	hasFlag('no-colors') ||
-	hasFlag('color=false') ||
-	hasFlag('color=never')) {
-	forceColor = 0;
-} else if (hasFlag('color') ||
-	hasFlag('colors') ||
-	hasFlag('color=true') ||
-	hasFlag('color=always')) {
-	forceColor = 1;
-}
-
-if ('FORCE_COLOR' in env) {
-	if (env.FORCE_COLOR === 'true') {
-		forceColor = 1;
-	} else if (env.FORCE_COLOR === 'false') {
-		forceColor = 0;
-	} else {
-		forceColor = env.FORCE_COLOR.length === 0 ? 1 : Math.min(parseInt(env.FORCE_COLOR, 10), 3);
-	}
-}
-
-function translateLevel(level) {
-	if (level === 0) {
-		return false;
-	}
-
-	return {
-		level,
-		hasBasic: true,
-		has256: level >= 2,
-		has16m: level >= 3
-	};
-}
-
-function supportsColor(haveStream, streamIsTTY) {
-	if (forceColor === 0) {
-		return 0;
-	}
-
-	if (hasFlag('color=16m') ||
-		hasFlag('color=full') ||
-		hasFlag('color=truecolor')) {
-		return 3;
-	}
-
-	if (hasFlag('color=256')) {
-		return 2;
-	}
-
-	if (haveStream && !streamIsTTY && forceColor === undefined) {
-		return 0;
-	}
-
-	const min = forceColor || 0;
-
-	if (env.TERM === 'dumb') {
-		return min;
-	}
-
-	if (process.platform === 'win32') {
-		// Windows 10 build 10586 is the first Windows release that supports 256 colors.
-		// Windows 10 build 14931 is the first release that supports 16m/TrueColor.
-		const osRelease = os.release().split('.');
-		if (
-			Number(osRelease[0]) >= 10 &&
-			Number(osRelease[2]) >= 10586
-		) {
-			return Number(osRelease[2]) >= 14931 ? 3 : 2;
-		}
-
-		return 1;
-	}
-
-	if ('CI' in env) {
-		if (['TRAVIS', 'CIRCLECI', 'APPVEYOR', 'GITLAB_CI', 'GITHUB_ACTIONS', 'BUILDKITE'].some(sign => sign in env) || env.CI_NAME === 'codeship') {
-			return 1;
-		}
-
-		return min;
-	}
-
-	if ('TEAMCITY_VERSION' in env) {
-		return /^(9\.(0*[1-9]\d*)\.|\d{2,}\.)/.test(env.TEAMCITY_VERSION) ? 1 : 0;
-	}
-
-	if (env.COLORTERM === 'truecolor') {
-		return 3;
-	}
-
-	if ('TERM_PROGRAM' in env) {
-		const version = parseInt((env.TERM_PROGRAM_VERSION || '').split('.')[0], 10);
-
-		switch (env.TERM_PROGRAM) {
-			case 'iTerm.app':
-				return version >= 3 ? 3 : 2;
-			case 'Apple_Terminal':
-				return 2;
-			// No default
-		}
-	}
-
-	if (/-256(color)?$/i.test(env.TERM)) {
-		return 2;
-	}
-
-	if (/^screen|^xterm|^vt100|^vt220|^rxvt|color|ansi|cygwin|linux/i.test(env.TERM)) {
-		return 1;
-	}
-
-	if ('COLORTERM' in env) {
-		return 1;
-	}
-
-	return min;
-}
-
-function getSupportLevel(stream) {
-	const level = supportsColor(stream, stream && stream.isTTY);
-	return translateLevel(level);
-}
-
-var supportsColor_1 = {
-	supportsColor: getSupportLevel,
-	stdout: translateLevel(supportsColor(true, tty.isatty(1))),
-	stderr: translateLevel(supportsColor(true, tty.isatty(2)))
-};
 
 var node = createCommonjsModule(function (module, exports) {
 /**
@@ -104069,18 +103004,17 @@ var node = createCommonjsModule(function (module, exports) {
 
 /**
  * This is the Node.js implementation of `debug()`.
+ *
+ * Expose `debug()` as the module.
  */
 
+exports = module.exports = debug;
 exports.init = init;
 exports.log = log;
 exports.formatArgs = formatArgs;
 exports.save = save;
 exports.load = load;
 exports.useColors = useColors;
-exports.destroy = util$2.deprecate(
-	() => {},
-	'Instance method `debug.destroy()` is deprecated and no longer does anything. It will be removed in the next major version of `debug`.'
-);
 
 /**
  * Colors.
@@ -104088,137 +103022,79 @@ exports.destroy = util$2.deprecate(
 
 exports.colors = [6, 2, 3, 4, 5, 1];
 
-try {
-	// Optional dependency (as in, doesn't need to be installed, NOT like optionalDependencies in package.json)
-	// eslint-disable-next-line import/no-extraneous-dependencies
-	const supportsColor = supportsColor_1;
-
-	if (supportsColor && (supportsColor.stderr || supportsColor).level >= 2) {
-		exports.colors = [
-			20,
-			21,
-			26,
-			27,
-			32,
-			33,
-			38,
-			39,
-			40,
-			41,
-			42,
-			43,
-			44,
-			45,
-			56,
-			57,
-			62,
-			63,
-			68,
-			69,
-			74,
-			75,
-			76,
-			77,
-			78,
-			79,
-			80,
-			81,
-			92,
-			93,
-			98,
-			99,
-			112,
-			113,
-			128,
-			129,
-			134,
-			135,
-			148,
-			149,
-			160,
-			161,
-			162,
-			163,
-			164,
-			165,
-			166,
-			167,
-			168,
-			169,
-			170,
-			171,
-			172,
-			173,
-			178,
-			179,
-			184,
-			185,
-			196,
-			197,
-			198,
-			199,
-			200,
-			201,
-			202,
-			203,
-			204,
-			205,
-			206,
-			207,
-			208,
-			209,
-			214,
-			215,
-			220,
-			221
-		];
-	}
-} catch (error) {
-	// Swallow - we only care if `supports-color` is available; it doesn't have to be.
-}
-
 /**
  * Build up the default `inspectOpts` object from the environment variables.
  *
  *   $ DEBUG_COLORS=no DEBUG_DEPTH=10 DEBUG_SHOW_HIDDEN=enabled node script.js
  */
 
-exports.inspectOpts = Object.keys(process.env).filter(key => {
-	return /^debug_/i.test(key);
-}).reduce((obj, key) => {
-	// Camel-case
-	const prop = key
-		.substring(6)
-		.toLowerCase()
-		.replace(/_([a-z])/g, (_, k) => {
-			return k.toUpperCase();
-		});
+exports.inspectOpts = Object.keys(process.env).filter(function (key) {
+  return /^debug_/i.test(key);
+}).reduce(function (obj, key) {
+  // camel-case
+  var prop = key
+    .substring(6)
+    .toLowerCase()
+    .replace(/_([a-z])/g, function (_, k) { return k.toUpperCase() });
 
-	// Coerce string value into JS value
-	let val = process.env[key];
-	if (/^(yes|on|true|enabled)$/i.test(val)) {
-		val = true;
-	} else if (/^(no|off|false|disabled)$/i.test(val)) {
-		val = false;
-	} else if (val === 'null') {
-		val = null;
-	} else {
-		val = Number(val);
-	}
+  // coerce string value into JS value
+  var val = process.env[key];
+  if (/^(yes|on|true|enabled)$/i.test(val)) val = true;
+  else if (/^(no|off|false|disabled)$/i.test(val)) val = false;
+  else if (val === 'null') val = null;
+  else val = Number(val);
 
-	obj[prop] = val;
-	return obj;
+  obj[prop] = val;
+  return obj;
 }, {});
+
+/**
+ * The file descriptor to write the `debug()` calls to.
+ * Set the `DEBUG_FD` env variable to override with another value. i.e.:
+ *
+ *   $ DEBUG_FD=3 node script.js 3>debug.log
+ */
+
+var fd = parseInt(process.env.DEBUG_FD, 10) || 2;
+
+if (1 !== fd && 2 !== fd) {
+  util$2.deprecate(function(){}, 'except for stderr(2) and stdout(1), any other usage of DEBUG_FD is deprecated. Override debug.log if you want to use a different log function (https://git.io/debug_fd)')();
+}
+
+var stream = 1 === fd ? process.stdout :
+             2 === fd ? process.stderr :
+             createWritableStdioStream(fd);
 
 /**
  * Is stdout a TTY? Colored output is enabled when `true`.
  */
 
 function useColors() {
-	return 'colors' in exports.inspectOpts ?
-		Boolean(exports.inspectOpts.colors) :
-		tty.isatty(process.stderr.fd);
+  return 'colors' in exports.inspectOpts
+    ? Boolean(exports.inspectOpts.colors)
+    : tty.isatty(fd);
 }
+
+/**
+ * Map %o to `util.inspect()`, all on a single line.
+ */
+
+exports.formatters.o = function(v) {
+  this.inspectOpts.colors = this.useColors;
+  return util$2.inspect(v, this.inspectOpts)
+    .split('\n').map(function(str) {
+      return str.trim()
+    }).join(' ');
+};
+
+/**
+ * Map %o to `util.inspect()`, allowing multiple lines if needed.
+ */
+
+exports.formatters.O = function(v) {
+  this.inspectOpts.colors = this.useColors;
+  return util$2.inspect(v, this.inspectOpts);
+};
 
 /**
  * Adds ANSI color escape codes if enabled.
@@ -104227,33 +103103,27 @@ function useColors() {
  */
 
 function formatArgs(args) {
-	const {namespace: name, useColors} = this;
+  var name = this.namespace;
+  var useColors = this.useColors;
 
-	if (useColors) {
-		const c = this.color;
-		const colorCode = '\u001B[3' + (c < 8 ? c : '8;5;' + c);
-		const prefix = `  ${colorCode};1m${name} \u001B[0m`;
+  if (useColors) {
+    var c = this.color;
+    var prefix = '  \u001b[3' + c + ';1m' + name + ' ' + '\u001b[0m';
 
-		args[0] = prefix + args[0].split('\n').join('\n' + prefix);
-		args.push(colorCode + 'm+' + module.exports.humanize(this.diff) + '\u001B[0m');
-	} else {
-		args[0] = getDate() + name + ' ' + args[0];
-	}
-}
-
-function getDate() {
-	if (exports.inspectOpts.hideDate) {
-		return '';
-	}
-	return new Date().toISOString() + ' ';
+    args[0] = prefix + args[0].split('\n').join('\n' + prefix);
+    args.push('\u001b[3' + c + 'm+' + exports.humanize(this.diff) + '\u001b[0m');
+  } else {
+    args[0] = new Date().toUTCString()
+      + ' ' + name + ' ' + args[0];
+  }
 }
 
 /**
- * Invokes `util.format()` with the specified arguments and writes to stderr.
+ * Invokes `util.format()` with the specified arguments and writes to `stream`.
  */
 
-function log(...args) {
-	return process.stderr.write(util$2.format(...args) + '\n');
+function log() {
+  return stream.write(util$2.format.apply(util$2, arguments) + '\n');
 }
 
 /**
@@ -104262,14 +103132,15 @@ function log(...args) {
  * @param {String} namespaces
  * @api private
  */
+
 function save(namespaces) {
-	if (namespaces) {
-		process.env.DEBUG = namespaces;
-	} else {
-		// If you set a process.env field to null or undefined, it gets cast to the
-		// string 'null' or 'undefined'. Just delete instead.
-		delete process.env.DEBUG;
-	}
+  if (null == namespaces) {
+    // If you set a process.env field to null or undefined, it gets cast to the
+    // string 'null' or 'undefined'. Just delete instead.
+    delete process.env.DEBUG;
+  } else {
+    process.env.DEBUG = namespaces;
+  }
 }
 
 /**
@@ -104280,7 +103151,75 @@ function save(namespaces) {
  */
 
 function load() {
-	return process.env.DEBUG;
+  return process.env.DEBUG;
+}
+
+/**
+ * Copied from `node/src/node.js`.
+ *
+ * XXX: It's lame that node doesn't expose this API out-of-the-box. It also
+ * relies on the undocumented `tty_wrap.guessHandleType()` which is also lame.
+ */
+
+function createWritableStdioStream (fd) {
+  var stream;
+  var tty_wrap = process.binding('tty_wrap');
+
+  // Note stream._type is used for test-module-load-list.js
+
+  switch (tty_wrap.guessHandleType(fd)) {
+    case 'TTY':
+      stream = new tty.WriteStream(fd);
+      stream._type = 'tty';
+
+      // Hack to have stream not keep the event loop alive.
+      // See https://github.com/joyent/node/issues/1726
+      if (stream._handle && stream._handle.unref) {
+        stream._handle.unref();
+      }
+      break;
+
+    case 'FILE':
+      var fs = fs$1;
+      stream = new fs.SyncWriteStream(fd, { autoClose: false });
+      stream._type = 'fs';
+      break;
+
+    case 'PIPE':
+    case 'TCP':
+      var net = net_1;
+      stream = new net.Socket({
+        fd: fd,
+        readable: false,
+        writable: true
+      });
+
+      // FIXME Should probably have an option in net.Socket to create a
+      // stream from an existing fd which is writable only. But for now
+      // we'll just add this hack and set the `readable` member to false.
+      // Test: ./node test/fixtures/echo.js < /etc/passwd
+      stream.readable = false;
+      stream.read = null;
+      stream._type = 'pipe';
+
+      // FIXME Hack to have stream not keep the event loop alive.
+      // See https://github.com/joyent/node/issues/1726
+      if (stream._handle && stream._handle.unref) {
+        stream._handle.unref();
+      }
+      break;
+
+    default:
+      // Probably an error on in uv_guess_handle()
+      throw new Error('Implement me. Unknown stream file type!');
+  }
+
+  // For supporting legacy API we put the FD here.
+  stream.fd = fd;
+
+  stream._isStdio = true;
+
+  return stream;
 }
 
 /**
@@ -104290,68 +103229,49 @@ function load() {
  * differently for a particular `debug` instance.
  */
 
-function init(debug) {
-	debug.inspectOpts = {};
+function init (debug) {
+  debug.inspectOpts = {};
 
-	const keys = Object.keys(exports.inspectOpts);
-	for (let i = 0; i < keys.length; i++) {
-		debug.inspectOpts[keys[i]] = exports.inspectOpts[keys[i]];
-	}
+  var keys = Object.keys(exports.inspectOpts);
+  for (var i = 0; i < keys.length; i++) {
+    debug.inspectOpts[keys[i]] = exports.inspectOpts[keys[i]];
+  }
 }
 
-module.exports = common$4(exports);
-
-const {formatters} = module.exports;
-
 /**
- * Map %o to `util.inspect()`, all on a single line.
+ * Enable namespaces listed in `process.env.DEBUG` initially.
  */
 
-formatters.o = function (v) {
-	this.inspectOpts.colors = this.useColors;
-	return util$2.inspect(v, this.inspectOpts)
-		.split('\n')
-		.map(str => str.trim())
-		.join(' ');
-};
-
-/**
- * Map %O to `util.inspect()`, allowing multiple lines if needed.
- */
-
-formatters.O = function (v) {
-	this.inspectOpts.colors = this.useColors;
-	return util$2.inspect(v, this.inspectOpts);
-};
+exports.enable(load());
 });
 
 var src$3 = createCommonjsModule(function (module) {
 /**
- * Detect Electron renderer / nwjs process, which is node, but we should
+ * Detect Electron renderer process, which is node, but we should
  * treat as a browser.
  */
 
-if (typeof process === 'undefined' || process.type === 'renderer' || process.browser === true || process.__nwjs) {
-	module.exports = browser;
+if (typeof process !== 'undefined' && process.type === 'renderer') {
+  module.exports = browser;
 } else {
-	module.exports = node;
+  module.exports = node;
 }
 });
 
-var debug;
+var debug$1;
 
 var debug_1 = function () {
-  if (!debug) {
+  if (!debug$1) {
     try {
       /* eslint global-require: off */
-      debug = src$3("follow-redirects");
+      debug$1 = src$3("follow-redirects");
     }
     catch (error) { /* */ }
-    if (typeof debug !== "function") {
-      debug = function () { /* */ };
+    if (typeof debug$1 !== "function") {
+      debug$1 = function () { /* */ };
     }
   }
-  debug.apply(null, arguments);
+  debug$1.apply(null, arguments);
 };
 
 var URL = url.URL;
@@ -104625,7 +103545,7 @@ RedirectableRequest.prototype._performRequest = function () {
   // If specified, use the agent corresponding to the protocol
   // (HTTP and HTTPS use different types of agents)
   if (this._options.agents) {
-    var scheme = protocol.slice(0, -1);
+    var scheme = protocol.substr(0, protocol.length - 1);
     this._options.agent = this._options.agents[scheme];
   }
 
@@ -104717,21 +103637,10 @@ RedirectableRequest.prototype._processResponse = function (response) {
     return;
   }
 
-  // Store the request headers if applicable
-  var requestHeaders;
-  var beforeRedirect = this._options.beforeRedirect;
-  if (beforeRedirect) {
-    requestHeaders = Object.assign({
-      // The Host header was set by nativeProtocol.request
-      Host: response.req.getHeader("host"),
-    }, this._options.headers);
-  }
-
   // RFC7231§6.4: Automatic redirection needs to done with
   // care for methods not known to be safe, […]
   // RFC7231§6.4.2–3: For historical reasons, a user agent MAY change
   // the request method from POST to GET for the subsequent request.
-  var method = this._options.method;
   if ((statusCode === 301 || statusCode === 302) && this._options.method === "POST" ||
       // RFC7231§6.4.4: The 303 (See Other) status code indicates that
       // the server is redirecting the user agent to a different resource […]
@@ -104779,18 +103688,10 @@ RedirectableRequest.prototype._processResponse = function (response) {
   }
 
   // Evaluate the beforeRedirect callback
-  if (typeof beforeRedirect === "function") {
-    var responseDetails = {
-      headers: response.headers,
-      statusCode: statusCode,
-    };
-    var requestDetails = {
-      url: currentUrl,
-      method: method,
-      headers: requestHeaders,
-    };
+  if (typeof this._options.beforeRedirect === "function") {
+    var responseDetails = { headers: response.headers };
     try {
-      beforeRedirect(this._options, responseDetails, requestDetails);
+      this._options.beforeRedirect.call(null, this._options, responseDetails);
     }
     catch (err) {
       this.emit("error", err);
