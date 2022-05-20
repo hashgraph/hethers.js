@@ -875,8 +875,9 @@ describe("Wallet createAccount(ED25519)", function () {
     }).timeout(timeout);
 });
 describe("Wallet createAccount", function () {
+    this.retries(3);
     let wallet, newAccount, newAccountPublicKey, provider, acc1Wallet, acc2Wallet, acc1Eoa, acc2Eoa;
-    const timeout = 90000;
+    const timeout = 120000;
     before(function () {
         return __awaiter(this, void 0, void 0, function* () {
             this.timeout(timeout);
