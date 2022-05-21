@@ -753,7 +753,7 @@ describe("Wallet tx signing", function () {
                             to: hethers_1.hethers.utils.getAddressFromAccount("0.0.98"),
                             from: wallet.address,
                             data: '0x' + data,
-                            gasLimit: 100000
+                            gasLimit: 50000
                         };
                         return [4 /*yield*/, wallet.signTransaction(tx)];
                     case 1:
@@ -1410,7 +1410,7 @@ describe("Wallet createAccount", function () {
                         return [4 /*yield*/, acc1Wallet.sendTransaction({
                                 to: acc2Wallet.account,
                                 value: 1,
-                                gasLimit: 300000
+                                gasLimit: 50000
                             })];
                     case 2:
                         _a.sent();
@@ -1466,7 +1466,7 @@ describe("Wallet createAccount", function () {
                     case 0:
                         bytecodeTokenWithArgs = (0, fs_1.readFileSync)('packages/tests/contracts/TokenWithArgs.bin').toString();
                         contractFactory = new hethers_1.hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, acc1Wallet);
-                        return [4 /*yield*/, contractFactory.deploy(hethers_1.hethers.BigNumber.from('10000'), { gasLimit: 3000000 })];
+                        return [4 /*yield*/, contractFactory.deploy(hethers_1.hethers.BigNumber.from('10000'), { gasLimit: 200000 })];
                     case 1:
                         contract = _a.sent();
                         return [4 /*yield*/, contract.deployed()];

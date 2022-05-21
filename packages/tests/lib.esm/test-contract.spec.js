@@ -31,22 +31,22 @@ describe("Test Contract Transaction Population", function () {
         return __awaiter(this, void 0, void 0, function* () {
             const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, wallet);
             const transaction = contractFactory.getDeployTransaction(hethers.BigNumber.from("1000000"), {
-                gasLimit: 300000
+                gasLimit: 50000
             });
             assert('data' in transaction);
             assert('customData' in transaction);
             assert('gasLimit' in transaction);
-            assert.strictEqual(300000, transaction.gasLimit);
+            assert.strictEqual(50000, transaction.gasLimit);
         });
     });
     it("should be able to deploy a contract", function () {
         return __awaiter(this, void 0, void 0, function* () {
             const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, wallet);
-            const contract = yield contractFactory.deploy(hethers.BigNumber.from("10000"), { gasLimit: 300000 });
+            const contract = yield contractFactory.deploy(hethers.BigNumber.from("10000"), { gasLimit: 200000 });
             assert.notStrictEqual(contract, null, "nullified contract");
             assert.notStrictEqual(contract.deployTransaction, "missing deploy transaction");
             assert.notStrictEqual(contract.address, null, 'missing address');
-            const balance = yield contract.balanceOf(wallet.address, { gasLimit: 300000 });
+            const balance = yield contract.balanceOf(wallet.address, { gasLimit: 50000 });
             assert.strictEqual(BigNumber.from(balance).toNumber(), 10000, 'balance mismatch');
         });
     }).timeout(300000);
@@ -54,7 +54,7 @@ describe("Test Contract Transaction Population", function () {
         return __awaiter(this, void 0, void 0, function* () {
             this.timeout(3000000);
             const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, wallet);
-            const contract = yield contractFactory.deploy(hethers.BigNumber.from('10000'), { gasLimit: 3000000 });
+            const contract = yield contractFactory.deploy(hethers.BigNumber.from('10000'), { gasLimit: 200000 });
             yield contract.deployed();
             // client wallet init
             let clientWallet = hethers.Wallet.createRandom();
@@ -65,29 +65,29 @@ describe("Test Contract Transaction Population", function () {
                 to: contract.address,
                 from: wallet.address,
                 value: 30,
-                gasLimit: 300000
+                gasLimit: 100000
             });
             // test if initial balance of the client is zero
-            assert.strictEqual((yield contract.balanceOf(clientWallet.address, { gasLimit: 3000000 })).toString(), '0');
+            assert.strictEqual((yield contract.balanceOf(clientWallet.address, { gasLimit: 50000 })).toString(), '0');
             // test calling a contract view method
-            const viewMethodCall = yield contract.getInternalCounter({ gasLimit: 3000000 });
+            const viewMethodCall = yield contract.getInternalCounter({ gasLimit: 50000 });
             assert.strictEqual(viewMethodCall.toString(), '29');
             // test sending hbars via populateTransaction.transfer
-            const populatedTx = yield contract.populateTransaction.transfer(clientWallet.address, 10, { gasLimit: 3000000 });
+            const populatedTx = yield contract.populateTransaction.transfer(clientWallet.address, 10, { gasLimit: 100000 });
             const signedTransaction = yield wallet.signTransaction(populatedTx);
             const tx = yield wallet.provider.sendTransaction(signedTransaction);
             yield tx.wait();
-            assert.strictEqual((yield contract.balanceOf(clientWallet.address, { gasLimit: 3000000 })).toString(), '10');
+            assert.strictEqual((yield contract.balanceOf(clientWallet.address, { gasLimit: 50000 })).toString(), '10');
             // test sending hbars via contract.transfer
-            const transferMethodCall = yield contract.transfer(clientWallet.address, 10, { gasLimit: 3000000 });
+            const transferMethodCall = yield contract.transfer(clientWallet.address, 10, { gasLimit: 50000 });
             yield transferMethodCall.wait();
-            assert.strictEqual((yield contract.balanceOf(clientWallet.address, { gasLimit: 3000000 })).toString(), '20');
+            assert.strictEqual((yield contract.balanceOf(clientWallet.address, { gasLimit: 50000 })).toString(), '20');
         });
     });
     it('should have a .wait function', function () {
         return __awaiter(this, void 0, void 0, function* () {
             const contractFactory = new hethers.ContractFactory(abiToken, bytecodeToken, wallet);
-            const contract = yield contractFactory.deploy({ gasLimit: 300000 });
+            const contract = yield contractFactory.deploy({ gasLimit: 200000 });
             try {
                 yield contract.deployTransaction.wait(10);
                 assert.notStrictEqual(true, false, "It should go in the catch block");
@@ -162,7 +162,7 @@ describe('Contract Events', function () {
                 capturedMints.push([...args]);
             });
             for (let i = 0; i <= mintCount; i++) {
-                const mint = yield contract.mint(BigNumber.from(`1`), { gasLimit: 300000 });
+                const mint = yield contract.mint(BigNumber.from(`1`), { gasLimit: 50000 });
                 yield mint.wait();
             }
             yield sleep(mintCount * 5000);
@@ -185,7 +185,7 @@ describe('Contract Events', function () {
                 capturedMints.push([args]);
             });
             for (let i = 0; i <= mintCount; i++) {
-                const mint = yield contract.mint(BigNumber.from(`1`), { gasLimit: 300000 });
+                const mint = yield contract.mint(BigNumber.from(`1`), { gasLimit: 50000 });
                 yield mint.wait();
             }
             yield sleep(mintCount * 5000);
@@ -220,7 +220,7 @@ describe('Contract Events', function () {
 describe('Contract Aliases', function () {
     return __awaiter(this, void 0, void 0, function* () {
         const provider = hethers.providers.getDefaultProvider('testnet');
-        const gasLimit = 3000000;
+        const gasLimit = 50000;
         // @ts-ignore
         const wallet = new hethers.Wallet(hederaEoa, provider);
         it('Should detect contract aliases', function () {
@@ -247,21 +247,21 @@ describe('Contract Aliases', function () {
                 const accAbi = JSON.parse(fs.readFileSync('packages/tests/contracts/Account.abi.json').toString());
                 const salt = 1111;
                 const factoryCFactory = new hethers.ContractFactory(factoryAbi, factoryBytecode, wallet);
-                const _factory = yield factoryCFactory.deploy({ gasLimit: 3000000 });
+                const _factory = yield factoryCFactory.deploy({ gasLimit: 200000 });
                 const factory = hethers.ContractFactory.getContract(_factory.address, factoryAbi, wallet);
                 // the second argument is the salt we have used, and we can skip it as we defined it above
                 factory.on('Deployed', (addr, _) => __awaiter(this, void 0, void 0, function* () {
                     const account = hethers.ContractFactory.getContract(addr, accAbi, wallet);
-                    let owner = yield account.getOwner({ gasLimit: 3000000 });
+                    let owner = yield account.getOwner({ gasLimit: 50000 });
                     assert.strictEqual(owner, hethers.constants.AddressZero);
-                    const resp = yield account.setOwner(wallet.address, { gasLimit: 3000000 });
+                    const resp = yield account.setOwner(wallet.address, { gasLimit: 50000 });
                     assert.notStrictEqual(resp, null, 'expected a defined tx response');
-                    owner = yield account.getOwner({ gasLimit: 3000000 });
+                    owner = yield account.getOwner({ gasLimit: 50000 });
                     assert.strictEqual(owner, wallet.address, "expected owner to be changed after `setOwner` call");
                     factory.removeAllListeners();
                 }));
                 const deployArgs = hexlify(`0x${accBytecode}`);
-                const deployTx = yield factory.deploy(deployArgs, salt, { gasLimit: 3000000 });
+                const deployTx = yield factory.deploy(deployArgs, salt, { gasLimit: 200000 });
                 yield deployTx.wait();
                 yield new Promise((resolve => setTimeout(resolve, 10000)));
             });
@@ -281,7 +281,7 @@ describe("contract.deployed with ED25519 keys", function () {
     it("should deploy a contract", function () {
         return __awaiter(this, void 0, void 0, function* () {
             const contractFactory = new hethers.ContractFactory(abiToken, bytecodeToken, wallet);
-            const contract = yield contractFactory.deploy({ gasLimit: 300000 });
+            const contract = yield contractFactory.deploy({ gasLimit: 200000 });
             assert.notStrictEqual(contract, null, "nullified contract");
             assert.notStrictEqual(contract.deployTransaction, "missing deploy transaction");
             assert.notStrictEqual(contract.address, null, 'missing address');
@@ -299,7 +299,7 @@ describe("contract.deployed with ED25519 keys", function () {
             const newAccBalance = yield provider.getBalance(newAccountAddress);
             assert.strictEqual(newAccBalance.toNumber(), 1000000000);
             const contractFactory = new hethers.ContractFactory(abiToken, bytecodeToken, newWallet);
-            const contract = yield contractFactory.deploy({ gasLimit: 300000 });
+            const contract = yield contractFactory.deploy({ gasLimit: 200000 });
             assert.notStrictEqual(contract, null, "nullified contract");
             assert.notStrictEqual(contract.deployTransaction, "missing deploy transaction");
             assert.notStrictEqual(contract.address, null, 'missing address');
@@ -317,7 +317,7 @@ describe("contract.deployed with ED25519 keys", function () {
             const newWallet = newAccount.connect(provider).connectAccount(clientAccountId.toString());
             try {
                 const contractFactory = new hethers.ContractFactory(abiToken, bytecodeToken, newWallet);
-                yield contractFactory.deploy({ gasLimit: 300000 });
+                yield contractFactory.deploy({ gasLimit: 200000 });
             }
             catch (e) {
                 errorCode = e.code;
@@ -330,7 +330,7 @@ describe("contract.deployed with ED25519 keys", function () {
     it("should be able to call contract methods", function () {
         return __awaiter(this, void 0, void 0, function* () {
             const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, wallet);
-            const contract = yield contractFactory.deploy(hethers.BigNumber.from('10000'), { gasLimit: 3000000 });
+            const contract = yield contractFactory.deploy(hethers.BigNumber.from('10000'), { gasLimit: 200000 });
             yield contract.deployed();
             // client wallet init
             let clientWallet = hethers.Wallet.createRandom({ isED25519Type: true });
@@ -341,23 +341,23 @@ describe("contract.deployed with ED25519 keys", function () {
                 to: contract.address,
                 from: wallet.address,
                 value: 30,
-                gasLimit: 300000
+                gasLimit: 100000
             });
             // test if initial balance of the client is zero
-            assert.strictEqual((yield contract.balanceOf(clientWallet.address, { gasLimit: 3000000 })).toString(), '0');
+            assert.strictEqual((yield contract.balanceOf(clientWallet.address, { gasLimit: 50000 })).toString(), '0');
             // test calling a contract view method
-            const viewMethodCall = yield contract.getInternalCounter({ gasLimit: 300000 });
+            const viewMethodCall = yield contract.getInternalCounter({ gasLimit: 50000 });
             assert.strictEqual(viewMethodCall.toString(), '29');
             // test sending hbars via populateTransaction.transfer
-            const populatedTx = yield contract.populateTransaction.transfer(clientWallet.address, 10, { gasLimit: 300000 });
+            const populatedTx = yield contract.populateTransaction.transfer(clientWallet.address, 10, { gasLimit: 100000 });
             const signedTransaction = yield wallet.signTransaction(populatedTx);
             const tx = yield wallet.provider.sendTransaction(signedTransaction);
             yield tx.wait();
-            assert.strictEqual((yield contract.balanceOf(clientWallet.address, { gasLimit: 300000 })).toString(), '10');
+            assert.strictEqual((yield contract.balanceOf(clientWallet.address, { gasLimit: 50000 })).toString(), '10');
             // test sending hbars via contract.transfer
-            const transferMethodCall = yield contract.transfer(clientWallet.address, 10, { gasLimit: 300000 });
+            const transferMethodCall = yield contract.transfer(clientWallet.address, 10, { gasLimit: 50000 });
             yield transferMethodCall.wait();
-            assert.strictEqual((yield contract.balanceOf(clientWallet.address, { gasLimit: 300000 })).toString(), '20');
+            assert.strictEqual((yield contract.balanceOf(clientWallet.address, { gasLimit: 50000 })).toString(), '20');
         });
     }).timeout(300000);
 });
@@ -380,7 +380,7 @@ describe("contract.deployed", function () {
     it("should work if contract is just now deployed", function () {
         return __awaiter(this, void 0, void 0, function* () {
             const contractFactory = new hethers.ContractFactory(abiToken, bytecodeToken, wallet);
-            const contract = yield contractFactory.deploy({ gasLimit: 300000 });
+            const contract = yield contractFactory.deploy({ gasLimit: 200000 });
             assert.notStrictEqual(contract, null, "nullified contract");
             assert.notStrictEqual(contract.deployTransaction, "missing deploy transaction");
             assert.notStrictEqual(contract.address, null, 'missing address');

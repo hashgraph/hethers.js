@@ -1397,7 +1397,7 @@ describe("Test Hedera Provider", function () {
                         txID = sdk_1.TransactionId.generate(hederaTestnetOperableAccount.operator.accountId);
                         return [4 /*yield*/, new sdk_1.ContractCreateTransaction()
                                 .setContractMemo("memo")
-                                .setGas(300000)
+                                .setGas(200000)
                                 // .setInitialBalance(1000)
                                 .setBytecodeFileId("0.0.26562254")
                                 .setNodeAccountIds([new sdk_1.AccountId(0, 0, 3)])
@@ -1413,7 +1413,7 @@ describe("Test Hedera Provider", function () {
                         return [4 /*yield*/, provider.sendTransaction(signedTx)];
                     case 2:
                         txResponse = _a.sent();
-                        assert_1.default.strictEqual(txResponse.gasLimit.toNumber(), 300000);
+                        assert_1.default.strictEqual(txResponse.gasLimit.toNumber(), 200000);
                         assert_1.default.strictEqual(txResponse.from, hethers_1.hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.operator.accountId));
                         assert_1.default.strictEqual(txResponse.to, undefined); // contract create TX should not be addressed to anything
                         return [2 /*return*/];

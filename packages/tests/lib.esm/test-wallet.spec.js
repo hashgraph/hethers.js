@@ -592,7 +592,7 @@ describe("Wallet tx signing", function () {
                 to: hethers.utils.getAddressFromAccount("0.0.98"),
                 from: wallet.address,
                 data: '0x' + data,
-                gasLimit: 100000
+                gasLimit: 50000
             };
             const signed = yield wallet.signTransaction(tx);
             assert.ok(signed !== "", "Unexpected nil signed tx");
@@ -975,7 +975,7 @@ describe("Wallet createAccount", function () {
                 yield acc1Wallet.sendTransaction({
                     to: acc2Wallet.account,
                     value: 1,
-                    gasLimit: 300000
+                    gasLimit: 50000
                 });
             }
             catch (e) {
@@ -1007,7 +1007,7 @@ describe("Wallet createAccount", function () {
         return __awaiter(this, void 0, void 0, function* () {
             const bytecodeTokenWithArgs = readFileSync('packages/tests/contracts/TokenWithArgs.bin').toString();
             const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, acc1Wallet);
-            const contract = yield contractFactory.deploy(hethers.BigNumber.from('10000'), { gasLimit: 3000000 });
+            const contract = yield contractFactory.deploy(hethers.BigNumber.from('10000'), { gasLimit: 200000 });
             yield contract.deployed();
             let exceptionThrown = false;
             try {

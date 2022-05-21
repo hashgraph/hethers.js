@@ -651,7 +651,7 @@ describe("Wallet tx signing", function () {
             to: hethers.utils.getAddressFromAccount("0.0.98"),
             from: wallet.address,
             data: '0x'+data,
-            gasLimit: 100000
+            gasLimit: 50000
 
         };
         const signed = await wallet.signTransaction(tx);
@@ -1032,7 +1032,7 @@ describe("Wallet createAccount", function () {
             await acc1Wallet.sendTransaction({
                 to: acc2Wallet.account,
                 value: 1,
-                gasLimit: 300000
+                gasLimit: 50000
             });
         } catch (e: any) {
             errorReason = e.reason;
@@ -1064,7 +1064,7 @@ describe("Wallet createAccount", function () {
     it("Should make a contract call with 'to' and 'value' with provided contract address as 'to'", async function() {
         const bytecodeTokenWithArgs = readFileSync('packages/tests/contracts/TokenWithArgs.bin').toString();
         const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, acc1Wallet);
-        const contract = await contractFactory.deploy(hethers.BigNumber.from('10000'), {gasLimit: 3000000});
+        const contract = await contractFactory.deploy(hethers.BigNumber.from('10000'), {gasLimit: 200000});
         await contract.deployed();
 
         let exceptionThrown = false;
