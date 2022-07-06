@@ -311,13 +311,13 @@ describe("contract.deployed with ED25519 keys", function () {
 
     it("should deploy a contract from newly created account", async function () {
         const newAccount = hethers.Wallet.createRandom({ isED25519Type: true });
-        const clientAccountId = (await wallet.createAccount(newAccount._signingKey().compressedPublicKey, BigInt("1000000000"))).customData.accountId;
+        const clientAccountId = (await wallet.createAccount(newAccount._signingKey().compressedPublicKey, BigInt("10000000000"))).customData.accountId;
         const newWallet = newAccount.connect(provider).connectAccount(clientAccountId.toString());
 
         const newAccountAddress = hethers.utils.getAddressFromAccount(clientAccountId.toString());
         const newAccBalance = await provider.getBalance(newAccountAddress);
 
-        assert.strictEqual(newAccBalance.toNumber(), 1000000000);
+        assert.strictEqual(newAccBalance.toNumber(), 10000000000);
 
         const contractFactory = new hethers.ContractFactory(abiToken, bytecodeToken, newWallet);
         const contract = await contractFactory.deploy({ gasLimit: 300000 });
