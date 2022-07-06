@@ -549,7 +549,7 @@ describe("contract.deployed with ED25519 keys", function () {
                 switch (_a.label) {
                     case 0:
                         newAccount = hethers_1.hethers.Wallet.createRandom({ isED25519Type: true });
-                        return [4 /*yield*/, wallet.createAccount(newAccount._signingKey().compressedPublicKey, BigInt("1000000000"))];
+                        return [4 /*yield*/, wallet.createAccount(newAccount._signingKey().compressedPublicKey, BigInt("10000000000"))];
                     case 1:
                         clientAccountId = (_a.sent()).customData.accountId;
                         newWallet = newAccount.connect(provider).connectAccount(clientAccountId.toString());
@@ -557,7 +557,7 @@ describe("contract.deployed with ED25519 keys", function () {
                         return [4 /*yield*/, provider.getBalance(newAccountAddress)];
                     case 2:
                         newAccBalance = _a.sent();
-                        assert_1.default.strictEqual(newAccBalance.toNumber(), 1000000000);
+                        assert_1.default.strictEqual(newAccBalance.toNumber(), 10000000000);
                         contractFactory = new hethers_1.hethers.ContractFactory(abiToken, bytecodeToken, newWallet);
                         return [4 /*yield*/, contractFactory.deploy({ gasLimit: 300000 })];
                     case 3:

@@ -920,9 +920,9 @@ describe("Test Basic Authentication", function () {
         }, "throws an exception for insecure connections");
     });
 });
-describe.only("Test Hedera Provider Options", function () {
+describe("Test Hedera Provider Options", function () {
     const options = { headers: { testHeader: '123' } };
-    it("new DefaultHederaProvider", () => {
+    it("DefaultHederaProvider", () => {
         const provider = new DefaultHederaProvider(HederaNetworks.TESTNET, options);
         assert.deepStrictEqual(provider._options, options);
     });

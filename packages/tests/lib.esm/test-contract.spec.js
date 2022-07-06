@@ -293,11 +293,11 @@ describe("contract.deployed with ED25519 keys", function () {
     it("should deploy a contract from newly created account", function () {
         return __awaiter(this, void 0, void 0, function* () {
             const newAccount = hethers.Wallet.createRandom({ isED25519Type: true });
-            const clientAccountId = (yield wallet.createAccount(newAccount._signingKey().compressedPublicKey, BigInt("1000000000"))).customData.accountId;
+            const clientAccountId = (yield wallet.createAccount(newAccount._signingKey().compressedPublicKey, BigInt("10000000000"))).customData.accountId;
             const newWallet = newAccount.connect(provider).connectAccount(clientAccountId.toString());
             const newAccountAddress = hethers.utils.getAddressFromAccount(clientAccountId.toString());
             const newAccBalance = yield provider.getBalance(newAccountAddress);
-            assert.strictEqual(newAccBalance.toNumber(), 1000000000);
+            assert.strictEqual(newAccBalance.toNumber(), 10000000000);
             const contractFactory = new hethers.ContractFactory(abiToken, bytecodeToken, newWallet);
             const contract = yield contractFactory.deploy({ gasLimit: 300000 });
             assert.notStrictEqual(contract, null, "nullified contract");
