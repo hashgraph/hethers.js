@@ -24,7 +24,7 @@ const logger = new Logger(version);
 import {Formatter} from "./formatter";
 import {getAccountFromTransactionId, AccountLike, asAccountString, getAddressFromAccount} from "@hethers/address";
 import {AccountBalanceQuery, AccountId, Client, NetworkName, Transaction as HederaTransaction} from "@hashgraph/sdk";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import * as base64 from "@ethersproject/base64";
 
 const ZERO_HEDERA_TIMESTAMP = "1000000000.000000000";
@@ -185,6 +185,10 @@ export interface Avatar {
     linkage: Array<{ type: string, content: string }>;
 }
 
+export interface ProviderOptions {
+    headers?: Record<string, string>
+}
+
 let defaultFormatter: Formatter = null;
 const MIRROR_NODE_TRANSACTIONS_ENDPOINT = '/api/v1/transactions/';
 const MIRROR_NODE_CONTRACTS_RESULTS_ENDPOINT = '/api/v1/contracts/results/';
@@ -213,14 +217,17 @@ export class BaseProvider extends Provider {
     _emittedEvents: { [key: string]: boolean }
     _previousPollingTimestamps: { [key: string]: Timestamp }
 
+    _options: ProviderOptions;
+
     readonly anyNetwork: boolean;
     private readonly hederaClient: Client;
     private readonly _mirrorNodeUrl: string; // initial mirror node URL, which is resolved from the provider's network
 
-    constructor(network: Networkish | Promise<Network> | HederaNetworkConfigLike) {
+    constructor(network: Networkish | Promise<Network> | HederaNetworkConfigLike, options?: ProviderOptions) {
         logger.checkNew(new.target, Provider);
         super();
 
+        this._options = options || {};
         this._events = [];
         this._emittedEvents = {};
         this._previousPollingTimestamps = {};
@@ -270,6 +277,10 @@ export class BaseProvider extends Provider {
         }
 
         this._pollingInterval = 3000;
+    }
+
+    private _makeRequest(uri: string): Promise<AxiosResponse<any, any>> {
+        return axios.get(this._mirrorNodeUrl + uri, { headers: this._options.headers});
     }
 
     async _ready(): Promise<Network> {
@@ -435,7 +446,7 @@ export class BaseProvider extends Provider {
         accountLike = await accountLike;
         const account = asAccountString(accountLike);
         try {
-            let {data} = await axios.get(this._mirrorNodeUrl + MIRROR_NODE_CONTRACTS_ENDPOINT + account);
+            let {data} = await this._makeRequest(MIRROR_NODE_CONTRACTS_ENDPOINT + account);
             return data.bytecode ? hexlify(data.bytecode) : `0x`;
         } catch (error) {
             if (error.response && error.response.status &&
@@ -561,7 +572,7 @@ export class BaseProvider extends Provider {
         let transactionsEndpoint = MIRROR_NODE_TRANSACTIONS_ENDPOINT;
         !transactionIdOrTimestamp.includes("-") ? transactionsEndpoint += ('?timestamp=' + transactionIdOrTimestamp) : transactionsEndpoint += transactionIdOrTimestamp;
         try {
-            let {data} = await axios.get(this._mirrorNodeUrl + transactionsEndpoint);
+            let {data} = await this._makeRequest(transactionsEndpoint)
             if (data) {
                 const filtered = data.transactions.filter((e: { result: string; }) => e.result != 'DUPLICATE_TRANSACTION');
                 if (filtered.length > 0) {
@@ -608,7 +619,7 @@ export class BaseProvider extends Provider {
                         }
                     } else {
                         const contractsEndpoint = MIRROR_NODE_CONTRACTS_RESULTS_ENDPOINT + filtered[0].transaction_id;
-                        const dataWithLogs = await axios.get(this._mirrorNodeUrl + contractsEndpoint);
+                        const dataWithLogs = await this._makeRequest(contractsEndpoint);
                         record = Object.assign({}, record, {...dataWithLogs.data});
                     }
 
@@ -660,7 +671,7 @@ export class BaseProvider extends Provider {
      * @param filter The parameters to filter logs by.
      */
     async getLogs(filter: Filter | Promise<Filter>): Promise<Array<Log>> {
-
+        
         this._checkMirrorNode();
         const params = await resolveProperties({filter: this._getFilter(filter)});
         // set default values
@@ -681,9 +692,10 @@ export class BaseProvider extends Provider {
                 }
             }
         }
-        const requestUrl = this._mirrorNodeUrl + epContractsLogs + toTimestampFilter + fromTimestampFilter;
+        const requestUrl = epContractsLogs + toTimestampFilter + fromTimestampFilter;
         try {
-            let {data} = await axios.get(requestUrl);
+            let {data} = await this._makeRequest(requestUrl);
+
             if (data) {
                 const mappedLogs = this.formatter.logsMapper(data.logs);
                 if (mappedLogs.length == oversizeResponseLength) {

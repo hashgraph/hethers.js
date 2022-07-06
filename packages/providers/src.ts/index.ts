@@ -15,7 +15,7 @@ import {
 import { getNetwork } from "@hethers/networks";
 import { Network, Networkish } from "@hethers/networks";
 
-import { BaseProvider } from "./base-provider";
+import { BaseProvider, ProviderOptions } from "./base-provider";
 
 import { DefaultHederaProvider } from "./default-hedera-provider";
 import { Formatter } from "./formatter";
@@ -29,7 +29,7 @@ const logger = new Logger(version);
 ////////////////////////
 // Helper Functions
 
-function getDefaultProvider(network?: Networkish, options?: any): BaseProvider {
+function getDefaultProvider(network?: Networkish, options?: ProviderOptions): BaseProvider {
     if (network == null) { network = "mainnet"; }
 
     // If passed a URL, figure out the right type of provider based on the scheme
@@ -100,6 +100,7 @@ export {
     TransactionResponse,
 
     Network,
-    Networkish
+    Networkish,
+    ProviderOptions
 };
 

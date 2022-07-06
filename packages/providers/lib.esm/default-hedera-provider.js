@@ -13,8 +13,8 @@ export var HederaNetworks;
  * Constructable with a string or a number, which automatically resolves to a hedera network via the hashgraph SDK.
  */
 export class DefaultHederaProvider extends BaseProvider {
-    constructor(network) {
-        super(network);
+    constructor(network, options) {
+        super(network, options);
     }
 }
 //# sourceMappingURL=default-hedera-provider.js.map

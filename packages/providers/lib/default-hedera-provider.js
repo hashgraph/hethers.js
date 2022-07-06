@@ -32,8 +32,8 @@ var HederaNetworks;
  */
 var DefaultHederaProvider = /** @class */ (function (_super) {
     __extends(DefaultHederaProvider, _super);
-    function DefaultHederaProvider(network) {
-        return _super.call(this, network) || this;
+    function DefaultHederaProvider(network, options) {
+        return _super.call(this, network, options) || this;
     }
     return DefaultHederaProvider;
 }(base_provider_1.BaseProvider));

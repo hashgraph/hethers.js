@@ -547,41 +547,45 @@ function waiter(duration) {
         }
     });
 }
-var allNetworks = ["default", "homestead", "ropsten", "rinkeby", "kovan", "goerli"];
-// We use separate API keys because otherwise the testcases sometimes
-// fail during CI because our default keys are pretty heavily used
-var _ApiKeys = {
-    alchemy: "YrPw6SWb20vJDRFkhWq8aKnTQ8JRNRHM",
-    etherscan: "FPFGK6JSW2UHJJ2666FG93KP7WC999MNW7",
-    infura: "49a0efa3aaee4fd99797bfa94d8ce2f1",
-};
-var _ApiKeysPocket = {
-    homestead: "6004bcd10040261633ade990",
-    ropsten: "6004bd4d0040261633ade991",
-    rinkeby: "6004bda20040261633ade994",
-    goerli: "6004bd860040261633ade992",
-};
-function getApiKeys(network) {
-    if (network === "default" || network == null) {
-        network = "homestead";
-    }
-    var apiKeys = hethers_1.hethers.utils.shallowCopy(_ApiKeys);
-    apiKeys.pocket = _ApiKeysPocket[network];
-    return apiKeys;
-}
+// const allNetworks = [ "default", "homestead", "ropsten", "rinkeby", "kovan", "goerli" ];
+// // We use separate API keys because otherwise the testcases sometimes
+// // fail during CI because our default keys are pretty heavily used
+// const _ApiKeys: Record<string, string> = {
+//     alchemy: "YrPw6SWb20vJDRFkhWq8aKnTQ8JRNRHM",
+//     etherscan: "FPFGK6JSW2UHJJ2666FG93KP7WC999MNW7",
+//     infura: "49a0efa3aaee4fd99797bfa94d8ce2f1",
+// };
+// const _ApiKeysPocket: Record<string, string> = {
+//     homestead: "6004bcd10040261633ade990",
+//     ropsten: "6004bd4d0040261633ade991",
+//     rinkeby: "6004bda20040261633ade994",
+//     goerli: "6004bd860040261633ade992",
+// };
+// type ApiKeySet = {
+//     alchemy: string;
+//     etherscan: string;
+//     infura: string;
+//     pocket: string;
+// };
+// function getApiKeys(network: string): ApiKeySet {
+//     if (network === "default" || network == null) { network = "homestead"; }
+//     const apiKeys = hethers.utils.shallowCopy(_ApiKeys);
+//     apiKeys.pocket = _ApiKeysPocket[network];
+//     return <ApiKeySet>apiKeys;
+// }
 // @ts-ignore
-var providerFunctions = [
-    {
-        name: "getDefaultProvider",
-        networks: allNetworks,
-        create: function (network) {
-            if (network == "default") {
-                return hethers_1.hethers.getDefaultProvider("homestead", getApiKeys(network));
-            }
-            return hethers_1.hethers.getDefaultProvider(network, getApiKeys(network));
-        }
-    },
-];
+// const providerFunctions: Array<ProviderDescription> = [
+//     {
+//         name: "getDefaultProvider",
+//         networks: allNetworks,
+//         create: (network: string) => {
+//             if (network == "default") {
+//                 return hethers.getDefaultProvider("homestead", getApiKeys(network));
+//             }
+//             return hethers.getDefaultProvider(network, getApiKeys(network));
+//         }
+//     },
+// ];
 // This wallet can be funded and used for various test cases
 var fundWallet = hethers_1.hethers.Wallet.createRandom();
 var testFunctions = [];
@@ -973,6 +977,24 @@ describe("Test Basic Authentication", function () {
         }, function (error) {
             return (error.reason === "basic authentication requires a secure https url");
         }, "throws an exception for insecure connections");
+    });
+});
+describe.only("Test Hedera Provider Options", function () {
+    var options = { headers: { testHeader: '123' } };
+    it("new DefaultHederaProvider", function () {
+        var provider = new providers_1.DefaultHederaProvider(default_hedera_provider_1.HederaNetworks.TESTNET, options);
+        assert_1.default.deepStrictEqual(provider._options, options);
+    });
+    it("getDefaultProvider", function () {
+        var provider = hethers_1.hethers.providers.getDefaultProvider('testnet', options);
+        assert_1.default.deepStrictEqual(provider._options, options);
+    });
+    it("HederaProvider", function () {
+        var consensusNodeId = '0.0.3';
+        var consensusNodeUrl = '0.testnet.hedera.com:50211';
+        var mirrorNodeUrl = 'https://testnet.mirrornode.hedera.com';
+        var provider = new hethers_1.hethers.providers.HederaProvider(consensusNodeId, consensusNodeUrl, mirrorNodeUrl, options);
+        assert_1.default.deepStrictEqual(provider._options, options);
     });
 });
 describe("Test Hedera Provider", function () {

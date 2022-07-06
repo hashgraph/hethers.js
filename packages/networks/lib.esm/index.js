@@ -13,7 +13,7 @@ function hederaDefaultProvider(network) {
         const providerList = [];
         // TODO: JSON RPC provider, FallbackProvider for hedera
         if (providers.DefaultHederaProvider) {
-            providerList.push(new providers.DefaultHederaProvider(network));
+            providerList.push(new providers.DefaultHederaProvider(network, options));
         }
         if (providerList.length === 0) {
             return null;
