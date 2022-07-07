@@ -982,17 +982,17 @@ describe("Test Basic Authentication", function () {
 describe("Test Hedera Provider Options", function () {
     var options = { headers: { testHeader: '123' } };
     it("DefaultHederaProvider", function () {
-        var provider = new providers_1.DefaultHederaProvider(default_hedera_provider_1.HederaNetworks.TESTNET, options);
+        var provider = new providers_1.DefaultHederaProvider(default_hedera_provider_1.HederaNetworks.LOCAL, options);
         assert_1.default.deepStrictEqual(provider._options, options);
     });
     it("getDefaultProvider", function () {
-        var provider = hethers_1.hethers.providers.getDefaultProvider('testnet', options);
+        var provider = hethers_1.hethers.providers.getDefaultProvider('local', options);
         assert_1.default.deepStrictEqual(provider._options, options);
     });
     it("HederaProvider", function () {
         var consensusNodeId = '0.0.3';
-        var consensusNodeUrl = '0.testnet.hedera.com:50211';
-        var mirrorNodeUrl = 'https://testnet.mirrornode.hedera.com';
+        var consensusNodeUrl = '127.0.0.1:50211';
+        var mirrorNodeUrl = 'http://127.0.0.1:5551';
         var provider = new hethers_1.hethers.providers.HederaProvider(consensusNodeId, consensusNodeUrl, mirrorNodeUrl, options);
         assert_1.default.deepStrictEqual(provider._options, options);
     });

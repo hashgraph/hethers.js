@@ -41,6 +41,11 @@ const networks = {
         chainId: 292,
         name: 'previewnet',
         _defaultProvider: hederaDefaultProvider("previewnet")
+    },
+    local: {
+        chainId: 298,
+        name: 'local',
+        _defaultProvider: hederaDefaultProvider("local")
     }
 };
 /**

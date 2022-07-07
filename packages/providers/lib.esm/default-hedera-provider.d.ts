@@ -3,7 +3,8 @@ import { Networkish } from "@hethers/networks";
 export declare enum HederaNetworks {
     TESTNET = "testnet",
     PREVIEWNET = "previewnet",
-    MAINNET = "mainnet"
+    MAINNET = "mainnet",
+    LOCAL = "local"
 }
 /**
  * The hedera provider uses the hashgraph module to establish a connection to the Hedera network.

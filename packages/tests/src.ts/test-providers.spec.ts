@@ -1011,22 +1011,22 @@ describe("Test Basic Authentication", function() {
 describe("Test Hedera Provider Options", function() {
     const options = {headers: { testHeader: '123'}};
 
-    it ("DefaultHederaProvider", () => {
-        const provider = new DefaultHederaProvider(HederaNetworks.TESTNET, options);
+    it("DefaultHederaProvider", () => {
+        const provider = new DefaultHederaProvider(HederaNetworks.LOCAL, options);
 
         assert.deepStrictEqual(provider._options, options);
     });
 
     it ("getDefaultProvider", () => {
-        const provider = hethers.providers.getDefaultProvider('testnet', options);
+        const provider = hethers.providers.getDefaultProvider('local', options);
 
         assert.deepStrictEqual(provider._options, options);
     });
 
     it ("HederaProvider", () => {
         const consensusNodeId = '0.0.3';
-        const consensusNodeUrl = '0.testnet.hedera.com:50211';
-        const mirrorNodeUrl = 'https://testnet.mirrornode.hedera.com';
+        const consensusNodeUrl = '127.0.0.1:50211';
+        const mirrorNodeUrl = 'http://127.0.0.1:5551';
         const provider = new hethers.providers.HederaProvider(consensusNodeId, consensusNodeUrl, mirrorNodeUrl, options);
 
         assert.deepStrictEqual(provider._options, options);

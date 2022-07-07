@@ -99279,6 +99279,11 @@ const networks = {
         chainId: 292,
         name: 'previewnet',
         _defaultProvider: hederaDefaultProvider("previewnet")
+    },
+    local: {
+        chainId: 298,
+        name: 'local',
+        _defaultProvider: hederaDefaultProvider("local")
     }
 };
 /**
@@ -103860,6 +103865,9 @@ let defaultFormatter = null;
 const MIRROR_NODE_TRANSACTIONS_ENDPOINT = '/api/v1/transactions/';
 const MIRROR_NODE_CONTRACTS_RESULTS_ENDPOINT = '/api/v1/contracts/results/';
 const MIRROR_NODE_CONTRACTS_ENDPOINT = '/api/v1/contracts/';
+const localConsensusNodeId = '0.0.3';
+const localConsensusNodeUrl = '127.0.0.1:50211';
+const localMirrorNodeUrl = 'http://127.0.0.1:5551';
 let nextPollId = 1;
 function formatTimestamp(s) {
     const [sec, nano] = s.split(".");
@@ -103904,7 +103912,8 @@ class BaseProvider extends Provider {
                 else {
                     logger$A.throwArgumentError("invalid network", "network", network);
                 }
-                this.hederaClient = NodeClient.forName(mapNetworkToHederaNetworkName(asDefaultNetwork));
+                const hederaNetwork = mapNetworkToHederaNetworkName(asDefaultNetwork);
+                this.hederaClient = typeof hederaNetwork === 'string' ? NodeClient.forName(hederaNetwork) : NodeClient.forNetwork(hederaNetwork);
                 this._mirrorNodeUrl = resolveMirrorNetworkUrl(this._network);
             }
             else {
@@ -104567,6 +104576,8 @@ function mapNetworkToHederaNetworkName(net) {
             return NetworkName.Previewnet;
         case 'testnet':
             return NetworkName.Testnet;
+        case 'local':
+            return { [localConsensusNodeUrl]: localConsensusNodeId };
         default:
             logger$A.throwArgumentError("Invalid network name", "network", net);
             return null;
@@ -104581,6 +104592,8 @@ function resolveMirrorNetworkUrl(net) {
             return 'https://previewnet.mirrornode.hedera.com';
         case 'testnet':
             return 'https://testnet.mirrornode.hedera.com';
+        case 'local':
+            return localMirrorNodeUrl;
         default:
             logger$A.throwArgumentError("Invalid network name", "network", net);
             return null;
@@ -104614,6 +104627,7 @@ var HederaNetworks;
     HederaNetworks["TESTNET"] = "testnet";
     HederaNetworks["PREVIEWNET"] = "previewnet";
     HederaNetworks["MAINNET"] = "mainnet";
+    HederaNetworks["LOCAL"] = "local";
 })(HederaNetworks || (HederaNetworks = {}));
 /**
  * The hedera provider uses the hashgraph module to establish a connection to the Hedera network.
@@ -104680,7 +104694,8 @@ var index$5 = /*#__PURE__*/Object.freeze({
 	HederaProvider: HederaProvider,
 	getDefaultProvider: getDefaultProvider,
 	getNetwork: getNetwork,
-	Formatter: Formatter
+	Formatter: Formatter,
+	get HederaNetworks () { return HederaNetworks; }
 });
 
 const version$v = "solidity/5.5.0";

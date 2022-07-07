@@ -194,6 +194,10 @@ const MIRROR_NODE_TRANSACTIONS_ENDPOINT = '/api/v1/transactions/';
 const MIRROR_NODE_CONTRACTS_RESULTS_ENDPOINT = '/api/v1/contracts/results/';
 const MIRROR_NODE_CONTRACTS_ENDPOINT = '/api/v1/contracts/';
 
+const localConsensusNodeId = '0.0.3';
+const localConsensusNodeUrl = '127.0.0.1:50211';
+const localMirrorNodeUrl = 'http://127.0.0.1:5551';
+
 let nextPollId = 1;
 
 function formatTimestamp(s: string): string {
@@ -262,7 +266,8 @@ export class BaseProvider extends Provider {
                 } else {
                     logger.throwArgumentError("invalid network", "network", network);
                 }
-                this.hederaClient = Client.forName(mapNetworkToHederaNetworkName(asDefaultNetwork));
+                const hederaNetwork = mapNetworkToHederaNetworkName(asDefaultNetwork);
+                this.hederaClient = typeof hederaNetwork === 'string' ? Client.forName(hederaNetwork) : Client.forNetwork(hederaNetwork);
                 this._mirrorNodeUrl = resolveMirrorNetworkUrl(this._network);
             } else {
                 const asHederaNetwork = network as HederaNetworkConfigLike;
@@ -966,6 +971,8 @@ function mapNetworkToHederaNetworkName(net: Network | string | number | Promise<
             return NetworkName.Previewnet;
         case 'testnet':
             return NetworkName.Testnet;
+        case 'local':
+            return {[localConsensusNodeUrl]: localConsensusNodeId};
         default:
             logger.throwArgumentError("Invalid network name", "network", net);
             return null;
@@ -981,6 +988,8 @@ function resolveMirrorNetworkUrl(net: Network): string {
             return 'https://previewnet.mirrornode.hedera.com';
         case 'testnet':
             return 'https://testnet.mirrornode.hedera.com';
+        case 'local':
+            return localMirrorNodeUrl;
         default:
             logger.throwArgumentError("Invalid network name", "network", net);
             return null;

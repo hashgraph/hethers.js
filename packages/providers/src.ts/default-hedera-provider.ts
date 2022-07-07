@@ -5,7 +5,8 @@ import { Networkish } from "@hethers/networks";
 export enum HederaNetworks {
     TESTNET = "testnet",
     PREVIEWNET = "previewnet",
-    MAINNET = "mainnet"
+    MAINNET = "mainnet",
+    LOCAL = "local"
 }
 
 /**

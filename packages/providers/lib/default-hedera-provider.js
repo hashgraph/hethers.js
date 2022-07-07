@@ -23,6 +23,7 @@ var HederaNetworks;
     HederaNetworks["TESTNET"] = "testnet";
     HederaNetworks["PREVIEWNET"] = "previewnet";
     HederaNetworks["MAINNET"] = "mainnet";
+    HederaNetworks["LOCAL"] = "local";
 })(HederaNetworks = exports.HederaNetworks || (exports.HederaNetworks = {}));
 /**
  * The hedera provider uses the hashgraph module to establish a connection to the Hedera network.

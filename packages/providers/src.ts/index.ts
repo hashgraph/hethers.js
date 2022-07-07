@@ -17,7 +17,7 @@ import { Network, Networkish } from "@hethers/networks";
 
 import { BaseProvider, ProviderOptions } from "./base-provider";
 
-import { DefaultHederaProvider } from "./default-hedera-provider";
+import { DefaultHederaProvider, HederaNetworks } from "./default-hedera-provider";
 import { Formatter } from "./formatter";
 
 import { Logger } from "@hethers/logger";
@@ -101,6 +101,7 @@ export {
 
     Network,
     Networkish,
-    ProviderOptions
+    ProviderOptions,
+    HederaNetworks
 };
 
