@@ -15,17 +15,35 @@ const bytecodeTokenWithArgs = readFileSync('packages/tests/contracts/TokenWithAr
 const iUniswapV2PairAbi = JSON.parse(fs.readFileSync('packages/tests/contracts/IUniswapV2Pair.abi.json').toString());
 
 const TIMEOUT_PERIOD = 120000;
-const hederaEoa = {
+// TODO: create it dynamicaly
+const localProvider = hethers.providers.getDefaultProvider('local');
+const testnetProvider = hethers.providers.getDefaultProvider('testnet');
+
+const hederaLocalEoaED25519 = {
+    account: '0.0.2',
+    privateKey: '302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137',
+    isED25519Type: true
+}
+const hederaLocalEoaECDSA = {
+    account: '0.0.1002',
+    privateKey: '0x792e03ba76c420a7982808a47b55f4c454d44bacb5c0a1fd3d4be7550b48742f'
+};
+const hederaTestnetEoaECDSA = {
     account: '0.0.29562194',
     privateKey: '0x3b6cd41ded6986add931390d5d3efa0bb2b311a8415cfe66716cac0234de035d'
 };
 
+// @ts-ignore
+const testnetWalletECDSA = new hethers.Wallet(hederaTestnetEoaECDSA, testnetProvider);
+// @ts-ignore
+const localWalletECDSA = new hethers.Wallet(hederaLocalEoaECDSA, localProvider);
+// @ts-ignore
+const localWalletED25519 = new hethers.Wallet(hederaLocalEoaED25519, localProvider);
+
 describe("Test Contract Transaction Population", function () {
-    const provider = hethers.providers.getDefaultProvider('testnet');
-    // @ts-ignore
-    const wallet = new hethers.Wallet(hederaEoa, provider);
+
     it("should return an array of transactions on getDeployTransaction call", async function () {
-        const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, wallet);
+        const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, localWalletECDSA);
         const transaction = contractFactory.getDeployTransaction(hethers.BigNumber.from("1000000"), {
             gasLimit: 300000
         });
@@ -36,30 +54,30 @@ describe("Test Contract Transaction Population", function () {
     });
 
     it("should be able to deploy a contract", async function () {
-        const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, wallet);
+        const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, localWalletECDSA);
         const contract = await contractFactory.deploy(hethers.BigNumber.from("10000"), { gasLimit: 300000 });
         assert.notStrictEqual(contract, null, "nullified contract");
         assert.notStrictEqual(contract.deployTransaction, "missing deploy transaction");
         assert.notStrictEqual(contract.address, null, 'missing address');
-        const balance = await contract.balanceOf(wallet.address, { gasLimit: 300000 });
+        const balance = await contract.balanceOf(localWalletECDSA.address, { gasLimit: 300000 });
         assert.strictEqual(BigNumber.from(balance).toNumber(), 10000, 'balance mismatch');
     }).timeout(300000);
 
     it("should be able to call contract methods", async function () {
         this.timeout(3000000);
-        const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, wallet);
+        const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, localWalletECDSA);
         const contract = await contractFactory.deploy(hethers.BigNumber.from('10000'), { gasLimit: 3000000 });
         await contract.deployed();
 
         // client wallet init
         let clientWallet = hethers.Wallet.createRandom();
-        const clientAccountId = (await wallet.createAccount(clientWallet._signingKey().compressedPublicKey)).customData.accountId;
-        clientWallet = clientWallet.connect(provider).connectAccount(clientAccountId.toString());
+        const clientAccountId = (await localWalletECDSA.createAccount(clientWallet._signingKey().compressedPublicKey)).customData.accountId;
+        clientWallet = clientWallet.connect(localProvider).connectAccount(clientAccountId.toString());
 
         // test sending hbars to the contract
-        await wallet.sendTransaction({
+        await localWalletECDSA.sendTransaction({
             to: contract.address,
-            from: wallet.address,
+            from: localWalletECDSA.address,
             value: 30,
             gasLimit: 300000
         });
@@ -73,8 +91,8 @@ describe("Test Contract Transaction Population", function () {
 
         // test sending hbars via populateTransaction.transfer
         const populatedTx = await contract.populateTransaction.transfer(clientWallet.address, 10, {gasLimit: 3000000});
-        const signedTransaction = await wallet.signTransaction(populatedTx);
-        const tx = await wallet.provider.sendTransaction(signedTransaction);
+        const signedTransaction = await localWalletECDSA.signTransaction(populatedTx);
+        const tx = await localWalletECDSA.provider.sendTransaction(signedTransaction);
         await tx.wait();
         assert.strictEqual((await contract.balanceOf(clientWallet.address, {gasLimit: 3000000})).toString(), '10');
 
@@ -85,7 +103,7 @@ describe("Test Contract Transaction Population", function () {
     });
 
     it('should have a .wait function', async function() {
-       const contractFactory = new hethers.ContractFactory(abiToken, bytecodeToken, wallet);
+       const contractFactory = new hethers.ContractFactory(abiToken, bytecodeToken, localWalletECDSA);
        const contract = await contractFactory.deploy( { gasLimit: 300000 });
 
        try {
@@ -152,12 +170,11 @@ describe("Test Contract Transaction Population", function () {
    }).timeout(300000);
 });
 
-describe('Contract Events', function () {
+describe('Contract Events', async function () {
     this.retries(3);
-    const provider = hethers.providers.getDefaultProvider('testnet');
-    // @ts-ignore
-    const wallet = new hethers.Wallet(hederaEoa, provider);
-    const contract = hethers.ContractFactory.getContract('0x0000000000000000000000000000000001c42805', abiTokenWithArgs, wallet);
+    this.timeout(60000)
+    
+    // const contract = hethers.ContractFactory.getContract(, abiTokenWithArgs, localWalletECDSA);
     const sleep = async (timeout: number) => {
         await new Promise(resolve => {
             setTimeout(resolve, timeout);
@@ -165,6 +182,15 @@ describe('Contract Events', function () {
     };
     const enoughEventsCaptured = (n: number, expectedN: number) => n >= expectedN;
     const mintCount = 5;
+
+    let contract: hethers.Contract;
+    
+    this.beforeAll(async () => {
+        const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, localWalletECDSA);
+        const factory = await contractFactory.deploy(hethers.BigNumber.from('10000'), { gasLimit: 3000000 });
+        
+        contract = await factory.deployed();
+    }).timeout(60000);
 
     it("should be able to capture events via contract", async function () {
         const capturedMints: any[] = [];
@@ -183,13 +209,13 @@ describe('Contract Events', function () {
             true,
             `expected ${mintCount} captured events (Mint). Got ${capturedMints.length}`);
         for (let mint of capturedMints) {
-            assert.strictEqual(mint[0].toLowerCase(), wallet.address.toLowerCase(), "address mismatch - mint");
+            assert.strictEqual(mint[0].toLowerCase(), localWalletECDSA.address.toLowerCase(), "address mismatch - mint");
         }
     }).timeout(TIMEOUT_PERIOD * 3);
 
     it('should be able to capture events via provider', async function () {
         const capturedMints: any[] = [];
-        provider.on({
+        localProvider.on({
             address: contract.address, topics: [
                 '0x0f6798a560793a54c3bcfe86a93cde1e73087d944c0ea20544137d4121396885'
             ]
@@ -202,7 +228,7 @@ describe('Contract Events', function () {
             await mint.wait();
         }
         await sleep(mintCount * 5000);
-        provider.removeAllListeners();
+        localProvider.removeAllListeners();
         assert.strictEqual(
             enoughEventsCaptured(capturedMints.length, mintCount),
             true,
@@ -220,27 +246,27 @@ describe('Contract Events', function () {
         };
         const noop = () => { };
         const capturedErrors: any[] = [];
-        provider.on(filter, noop);
-        provider.on('error', (error) => {
+        localProvider.on(filter, noop);
+        localProvider.on('error', (error) => {
             assert.notStrictEqual(error, null);
             capturedErrors.push(error);
         });
         await sleep(20000);
         const filtered = capturedErrors.filter(e => e.code === Logger.errors.INVALID_ARGUMENT);
         assert.strictEqual(filtered.length > 0, true, "expected atleast 1 INVALID_AGRUMENT error");
-        provider.removeAllListeners();
+        localProvider.removeAllListeners();
     }).timeout(TIMEOUT_PERIOD);
 });
 
 describe('Contract Aliases', async function () {
-    const provider = hethers.providers.getDefaultProvider('testnet');
     const gasLimit = 3000000;
-    // @ts-ignore
-    const wallet = new hethers.Wallet(hederaEoa, provider);
+
     it('Should detect contract aliases', async function () {
+        // TODO: deploy and use local contract address
+
         const contractAlias = '0xbd438E8416b13e962781eBAfE344d45DC0DBBc0c';
 
-        const c1 = hethers.ContractFactory.getContract(contractAlias, iUniswapV2PairAbi.abi, wallet);
+        const c1 = hethers.ContractFactory.getContract(contractAlias, iUniswapV2PairAbi.abi, testnetWalletECDSA);
         const token0 = await c1.token0({gasLimit});
         assert.notStrictEqual(token0, "");
         assert.notStrictEqual(token0, null);
@@ -262,19 +288,19 @@ describe('Contract Aliases', async function () {
         const factoryAbi = JSON.parse(fs.readFileSync('packages/tests/contracts/Factory.abi.json').toString());
         const accAbi = JSON.parse(fs.readFileSync('packages/tests/contracts/Account.abi.json').toString());
         const salt = 1111;
-        const factoryCFactory = new hethers.ContractFactory(factoryAbi, factoryBytecode, wallet);
+        const factoryCFactory = new hethers.ContractFactory(factoryAbi, factoryBytecode, localWalletECDSA);
         const _factory = await factoryCFactory.deploy({gasLimit:3000000});
-        const factory = hethers.ContractFactory.getContract(_factory.address, factoryAbi, wallet);
+        const factory = hethers.ContractFactory.getContract(_factory.address, factoryAbi, localWalletECDSA);
         // the second argument is the salt we have used, and we can skip it as we defined it above
         factory.on('Deployed', async (addr: string, _: any) => {
-            const account = hethers.ContractFactory.getContract(addr, accAbi, wallet);
+            const account = hethers.ContractFactory.getContract(addr, accAbi, localWalletECDSA);
             let owner = await account.getOwner({gasLimit: 3000000});
             assert.strictEqual(owner, hethers.constants.AddressZero);
-            const resp = await account.setOwner(wallet.address, {gasLimit:3000000});
+            const resp = await account.setOwner(localWalletECDSA.address, {gasLimit:3000000});
             assert.notStrictEqual(resp, null, 'expected a defined tx response');
 
             owner = await account.getOwner({gasLimit: 3000000});
-            assert.strictEqual(owner, wallet.address, "expected owner to be changed after `setOwner` call");
+            assert.strictEqual(owner, localWalletECDSA.address, "expected owner to be changed after `setOwner` call");
             factory.removeAllListeners();
         });
         const deployArgs = hexlify(`0x${accBytecode}`);
@@ -285,18 +311,8 @@ describe('Contract Aliases', async function () {
 });
 
 describe("contract.deployed with ED25519 keys", function () {
-    const hederaEoa = {
-        account: "0.0.34100425",
-        alias: "0.0.QsxEYZU82YPvQqrZ8DAfOktZjmbcfjaPwVATlsaJCCM=",
-        privateKey: "302e020100300506032b65700422042006bd0453347618988f1e1c60bd3e57892a4b8603969827d65b1a87d13b463d70",
-        isED25519Type: true
-    };
-    const provider = hethers.providers.getDefaultProvider('testnet');
-    // @ts-ignore
-    const wallet = new hethers.Wallet(hederaEoa, provider);
-
     it("should deploy a contract", async function () {
-        const contractFactory = new hethers.ContractFactory(abiToken, bytecodeToken, wallet);
+        const contractFactory = new hethers.ContractFactory(abiToken, bytecodeToken, localWalletED25519);
         const contract = await contractFactory.deploy({ gasLimit: 300000 });
         assert.notStrictEqual(contract, null, "nullified contract");
         assert.notStrictEqual(contract.deployTransaction, "missing deploy transaction");
@@ -311,11 +327,11 @@ describe("contract.deployed with ED25519 keys", function () {
 
     it("should deploy a contract from newly created account", async function () {
         const newAccount = hethers.Wallet.createRandom({ isED25519Type: true });
-        const clientAccountId = (await wallet.createAccount(newAccount._signingKey().compressedPublicKey, BigInt("10000000000"))).customData.accountId;
-        const newWallet = newAccount.connect(provider).connectAccount(clientAccountId.toString());
+        const clientAccountId = (await localWalletED25519.createAccount(newAccount._signingKey().compressedPublicKey, BigInt("10000000000"))).customData.accountId;
+        const newWallet = newAccount.connect(localProvider).connectAccount(clientAccountId.toString());
 
         const newAccountAddress = hethers.utils.getAddressFromAccount(clientAccountId.toString());
-        const newAccBalance = await provider.getBalance(newAccountAddress);
+        const newAccBalance = await localProvider.getBalance(newAccountAddress);
 
         assert.strictEqual(newAccBalance.toNumber(), 10000000000);
 
@@ -336,8 +352,8 @@ describe("contract.deployed with ED25519 keys", function () {
         let errorCode = null;
 
         const newAccount = hethers.Wallet.createRandom({ isED25519Type: true });
-        const clientAccountId = (await wallet.createAccount(newAccount._signingKey().compressedPublicKey)).customData.accountId;
-        const newWallet = newAccount.connect(provider).connectAccount(clientAccountId.toString());
+        const clientAccountId = (await localWalletED25519.createAccount(newAccount._signingKey().compressedPublicKey)).customData.accountId;
+        const newWallet = newAccount.connect(localProvider).connectAccount(clientAccountId.toString());
         try {
             const contractFactory = new hethers.ContractFactory(abiToken, bytecodeToken, newWallet);
             await contractFactory.deploy({ gasLimit: 300000 });
@@ -351,19 +367,19 @@ describe("contract.deployed with ED25519 keys", function () {
     }).timeout(60000);
 
     it("should be able to call contract methods", async function () {
-        const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, wallet);
+        const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, localWalletED25519);
         const contract = await contractFactory.deploy(hethers.BigNumber.from('10000'), { gasLimit: 3000000 });
         await contract.deployed();
 
         // client wallet init
         let clientWallet = hethers.Wallet.createRandom({ isED25519Type: true });
-        const clientAccountId = (await wallet.createAccount(clientWallet._signingKey().compressedPublicKey)).customData.accountId;
-        clientWallet = clientWallet.connect(provider).connectAccount(clientAccountId.toString());
+        const clientAccountId = (await localWalletED25519.createAccount(clientWallet._signingKey().compressedPublicKey)).customData.accountId;
+        clientWallet = clientWallet.connect(localProvider).connectAccount(clientAccountId.toString());
 
         // test sending hbars to the contract
-        await wallet.sendTransaction({
+        await localWalletED25519.sendTransaction({
             to: contract.address,
-            from: wallet.address,
+            from: localWalletED25519.address,
             value: 30,
             gasLimit: 300000
         });
@@ -377,8 +393,8 @@ describe("contract.deployed with ED25519 keys", function () {
 
         // test sending hbars via populateTransaction.transfer
         const populatedTx = await contract.populateTransaction.transfer(clientWallet.address, 10, { gasLimit: 300000 });
-        const signedTransaction = await wallet.signTransaction(populatedTx);
-        const tx = await wallet.provider.sendTransaction(signedTransaction);
+        const signedTransaction = await localWalletED25519.signTransaction(populatedTx);
+        const tx = await localWalletED25519.provider.sendTransaction(signedTransaction);
         await tx.wait();
         assert.strictEqual((await contract.balanceOf(clientWallet.address, { gasLimit: 300000 })).toString(), '10');
 
@@ -391,25 +407,23 @@ describe("contract.deployed with ED25519 keys", function () {
 });
 
 describe("contract.deployed", function () {
-    const hederaEoa = {
-        account: '0.0.29562194',
-        privateKey: '0x3b6cd41ded6986add931390d5d3efa0bb2b311a8415cfe66716cac0234de035d'
-    };
-    const provider = hethers.providers.getDefaultProvider('testnet');
-    // @ts-ignore
-    const wallet = new hethers.Wallet(hederaEoa, provider);
 
     it("should work for already deployed contracts", async function () {
-        const contract = hethers.ContractFactory.getContract('0000000000000000000000000000000001c3903b', abiToken, wallet);
-        const contractDeployed = await contract.deployed();
+        const factory = new hethers.ContractFactory(abiToken, bytecodeToken, localWalletECDSA);
+        const contract = await factory.deploy({ gasLimit: 300000 });
 
-        assert.notStrictEqual(contractDeployed, null, "deployed returns the contract");
-        assert.strictEqual(contractDeployed.address, contract.address, "deployed returns the same contract instance");
+        await contract.deployed();
+        const retrievedContract = hethers.ContractFactory.getContract(contract.address, abiToken, localWalletECDSA);
+
+        const retrievedContractDeployed = await retrievedContract.deployed();
+
+        assert.notStrictEqual(retrievedContractDeployed, null, "deployed returns the contract");
+        assert.strictEqual(retrievedContractDeployed.address, contract.address, "deployed returns the same contract instance");
     }).timeout(60000);
 
 
     it("should work if contract is just now deployed", async function () {
-        const contractFactory = new hethers.ContractFactory(abiToken, bytecodeToken, wallet);
+        const contractFactory = new hethers.ContractFactory(abiToken, bytecodeToken, localWalletECDSA);
         const contract = await contractFactory.deploy({ gasLimit: 300000 });
         assert.notStrictEqual(contract, null, "nullified contract");
         assert.notStrictEqual(contract.deployTransaction, "missing deploy transaction");
@@ -425,19 +439,11 @@ describe("contract.deployed", function () {
 });
 
 describe("Test Contract Query Filter", function () {
-    const hederaEoa = {
-        account: '0.0.29562194',
-        privateKey: '0x3b6cd41ded6986add931390d5d3efa0bb2b311a8415cfe66716cac0234de035d'
-    };
-    const provider = hethers.providers.getDefaultProvider('testnet');
-    // @ts-ignore
-    const wallet = new hethers.Wallet(hederaEoa, provider);
-
     it("should filter contract events by timestamp string", async function () {
         const contractAddress = '0x000000000000000000000000000000000186fb1a';
         const fromTimestamp = '1642065156.264170833';
         const toTimestamp = '1642080642.176149864';
-        const contract = hethers.ContractFactory.getContract(contractAddress, abiToken, wallet);
+        const contract = hethers.ContractFactory.getContract(contractAddress, abiToken, testnetWalletECDSA);
         const filter = {
             address: contractAddress,
         }
@@ -461,7 +467,7 @@ describe("Test Contract Query Filter", function () {
         const contractAddress = '0x000000000000000000000000000000000186fb1a';
         const fromTimestamp = 1642065156264170;
         const toTimestamp = 1642080642176150;
-        const contract = hethers.ContractFactory.getContract(contractAddress, abiToken, wallet);
+        const contract = hethers.ContractFactory.getContract(contractAddress, abiToken, testnetWalletECDSA);
         const filter = {
             address: contractAddress,
         }

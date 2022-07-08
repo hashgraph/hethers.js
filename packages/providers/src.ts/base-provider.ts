@@ -429,7 +429,7 @@ export class BaseProvider extends Provider {
             const balance = await new AccountBalanceQuery()
                 .setAccountId(AccountId.fromString(account))
                 .execute(this.hederaClient);
-            return BigNumber.from(balance.hbars.toTinybars().toNumber());
+            return BigNumber.from(balance.hbars.toTinybars().toString());
         } catch (error) {
             return logger.throwError("bad result from backend", Logger.errors.SERVER_ERROR, {
                 method: "AccountBalanceQuery",

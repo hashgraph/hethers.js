@@ -82,6 +82,14 @@ function equals(a, b) {
     }
     return a === b;
 }
+// TODO: create it dynamicaly
+var localProvider = hethers_1.hethers.providers.getDefaultProvider('local');
+var hederaLocalEoaECDSA = {
+    account: '0.0.1002',
+    privateKey: '0x792e03ba76c420a7982808a47b55f4c454d44bacb5c0a1fd3d4be7550b48742f'
+};
+// @ts-ignore
+var localWalletECDSA = new hethers_1.hethers.Wallet(hederaLocalEoaECDSA, localProvider);
 describe('Test Unit Conversion', function () {
     it("should be able to execute formats with commify", function () {
         var tests = {
@@ -506,13 +514,6 @@ describe("Test Typed Transactions", function () {
             });
         });
     });
-    var hederaEoa = {
-        account: '0.0.29562194',
-        privateKey: '0x3b6cd41ded6986add931390d5d3efa0bb2b311a8415cfe66716cac0234de035d'
-    };
-    var provider = hethers_1.hethers.providers.getDefaultProvider('testnet');
-    // @ts-ignore
-    var wallet = new hethers_1.hethers.Wallet(hederaEoa, provider);
     it('should place admin key for contracts when given', function () { return __awaiter(_this, void 0, void 0, function () {
         var tx, signedTx, signedBytes, parsedHederaTx, adminKey;
         return __generator(this, function (_a) {
@@ -523,10 +524,10 @@ describe("Test Typed Transactions", function () {
                         gasLimit: 30000,
                         customData: {
                             bytecodeFileId: '1.1.1',
-                            contractAdminKey: wallet._signingKey().compressedPublicKey
+                            contractAdminKey: localWalletECDSA._signingKey().compressedPublicKey
                         }
                     };
-                    return [4 /*yield*/, wallet.signTransaction(tx)];
+                    return [4 /*yield*/, localWalletECDSA.signTransaction(tx)];
                 case 1:
                     signedTx = _a.sent();
                     signedBytes = hethers_1.hethers.utils.arrayify(signedTx);
@@ -550,7 +551,7 @@ describe("Test Typed Transactions", function () {
                             contractAdminKey: '0.0.2'
                         }
                     };
-                    return [4 /*yield*/, wallet.signTransaction(tx)];
+                    return [4 /*yield*/, localWalletECDSA.signTransaction(tx)];
                 case 1:
                     signedTx = _a.sent();
                     signedBytes = hethers_1.hethers.utils.arrayify(signedTx);
@@ -575,7 +576,7 @@ describe("Test Typed Transactions", function () {
                             contractAdminKey: addr
                         }
                     };
-                    return [4 /*yield*/, wallet.signTransaction(tx)];
+                    return [4 /*yield*/, localWalletECDSA.signTransaction(tx)];
                 case 1:
                     signedTx = _a.sent();
                     signedBytes = hethers_1.hethers.utils.arrayify(signedTx);
@@ -601,7 +602,7 @@ describe("Test Typed Transactions", function () {
                                 contractMemo: memo
                             }
                         };
-                        return [4 /*yield*/, wallet.signTransaction(tx)];
+                        return [4 /*yield*/, localWalletECDSA.signTransaction(tx)];
                     case 1:
                         signedTx = _a.sent();
                         signedBytes = hethers_1.hethers.utils.arrayify(signedTx);
@@ -631,7 +632,7 @@ describe("Test Typed Transactions", function () {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, wallet.signTransaction(tx)];
+                        return [4 /*yield*/, localWalletECDSA.signTransaction(tx)];
                     case 2:
                         _a.sent();
                         return [3 /*break*/, 4];
@@ -648,7 +649,7 @@ describe("Test Typed Transactions", function () {
                         _a.label = 5;
                     case 5:
                         _a.trys.push([5, 7, , 8]);
-                        return [4 /*yield*/, wallet.signTransaction(tx)];
+                        return [4 /*yield*/, localWalletECDSA.signTransaction(tx)];
                     case 6:
                         _a.sent();
                         return [3 /*break*/, 8];
@@ -664,7 +665,7 @@ describe("Test Typed Transactions", function () {
                         _a.label = 9;
                     case 9:
                         _a.trys.push([9, 11, , 12]);
-                        return [4 /*yield*/, wallet.signTransaction(tx)];
+                        return [4 /*yield*/, localWalletECDSA.signTransaction(tx)];
                     case 10:
                         _a.sent();
                         return [3 /*break*/, 12];
@@ -695,7 +696,7 @@ describe("Test Typed Transactions", function () {
                                 memo: txMemo
                             }
                         };
-                        return [4 /*yield*/, wallet.signTransaction(tx)];
+                        return [4 /*yield*/, localWalletECDSA.signTransaction(tx)];
                     case 1:
                         signedTx = _a.sent();
                         signedBytes = hethers_1.hethers.utils.arrayify(signedTx);

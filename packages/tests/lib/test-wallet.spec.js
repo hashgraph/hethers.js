@@ -77,12 +77,34 @@ var sdk_1 = require("@hashgraph/sdk");
 var fs_1 = require("fs");
 var abi = JSON.parse((0, fs_1.readFileSync)('packages/tests/contracts/Token.json').toString());
 var abiTokenWithArgs = JSON.parse((0, fs_1.readFileSync)('packages/tests/contracts/TokenWithArgs.json').toString());
+// TODO: create it dynamicaly
+var localProvider = hethers_1.hethers.providers.getDefaultProvider('local');
+var testnetProvider = hethers_1.hethers.providers.getDefaultProvider('testnet');
+var hederaLocalEoaED25519 = {
+    account: '0.0.1173',
+    privateKey: '0xac20be39543c08bb72c80316ce2fe2af1bfbafc7b8eba56b4eeef90d2cdc6218',
+    isED25519Type: true
+};
+var hederaLocalEoaECDSA = {
+    account: '0.0.1002',
+    privateKey: '0x792e03ba76c420a7982808a47b55f4c454d44bacb5c0a1fd3d4be7550b48742f'
+};
+var hederaTestnetEoaECDSA = {
+    account: '0.0.29562194',
+    privateKey: '0x3b6cd41ded6986add931390d5d3efa0bb2b311a8415cfe66716cac0234de035d'
+};
+// @ts-ignore
+var testnetWalletECDSA = new hethers_1.hethers.Wallet(hederaTestnetEoaECDSA, testnetProvider);
+// @ts-ignore
+var localWalletECDSA = new hethers_1.hethers.Wallet(hederaLocalEoaECDSA, localProvider);
+// @ts-ignore
+var localWalletED25519 = new hethers_1.hethers.Wallet(hederaLocalEoaED25519, localProvider);
 describe('Test JSON Wallets', function () {
     var tests = (0, testcases_1.loadTests)('wallets');
     tests.forEach(function (test) {
         it(('decrypts wallet - ' + test.name), function () {
             return __awaiter(this, void 0, void 0, function () {
-                var wallet, walletAddress, provider, walletConnected, wallet2, wallet2;
+                var wallet, walletAddress, walletConnected, wallet2, wallet2;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -102,9 +124,8 @@ describe('Test JSON Wallets', function () {
                         case 3:
                             // Test connect
                             {
-                                provider = hethers_1.hethers.providers.getDefaultProvider();
-                                walletConnected = wallet.connect(provider);
-                                assert_1.default.strictEqual(walletConnected.provider, provider, "provider is connected");
+                                walletConnected = wallet.connect(localProvider);
+                                assert_1.default.strictEqual(walletConnected.provider, localProvider, "provider is connected");
                                 assert_1.default.ok((wallet.provider == null), "original wallet provider is null");
                                 if (test.hasAddress) {
                                     assert_1.default.strictEqual(walletConnected.address.toLowerCase(), test.address, "connected correct address - " + wallet.address);
@@ -254,14 +275,13 @@ describe("Test wallet keys", function () {
     });
     it('Should prefix keys when given eoa in constructor', function () {
         return __awaiter(this, void 0, void 0, function () {
-            var provider, eoa, wallet, privKey;
+            var eoa, wallet, privKey;
             return __generator(this, function (_a) {
-                provider = hethers_1.hethers.providers.getDefaultProvider('testnet');
                 eoa = {
                     account: '1.1.1',
                     privateKey: "074cc0bd198d1bc91f668c59b46a1e74fd13215661e5a7bd42ad0d324476295d"
                 };
-                wallet = new hethers_1.hethers.Wallet(eoa, provider);
+                wallet = new hethers_1.hethers.Wallet(eoa, localProvider);
                 privKey = wallet._signingKey().privateKey;
                 assert_1.default.strictEqual('0x' + eoa.privateKey, privKey);
                 return [2 /*return*/];
@@ -583,32 +603,32 @@ describe("Wallet Errors", function () {
     // });
 });
 describe("Wallet(ED25519) tx signing", function () {
-    var hederaEoaED = {
-        account: "0.0.34100425",
-        privateKey: "06bd0453347618988f1e1c60bd3e57892a4b8603969827d65b1a87d13b463d70",
-        isED25519Type: true,
-    };
-    var hederaEoaEC = {
-        privateKey: "0xb4dcc0874133bede5d88ce1f30dad6016fbed30bc070936e9ff115b177da9cf3",
-        account: "0.0.34201607",
-        isED25519Type: false
-    };
-    var provider = hethers_1.hethers.providers.getDefaultProvider('testnet');
-    var walletED = new hethers_1.hethers.Wallet(hederaEoaED, provider);
-    var walletEC = new hethers_1.hethers.Wallet(hederaEoaEC, provider);
+    // const hederaEoaED: any = {
+    //     account: "0.0.34100425",
+    //     privateKey: "06bd0453347618988f1e1c60bd3e57892a4b8603969827d65b1a87d13b463d70",
+    //     isED25519Type: true,
+    // };
+    // const hederaEoaEC: any = {
+    //     privateKey: "0xb4dcc0874133bede5d88ce1f30dad6016fbed30bc070936e9ff115b177da9cf3",
+    //     account: "0.0.34201607",
+    //     isED25519Type: false
+    // };
+    // const provider = hethers.providers.getDefaultProvider('testnet');
+    // const walletED = new hethers.Wallet(hederaEoaED, provider);
+    // const walletEC = new hethers.Wallet(hederaEoaEC, provider);
     it("Should transfer funds between accounts", function () {
         return __awaiter(this, void 0, void 0, function () {
             var edBalanceBefore, ecBalanceBefore, tx, edBalanceAfter, ecBalanceAfter;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, walletED.getBalance()];
+                    case 0: return [4 /*yield*/, localWalletED25519.getBalance()];
                     case 1:
-                        edBalanceBefore = (_a.sent()).toNumber();
-                        return [4 /*yield*/, walletEC.getBalance()];
+                        edBalanceBefore = (_a.sent());
+                        return [4 /*yield*/, localWalletECDSA.getBalance()];
                     case 2:
-                        ecBalanceBefore = (_a.sent()).toNumber();
-                        return [4 /*yield*/, walletED.sendTransaction({
-                                to: walletEC.account,
+                        ecBalanceBefore = (_a.sent());
+                        return [4 /*yield*/, localWalletED25519.sendTransaction({
+                                to: localWalletECDSA.account,
                                 value: 1000,
                             })];
                     case 3:
@@ -616,15 +636,15 @@ describe("Wallet(ED25519) tx signing", function () {
                         return [4 /*yield*/, tx.wait()];
                     case 4:
                         _a.sent();
-                        return [4 /*yield*/, walletED.getBalance()];
+                        return [4 /*yield*/, localWalletED25519.getBalance()];
                     case 5:
-                        edBalanceAfter = (_a.sent()).toNumber();
-                        return [4 /*yield*/, walletEC.getBalance()];
+                        edBalanceAfter = (_a.sent());
+                        return [4 /*yield*/, localWalletECDSA.getBalance()];
                     case 6:
-                        ecBalanceAfter = (_a.sent()).toNumber();
-                        assert_1.default.strictEqual(edBalanceBefore > edBalanceAfter, true);
-                        assert_1.default.strictEqual(ecBalanceBefore < ecBalanceAfter, true);
-                        assert_1.default.strictEqual(ecBalanceAfter - ecBalanceBefore, 1000);
+                        ecBalanceAfter = (_a.sent());
+                        assert_1.default.strictEqual(edBalanceBefore.gt(edBalanceAfter), true);
+                        assert_1.default.strictEqual(ecBalanceBefore.lt(ecBalanceAfter), true);
+                        assert_1.default.strictEqual(ecBalanceAfter.sub(ecBalanceBefore).toNumber(), 1000);
                         return [2 /*return*/];
                 }
             });
@@ -639,11 +659,11 @@ describe("Wallet(ED25519) tx signing", function () {
                         data = Buffer.from("\"abi\":{},\"values\":{}").toString('hex');
                         tx = {
                             to: hethers_1.hethers.utils.getAddressFromAccount("0.0.98"),
-                            from: walletED.address,
+                            from: localWalletED25519.address,
                             data: '0x' + data,
                             gasLimit: 100000
                         };
-                        return [4 /*yield*/, walletED.signTransaction(tx)];
+                        return [4 /*yield*/, localWalletED25519.signTransaction(tx)];
                     case 1:
                         signed = _a.sent();
                         assert_1.default.ok(signed !== "", "Unexpected nil signed tx");
@@ -662,13 +682,13 @@ describe("Wallet(ED25519) tx signing", function () {
                 switch (_a.label) {
                     case 0:
                         tx = {
-                            from: walletED.address,
+                            from: localWalletED25519.address,
                             gasLimit: 10000,
                             customData: {
                                 bytecodeFileId: "0.0.122121"
                             }
                         };
-                        return [4 /*yield*/, walletED.signTransaction(tx)];
+                        return [4 /*yield*/, localWalletED25519.signTransaction(tx)];
                     case 1:
                         signed = _a.sent();
                         assert_1.default.ok(signed !== "", "Unexpected nil signed tx");
@@ -687,14 +707,14 @@ describe("Wallet(ED25519) tx signing", function () {
                 switch (_a.label) {
                     case 0:
                         tx = {
-                            from: walletED.address,
+                            from: localWalletED25519.address,
                             gasLimit: 10000,
                             customData: {
                                 fileChunk: "Hello world! I will definitely break your smart contract experience",
                                 fileKey: sdk_1.PublicKey.fromString("302a300506032b6570032100cd1c5cd43b103bc5b30dd38d421a6a32386377b99d0d1b438359a72dc525bde1")
                             }
                         };
-                        return [4 /*yield*/, walletED.signTransaction(tx)];
+                        return [4 /*yield*/, localWalletED25519.signTransaction(tx)];
                     case 1:
                         signed = _a.sent();
                         assert_1.default.ok(signed !== "", "Unexpected nil signed tx");
@@ -713,14 +733,14 @@ describe("Wallet(ED25519) tx signing", function () {
                 switch (_a.label) {
                     case 0:
                         tx = {
-                            from: walletED.address,
+                            from: localWalletED25519.address,
                             gasLimit: 10000,
                             customData: {
                                 fileChunk: "Hello world! I will definitely break your smart contract experience",
                                 fileId: "0.0.12212"
                             }
                         };
-                        return [4 /*yield*/, walletED.signTransaction(tx)];
+                        return [4 /*yield*/, localWalletED25519.signTransaction(tx)];
                     case 1:
                         signed = _a.sent();
                         assert_1.default.ok(signed !== "", "Unexpected nil signed tx");
@@ -735,13 +755,6 @@ describe("Wallet(ED25519) tx signing", function () {
     });
 });
 describe("Wallet tx signing", function () {
-    var hederaEoa = {
-        account: "0.0.1280",
-        privateKey: "0x074cc0bd198d1bc91f668c59b46a1e74fd13215661e5a7bd42ad0d324476295d"
-    };
-    var provider = hethers_1.hethers.providers.getDefaultProvider('previewnet');
-    // @ts-ignore
-    var wallet = new hethers_1.hethers.Wallet(hederaEoa, provider);
     it("Should sign ContractCall", function () {
         return __awaiter(this, void 0, void 0, function () {
             var data, tx, signed, fromBytes, cc;
@@ -751,11 +764,11 @@ describe("Wallet tx signing", function () {
                         data = Buffer.from("\"abi\":{},\"values\":{}").toString('hex');
                         tx = {
                             to: hethers_1.hethers.utils.getAddressFromAccount("0.0.98"),
-                            from: wallet.address,
+                            from: localWalletECDSA.address,
                             data: '0x' + data,
                             gasLimit: 100000
                         };
-                        return [4 /*yield*/, wallet.signTransaction(tx)];
+                        return [4 /*yield*/, localWalletECDSA.signTransaction(tx)];
                     case 1:
                         signed = _a.sent();
                         assert_1.default.ok(signed !== "", "Unexpected nil signed tx");
@@ -774,13 +787,13 @@ describe("Wallet tx signing", function () {
                 switch (_a.label) {
                     case 0:
                         tx = {
-                            from: wallet.address,
+                            from: localWalletECDSA.address,
                             gasLimit: 10000,
                             customData: {
                                 bytecodeFileId: "0.0.122121"
                             }
                         };
-                        return [4 /*yield*/, wallet.signTransaction(tx)];
+                        return [4 /*yield*/, localWalletECDSA.signTransaction(tx)];
                     case 1:
                         signed = _a.sent();
                         assert_1.default.ok(signed !== "", "Unexpected nil signed tx");
@@ -799,14 +812,14 @@ describe("Wallet tx signing", function () {
                 switch (_a.label) {
                     case 0:
                         tx = {
-                            from: wallet.address,
+                            from: localWalletECDSA.address,
                             gasLimit: 10000,
                             customData: {
                                 fileChunk: "Hello world! I will definitely break your smart contract experience",
                                 fileKey: sdk_1.PublicKey.fromString("302a300506032b65700321004aed2e9e0cb6cbcd12b58476a2c39875d27e2a856444173830cc1618d32ca2f0")
                             }
                         };
-                        return [4 /*yield*/, wallet.signTransaction(tx)];
+                        return [4 /*yield*/, localWalletECDSA.signTransaction(tx)];
                     case 1:
                         signed = _a.sent();
                         assert_1.default.ok(signed !== "", "Unexpected nil signed tx");
@@ -825,14 +838,14 @@ describe("Wallet tx signing", function () {
                 switch (_a.label) {
                     case 0:
                         tx = {
-                            from: wallet.address,
+                            from: localWalletECDSA.address,
                             gasLimit: 10000,
                             customData: {
                                 fileChunk: "Hello world! I will definitely break your smart contract experience",
                                 fileId: "0.0.12212"
                             }
                         };
-                        return [4 /*yield*/, wallet.signTransaction(tx)];
+                        return [4 /*yield*/, localWalletECDSA.signTransaction(tx)];
                     case 1:
                         signed = _a.sent();
                         assert_1.default.ok(signed !== "", "Unexpected nil signed tx");
@@ -898,20 +911,31 @@ describe("Wallet getters", function () {
             });
         });
     });
+    it("Should get proper local chainId", function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var provider, wallet, chainId;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        provider = hethers_1.hethers.providers.getDefaultProvider("local");
+                        wallet = hethers_1.hethers.Wallet.createRandom().connect(provider);
+                        return [4 /*yield*/, wallet.getChainId()];
+                    case 1:
+                        chainId = _a.sent();
+                        assert_1.default.strictEqual(chainId, 298);
+                        return [2 /*return*/];
+                }
+            });
+        });
+    });
 });
 describe("Wallet local calls", function () {
     return __awaiter(this, void 0, void 0, function () {
-        var hederaEoa, provider, wallet, contractAddr, contract, balanceOfParams;
+        var contractAddr, contract, balanceOfParams;
         return __generator(this, function (_a) {
-            hederaEoa = {
-                account: '0.0.29511337',
-                privateKey: '0x409836c5c296fe800fcac721093c68c78c4c03a1f88cb10bbdf01ecc49247132'
-            };
-            provider = hethers_1.hethers.providers.getDefaultProvider('testnet');
-            wallet = new hethers_1.hethers.Wallet(hederaEoa, provider);
             contractAddr = '0000000000000000000000000000000001b34cbb';
-            contract = hethers_1.hethers.ContractFactory.getContract(contractAddr, abi, wallet);
-            balanceOfParams = contract.interface.encodeFunctionData('balanceOf', [wallet.getAddress()]);
+            contract = hethers_1.hethers.ContractFactory.getContract(contractAddr, abi, testnetWalletECDSA);
+            balanceOfParams = contract.interface.encodeFunctionData('balanceOf', [testnetWalletECDSA.getAddress()]);
             // skipped - no balance in account
             xit("Should be able to perform local call", function () {
                 return __awaiter(this, void 0, void 0, function () {
@@ -924,7 +948,7 @@ describe("Wallet local calls", function () {
                                     gasLimit: 30000,
                                     data: hethers_1.hethers.utils.arrayify(balanceOfParams),
                                 };
-                                return [4 /*yield*/, wallet.call(balanceOfTx)];
+                                return [4 /*yield*/, testnetWalletECDSA.call(balanceOfTx)];
                             case 1:
                                 response = _a.sent();
                                 assert_1.default.notStrictEqual(response, null);
@@ -950,7 +974,7 @@ describe("Wallet local calls", function () {
                                 _a.label = 1;
                             case 1:
                                 _a.trys.push([1, 3, , 4]);
-                                return [4 /*yield*/, wallet.call(balanceOfTx)];
+                                return [4 /*yield*/, testnetWalletECDSA.call(balanceOfTx)];
                             case 2:
                                 _a.sent();
                                 return [3 /*break*/, 4];
@@ -979,7 +1003,7 @@ describe("Wallet local calls", function () {
                                 _a.label = 1;
                             case 1:
                                 _a.trys.push([1, 3, , 4]);
-                                return [4 /*yield*/, wallet.call(balanceOfTx)];
+                                return [4 /*yield*/, testnetWalletECDSA.call(balanceOfTx)];
                             case 2:
                                 _a.sent();
                                 return [3 /*break*/, 4];
@@ -1009,7 +1033,7 @@ describe("Wallet local calls", function () {
                                 _a.label = 1;
                             case 1:
                                 _a.trys.push([1, 3, , 4]);
-                                return [4 /*yield*/, wallet.call(balanceOfTx)];
+                                return [4 /*yield*/, testnetWalletECDSA.call(balanceOfTx)];
                             case 2:
                                 _a.sent();
                                 return [3 /*break*/, 4];
@@ -1028,25 +1052,8 @@ describe("Wallet local calls", function () {
 });
 describe("Wallet createAccount(ED25519)", function () {
     var _this = this;
-    var wallet, newAccount, newAccountPublicKey, provider;
+    var newAccount, newAccountPublicKey;
     var timeout = 90000;
-    before(function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var hederaEoaED;
-            return __generator(this, function (_a) {
-                this.timeout(timeout);
-                hederaEoaED = {
-                    account: "0.0.34100425",
-                    privateKey: "06bd0453347618988f1e1c60bd3e57892a4b8603969827d65b1a87d13b463d70",
-                    isED25519Type: true,
-                };
-                provider = hethers_1.hethers.providers.getDefaultProvider('testnet');
-                // @ts-ignore
-                wallet = new hethers_1.hethers.Wallet(hederaEoaED, provider);
-                return [2 /*return*/];
-            });
-        });
-    });
     beforeEach(function () { return __awaiter(_this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             newAccount = hethers_1.hethers.Wallet.createRandom({ isED25519Type: true });
@@ -1059,7 +1066,7 @@ describe("Wallet createAccount(ED25519)", function () {
             var tx;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, wallet.createAccount(newAccountPublicKey)];
+                    case 0: return [4 /*yield*/, localWalletED25519.createAccount(newAccountPublicKey)];
                     case 1:
                         tx = _a.sent();
                         assert_1.default.ok(tx, 'tx exists');
@@ -1076,14 +1083,14 @@ describe("Wallet createAccount(ED25519)", function () {
             var tx, newAccountAddress, newAccBalance;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, wallet.createAccount(newAccountPublicKey, BigInt(123))];
+                    case 0: return [4 /*yield*/, localWalletED25519.createAccount(newAccountPublicKey, BigInt(123))];
                     case 1:
                         tx = _a.sent();
                         assert_1.default.ok(tx, 'tx exists');
                         assert_1.default.ok(tx.customData, 'tx.customData exists');
                         assert_1.default.ok(tx.customData.accountId, 'accountId exists');
                         newAccountAddress = hethers_1.hethers.utils.getAddressFromAccount(tx.customData.accountId.toString());
-                        return [4 /*yield*/, provider.getBalance(newAccountAddress)];
+                        return [4 /*yield*/, localProvider.getBalance(newAccountAddress)];
                     case 2:
                         newAccBalance = _a.sent();
                         assert_1.default.strictEqual(BigInt(123).toString(), newAccBalance.toString(), 'The initial balance is correct');
@@ -1097,7 +1104,7 @@ describe("Wallet createAccount(ED25519)", function () {
             var tx, receipt;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, wallet.createAccount(newAccountPublicKey, BigInt(123))];
+                    case 0: return [4 /*yield*/, localWalletED25519.createAccount(newAccountPublicKey, BigInt(123))];
                     case 1:
                         tx = _a.sent();
                         assert_1.default.notStrictEqual(tx, null, 'tx exists');
@@ -1120,17 +1127,17 @@ describe("Wallet createAccount(ED25519)", function () {
             var clientAccountId, newWallet, newWalletBalanceBefore, oldWalletBalanceBefore, tx, newWalletBalanceAfter, oldWalletBalanceAfter;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, wallet.createAccount(newAccountPublicKey)];
+                    case 0: return [4 /*yield*/, localWalletED25519.createAccount(newAccountPublicKey)];
                     case 1:
                         clientAccountId = (_a.sent()).customData.accountId;
-                        newWallet = newAccount.connect(provider).connectAccount(clientAccountId.toString());
+                        newWallet = newAccount.connect(localProvider).connectAccount(clientAccountId.toString());
                         return [4 /*yield*/, newWallet.getBalance()];
                     case 2:
-                        newWalletBalanceBefore = (_a.sent()).toNumber();
-                        return [4 /*yield*/, wallet.getBalance()];
+                        newWalletBalanceBefore = (_a.sent());
+                        return [4 /*yield*/, localWalletED25519.getBalance()];
                     case 3:
-                        oldWalletBalanceBefore = (_a.sent()).toNumber();
-                        return [4 /*yield*/, wallet.sendTransaction({
+                        oldWalletBalanceBefore = (_a.sent());
+                        return [4 /*yield*/, localWalletED25519.sendTransaction({
                                 to: newWallet.account,
                                 value: 1000,
                             })];
@@ -1141,13 +1148,13 @@ describe("Wallet createAccount(ED25519)", function () {
                         _a.sent();
                         return [4 /*yield*/, newWallet.getBalance()];
                     case 6:
-                        newWalletBalanceAfter = (_a.sent()).toNumber();
-                        return [4 /*yield*/, wallet.getBalance()];
+                        newWalletBalanceAfter = (_a.sent());
+                        return [4 /*yield*/, localWalletED25519.getBalance()];
                     case 7:
-                        oldWalletBalanceAfter = (_a.sent()).toNumber();
-                        assert_1.default.strictEqual(newWalletBalanceBefore < newWalletBalanceAfter, true);
-                        assert_1.default.strictEqual(oldWalletBalanceBefore > oldWalletBalanceAfter, true);
-                        assert_1.default.strictEqual(newWalletBalanceAfter - newWalletBalanceBefore, 1000);
+                        oldWalletBalanceAfter = (_a.sent());
+                        assert_1.default.strictEqual(newWalletBalanceBefore.lt(newWalletBalanceAfter), true);
+                        assert_1.default.strictEqual(oldWalletBalanceBefore.gt(oldWalletBalanceAfter), true);
+                        assert_1.default.strictEqual(newWalletBalanceAfter.sub(newWalletBalanceBefore).toNumber(), 1000);
                         return [2 /*return*/];
                 }
             });
@@ -1158,11 +1165,11 @@ describe("Wallet createAccount(ED25519)", function () {
             var clientAccountId, newWallet, tx1, newWalletBalanceBefore, oldWalletBalanceBefore, tx2, newWalletBalanceAfter, oldWalletBalanceAfter;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, wallet.createAccount(newAccountPublicKey)];
+                    case 0: return [4 /*yield*/, localWalletED25519.createAccount(newAccountPublicKey)];
                     case 1:
                         clientAccountId = (_a.sent()).customData.accountId;
-                        newWallet = newAccount.connect(provider).connectAccount(clientAccountId.toString());
-                        return [4 /*yield*/, wallet.sendTransaction({
+                        newWallet = newAccount.connect(localProvider).connectAccount(clientAccountId.toString());
+                        return [4 /*yield*/, localWalletED25519.sendTransaction({
                                 to: newWallet.account,
                                 value: 1000000,
                             })];
@@ -1171,14 +1178,15 @@ describe("Wallet createAccount(ED25519)", function () {
                         return [4 /*yield*/, tx1.wait()];
                     case 3:
                         _a.sent();
+                        console.log(newWallet.privateKey, newWallet.account);
                         return [4 /*yield*/, newWallet.getBalance()];
                     case 4:
-                        newWalletBalanceBefore = (_a.sent()).toNumber();
-                        return [4 /*yield*/, wallet.getBalance()];
+                        newWalletBalanceBefore = (_a.sent());
+                        return [4 /*yield*/, localWalletED25519.getBalance()];
                     case 5:
-                        oldWalletBalanceBefore = (_a.sent()).toNumber();
+                        oldWalletBalanceBefore = (_a.sent());
                         return [4 /*yield*/, newWallet.sendTransaction({
-                                to: wallet.account,
+                                to: localWalletED25519.account,
                                 value: 1000,
                             })];
                     case 6:
@@ -1188,13 +1196,13 @@ describe("Wallet createAccount(ED25519)", function () {
                         _a.sent();
                         return [4 /*yield*/, newWallet.getBalance()];
                     case 8:
-                        newWalletBalanceAfter = (_a.sent()).toNumber();
-                        return [4 /*yield*/, wallet.getBalance()];
+                        newWalletBalanceAfter = (_a.sent());
+                        return [4 /*yield*/, localWalletED25519.getBalance()];
                     case 9:
-                        oldWalletBalanceAfter = (_a.sent()).toNumber();
-                        assert_1.default.strictEqual(newWalletBalanceBefore > newWalletBalanceAfter, true);
-                        assert_1.default.strictEqual(oldWalletBalanceBefore < oldWalletBalanceAfter, true);
-                        assert_1.default.strictEqual(oldWalletBalanceAfter - oldWalletBalanceBefore, 1000);
+                        oldWalletBalanceAfter = (_a.sent());
+                        assert_1.default.strictEqual(newWalletBalanceBefore.gt(newWalletBalanceAfter), true);
+                        assert_1.default.strictEqual(oldWalletBalanceBefore.lt(oldWalletBalanceAfter), true);
+                        assert_1.default.strictEqual(oldWalletBalanceAfter.sub(oldWalletBalanceBefore).toNumber(), 1000);
                         return [2 /*return*/];
                 }
             });
@@ -1208,7 +1216,7 @@ describe("Wallet createAccount(ED25519)", function () {
                     case 0:
                         exceptionThrown = false;
                         errorReason = null;
-                        return [4 /*yield*/, wallet.createAccount(newAccountPublicKey)];
+                        return [4 /*yield*/, localWalletED25519.createAccount(newAccountPublicKey)];
                     case 1:
                         clientAccountId = (_a.sent()).customData.accountId;
                         newWallet = newAccount.connectAccount(clientAccountId.toString());
@@ -1216,7 +1224,7 @@ describe("Wallet createAccount(ED25519)", function () {
                     case 2:
                         _a.trys.push([2, 4, , 5]);
                         return [4 /*yield*/, newWallet.sendTransaction({
-                                to: wallet.account,
+                                to: localWalletED25519.account,
                                 value: 1
                             })];
                     case 3:
@@ -1239,26 +1247,18 @@ describe("Wallet createAccount(ED25519)", function () {
 describe("Wallet createAccount", function () {
     var _this = this;
     this.retries(3);
-    var wallet, newAccount, newAccountPublicKey, provider, acc1Wallet, acc2Wallet, acc1Eoa, acc2Eoa;
+    var newAccount, newAccountPublicKey, acc1Wallet, acc2Wallet, acc1Eoa, acc2Eoa;
     var timeout = 120000;
     before(function () {
         return __awaiter(this, void 0, void 0, function () {
-            var hederaEoa;
             return __generator(this, function (_a) {
                 this.timeout(timeout);
-                hederaEoa = {
-                    account: '0.0.29562194',
-                    privateKey: '0x3b6cd41ded6986add931390d5d3efa0bb2b311a8415cfe66716cac0234de035d'
-                };
-                acc1Eoa = { "account": "0.0.29631749", "privateKey": "0x18a2ac384f3fa3670f71fc37e2efbf4879a90051bb0d437dd8cbd77077b24d9b" };
-                acc2Eoa = { "account": "0.0.29631750", "privateKey": "0x6357b34b94fe53ded45ebe4c22b9c1175634d3f7a8a568079c2cb93bba0e3aee" };
-                provider = hethers_1.hethers.providers.getDefaultProvider('testnet');
+                acc1Eoa = { "account": "0.0.1180", "privateKey": "0xc2604b6895bc5fa4bbc0516c09364b982daacf5ed608ab792bb80a4add10ea65" };
+                acc2Eoa = { "account": "0.0.1181", "privateKey": "0xfa319b59d0abbc20f0e31e07c9bf93b838c40de5ccdd3bbeed7e51d5179be1b8" };
                 // @ts-ignore
-                wallet = new hethers_1.hethers.Wallet(hederaEoa, provider);
+                acc1Wallet = new hethers_1.hethers.Wallet(acc1Eoa, localProvider);
                 // @ts-ignore
-                acc1Wallet = new hethers_1.hethers.Wallet(acc1Eoa, provider);
-                // @ts-ignore
-                acc2Wallet = new hethers_1.hethers.Wallet(acc2Eoa, provider);
+                acc2Wallet = new hethers_1.hethers.Wallet(acc2Eoa, localProvider);
                 return [2 /*return*/];
             });
         });
@@ -1275,7 +1275,7 @@ describe("Wallet createAccount", function () {
             var tx;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, wallet.createAccount(newAccountPublicKey)];
+                    case 0: return [4 /*yield*/, localWalletECDSA.createAccount(newAccountPublicKey)];
                     case 1:
                         tx = _a.sent();
                         assert_1.default.ok(tx, 'tx exists');
@@ -1291,14 +1291,14 @@ describe("Wallet createAccount", function () {
             var tx, newAccountAddress, newAccBalance;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, wallet.createAccount(newAccountPublicKey, BigInt(123))];
+                    case 0: return [4 /*yield*/, localWalletECDSA.createAccount(newAccountPublicKey, BigInt(123))];
                     case 1:
                         tx = _a.sent();
                         assert_1.default.ok(tx, 'tx exists');
                         assert_1.default.ok(tx.customData, 'tx.customData exists');
                         assert_1.default.ok(tx.customData.accountId, 'accountId exists');
                         newAccountAddress = hethers_1.hethers.utils.getAddressFromAccount(tx.customData.accountId.toString());
-                        return [4 /*yield*/, provider.getBalance(newAccountAddress)];
+                        return [4 /*yield*/, localProvider.getBalance(newAccountAddress)];
                     case 2:
                         newAccBalance = _a.sent();
                         assert_1.default.strictEqual(BigInt(123).toString(), newAccBalance.toString(), 'The initial balance is correct');
@@ -1312,7 +1312,7 @@ describe("Wallet createAccount", function () {
             var tx, receipt;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, wallet.createAccount(newAccountPublicKey, BigInt(123))];
+                    case 0: return [4 /*yield*/, localWalletECDSA.createAccount(newAccountPublicKey, BigInt(123))];
                     case 1:
                         tx = _a.sent();
                         assert_1.default.notStrictEqual(tx, null, 'tx exists');
@@ -1540,7 +1540,7 @@ describe("Wallet createAccount", function () {
                         return [4 /*yield*/, transaction.wait()];
                     case 2:
                         _a.sent();
-                        return [4 /*yield*/, provider.getTransaction(transaction.transactionId)];
+                        return [4 /*yield*/, localProvider.getTransaction(transaction.transactionId)];
                     case 3:
                         tx = _a.sent();
                         assert_1.default.strictEqual(tx.hasOwnProperty('chainId'), true);

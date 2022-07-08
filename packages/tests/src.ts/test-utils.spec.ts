@@ -33,6 +33,17 @@ function equals(a: any, b: any): boolean {
     return a === b;
 }
 
+// TODO: create it dynamicaly
+const localProvider = hethers.providers.getDefaultProvider('local');
+
+const hederaLocalEoaECDSA = {
+    account: '0.0.1002',
+    privateKey: '0x792e03ba76c420a7982808a47b55f4c454d44bacb5c0a1fd3d4be7550b48742f'
+};
+
+// @ts-ignore
+const localWalletECDSA = new hethers.Wallet(hederaLocalEoaECDSA, localProvider);
+
 describe('Test Unit Conversion', function () {
     it("should be able to execute formats with commify", function () {
         const tests: { [_testcase: string]: string } = {
@@ -488,25 +499,17 @@ describe("Test Typed Transactions", function() {
         }
     });
 
-    const hederaEoa = {
-        account: '0.0.29562194',
-        privateKey: '0x3b6cd41ded6986add931390d5d3efa0bb2b311a8415cfe66716cac0234de035d'
-    };
-    const provider = hethers.providers.getDefaultProvider('testnet');
-    // @ts-ignore
-    const wallet = new hethers.Wallet(hederaEoa, provider);
-
     it('should place admin key for contracts when given', async () => {
         const tx = {
             data: '0x',
             gasLimit: 30000,
             customData: {
                 bytecodeFileId: '1.1.1',
-                contractAdminKey: wallet._signingKey().compressedPublicKey
+                contractAdminKey: localWalletECDSA._signingKey().compressedPublicKey
             }
         };
 
-        const signedTx = await wallet.signTransaction(tx)
+        const signedTx = await localWalletECDSA.signTransaction(tx)
         const signedBytes = hethers.utils.arrayify(signedTx);
         const parsedHederaTx = Transaction.fromBytes(signedBytes);
         // extract admin key in original format
@@ -524,7 +527,7 @@ describe("Test Typed Transactions", function() {
             }
         };
 
-        const signedTx = await wallet.signTransaction(tx)
+        const signedTx = await localWalletECDSA.signTransaction(tx)
         const signedBytes = hethers.utils.arrayify(signedTx);
         const parsedHederaTx = Transaction.fromBytes(signedBytes);
         // extract admin key in original format
@@ -543,7 +546,7 @@ describe("Test Typed Transactions", function() {
             }
         };
 
-        const signedTx = await wallet.signTransaction(tx)
+        const signedTx = await localWalletECDSA.signTransaction(tx)
         const signedBytes = hethers.utils.arrayify(signedTx);
         const parsedHederaTx = Transaction.fromBytes(signedBytes);
         // extract admin key in original format
@@ -563,7 +566,7 @@ describe("Test Typed Transactions", function() {
             }
         };
 
-        const signedTx = await wallet.signTransaction(tx)
+        const signedTx = await localWalletECDSA.signTransaction(tx)
         const signedBytes = hethers.utils.arrayify(signedTx);
         const parsedHederaTx = Transaction.fromBytes(signedBytes);
         const contractCreateTx = (parsedHederaTx as ContractCreateTransaction);
@@ -583,7 +586,7 @@ describe("Test Typed Transactions", function() {
             }
         };
         try {
-            await wallet.signTransaction(tx)
+            await localWalletECDSA.signTransaction(tx)
         } catch (e) {
             assert.strictEqual(Logger.errors.INVALID_ARGUMENT, e.code, "expected invalid contract memo");
             assert.strictEqual( e.message.startsWith('invalid contract memo'), true, 'expected fail message on invalid memo');
@@ -595,7 +598,7 @@ describe("Test Typed Transactions", function() {
         tx.customData.contractMemo = invalidMemo;
 
         try {
-            await wallet.signTransaction(tx)
+            await localWalletECDSA.signTransaction(tx)
         } catch (e) {
             assert.strictEqual(Logger.errors.INVALID_ARGUMENT, e.code, "expected invalid contract memo");
             assert.strictEqual( e.message.startsWith('invalid contract memo'), true, 'expected fail message on invalid memo');
@@ -605,7 +608,7 @@ describe("Test Typed Transactions", function() {
         // @ts-ignore - does not allow setting memo when not present initially
         tx.customData.memo = invalidMemo;
         try {
-            await wallet.signTransaction(tx);
+            await localWalletECDSA.signTransaction(tx);
         } catch (e) {
             assert.strictEqual(Logger.errors.INVALID_ARGUMENT, e.code, "expected invalid tx memo");
             assert.strictEqual( e.message.startsWith('invalid tx memo'), true, 'expected fail message on invalid memo');
@@ -625,7 +628,7 @@ describe("Test Typed Transactions", function() {
             }
         };
 
-        const signedTx = await wallet.signTransaction(tx)
+        const signedTx = await localWalletECDSA.signTransaction(tx)
         const signedBytes = hethers.utils.arrayify(signedTx);
         const parsedHederaTx = Transaction.fromBytes(signedBytes);
         const contractCreateTx = (parsedHederaTx as ContractCreateTransaction);

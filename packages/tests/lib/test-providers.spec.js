@@ -53,6 +53,28 @@ var hederaTestnetOperableAccount = {
         "privateKey": "302e020100300506032b6570042204207ef3437273a5146e4e504a6e22c5caedf07cb0821f01bc05d18e8e716f77f66c"
     },
 };
+// TODO: create it dynamicaly
+var localProvider = hethers_1.hethers.providers.getDefaultProvider('local');
+var testnetProvider = hethers_1.hethers.providers.getDefaultProvider('testnet');
+var hederaLocalEoaED25519 = {
+    account: '0.0.2',
+    privateKey: '302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137',
+    isED25519Type: true
+};
+var hederaLocalEoaECDSA = {
+    account: '0.0.1002',
+    privateKey: '0x792e03ba76c420a7982808a47b55f4c454d44bacb5c0a1fd3d4be7550b48742f'
+};
+var hederaTestnetEoaECDSA = {
+    account: '0.0.29562194',
+    privateKey: '0x3b6cd41ded6986add931390d5d3efa0bb2b311a8415cfe66716cac0234de035d'
+};
+// @ts-ignore
+var testnetWalletECDSA = new hethers_1.hethers.Wallet(hederaTestnetEoaECDSA, testnetProvider);
+// @ts-ignore
+var localWalletECDSA = new hethers_1.hethers.Wallet(hederaLocalEoaECDSA, localProvider);
+// @ts-ignore
+var localWalletED25519 = new hethers_1.hethers.Wallet(hederaLocalEoaED25519, localProvider);
 var blockchainData = {
     homestead: {
         addresses: [
@@ -998,7 +1020,7 @@ describe("Test Hedera Provider Options", function () {
     });
 });
 describe("Test Hedera Provider", function () {
-    var provider = new providers_1.DefaultHederaProvider(default_hedera_provider_1.HederaNetworks.TESTNET);
+    // const provider = new DefaultHederaProvider(HederaNetworks.TESTNET);
     var accountConfig = { shard: BigInt(0), realm: BigInt(0), num: BigInt(98) };
     var solAddr = hethers_1.hethers.utils.getAddressFromAccount(accountConfig);
     var nonExistingAddress = "0x0000000000000000000000000000000000000000";
@@ -1008,7 +1030,7 @@ describe("Test Hedera Provider", function () {
             var balance;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, provider.getBalance(solAddr)];
+                    case 0: return [4 /*yield*/, localProvider.getBalance(solAddr)];
                     case 1:
                         balance = _a.sent();
                         // the balance of 0.0.98 cannot be negative
@@ -1062,7 +1084,7 @@ describe("Test Hedera Provider", function () {
                                     "timestamp": "1642065156.264170833"
                                 }
                             ];
-                            return [4 /*yield*/, provider.getLogs(filterParams)];
+                            return [4 /*yield*/, testnetProvider.getLogs(filterParams)];
                         case 1:
                             logs = _a.sent();
                             assert_1.default.strictEqual(logs.length, 2);
@@ -1085,7 +1107,7 @@ describe("Test Hedera Provider", function () {
                                 fromTimestamp: fromTimestamp,
                                 toTimestamp: toTimestamp
                             };
-                            return [4 /*yield*/, provider.getLogs(filterParamsAccount)];
+                            return [4 /*yield*/, testnetProvider.getLogs(filterParamsAccount)];
                         case 2:
                             logs2 = _a.sent();
                             assert_1.default.strictEqual(logs2.length, 2);
@@ -1120,7 +1142,7 @@ describe("Test Hedera Provider", function () {
                             filterParams = {
                                 address: address,
                             };
-                            return [4 /*yield*/, provider.getLogs(filterParams)];
+                            return [4 /*yield*/, testnetProvider.getLogs(filterParams)];
                         case 1:
                             logs = _a.sent();
                             assert_1.default.strictEqual(100, logs.length);
@@ -1139,7 +1161,7 @@ describe("Test Hedera Provider", function () {
                             filterParams = {
                                 address: address,
                             };
-                            return [4 /*yield*/, provider.getLogs(filterParams)];
+                            return [4 /*yield*/, testnetProvider.getLogs(filterParams)];
                         case 1:
                             logs = _a.sent();
                             assert_1.default.notStrictEqual(logs, null);
@@ -1182,7 +1204,7 @@ describe("Test Hedera Provider", function () {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            _b = (_a = provider).sendTransaction;
+                            _b = (_a = testnetProvider).sendTransaction;
                             return [4 /*yield*/, signedTx];
                         case 1: return [4 /*yield*/, _b.apply(_a, [_c.sent()])];
                         case 2:
@@ -1206,7 +1228,7 @@ describe("Test Hedera Provider", function () {
                 return __generator(this, function (_c) {
                     switch (_c.label) {
                         case 0:
-                            _b = (_a = provider).sendTransaction;
+                            _b = (_a = testnetProvider).sendTransaction;
                             return [4 /*yield*/, signedTx];
                         case 1: return [4 /*yield*/, _b.apply(_a, [_c.sent()])];
                         case 2:
@@ -1237,7 +1259,7 @@ describe("Test Hedera Provider", function () {
                                     return __generator(this, function (_c) {
                                         switch (_c.label) {
                                             case 0:
-                                                _b = (_a = provider).sendTransaction;
+                                                _b = (_a = testnetProvider).sendTransaction;
                                                 return [4 /*yield*/, signedTx];
                                             case 1: return [4 /*yield*/, _b.apply(_a, [_c.sent()])];
                                             case 2:
@@ -1270,10 +1292,10 @@ describe("Test Hedera Provider", function () {
                 switch (_a.label) {
                     case 0:
                         existingId = "0.0.1546615-1641987871-235099329";
-                        return [4 /*yield*/, provider.getTransaction(existingId)];
+                        return [4 /*yield*/, testnetProvider.getTransaction(existingId)];
                     case 1:
                         record = _a.sent();
-                        return [4 /*yield*/, provider.getNetwork()];
+                        return [4 /*yield*/, testnetProvider.getNetwork()];
                     case 2:
                         network = _a.sent();
                         assert_1.default.notStrictEqual(record, null);
@@ -1291,10 +1313,10 @@ describe("Test Hedera Provider", function () {
                 switch (_a.label) {
                     case 0:
                         timestamp = "1641987884.097680000";
-                        return [4 /*yield*/, provider.getTransaction(timestamp)];
+                        return [4 /*yield*/, testnetProvider.getTransaction(timestamp)];
                     case 1:
                         record = _a.sent();
-                        return [4 /*yield*/, provider.getNetwork()];
+                        return [4 /*yield*/, testnetProvider.getNetwork()];
                     case 2:
                         network = _a.sent();
                         assert_1.default.notStrictEqual(record, null);
@@ -1312,7 +1334,7 @@ describe("Test Hedera Provider", function () {
                 switch (_a.label) {
                     case 0:
                         fakeTransactionId = "0.0.0-0000000000-000000000";
-                        return [4 /*yield*/, provider.getTransaction(fakeTransactionId)];
+                        return [4 /*yield*/, testnetProvider.getTransaction(fakeTransactionId)];
                     case 1:
                         record = _a.sent();
                         assert_1.default.strictEqual(record, null);
@@ -1328,7 +1350,7 @@ describe("Test Hedera Provider", function () {
                 switch (_a.label) {
                     case 0:
                         fakeTimestamp = "0000000000.000000000";
-                        return [4 /*yield*/, provider.getTransaction(fakeTimestamp)];
+                        return [4 /*yield*/, testnetProvider.getTransaction(fakeTimestamp)];
                     case 1:
                         record = _a.sent();
                         assert_1.default.strictEqual(record, null);
@@ -1348,7 +1370,7 @@ describe("Test Hedera Provider", function () {
                         return [4 /*yield*/, assert_1.default.rejects(function () { return __awaiter(_this, void 0, void 0, function () {
                                 return __generator(this, function (_a) {
                                     switch (_a.label) {
-                                        case 0: return [4 /*yield*/, provider.getTransaction(badRequestId)];
+                                        case 0: return [4 /*yield*/, testnetProvider.getTransaction(badRequestId)];
                                         case 1:
                                             _a.sent();
                                             return [2 /*return*/];
@@ -1369,7 +1391,7 @@ describe("Test Hedera Provider", function () {
             });
         });
     }).timeout(timeout * 4);
-    it("Is able to get hedera provider as default", function () {
+    it("Is able to get hedera provider `testnet` as default", function () {
         return __awaiter(this, void 0, void 0, function () {
             var defaultProvider, chainIDDerivedProvider, balance;
             return __generator(this, function (_a) {
@@ -1380,6 +1402,30 @@ describe("Test Hedera Provider", function () {
                         chainIDDerivedProvider = hethers_1.hethers.providers.getDefaultProvider(291);
                         assert_1.default.notStrictEqual(chainIDDerivedProvider, null);
                         return [4 /*yield*/, defaultProvider.getBalance(solAddr)];
+                    case 1:
+                        balance = _a.sent();
+                        assert_1.default.strictEqual(true, balance.gte(0));
+                        return [4 /*yield*/, chainIDDerivedProvider.getBalance(solAddr)];
+                    case 2:
+                        balance = _a.sent();
+                        assert_1.default.strictEqual(true, balance.gte(0));
+                        return [2 /*return*/];
+                }
+            });
+        });
+    }).timeout(timeout * 4);
+    it("Is able to get hedera provider `local` as default", function () {
+        return __awaiter(this, void 0, void 0, function () {
+            var account, solAddr, chainIDDerivedProvider, balance;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        account = hederaLocalEoaECDSA.account.split('.');
+                        solAddr = hethers_1.hethers.utils.getAddressFromAccount({ shard: BigInt(account[0]), realm: BigInt(account[1]), num: BigInt(account[2]) });
+                        assert_1.default.notStrictEqual(localProvider, null);
+                        chainIDDerivedProvider = hethers_1.hethers.providers.getDefaultProvider(291);
+                        assert_1.default.notStrictEqual(chainIDDerivedProvider, null);
+                        return [4 /*yield*/, localProvider.getBalance(solAddr)];
                     case 1:
                         balance = _a.sent();
                         assert_1.default.strictEqual(true, balance.gte(0));
@@ -1502,7 +1548,7 @@ describe("Test Hedera Provider", function () {
                     case 0:
                         contractAccountConfig = { shard: BigInt(0), realm: BigInt(0), num: BigInt(16645669) };
                         contractAddress = hethers_1.hethers.utils.getAddressFromAccount(contractAccountConfig);
-                        return [4 /*yield*/, provider.getCode(contractAddress)];
+                        return [4 /*yield*/, testnetProvider.getCode(contractAddress)];
                     case 1:
                         result = _a.sent();
                         assert_1.default.strict((typeof result === "string" && result != "0x"), "returns bytecode of contract - " + contractAddress);
@@ -1516,11 +1562,11 @@ describe("Test Hedera Provider", function () {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, provider.getCode(solAddr)];
+                    case 0: return [4 /*yield*/, localProvider.getCode(solAddr)];
                     case 1:
                         result = _a.sent();
                         assert_1.default.strictEqual(result, "0x", "returns 0x of account - " + solAddr);
-                        return [4 /*yield*/, provider.getCode(nonExistingAddress)];
+                        return [4 /*yield*/, localProvider.getCode(nonExistingAddress)];
                     case 2:
                         result = _a.sent();
                         assert_1.default.strictEqual(result, "0x", "returns 0x of non-existing account/contract - " + nonExistingAddress);
@@ -1537,7 +1583,7 @@ describe("Test Hedera Provider", function () {
                     case 0: return [4 /*yield*/, assert_1.default.rejects(function () { return __awaiter(_this, void 0, void 0, function () {
                             return __generator(this, function (_a) {
                                 switch (_a.label) {
-                                    case 0: return [4 /*yield*/, provider.getCode(nonExistingAddress, true)];
+                                    case 0: return [4 /*yield*/, localProvider.getCode(nonExistingAddress, true)];
                                     case 1:
                                         _a.sent();
                                         return [2 /*return*/];
@@ -1561,7 +1607,6 @@ describe("Test Hedera Provider", function () {
 });
 describe("Test Hedera Provider Formatters", function () {
     var timeout = 15000;
-    var provider = new providers_1.DefaultHederaProvider(default_hedera_provider_1.HederaNetworks.TESTNET);
     it('Should parse hedera record to hethers response', function () {
         return __awaiter(this, void 0, void 0, function () {
             var hederaTransactionRecord, transactionResponse;
@@ -1625,7 +1670,7 @@ describe("Test Hedera Provider Formatters", function () {
                     },
                     wait: null
                 };
-                transactionResponse = provider.formatter.responseFromRecord(hederaTransactionRecord);
+                transactionResponse = localProvider.formatter.responseFromRecord(hederaTransactionRecord);
                 assert_1.default.strictEqual(transactionResponse.chainId, hederaTransactionRecord.chainId);
                 assert_1.default.strictEqual(transactionResponse.hash, hederaTransactionRecord.hash);
                 assert_1.default.strictEqual(transactionResponse.timestamp, hederaTransactionRecord.timestamp);
@@ -1709,7 +1754,7 @@ describe("Test Hedera Provider Formatters", function () {
                     type: 0,
                     status: 0
                 };
-                receipt = provider.formatter.receiptFromResponse(transactionResponse);
+                receipt = localProvider.formatter.receiptFromResponse(transactionResponse);
                 assert_1.default.strictEqual(receipt.to, transactionResponse.to);
                 assert_1.default.strictEqual(receipt.from, transactionResponse.from);
                 assert_1.default.strictEqual(receipt.timestamp, transactionResponse.timestamp);

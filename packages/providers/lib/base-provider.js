@@ -503,7 +503,7 @@ var BaseProvider = /** @class */ (function (_super) {
                                 .execute(this.hederaClient)];
                     case 3:
                         balance = _a.sent();
-                        return [2 /*return*/, bignumber_1.BigNumber.from(balance.hbars.toTinybars().toNumber())];
+                        return [2 /*return*/, bignumber_1.BigNumber.from(balance.hbars.toTinybars().toString())];
                     case 4:
                         error_2 = _a.sent();
                         return [2 /*return*/, logger.throwError("bad result from backend", logger_1.Logger.errors.SERVER_ERROR, {

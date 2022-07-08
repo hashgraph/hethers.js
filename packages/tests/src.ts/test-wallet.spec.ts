@@ -17,6 +17,31 @@ import { readFileSync } from "fs";
 const abi = JSON.parse(readFileSync('packages/tests/contracts/Token.json').toString());
 const abiTokenWithArgs = JSON.parse(readFileSync('packages/tests/contracts/TokenWithArgs.json').toString());
 
+// TODO: create it dynamicaly
+const localProvider = hethers.providers.getDefaultProvider('local');
+const testnetProvider = hethers.providers.getDefaultProvider('testnet');
+
+const hederaLocalEoaED25519 = {
+    account: '0.0.1173',
+    privateKey: '0xac20be39543c08bb72c80316ce2fe2af1bfbafc7b8eba56b4eeef90d2cdc6218',
+    isED25519Type: true
+}
+const hederaLocalEoaECDSA = {
+    account: '0.0.1002',
+    privateKey: '0x792e03ba76c420a7982808a47b55f4c454d44bacb5c0a1fd3d4be7550b48742f'
+};
+const hederaTestnetEoaECDSA = {
+    account: '0.0.29562194',
+    privateKey: '0x3b6cd41ded6986add931390d5d3efa0bb2b311a8415cfe66716cac0234de035d'
+};
+
+// @ts-ignore
+const testnetWalletECDSA = new hethers.Wallet(hederaTestnetEoaECDSA, testnetProvider);
+// @ts-ignore
+const localWalletECDSA = new hethers.Wallet(hederaLocalEoaECDSA, localProvider);
+// @ts-ignore
+const localWalletED25519 = new hethers.Wallet(hederaLocalEoaED25519, localProvider);
+
 describe('Test JSON Wallets', function() {
 
     let tests: Array<TestCase.Wallet> = loadTests('wallets');
@@ -40,9 +65,9 @@ describe('Test JSON Wallets', function() {
 
             // Test connect
             {
-                const provider = hethers.providers.getDefaultProvider();
-                const walletConnected = wallet.connect(provider);
-                assert.strictEqual(walletConnected.provider, provider, "provider is connected");
+                // const provider = hethers.providers.getDefaultProvider();
+                const walletConnected = wallet.connect(localProvider);
+                assert.strictEqual(walletConnected.provider, localProvider, "provider is connected");
                 assert.ok((wallet.provider == null), "original wallet provider is null");
                 if (test.hasAddress) {
                     assert.strictEqual(walletConnected.address.toLowerCase(), test.address,
@@ -195,13 +220,12 @@ describe("Test wallet keys", function () {
     });
 
     it('Should prefix keys when given eoa in constructor', async function() {
-        const provider = hethers.providers.getDefaultProvider('testnet');
         const eoa = {
             account: '1.1.1',
             privateKey: "074cc0bd198d1bc91f668c59b46a1e74fd13215661e5a7bd42ad0d324476295d"
         };
         // @ts-ignore
-        const wallet = new hethers.Wallet(eoa, provider);
+        const wallet = new hethers.Wallet(eoa, localProvider);
         const privKey = wallet._signingKey().privateKey;
         assert.strictEqual('0x'+eoa.privateKey, privKey);
     });
@@ -540,46 +564,46 @@ describe("Wallet Errors", function() {
 
 describe("Wallet(ED25519) tx signing", function () {
 
-    const hederaEoaED: any = {
-        account: "0.0.34100425",
-        privateKey: "06bd0453347618988f1e1c60bd3e57892a4b8603969827d65b1a87d13b463d70",
-        isED25519Type: true,
-    };
-    const hederaEoaEC: any = {
-        privateKey: "0xb4dcc0874133bede5d88ce1f30dad6016fbed30bc070936e9ff115b177da9cf3",
-        account: "0.0.34201607",
-        isED25519Type: false
-    };
-    const provider = hethers.providers.getDefaultProvider('testnet');
-    const walletED = new hethers.Wallet(hederaEoaED, provider);
-    const walletEC = new hethers.Wallet(hederaEoaEC, provider);
+    // const hederaEoaED: any = {
+    //     account: "0.0.34100425",
+    //     privateKey: "06bd0453347618988f1e1c60bd3e57892a4b8603969827d65b1a87d13b463d70",
+    //     isED25519Type: true,
+    // };
+    // const hederaEoaEC: any = {
+    //     privateKey: "0xb4dcc0874133bede5d88ce1f30dad6016fbed30bc070936e9ff115b177da9cf3",
+    //     account: "0.0.34201607",
+    //     isED25519Type: false
+    // };
+    // const provider = hethers.providers.getDefaultProvider('testnet');
+    // const walletED = new hethers.Wallet(hederaEoaED, provider);
+    // const walletEC = new hethers.Wallet(hederaEoaEC, provider);
 
     it("Should transfer funds between accounts", async function () {
-        const edBalanceBefore = (await walletED.getBalance()).toNumber();
-        const ecBalanceBefore = (await walletEC.getBalance()).toNumber();
-        const tx = await walletED.sendTransaction({
-            to: walletEC.account,
+        const edBalanceBefore = (await localWalletED25519.getBalance());
+        const ecBalanceBefore = (await localWalletECDSA.getBalance());
+        const tx = await localWalletED25519.sendTransaction({
+            to: localWalletECDSA.account,
             value: 1000,
         });
         await tx.wait();
-        const edBalanceAfter = (await walletED.getBalance()).toNumber();
-        const ecBalanceAfter = (await walletEC.getBalance()).toNumber();
+        const edBalanceAfter = (await localWalletED25519.getBalance());
+        const ecBalanceAfter = (await localWalletECDSA.getBalance());
 
-        assert.strictEqual(edBalanceBefore > edBalanceAfter, true);
-        assert.strictEqual(ecBalanceBefore < ecBalanceAfter, true);
-        assert.strictEqual(ecBalanceAfter - ecBalanceBefore, 1000);
+        assert.strictEqual(edBalanceBefore.gt(edBalanceAfter), true);
+        assert.strictEqual(ecBalanceBefore.lt(ecBalanceAfter), true);
+        assert.strictEqual(ecBalanceAfter.sub(ecBalanceBefore).toNumber(), 1000);
     }).timeout(90000);
 
     it("Should sign ContractCall", async function () {
         const data = Buffer.from(`"abi":{},"values":{}`).toString('hex');
         const tx = {
             to: hethers.utils.getAddressFromAccount("0.0.98"),
-            from: walletED.address,
+            from: localWalletED25519.address,
             data: '0x' + data,
             gasLimit: 100000
 
         };
-        const signed = await walletED.signTransaction(tx);
+        const signed = await localWalletED25519.signTransaction(tx);
         assert.ok(signed !== "", "Unexpected nil signed tx");
         const fromBytes = Transaction.fromBytes(hethers.utils.arrayify(signed));
         const cc = fromBytes as ContractExecuteTransaction;
@@ -588,13 +612,13 @@ describe("Wallet(ED25519) tx signing", function () {
 
     it("Should sign ContractCreate", async function () {
         const tx = {
-            from: walletED.address,
+            from: localWalletED25519.address,
             gasLimit: 10000,
             customData: {
                 bytecodeFileId: "0.0.122121"
             }
         };
-        const signed = await walletED.signTransaction(tx);
+        const signed = await localWalletED25519.signTransaction(tx);
         assert.ok(signed !== "", "Unexpected nil signed tx");
         const fromBytes = Transaction.fromBytes(hethers.utils.arrayify(signed));
         const cc = fromBytes as ContractCreateTransaction;
@@ -603,14 +627,14 @@ describe("Wallet(ED25519) tx signing", function () {
 
     it("Should sign FileCreate", async function () {
         const tx = {
-            from: walletED.address,
+            from: localWalletED25519.address,
             gasLimit: 10000,
             customData: {
                 fileChunk: "Hello world! I will definitely break your smart contract experience",
                 fileKey: PublicKey.fromString("302a300506032b6570032100cd1c5cd43b103bc5b30dd38d421a6a32386377b99d0d1b438359a72dc525bde1")
             }
         };
-        const signed = await walletED.signTransaction(tx);
+        const signed = await localWalletED25519.signTransaction(tx);
         assert.ok(signed !== "", "Unexpected nil signed tx");
         const fromBytes = Transaction.fromBytes(hethers.utils.arrayify(signed));
         const fc = fromBytes as FileCreateTransaction;
@@ -619,14 +643,14 @@ describe("Wallet(ED25519) tx signing", function () {
 
     it("Should sign FileAppend", async function () {
         const tx = {
-            from: walletED.address,
+            from: localWalletED25519.address,
             gasLimit: 10000,
             customData: {
                 fileChunk: "Hello world! I will definitely break your smart contract experience",
                 fileId: "0.0.12212"
             }
         };
-        const signed = await walletED.signTransaction(tx);
+        const signed = await localWalletED25519.signTransaction(tx);
         assert.ok(signed !== "", "Unexpected nil signed tx");
         const fromBytes = Transaction.fromBytes(hethers.utils.arrayify(signed));
         const fa = fromBytes as FileAppendTransaction;
@@ -636,25 +660,16 @@ describe("Wallet(ED25519) tx signing", function () {
 });
 
 describe("Wallet tx signing", function () {
-
-    const hederaEoa = {
-        account: "0.0.1280", //  mock key, real key is hardcoded
-        privateKey: "0x074cc0bd198d1bc91f668c59b46a1e74fd13215661e5a7bd42ad0d324476295d"
-    };
-    const provider = hethers.providers.getDefaultProvider('previewnet');
-    // @ts-ignore
-    const wallet = new hethers.Wallet(hederaEoa, provider);
-
     it("Should sign ContractCall", async function() {
         const data = Buffer.from(`"abi":{},"values":{}`).toString('hex');
         const tx = {
             to: hethers.utils.getAddressFromAccount("0.0.98"),
-            from: wallet.address,
+            from: localWalletECDSA.address,
             data: '0x'+data,
             gasLimit: 100000
 
         };
-        const signed = await wallet.signTransaction(tx);
+        const signed = await localWalletECDSA.signTransaction(tx);
         assert.ok(signed !== "", "Unexpected nil signed tx");
         const fromBytes = Transaction.fromBytes(hethers.utils.arrayify(signed));
         const cc = fromBytes as ContractExecuteTransaction;
@@ -663,13 +678,13 @@ describe("Wallet tx signing", function () {
 
     it("Should sign ContractCreate", async function() {
         const tx = {
-            from: wallet.address,
+            from: localWalletECDSA.address,
             gasLimit: 10000,
             customData: {
                 bytecodeFileId: "0.0.122121"
             }
         };
-        const signed = await wallet.signTransaction(tx);
+        const signed = await localWalletECDSA.signTransaction(tx);
         assert.ok(signed !== "", "Unexpected nil signed tx");
         const fromBytes = Transaction.fromBytes(hethers.utils.arrayify(signed));
         const cc = fromBytes as ContractCreateTransaction;
@@ -678,14 +693,14 @@ describe("Wallet tx signing", function () {
 
     it("Should sign FileCreate", async function() {
         const tx = {
-            from: wallet.address,
+            from: localWalletECDSA.address,
             gasLimit: 10000,
             customData: {
                 fileChunk: "Hello world! I will definitely break your smart contract experience",
                 fileKey: PublicKey.fromString("302a300506032b65700321004aed2e9e0cb6cbcd12b58476a2c39875d27e2a856444173830cc1618d32ca2f0")
             }
         };
-        const signed = await wallet.signTransaction(tx);
+        const signed = await localWalletECDSA.signTransaction(tx);
         assert.ok(signed !== "", "Unexpected nil signed tx");
         const fromBytes = Transaction.fromBytes(hethers.utils.arrayify(signed));
         const fc = fromBytes as FileCreateTransaction;
@@ -694,14 +709,14 @@ describe("Wallet tx signing", function () {
 
     it("Should sign FileAppend", async function() {
         const tx = {
-            from: wallet.address,
+            from: localWalletECDSA.address,
             gasLimit: 10000,
             customData: {
                 fileChunk: "Hello world! I will definitely break your smart contract experience",
                 fileId: "0.0.12212"
             }
         };
-        const signed = await wallet.signTransaction(tx);
+        const signed = await localWalletECDSA.signTransaction(tx);
         assert.ok(signed !== "", "Unexpected nil signed tx");
         const fromBytes = Transaction.fromBytes(hethers.utils.arrayify(signed));
         const fa = fromBytes as FileAppendTransaction;
@@ -730,19 +745,19 @@ describe("Wallet getters", function () {
         const chainId = await wallet.getChainId();
         assert.strictEqual(chainId, 292);
     });
+
+    it("Should get proper local chainId", async function () {
+        const provider = hethers.providers.getDefaultProvider("local");
+        const wallet = hethers.Wallet.createRandom().connect(provider);
+        const chainId = await wallet.getChainId();
+        assert.strictEqual(chainId, 298);
+    });
 });
 
 describe("Wallet local calls", async function () {
-    const hederaEoa = {
-        account: '0.0.29511337',
-        privateKey: '0x409836c5c296fe800fcac721093c68c78c4c03a1f88cb10bbdf01ecc49247132'
-    };
-    const provider = hethers.providers.getDefaultProvider('testnet');
-    // @ts-ignore
-    const wallet = new hethers.Wallet(hederaEoa, provider);
     const contractAddr = '0000000000000000000000000000000001b34cbb';
-    const contract = hethers.ContractFactory.getContract(contractAddr, abi, wallet);
-    const balanceOfParams = contract.interface.encodeFunctionData('balanceOf', [ wallet.getAddress() ]);
+    const contract = hethers.ContractFactory.getContract(contractAddr, abi, testnetWalletECDSA);
+    const balanceOfParams = contract.interface.encodeFunctionData('balanceOf', [ testnetWalletECDSA.getAddress() ]);
     // skipped - no balance in account
     xit("Should be able to perform local call", async function () {
         const balanceOfTx = {
@@ -750,7 +765,7 @@ describe("Wallet local calls", async function () {
             gasLimit: 30000,
             data: hethers.utils.arrayify(balanceOfParams),
         };
-        const response = await wallet.call(balanceOfTx);
+        const response = await testnetWalletECDSA.call(balanceOfTx);
         assert.notStrictEqual(response, null);
     });
 
@@ -764,7 +779,7 @@ describe("Wallet local calls", async function () {
             nodeId: "0.0.3"
         };
         try {
-            await wallet.call(balanceOfTx);
+            await testnetWalletECDSA.call(balanceOfTx);
         } catch (err) {
             assert.strictEqual(err.code, hethers.utils.Logger.errors.UNPREDICTABLE_GAS_LIMIT)
         }
@@ -779,7 +794,7 @@ describe("Wallet local calls", async function () {
             nodeId: "0.0.3"
         };
         try {
-            await wallet.call(balanceOfTx);
+            await testnetWalletECDSA.call(balanceOfTx);
         } catch (err) {
             assert.strictEqual(err.code, hethers.utils.Logger.errors.INSUFFICIENT_FUNDS)
         }
@@ -795,7 +810,7 @@ describe("Wallet local calls", async function () {
             nodeId: "0.0.3"
         };
         try {
-            await wallet.call(balanceOfTx);
+            await testnetWalletECDSA.call(balanceOfTx);
         } catch (err) {
             assert.strictEqual(err.code, hethers.utils.Logger.errors.INVALID_ARGUMENT)
         }
@@ -804,22 +819,8 @@ describe("Wallet local calls", async function () {
 
 
 describe("Wallet createAccount(ED25519)", function () {
-
-    let wallet: hethers.Wallet, newAccount: hethers.Wallet, newAccountPublicKey: BytesLike,
-        provider: hethers.providers.BaseProvider;
+    let newAccount: hethers.Wallet, newAccountPublicKey: BytesLike;
     const timeout = 90000;
-
-    before(async function () {
-        this.timeout(timeout);
-        const hederaEoaED: any = {
-            account: "0.0.34100425",
-            privateKey: "06bd0453347618988f1e1c60bd3e57892a4b8603969827d65b1a87d13b463d70",
-            isED25519Type: true,
-        };
-        provider = hethers.providers.getDefaultProvider('testnet');
-        // @ts-ignore
-        wallet = new hethers.Wallet(hederaEoaED, provider);
-    });
 
     beforeEach(async () => {
         newAccount = hethers.Wallet.createRandom({ isED25519Type: true });
@@ -828,7 +829,7 @@ describe("Wallet createAccount(ED25519)", function () {
     });
 
     it("Should create an account", async function () {
-        const tx = await wallet.createAccount(newAccountPublicKey);
+        const tx = await localWalletED25519.createAccount(newAccountPublicKey);
         assert.ok(tx, 'tx exists');
         assert.ok(tx.customData, 'tx.customData exists');
         assert.ok(tx.customData.accountId, 'accountId exists');
@@ -836,18 +837,18 @@ describe("Wallet createAccount(ED25519)", function () {
     }).timeout(timeout);
 
     it("Should add initial balance if provided", async function () {
-        const tx = await wallet.createAccount(newAccountPublicKey, BigInt(123));
+        const tx = await localWalletED25519.createAccount(newAccountPublicKey, BigInt(123));
         assert.ok(tx, 'tx exists');
         assert.ok(tx.customData, 'tx.customData exists');
         assert.ok(tx.customData.accountId, 'accountId exists');
 
         const newAccountAddress = hethers.utils.getAddressFromAccount(tx.customData.accountId.toString());
-        const newAccBalance = await provider.getBalance(newAccountAddress);
+        const newAccBalance = await localProvider.getBalance(newAccountAddress);
         assert.strictEqual(BigInt(123).toString(), newAccBalance.toString(), 'The initial balance is correct');
     }).timeout(timeout);
 
     it("Transaction receipt contains the account address", async function () {
-        const tx = await wallet.createAccount(newAccountPublicKey, BigInt(123));
+        const tx = await localWalletED25519.createAccount(newAccountPublicKey, BigInt(123));
         assert.notStrictEqual(tx, null, 'tx exists');
         assert.notStrictEqual(tx.customData, null, 'tx.customData exists');
         assert.notStrictEqual(tx.customData.accountId, null, 'accountId exists');
@@ -861,49 +862,48 @@ describe("Wallet createAccount(ED25519)", function () {
     }).timeout(timeout);
 
     it("Should transfer funds to new account", async function () {
-        const clientAccountId = (await wallet.createAccount(newAccountPublicKey)).customData.accountId;
-        const newWallet = newAccount.connect(provider).connectAccount(clientAccountId.toString());
+        const clientAccountId = (await localWalletED25519.createAccount(newAccountPublicKey)).customData.accountId;
+        const newWallet = newAccount.connect(localProvider).connectAccount(clientAccountId.toString());
 
-        const newWalletBalanceBefore = (await newWallet.getBalance()).toNumber();
-        const oldWalletBalanceBefore = (await wallet.getBalance()).toNumber();
-        const tx = await wallet.sendTransaction({
+        const newWalletBalanceBefore = (await newWallet.getBalance());
+        const oldWalletBalanceBefore = (await localWalletED25519.getBalance());
+        const tx = await localWalletED25519.sendTransaction({
             to: newWallet.account,
             value: 1000,
         });
         await tx.wait();
-        const newWalletBalanceAfter = (await newWallet.getBalance()).toNumber();
-        const oldWalletBalanceAfter = (await wallet.getBalance()).toNumber();
+        const newWalletBalanceAfter = (await newWallet.getBalance());
+        const oldWalletBalanceAfter = (await localWalletED25519.getBalance());
 
-        assert.strictEqual(newWalletBalanceBefore < newWalletBalanceAfter, true);
-        assert.strictEqual(oldWalletBalanceBefore > oldWalletBalanceAfter, true);
-        assert.strictEqual(newWalletBalanceAfter - newWalletBalanceBefore, 1000);
+        assert.strictEqual(newWalletBalanceBefore.lt(newWalletBalanceAfter), true);
+        assert.strictEqual(oldWalletBalanceBefore.gt(oldWalletBalanceAfter), true);
+        assert.strictEqual(newWalletBalanceAfter.sub(newWalletBalanceBefore).toNumber(), 1000);
     }).timeout(timeout);
 
     it("Should transfer funds from newly created account", async function () {
-        const clientAccountId = (await wallet.createAccount(newAccountPublicKey)).customData.accountId;
-        const newWallet = newAccount.connect(provider).connectAccount(clientAccountId.toString());
+        const clientAccountId = (await localWalletED25519.createAccount(newAccountPublicKey)).customData.accountId;
+        const newWallet = newAccount.connect(localProvider).connectAccount(clientAccountId.toString());
 
-        const tx1 = await wallet.sendTransaction({
+        const tx1 = await localWalletED25519.sendTransaction({
             to: newWallet.account,
             value: 1000000,
         });
         await tx1.wait();
-
-        const newWalletBalanceBefore = (await newWallet.getBalance()).toNumber();
-        const oldWalletBalanceBefore = (await wallet.getBalance()).toNumber();
+        console.log(newWallet.privateKey, newWallet.account)
+        const newWalletBalanceBefore = (await newWallet.getBalance());
+        const oldWalletBalanceBefore = (await localWalletED25519.getBalance());
 
         const tx2 = await newWallet.sendTransaction({
-            to: wallet.account,
+            to: localWalletED25519.account,
             value: 1000,
         });
         await tx2.wait();
 
-        const newWalletBalanceAfter = (await newWallet.getBalance()).toNumber();
-        const oldWalletBalanceAfter = (await wallet.getBalance()).toNumber();
-
-        assert.strictEqual(newWalletBalanceBefore > newWalletBalanceAfter, true);
-        assert.strictEqual(oldWalletBalanceBefore < oldWalletBalanceAfter, true);
-        assert.strictEqual(oldWalletBalanceAfter - oldWalletBalanceBefore, 1000);
+        const newWalletBalanceAfter = (await newWallet.getBalance());
+        const oldWalletBalanceAfter = (await localWalletED25519.getBalance());
+        assert.strictEqual(newWalletBalanceBefore.gt(newWalletBalanceAfter), true);
+        assert.strictEqual(oldWalletBalanceBefore.lt(oldWalletBalanceAfter), true);
+        assert.strictEqual(oldWalletBalanceAfter.sub(oldWalletBalanceBefore).toNumber(), 1000);
     }).timeout(timeout);
 
     it("Should throw an exception if provider is not set", async function () {
@@ -911,11 +911,11 @@ describe("Wallet createAccount(ED25519)", function () {
         let errorReason = null;
 
         // @ts-ignore
-        const clientAccountId = (await wallet.createAccount(newAccountPublicKey)).customData.accountId;
+        const clientAccountId = (await localWalletED25519.createAccount(newAccountPublicKey)).customData.accountId;
         const newWallet = newAccount.connectAccount(clientAccountId.toString());
         try {
             await newWallet.sendTransaction({
-                to: wallet.account,
+                to: localWalletED25519.account,
                 value: 1
             });
         } catch (e: any) {
@@ -930,26 +930,20 @@ describe("Wallet createAccount(ED25519)", function () {
 
 describe("Wallet createAccount", function () {
     this.retries(3);
-    let wallet: hethers.Wallet, newAccount: hethers.Wallet, newAccountPublicKey: BytesLike,
-        provider: hethers.providers.BaseProvider, acc1Wallet: hethers.Wallet, acc2Wallet: hethers.Wallet,
+    let newAccount: hethers.Wallet, newAccountPublicKey: BytesLike,
+        acc1Wallet: hethers.Wallet, acc2Wallet: hethers.Wallet,
         acc1Eoa: any, acc2Eoa: any;
     const timeout = 120000;
 
     before( async function() {
         this.timeout(timeout);
-        const hederaEoa =         {
-            account: '0.0.29562194',
-            privateKey: '0x3b6cd41ded6986add931390d5d3efa0bb2b311a8415cfe66716cac0234de035d'
-        };
-        acc1Eoa = {"account":"0.0.29631749","privateKey":"0x18a2ac384f3fa3670f71fc37e2efbf4879a90051bb0d437dd8cbd77077b24d9b"};
-        acc2Eoa = {"account":"0.0.29631750","privateKey":"0x6357b34b94fe53ded45ebe4c22b9c1175634d3f7a8a568079c2cb93bba0e3aee"};
-        provider = hethers.providers.getDefaultProvider('testnet');
+        acc1Eoa = {"account":"0.0.1180","privateKey":"0xc2604b6895bc5fa4bbc0516c09364b982daacf5ed608ab792bb80a4add10ea65"};
+        acc2Eoa = {"account":"0.0.1181","privateKey":"0xfa319b59d0abbc20f0e31e07c9bf93b838c40de5ccdd3bbeed7e51d5179be1b8"};
+
         // @ts-ignore
-        wallet = new hethers.Wallet(hederaEoa, provider);
+        acc1Wallet = new hethers.Wallet(acc1Eoa, localProvider);
         // @ts-ignore
-        acc1Wallet = new hethers.Wallet(acc1Eoa, provider);
-        // @ts-ignore
-        acc2Wallet = new hethers.Wallet(acc2Eoa, provider);
+        acc2Wallet = new hethers.Wallet(acc2Eoa, localProvider);
     });
 
     beforeEach(async () => {
@@ -958,25 +952,25 @@ describe("Wallet createAccount", function () {
     });
 
     it("Should create an account", async function () {
-        const tx = await wallet.createAccount(newAccountPublicKey);
+        const tx = await localWalletECDSA.createAccount(newAccountPublicKey);
         assert.ok(tx, 'tx exists');
         assert.ok(tx.customData, 'tx.customData exists');
         assert.ok(tx.customData.accountId, 'accountId exists');
     }).timeout(timeout);
 
     it("Should add initial balance if provided", async function () {
-        const tx = await wallet.createAccount(newAccountPublicKey, BigInt(123));
+        const tx = await localWalletECDSA.createAccount(newAccountPublicKey, BigInt(123));
         assert.ok(tx, 'tx exists');
         assert.ok(tx.customData, 'tx.customData exists');
         assert.ok(tx.customData.accountId, 'accountId exists');
 
         const newAccountAddress = hethers.utils.getAddressFromAccount(tx.customData.accountId.toString());
-        const newAccBalance = await provider.getBalance(newAccountAddress);
+        const newAccBalance = await localProvider.getBalance(newAccountAddress);
         assert.strictEqual(BigInt(123).toString(), newAccBalance.toString(), 'The initial balance is correct');
     }).timeout(timeout);
 
     it("Transaction receipt contains the account address", async function () {
-        const tx = await wallet.createAccount(newAccountPublicKey, BigInt(123));
+        const tx = await localWalletECDSA.createAccount(newAccountPublicKey, BigInt(123));
         assert.notStrictEqual(tx, null, 'tx exists');
         assert.notStrictEqual(tx.customData, null, 'tx.customData exists');
         assert.notStrictEqual(tx.customData.accountId, null,'accountId exists');
@@ -1107,7 +1101,7 @@ describe("Wallet createAccount", function () {
         });
         await transaction.wait();
 
-        const tx = await provider.getTransaction(transaction.transactionId);
+        const tx = await localProvider.getTransaction(transaction.transactionId);
         assert.strictEqual(tx.hasOwnProperty('chainId'), true);
         assert.strictEqual(tx.hasOwnProperty('hash'), true);
         assert.strictEqual(tx.hasOwnProperty('timestamp'), true);
