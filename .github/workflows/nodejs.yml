@@ -31,6 +31,9 @@ jobs:
       - name: Install dependencies (and link per package)
         run: npm ci
 
+      - name: Install hedera-local node globally
+        run: npm install -g https://github.com/hashgraph/hedera-local-node.git#feature/add-alias-accounts-and-ed25519
+
       - name: Build CommonJS and ESM (from TypeScript)
         run: npm run build-all
 
