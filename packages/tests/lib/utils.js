@@ -69,8 +69,6 @@ var getAccounts = function () {
     return {
         local: {
             ecdsa: [
-                { account: '0.0.1002', privateKey: '0x7f109a9e3b0d8ecfba9cc23a3614433ce0fa7ddcc80f2a8f10b222179a5a80d6', isED25519Type: false },
-                { account: '0.0.1003', privateKey: '0x6ec1f2e7d126a74a1d2ff9e1c5d90b92378c725e506651ff8bb8616a5c724628', isED25519Type: false },
                 { account: '0.0.1004', privateKey: '0xb4d7f7e82f61d81c95985771b8abf518f9328d019c36849d4214b5f995d13814', isED25519Type: false },
                 { account: '0.0.1005', privateKey: '0x941536648ac10d5734973e94df413c17809d6cc5e24cd11e947e685acfbd12ae', isED25519Type: false },
                 { account: '0.0.1006', privateKey: '0x5829cf333ef66b6bdd34950f096cb24e06ef041c5f63e577b4f3362309125863', isED25519Type: false },
@@ -81,8 +79,6 @@ var getAccounts = function () {
                 { account: '0.0.1011', privateKey: '0x3e215c3d2a59626a669ed04ec1700f36c05c9b216e592f58bbfd3d8aa6ea25f9', isED25519Type: false },
             ],
             ed25519: [
-                { account: '0.0.1022', privateKey: '0xa608e2130a0a3cb34f86e757303c862bee353d9ab77ba4387ec084f881d420d4', isED25519Type: true },
-                { account: '0.0.1023', privateKey: '0xbbd0894de0b4ecfa862e963825c5448d2d17f807a16869526bff29185747acdb', isED25519Type: true },
                 { account: '0.0.1024', privateKey: '0x8fd50f886a2e7ed499e7686efd1436b50aa9b64b26e4ecc4e58ca26e6257b67d', isED25519Type: true },
                 { account: '0.0.1025', privateKey: '0x62c966ebd9dcc0fc16a553b2ef5b72d1dca05cdf5a181027e761171e9e947420', isED25519Type: true },
                 { account: '0.0.1026', privateKey: '0x805c9f422fd9a768fdd8c68f4fe0c3d4a93af714ed147ab6aed5f0ee8e9ee165', isED25519Type: true },
@@ -91,7 +87,6 @@ var getAccounts = function () {
                 { account: '0.0.1029', privateKey: '0xcb833706d1df537f59c418a00e36159f67ce3760ce6bf661f11f6da2b11c2c5a', isED25519Type: true },
                 { account: '0.0.1030', privateKey: '0x9b6adacefbbecff03e4359098d084a3af8039ce7f29d95ed28c7ebdb83740c83', isED25519Type: true },
                 { account: '0.0.1031', privateKey: '0x9a07bbdbb62e24686d2a4259dc88e38438e2c7a1ba167b147ad30ac540b0a3cd', isED25519Type: true },
-                // { account: '0.0.2', privateKey: '302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137', isED25519Type: true }
             ]
         },
         testnet: {
