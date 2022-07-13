@@ -1430,7 +1430,7 @@ describe('Providers.spec', function () {
                             account = utils.getAccounts().local.ecdsa[0].account.split('.');
                             solAddr = hethers_1.hethers.utils.getAddressFromAccount({ shard: BigInt(account[0]), realm: BigInt(account[1]), num: BigInt(account[2]) });
                             assert_1.default.notStrictEqual(localProvider, null);
-                            chainIDDerivedProvider = hethers_1.hethers.providers.getDefaultProvider(291);
+                            chainIDDerivedProvider = hethers_1.hethers.providers.getDefaultProvider(298);
                             assert_1.default.notStrictEqual(chainIDDerivedProvider, null);
                             return [4 /*yield*/, localProvider.getBalance(solAddr)];
                         case 1:

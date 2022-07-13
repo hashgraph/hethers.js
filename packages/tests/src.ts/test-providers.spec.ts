@@ -1305,7 +1305,7 @@ describe('Providers.spec', () => {
             const solAddr = hethers.utils.getAddressFromAccount({ shard: BigInt(account[0]), realm: BigInt(account[1]), num: BigInt(account[2]) });
             assert.notStrictEqual(localProvider, null);
 
-            const chainIDDerivedProvider = hethers.providers.getDefaultProvider(291);
+            const chainIDDerivedProvider = hethers.providers.getDefaultProvider(298);
             assert.notStrictEqual(chainIDDerivedProvider, null);
 
             // ensure providers are usable
