@@ -10,6 +10,12 @@ declare const getAccounts: () => {
             privateKey: string;
             isED25519Type: boolean;
         }[];
+        ecdsaAlias: {
+            account: string;
+            address: string;
+            privateKey: string;
+            isED25519Type: boolean;
+        }[];
         ed25519: {
             account: string;
             privateKey: string;

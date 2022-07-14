@@ -1108,7 +1108,7 @@ function mapNetworkToHederaNetworkName(net) {
         case 'testnet':
             return sdk_2.NetworkName.Testnet;
         case 'local':
-            return _a = {}, _a[localConsensusNodeUrl] = localConsensusNodeId, _a;
+            return { '127.0.0.1:50211': '0.0.3' };
         default:
             logger.throwArgumentError("Invalid network name", "network", net);
             return null;
@@ -1124,7 +1124,7 @@ function resolveMirrorNetworkUrl(net) {
         case 'testnet':
             return 'https://testnet.mirrornode.hedera.com';
         case 'local':
-            return localMirrorNodeUrl;
+            return 'http://127.0.0.1:5551';
         default:
             logger.throwArgumentError("Invalid network name", "network", net);
             return null;

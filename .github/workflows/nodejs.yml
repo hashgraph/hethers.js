@@ -6,7 +6,7 @@ on:
   pull_request:
 
 env:
-  PLATFORM_JAVA_OPTS: "-XX:+UnlockExperimentalVMOptions -XX:+UseZGC -Xlog:gc*:gc.log"
+  PLATFORM_JAVA_OPTS: ""
 
 jobs:
 

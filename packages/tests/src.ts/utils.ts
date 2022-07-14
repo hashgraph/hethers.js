@@ -77,6 +77,18 @@ const getAccounts = () => {
                 { account: '0.0.1010', privateKey: '0xbdc6e0a69f2921a78e9af930111334a41d3fab44653c8de0775572c526feea2d', isED25519Type: false },
                 { account: '0.0.1011', privateKey: '0x3e215c3d2a59626a669ed04ec1700f36c05c9b216e592f58bbfd3d8aa6ea25f9', isED25519Type: false },
             ].reverse(), // sometimes first 2-3 account ids are different so reverse the order
+            ecdsaAlias: [
+                { account: '0.0.1012', address: '0x67D8d32E9Bf1a9968a5ff53B87d777Aa8EBBEe69', privateKey: '0x105d050185ccb907fba04dd92d8de9e32c18305e097ab41dadda21489a211524', isED25519Type: false },
+                { account: '0.0.1013', address: '0x05FbA803Be258049A27B820088bab1cAD2058871', privateKey: '0x2e1d968b041d84dd120a5860cee60cd83f9374ef527ca86996317ada3d0d03e7', isED25519Type: false },
+                { account: '0.0.1014', address: '0x927E41Ff8307835A1C081e0d7fD250625F2D4D0E', privateKey: '0x45a5a7108a18dd5013cf2d5857a28144beadc9c70b3bdbd914e38df4e804b8d8', isED25519Type: false },
+                { account: '0.0.1015', address: '0xc37f417fA09933335240FCA72DD257BFBdE9C275', privateKey: '0x6e9d61a325be3f6675cf8b7676c70e4a004d2308e3e182370a41f5653d52c6bd', isED25519Type: false },
+                { account: '0.0.1016', address: '0xD927017F5a6a7A92458b81468Dc71FCE6115B325', privateKey: '0x0b58b1bd44469ac9f813b5aeaf6213ddaea26720f0b2f133d08b6f234130a64f', isED25519Type: false },
+                { account: '0.0.1017', address: '0x5C41A21F14cFe9808cBEc1d91b55Ba75ed327Eb6', privateKey: '0x95eac372e0f0df3b43740fa780e62458b2d2cc32d6a440877f1cc2a9ad0c35cc', isED25519Type: false },
+                { account: '0.0.1018', address: '0xcdaD5844f865F379beA057fb435AEfeF38361B68', privateKey: '0x6c6e6727b40c8d4b616ab0d26af357af09337299f09c66704146e14236972106', isED25519Type: false },
+                { account: '0.0.1019', address: '0x6e5D3858f53FC66727188690946631bDE0466B1A', privateKey: '0x5072e7aa1b03f531b4731a32a021f6a5d20d5ddc4e55acbb71ae202fc6f3a26d', isED25519Type: false },
+                { account: '0.0.1020', address: '0x29cbb51A44fd332c14180b4D471FBBc6654b1657', privateKey: '0x60fe891f13824a2c1da20fb6a14e28fa353421191069ba6b6d09dd6c29b90eff', isED25519Type: false },
+                { account: '0.0.1021', address: '0x17b2B8c63Fa35402088640e426c6709A254c7fFb', privateKey: '0xeae4e00ece872dd14fb6dc7a04f390563c7d69d16326f2a703ec8e0934060cc7', isED25519Type: false },
+            ].reverse(),
             ed25519: [
                 { account: '0.0.1022', privateKey: '0xa608e2130a0a3cb34f86e757303c862bee353d9ab77ba4387ec084f881d420d4', isED25519Type: true },
                 { account: '0.0.1023', privateKey: '0xbbd0894de0b4ecfa862e963825c5448d2d17f807a16869526bff29185747acdb', isED25519Type: true },

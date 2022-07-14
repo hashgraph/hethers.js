@@ -21,9 +21,9 @@ import { Logger } from "@hethers/logger";
 import { version } from "./_version";
 const logger = new Logger(version);
 
-import {Formatter} from "./formatter";
-import {getAccountFromTransactionId, AccountLike, asAccountString, getAddressFromAccount} from "@hethers/address";
-import {AccountBalanceQuery, AccountId, Client, NetworkName, Transaction as HederaTransaction} from "@hashgraph/sdk";
+import { Formatter } from "./formatter";
+import { getAccountFromTransactionId, AccountLike, asAccountString, getAddressFromAccount } from "@hethers/address";
+import { AccountBalanceQuery, AccountId, Client, NetworkName, Transaction as HederaTransaction } from "@hashgraph/sdk";
 import axios, { AxiosResponse } from "axios";
 import * as base64 from "@ethersproject/base64";
 
@@ -285,7 +285,7 @@ export class BaseProvider extends Provider {
     }
 
     private _makeRequest(uri: string): Promise<AxiosResponse<any, any>> {
-        return axios.get(this._mirrorNodeUrl + uri, { headers: this._options.headers});
+        return axios.get(this._mirrorNodeUrl + uri, { headers: this._options.headers });
     }
 
     async _ready(): Promise<Network> {
@@ -412,7 +412,7 @@ export class BaseProvider extends Provider {
                     return resolve(this.formatter.receiptFromResponse(txResponse));
                 }
             }
-            reject(logger.makeError("timeout exceeded", Logger.errors.TIMEOUT, {timeout: timeout}));
+            reject(logger.makeError("timeout exceeded", Logger.errors.TIMEOUT, { timeout: timeout }));
         });
     }
 
@@ -433,7 +433,7 @@ export class BaseProvider extends Provider {
         } catch (error) {
             return logger.throwError("bad result from backend", Logger.errors.SERVER_ERROR, {
                 method: "AccountBalanceQuery",
-                params: {address: accountLike},
+                params: { address: accountLike },
                 error
             });
         }
@@ -451,14 +451,14 @@ export class BaseProvider extends Provider {
         accountLike = await accountLike;
         const account = asAccountString(accountLike);
         try {
-            let {data} = await this._makeRequest(MIRROR_NODE_CONTRACTS_ENDPOINT + account);
+            let { data } = await this._makeRequest(MIRROR_NODE_CONTRACTS_ENDPOINT + account);
             return data.bytecode ? hexlify(data.bytecode) : `0x`;
         } catch (error) {
             if (error.response && error.response.status &&
                 (error.response.status != 404 || (error.response.status == 404 && throwOnNonExisting))) {
                 logger.throwError("bad result from backend", Logger.errors.SERVER_ERROR, {
                     method: "ContractByteCodeQuery",
-                    params: {address: accountLike},
+                    params: { address: accountLike },
                     error
                 });
             }
@@ -577,7 +577,7 @@ export class BaseProvider extends Provider {
         let transactionsEndpoint = MIRROR_NODE_TRANSACTIONS_ENDPOINT;
         !transactionIdOrTimestamp.includes("-") ? transactionsEndpoint += ('?timestamp=' + transactionIdOrTimestamp) : transactionsEndpoint += transactionIdOrTimestamp;
         try {
-            let {data} = await this._makeRequest(transactionsEndpoint)
+            let { data } = await this._makeRequest(transactionsEndpoint)
             if (data) {
                 const filtered = data.transactions.filter((e: { result: string; }) => e.result != 'DUPLICATE_TRANSACTION');
                 if (filtered.length > 0) {
@@ -625,7 +625,7 @@ export class BaseProvider extends Provider {
                     } else {
                         const contractsEndpoint = MIRROR_NODE_CONTRACTS_RESULTS_ENDPOINT + filtered[0].transaction_id;
                         const dataWithLogs = await this._makeRequest(contractsEndpoint);
-                        record = Object.assign({}, record, {...dataWithLogs.data});
+                        record = Object.assign({}, record, { ...dataWithLogs.data });
                     }
 
                     return this.formatter.responseFromRecord(record);
@@ -678,7 +678,7 @@ export class BaseProvider extends Provider {
     async getLogs(filter: Filter | Promise<Filter>): Promise<Array<Log>> {
         
         this._checkMirrorNode();
-        const params = await resolveProperties({filter: this._getFilter(filter)});
+        const params = await resolveProperties({ filter: this._getFilter(filter) });
         // set default values
         params.filter.fromTimestamp = params.filter.fromTimestamp || ZERO_HEDERA_TIMESTAMP;
         params.filter.toTimestamp = params.filter.toTimestamp || Timestamp.generate().toString();
@@ -699,7 +699,7 @@ export class BaseProvider extends Provider {
         }
         const requestUrl = epContractsLogs + toTimestampFilter + fromTimestampFilter;
         try {
-            let {data} = await this._makeRequest(requestUrl);
+            let { data } = await this._makeRequest(requestUrl);
 
             if (data) {
                 const mappedLogs = this.formatter.logsMapper(data.logs);
@@ -709,7 +709,7 @@ export class BaseProvider extends Provider {
                 return Formatter.arrayOf(this.formatter.filterLog.bind(this.formatter))(mappedLogs);
             }
         } catch (error) {
-            const errorParams = {method: "ContractLogsQuery", error}
+            const errorParams = { method: "ContractLogsQuery", error }
             if (error.response && error.response.status != 404) {
                 logger.throwError("bad result from backend", Logger.errors.SERVER_ERROR, errorParams);
             }
@@ -735,7 +735,7 @@ export class BaseProvider extends Provider {
     }
 
     perform(method: string, params: any): Promise<any> {
-        return logger.throwError(method + " not implemented", Logger.errors.NOT_IMPLEMENTED, {operation: method});
+        return logger.throwError(method + " not implemented", Logger.errors.NOT_IMPLEMENTED, { operation: method });
     }
 
     _addEventListener(eventName: EventType, listener: Listener, once: boolean): this {
@@ -972,7 +972,7 @@ function mapNetworkToHederaNetworkName(net: Network | string | number | Promise<
         case 'testnet':
             return NetworkName.Testnet;
         case 'local':
-            return {[localConsensusNodeUrl]: localConsensusNodeId};
+            return { '127.0.0.1:50211': '0.0.3' };
         default:
             logger.throwArgumentError("Invalid network name", "network", net);
             return null;
@@ -989,7 +989,7 @@ function resolveMirrorNetworkUrl(net: Network): string {
         case 'testnet':
             return 'https://testnet.mirrornode.hedera.com';
         case 'local':
-            return localMirrorNodeUrl;
+            return 'http://127.0.0.1:5551';
         default:
             logger.throwArgumentError("Invalid network name", "network", net);
             return null;
