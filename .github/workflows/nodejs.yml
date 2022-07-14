@@ -107,8 +107,8 @@ jobs:
 
     name: Coverage
 
-    #    runs-on: ubuntu-latest
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
+    # runs-on: macos-latest
 
     continue-on-error: true
 
@@ -125,6 +125,9 @@ jobs:
 
       - name: Install dependencies (and link per package)
         run: npm ci
+
+      - name: Install hedera-local node globally
+        run: npm install -g https://github.com/hashgraph/hedera-local-node.git
 
       - name: Build CommonJS and ESM (from TypeScript)
         run: npm run build-all

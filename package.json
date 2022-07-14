@@ -23,7 +23,7 @@
     "_test-browser-esm": "karma start --single-run --browsers HeadlessLittleLiar karma-esm.conf.js",
     "test-browser-umd": "npm run _test-dist && npm run _test-browser-umd",
     "test-browser-esm": "npm run _test-dist && npm run _test-browser-esm",
-    "test-coverage": "nyc --report-dir=output --reporter=lcov --reporter=text mocha --reporter ./packages/tests/reporter-keepalive ./packages/tests/lib/*spec.js | tee output/summary.txt",
+    "test-coverage": "nyc --report-dir=output --reporter=lcov --reporter=text mocha --reporter ./packages/tests/reporter-keepalive ./packages/tests/lib/index.spec.js | tee output/summary.txt",
     "test-node": "mocha --no-colors --reporter ./packages/tests/reporter ./packages/tests/lib/index.spec.js",
     "test-react": "npm run _test-dist && pushd misc/ReactNativeTestApp && ./run-tests.sh && popd",
     "test": "npm run build-all && npm run test-node",
