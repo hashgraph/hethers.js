@@ -67,12 +67,6 @@ var default_hedera_provider_1 = require("@hethers/providers/lib/default-hedera-p
 var sdk_1 = require("@hashgraph/sdk");
 var utils = __importStar(require("./utils"));
 var bnify = hethers_1.hethers.BigNumber.from;
-var hederaTestnetOperableAccount = {
-    "operator": {
-        "accountId": "0.0.19041642",
-        "privateKey": "302e020100300506032b6570042204207ef3437273a5146e4e504a6e22c5caedf07cb0821f01bc05d18e8e716f77f66c"
-    },
-};
 var blockchainData = {
     homestead: {
         addresses: [
@@ -971,6 +965,7 @@ describe('Providers.spec', function () {
     var localWalletECDSA = utils.getWallets().local.ecdsa[0];
     // @ts-ignore
     var localWalletED25519 = utils.getWallets().local.ed25519[1];
+    var hederaTestnetOperableAccount = utils.getAccounts().testnet.ed25519[1];
     describe("Test Basic Authentication", function () {
         //this.retries(3);
         function test(name, url) {
@@ -1187,8 +1182,8 @@ describe('Providers.spec', function () {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            privateKey = sdk_1.PrivateKey.fromString(hederaTestnetOperableAccount.operator.privateKey);
-                            txID = sdk_1.TransactionId.generate(hederaTestnetOperableAccount.operator.accountId);
+                            privateKey = sdk_1.PrivateKey.fromString(hederaTestnetOperableAccount.privateKey);
+                            txID = sdk_1.TransactionId.generate(hederaTestnetOperableAccount.account);
                             return [4 /*yield*/, new sdk_1.ContractCreateTransaction()
                                     .setGas(300000)
                                     .setBytecodeFileId("0.0.26562254")
@@ -1222,7 +1217,7 @@ describe('Providers.spec', function () {
                                 // assert.strict(receipt.logs.length > 0);
                                 assert_1.default.strictEqual(receipt.to, null);
                                 assert_1.default.strictEqual(receipt.contractAddress, '0x' + sendTransactionResponse.customData.contractId);
-                                assert_1.default.strictEqual(receipt.from, hethers_1.hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.operator.accountId));
+                                assert_1.default.strictEqual(receipt.from, hethers_1.hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.account));
                                 assert_1.default.strictEqual(receipt.transactionHash, sendTransactionResponse.hash);
                                 return [2 /*return*/];
                         }
@@ -1246,7 +1241,7 @@ describe('Providers.spec', function () {
                                 // assert.strict(receipt.logs.length > 0);
                                 assert_1.default.strictEqual(receipt.to, null);
                                 assert_1.default.strictEqual(receipt.contractAddress, '0x' + sendTransactionResponse.customData.contractId);
-                                assert_1.default.strictEqual(receipt.from, hethers_1.hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.operator.accountId));
+                                assert_1.default.strictEqual(receipt.from, hethers_1.hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.account));
                                 assert_1.default.strictEqual(receipt.transactionHash, sendTransactionResponse.hash);
                                 return [2 /*return*/];
                         }
@@ -1468,8 +1463,8 @@ describe('Providers.spec', function () {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            privateKey = sdk_1.PrivateKey.fromString(hederaTestnetOperableAccount.operator.privateKey);
-                            txID = sdk_1.TransactionId.generate(hederaTestnetOperableAccount.operator.accountId);
+                            privateKey = sdk_1.PrivateKey.fromString(hederaTestnetOperableAccount.privateKey);
+                            txID = sdk_1.TransactionId.generate(hederaTestnetOperableAccount.account);
                             return [4 /*yield*/, new sdk_1.ContractCreateTransaction()
                                     .setContractMemo("memo")
                                     .setGas(300000)
@@ -1489,7 +1484,7 @@ describe('Providers.spec', function () {
                         case 2:
                             txResponse = _a.sent();
                             assert_1.default.strictEqual(txResponse.gasLimit.toNumber(), 300000);
-                            assert_1.default.strictEqual(txResponse.from, hethers_1.hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.operator.accountId));
+                            assert_1.default.strictEqual(txResponse.from, hethers_1.hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.account));
                             assert_1.default.strictEqual(txResponse.to, undefined); // contract create TX should not be addressed to anything
                             return [2 /*return*/];
                     }

@@ -97,6 +97,11 @@ const getAccounts = () => {
                     alias: "0.0.QsxEYZU82YPvQqrZ8DAfOktZjmbcfjaPwVATlsaJCCM=",
                     privateKey: "06bd0453347618988f1e1c60bd3e57892a4b8603969827d65b1a87d13b463d70",
                     isED25519Type: true
+                },
+                {
+                    account: "0.0.19041642",
+                    privateKey: "302e020100300506032b6570042204207ef3437273a5146e4e504a6e22c5caedf07cb0821f01bc05d18e8e716f77f66c",
+                    isED25519Type: true
                 }
             ]
         }

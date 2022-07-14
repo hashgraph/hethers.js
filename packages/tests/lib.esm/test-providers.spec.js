@@ -17,12 +17,6 @@ import { HederaNetworks } from "@hethers/providers/lib/default-hedera-provider";
 import { AccountId, ContractCreateTransaction, ContractFunctionParameters, PrivateKey, TransactionId } from "@hashgraph/sdk";
 import * as utils from "./utils";
 const bnify = hethers.BigNumber.from;
-const hederaTestnetOperableAccount = {
-    "operator": {
-        "accountId": "0.0.19041642",
-        "privateKey": "302e020100300506032b6570042204207ef3437273a5146e4e504a6e22c5caedf07cb0821f01bc05d18e8e716f77f66c"
-    },
-};
 const blockchainData = {
     homestead: {
         addresses: [
@@ -893,6 +887,7 @@ describe('Providers.spec', () => {
     const localWalletECDSA = utils.getWallets().local.ecdsa[0];
     // @ts-ignore
     const localWalletED25519 = utils.getWallets().local.ed25519[1];
+    const hederaTestnetOperableAccount = utils.getAccounts().testnet.ed25519[1];
     describe("Test Basic Authentication", function () {
         //this.retries(3);
         function test(name, url) {
@@ -1078,8 +1073,8 @@ describe('Providers.spec', () => {
         describe("Sign & Send Transacton, Wait for receipt", function () {
             let signedTx;
             beforeEach(() => __awaiter(this, void 0, void 0, function* () {
-                const privateKey = PrivateKey.fromString(hederaTestnetOperableAccount.operator.privateKey);
-                const txID = TransactionId.generate(hederaTestnetOperableAccount.operator.accountId);
+                const privateKey = PrivateKey.fromString(hederaTestnetOperableAccount.privateKey);
+                const txID = TransactionId.generate(hederaTestnetOperableAccount.account);
                 const tx = yield new ContractCreateTransaction()
                     .setGas(300000)
                     .setBytecodeFileId("0.0.26562254")
@@ -1098,7 +1093,7 @@ describe('Providers.spec', () => {
                     // assert.strict(receipt.logs.length > 0);
                     assert.strictEqual(receipt.to, null);
                     assert.strictEqual(receipt.contractAddress, '0x' + sendTransactionResponse.customData.contractId);
-                    assert.strictEqual(receipt.from, hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.operator.accountId));
+                    assert.strictEqual(receipt.from, hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.account));
                     assert.strictEqual(receipt.transactionHash, sendTransactionResponse.hash);
                 });
             }).timeout(timeout * 8);
@@ -1109,7 +1104,7 @@ describe('Providers.spec', () => {
                     // assert.strict(receipt.logs.length > 0);
                     assert.strictEqual(receipt.to, null);
                     assert.strictEqual(receipt.contractAddress, '0x' + sendTransactionResponse.customData.contractId);
-                    assert.strictEqual(receipt.from, hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.operator.accountId));
+                    assert.strictEqual(receipt.from, hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.account));
                     assert.strictEqual(receipt.transactionHash, sendTransactionResponse.hash);
                 });
             }).timeout(timeout * 10);
@@ -1219,9 +1214,9 @@ describe('Providers.spec', () => {
                 // The initial balance part is commented out as of the current non-payable constructor.
                 // In the future, this test should be changed to use testnet and pre-deployed
                 // bytecode for contract with a payable constructor .
-                const privateKey = PrivateKey.fromString(hederaTestnetOperableAccount.operator.privateKey);
+                const privateKey = PrivateKey.fromString(hederaTestnetOperableAccount.privateKey);
                 // 1. Sign TX -> `sign-transaction.ts`
-                const txID = TransactionId.generate(hederaTestnetOperableAccount.operator.accountId);
+                const txID = TransactionId.generate(hederaTestnetOperableAccount.account);
                 const tx = yield new ContractCreateTransaction()
                     .setContractMemo("memo")
                     .setGas(300000)
@@ -1237,7 +1232,7 @@ describe('Providers.spec', () => {
                 const provider = hethers.providers.getDefaultProvider('testnet');
                 const txResponse = yield provider.sendTransaction(signedTx);
                 assert.strictEqual(txResponse.gasLimit.toNumber(), 300000);
-                assert.strictEqual(txResponse.from, hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.operator.accountId));
+                assert.strictEqual(txResponse.from, hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.account));
                 assert.strictEqual(txResponse.to, undefined); // contract create TX should not be addressed to anything
                 // assert.strictEqual(txResponse.value.toNumber(), 100000000000);
             });
