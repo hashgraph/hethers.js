@@ -241,9 +241,6 @@ var defaultFormatter = null;
 var MIRROR_NODE_TRANSACTIONS_ENDPOINT = '/api/v1/transactions/';
 var MIRROR_NODE_CONTRACTS_RESULTS_ENDPOINT = '/api/v1/contracts/results/';
 var MIRROR_NODE_CONTRACTS_ENDPOINT = '/api/v1/contracts/';
-var localConsensusNodeId = '0.0.3';
-var localConsensusNodeUrl = '127.0.0.1:50211';
-var localMirrorNodeUrl = 'http://127.0.0.1:5551';
 var nextPollId = 1;
 function formatTimestamp(s) {
     var _a = s.split("."), sec = _a[0], nano = _a[1];
@@ -1099,7 +1096,6 @@ var BaseProvider = /** @class */ (function (_super) {
 exports.BaseProvider = BaseProvider;
 // resolves network string to a hedera network name
 function mapNetworkToHederaNetworkName(net) {
-    var _a;
     switch (net) {
         case 'mainnet':
             return sdk_2.NetworkName.Mainnet;
