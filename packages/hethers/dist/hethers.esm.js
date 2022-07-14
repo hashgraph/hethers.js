@@ -103544,9 +103544,6 @@ let defaultFormatter = null;
 const MIRROR_NODE_TRANSACTIONS_ENDPOINT = '/api/v1/transactions/';
 const MIRROR_NODE_CONTRACTS_RESULTS_ENDPOINT = '/api/v1/contracts/results/';
 const MIRROR_NODE_CONTRACTS_ENDPOINT = '/api/v1/contracts/';
-const localConsensusNodeId = '0.0.3';
-const localConsensusNodeUrl = '127.0.0.1:50211';
-const localMirrorNodeUrl = 'http://127.0.0.1:5551';
 let nextPollId = 1;
 function formatTimestamp(s) {
     const [sec, nano] = s.split(".");
@@ -104256,7 +104253,7 @@ function mapNetworkToHederaNetworkName(net) {
         case 'testnet':
             return NetworkName.Testnet;
         case 'local':
-            return { [localConsensusNodeUrl]: localConsensusNodeId };
+            return { '127.0.0.1:50211': '0.0.3' };
         default:
             logger$A.throwArgumentError("Invalid network name", "network", net);
             return null;
@@ -104272,7 +104269,7 @@ function resolveMirrorNetworkUrl(net) {
         case 'testnet':
             return 'https://testnet.mirrornode.hedera.com';
         case 'local':
-            return localMirrorNodeUrl;
+            return 'http://127.0.0.1:5551';
         default:
             logger$A.throwArgumentError("Invalid network name", "network", net);
             return null;
