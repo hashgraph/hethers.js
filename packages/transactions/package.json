@@ -23,7 +23,8 @@
   "module": "./lib.esm/index.js",
   "name": "@hethers/transactions",
   "peerDependencies": {
-    "@hashgraph/sdk": "^2.17.1"
+    "@hashgraph/sdk": "^2.17.1",
+    "@hashgraph/proto": "^2.9.0"
   },
   "publishConfig": {
     "access": "public"

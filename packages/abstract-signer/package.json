@@ -8,6 +8,9 @@
     "@hethers/logger": "1.1.0",
     "@hethers/transactions": "1.1.2"
   },
+  "peerDependencies": {
+    "@hashgraph/proto": "^2.9.0"
+  },
   "description": "An Abstract Class for describing an Hedera Hashgraph Signer for hethers.",
   "keywords": [
     "Hedera",
