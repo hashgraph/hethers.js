@@ -3,7 +3,7 @@
     "@ethersproject/bignumber": "5.5.0",
     "@ethersproject/bytes": "5.5.0",
     "@ethersproject/keccak256": "5.5.0",
-    "@hethers/logger": "1.1.0"
+    "@hethers/logger": "1.2.0"
   },
   "description": "Utilities for handling EVM Addresses for hethers.",
   "keywords": [
@@ -29,7 +29,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "sideEffects": false,
-  "tarballHash": "0x3ddc31fd3fa0d0a7ad5a280cf611993488062264150741472c0c8d9ad145fe28",
+  "tarballHash": "0x4c40a32c5fa8c3b92cd15f95390d7456355c281a2e7c062ea4340f203efce429",
   "types": "./lib/index.d.ts",
-  "version": "1.1.0"
+  "version": "1.2.0"
 }

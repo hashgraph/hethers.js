@@ -5,10 +5,10 @@
     "@ethersproject/bytes": "5.5.0",
     "@ethersproject/keccak256": "5.5.0",
     "@ethersproject/properties": "5.5.0",
-    "@hethers/address": "1.1.0",
-    "@hethers/constants": "1.1.0",
-    "@hethers/logger": "1.1.0",
-    "@hethers/signing-key": "1.1.0"
+    "@hethers/address": "1.2.0",
+    "@hethers/constants": "1.2.0",
+    "@hethers/logger": "1.2.0",
+    "@hethers/signing-key": "1.2.0"
   },
   "description": "Utilities for decoding and encoding Hedera Hashgraph transactions for hethers.",
   "keywords": [
@@ -23,8 +23,8 @@
   "module": "./lib.esm/index.js",
   "name": "@hethers/transactions",
   "peerDependencies": {
-    "@hashgraph/sdk": "^2.17.1",
-    "@hashgraph/proto": "^2.9.0"
+    "@hashgraph/proto": "^2.9.0",
+    "@hashgraph/sdk": "^2.17.1"
   },
   "publishConfig": {
     "access": "public"
@@ -38,7 +38,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "sideEffects": false,
-  "tarballHash": "0xd3b9595179040d83086f8f754a7104f652e3e9cf4a8a8e3ed1e97ed3d773036d",
+  "tarballHash": "0xf1a799f9b01c9f2eb8872afa62d6387759cec4aece1d093743a3898555db0a66",
   "types": "./lib/index.d.ts",
-  "version": "1.1.2"
+  "version": "1.2.0"
 }

@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "@ethersproject/bignumber": "5.5.0",
-    "@hethers/logger": "1.1.0"
+    "@hethers/logger": "1.2.0"
   },
   "description": "Unit conversion functions for Hedera Hashgraph.",
   "keywords": [
@@ -29,7 +29,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "sideEffects": false,
-  "tarballHash": "0xf8691fe7fbe310ea9c7d2a755b586a3558c3beb5db13ea8f61f95aec91e3f0d4",
+  "tarballHash": "0xb11894479ef679c94f0ab2036275371f7ef100421a29049f40e798ba835d9e2f",
   "types": "./lib/index.d.ts",
-  "version": "1.1.0"
+  "version": "1.2.0"
 }

@@ -5,7 +5,7 @@
   "dependencies": {
     "@ethersproject/bytes": "5.5.0",
     "@ethersproject/properties": "5.5.0",
-    "@hethers/logger": "1.1.0",
+    "@hethers/logger": "1.2.0",
     "bn.js": "^4.11.9",
     "elliptic": "6.5.4",
     "hash.js": "1.1.7"
@@ -31,7 +31,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "sideEffects": false,
-  "tarballHash": "0x9bf2ac9796c6a30167648579d48aae185980563f938311214ec2bfee767be8a6",
+  "tarballHash": "0xf7208899315facc6a7051d422530b71bf0d88e394bbb0b0c57264e35ce89132e",
   "types": "./lib/index.d.ts",
-  "version": "1.1.0"
+  "version": "1.2.0"
 }

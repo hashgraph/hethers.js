@@ -1,1 +1,1 @@
-export const version = "json-wallets/1.1.3";
+export const version = "json-wallets/1.2.0";

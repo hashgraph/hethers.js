@@ -1,1 +1,1 @@
-export const version = "hethers/1.1.4";
+export const version = "hethers/1.2.0";
