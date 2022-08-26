@@ -99,9 +99,8 @@ var allowedTransactionKeys = [
 // oversize cost for 1 gas in ContractCallQuery
 var CALL_GAS_PRICE_TINYBARS = 100;
 // the average default cost of a signed hedera ContractCallQuery
-// current HBAR price is ~$0.07 and regarding https://docs.hedera.com/guides/mainnet/fees#smart-contract-service
-// and https://docs.hedera.com/guides/mainnet/fees#hbar-denominations-and-abbreviations
-// the default fee should be less than 1 HBAR or 100_000_000 tinybars
+// source https://github.com/hashgraph/hedera-services/blob/master/hedera-node/src/main/resources/feeSchedules.json
+// 1_000_000_000_000_000 / 100_000_000 (to hbars) / 10_000_000 (coef to weibars) = 1 hbar or 100_000_000 weibars
 var DEFAULT_HEDERA_CALL_TX_FEE = 100000000;
 var TX_FEE_BUFFER_MULTIPLIER = 2;
 ;
