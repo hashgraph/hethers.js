@@ -100,7 +100,7 @@ export function serializeHederaTransaction(transaction, pubKey) {
             .setFunctionParameters(arrayifiedData)
             .setGas(gas);
         if (transaction.value) {
-            tx.setPayableAmount((_a = transaction.value) === null || _a === void 0 ? void 0 : _a.toString());
+            tx.setPayableAmount(Hbar.fromTinybars((_a = transaction.value) === null || _a === void 0 ? void 0 : _a.toString()));
         }
         if (transaction.customData.usingContractAlias) {
             tx.setContractId(ContractId.fromEvmAddress(0, 0, transaction.to.toString()));
@@ -214,7 +214,7 @@ export function parse(rawTransaction) {
             contents.to = getAddressFromAccount((_a = parsed.contractId) === null || _a === void 0 ? void 0 : _a.toString());
             contents.gasLimit = handleNumber(parsed.gas.toString());
             contents.value = parsed.payableAmount ?
-                handleNumber(parsed.payableAmount.toBigNumber().toString()) : handleNumber('0');
+                handleNumber(parsed.payableAmount.toTinybars().toString()) : handleNumber('0');
             contents.data = parsed.functionParameters ? hexlify(parsed.functionParameters) : '0x';
         }
         else if (parsed instanceof ContractCreateTransaction) {

@@ -452,7 +452,7 @@ describe('Utils.spec', function () {
                         case 0:
                             ce = new sdk_1.ContractExecuteTransaction()
                                 .setGas(1000)
-                                .setPayableAmount(1)
+                                .setPayableAmount(sdk_1.Hbar.fromTinybars(1))
                                 .setContractId("0.0.1112121")
                                 .setFunction("exec", new sdk_1.ContractFunctionParameters().addAddress(hethers_1.hethers.utils.getAddressFromAccount(sendingAccount)))
                                 .setTransactionId(sdk_1.TransactionId.generate(sendingAccount))
