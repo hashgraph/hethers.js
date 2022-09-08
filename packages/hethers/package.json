@@ -6,16 +6,16 @@
     "@hethers/abstract-signer": "1.2.1",
     "@hethers/address": "1.2.0",
     "@hethers/constants": "1.2.0",
-    "@hethers/contracts": "1.2.0",
-    "@hethers/hdnode": "1.2.0",
-    "@hethers/json-wallets": "1.2.0",
+    "@hethers/contracts": "1.2.1",
+    "@hethers/hdnode": "1.2.1",
+    "@hethers/json-wallets": "1.2.1",
     "@hethers/logger": "1.2.0",
     "@hethers/networks": "1.2.0",
-    "@hethers/providers": "1.2.0",
+    "@hethers/providers": "1.2.1",
     "@hethers/signing-key": "1.2.0",
-    "@hethers/transactions": "1.2.0",
+    "@hethers/transactions": "1.2.1",
     "@hethers/units": "1.2.0",
-    "@hethers/wallet": "1.2.0"
+    "@hethers/wallet": "1.2.1"
   },
   "description": "Umbrella package for most common Hethers libraries.",
   "devDependencies": {},
@@ -39,7 +39,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "sideEffects": false,
-  "tarballHash": "0xe6f21cfef91b50ff5155d3c3b8bb417625564cce8e7916f931fc2144dff51c0c",
+  "tarballHash": "0xda17b03dff04fa0ba42da81a0eb89629a93aff3514d250347374bd8c8c6edc72",
   "types": "./lib/index.d.ts",
-  "version": "1.2.1"
+  "version": "1.2.2"
 }

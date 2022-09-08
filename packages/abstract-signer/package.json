@@ -6,7 +6,7 @@
     "@hethers/abstract-provider": "1.2.0",
     "@hethers/address": "1.2.0",
     "@hethers/logger": "1.2.0",
-    "@hethers/transactions": "1.2.0"
+    "@hethers/transactions": "1.2.1"
   },
   "description": "An Abstract Class for describing an Hedera Hashgraph Signer for hethers.",
   "keywords": [
@@ -35,7 +35,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "sideEffects": false,
-  "tarballHash": "0x7fdb67c4ad53d1065ad55469c14d8fa50eb9ee392a0229b53205341ea57acb57",
+  "tarballHash": "0xecae08979a1a296571e0622b00652e7dc1363e38a4691fba2ba5a6ea900ca3d2",
   "types": "./lib/index.d.ts",
   "version": "1.2.1"
 }

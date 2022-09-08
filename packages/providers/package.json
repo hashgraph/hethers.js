@@ -31,7 +31,7 @@
     "@hethers/constants": "1.2.0",
     "@hethers/logger": "1.2.0",
     "@hethers/networks": "1.2.0",
-    "@hethers/transactions": "1.2.0",
+    "@hethers/transactions": "1.2.1",
     "@types/axios": "^0.14.0",
     "axios": "^0.24.0",
     "bech32": "1.1.4",
@@ -62,7 +62,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "sideEffects": false,
-  "tarballHash": "0xe60686d4be04f63c7c38dfbfd8cd843f7a8479144c95f27595e2c390984ce76a",
+  "tarballHash": "0xf94cf0f2a06bff06bbfbd0b771607d3dff3dc698cb92352934b96586fae1c2b5",
   "types": "./lib/index.d.ts",
-  "version": "1.2.0"
+  "version": "1.2.1"
 }

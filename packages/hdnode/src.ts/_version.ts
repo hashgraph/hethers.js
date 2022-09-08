@@ -1,1 +1,1 @@
-export const version = "hdnode/1.2.0";
+export const version = "hdnode/1.2.1";

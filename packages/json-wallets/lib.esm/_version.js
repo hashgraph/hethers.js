@@ -1,2 +1,2 @@
-export const version = "json-wallets/1.2.0";
+export const version = "json-wallets/1.2.1";
 //# sourceMappingURL=_version.js.map

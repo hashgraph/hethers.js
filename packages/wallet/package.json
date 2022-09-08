@@ -11,11 +11,11 @@
     "@hethers/abstract-provider": "1.2.0",
     "@hethers/abstract-signer": "1.2.1",
     "@hethers/address": "1.2.0",
-    "@hethers/hdnode": "1.2.0",
-    "@hethers/json-wallets": "1.2.0",
+    "@hethers/hdnode": "1.2.1",
+    "@hethers/json-wallets": "1.2.1",
     "@hethers/logger": "1.2.0",
     "@hethers/signing-key": "1.2.0",
-    "@hethers/transactions": "1.2.0"
+    "@hethers/transactions": "1.2.1"
   },
   "description": "Classes for managing, encrypting and decrypting ECDSA private keys as a Signer for hethers.",
   "keywords": [
@@ -41,7 +41,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "sideEffects": false,
-  "tarballHash": "0x36d3da635fd9b2c88e6cfc7b234b25e4bf0753627a8bbb62d64eabfa97359557",
+  "tarballHash": "0x9eeaa77b05bba8b111ac797d34241a5a7ba0bf8d5f6049eedf77f1aa8ed2312e",
   "types": "./lib/index.d.ts",
-  "version": "1.2.0"
+  "version": "1.2.1"
 }
