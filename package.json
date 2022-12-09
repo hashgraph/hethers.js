@@ -1,6 +1,6 @@
 {
   "name": "hethers",
-  "version": "1.1.1",
+  "version": "1.2.2",
   "private": true,
   "repository": {
     "type": "git",
@@ -94,7 +94,7 @@
     "@ethersproject/web": "5.5.0",
     "@ethersproject/wordlists": "5.5.0",
     "@hashgraph/proto": "2.9.0",
-    "@hashgraph/sdk": "^2.17.1",
+    "@hashgraph/sdk": "^2.19.0",
     "@types/axios": "^0.14.0",
     "@types/mocha": "^5.2.0",
     "aes-js": "3.0.0",
@@ -110,6 +110,6 @@
   },
   "peerDependencies": {
     "@hashgraph/proto": "2.9.0",
-    "@hashgraph/sdk": "^2.17.1"
+    "@hashgraph/sdk": "^2.19.0"
   }
 }
