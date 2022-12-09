@@ -112,6 +112,9 @@ export class Wallet extends Signer {
             logger.throwArgumentError("invalid provider", "provider", provider);
         }
         defineReadOnly(this, "provider", provider || null);
+        // if (this.provider && this.address) {
+        // 	defineReadOnly(this, "address", this.provider.getEvmAddress(this.address));
+        // }
     }
     get mnemonic() {
         return this._mnemonic();
@@ -130,6 +133,9 @@ export class Wallet extends Signer {
     }
     getAlias() {
         return Promise.resolve(this.alias);
+    }
+    getEvmAddress() {
+        return Promise.resolve(this.provider.getEvmAddress(this.address));
     }
     connect(provider) {
         return new Wallet(this, provider);

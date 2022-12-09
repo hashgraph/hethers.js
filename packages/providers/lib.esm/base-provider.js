@@ -151,6 +151,7 @@ let defaultFormatter = null;
 const MIRROR_NODE_TRANSACTIONS_ENDPOINT = '/api/v1/transactions/';
 const MIRROR_NODE_CONTRACTS_RESULTS_ENDPOINT = '/api/v1/contracts/results/';
 const MIRROR_NODE_CONTRACTS_ENDPOINT = '/api/v1/contracts/';
+const MIRROR_NODE_ACCOUNTS_ENDPOINT = '/api/v1/accounts/';
 let nextPollId = 1;
 function formatTimestamp(s) {
     const [sec, nano] = s.split(".");
@@ -382,6 +383,20 @@ export class BaseProvider extends Provider {
                 }
                 reject(logger.makeError("timeout exceeded", Logger.errors.TIMEOUT, { timeout: timeout }));
             }));
+        });
+    }
+    getEvmAddress(accountLike) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this._checkMirrorNode();
+            accountLike = yield accountLike;
+            const account = asAccountString(accountLike);
+            try {
+                let { data } = yield this._makeRequest(MIRROR_NODE_ACCOUNTS_ENDPOINT + account);
+                return data.evm_address || accountLike.toString();
+            }
+            catch (error) {
+                return accountLike.toString();
+            }
         });
     }
     /**

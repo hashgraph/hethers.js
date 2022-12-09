@@ -246,6 +246,7 @@ var defaultFormatter = null;
 var MIRROR_NODE_TRANSACTIONS_ENDPOINT = '/api/v1/transactions/';
 var MIRROR_NODE_CONTRACTS_RESULTS_ENDPOINT = '/api/v1/contracts/results/';
 var MIRROR_NODE_CONTRACTS_ENDPOINT = '/api/v1/contracts/';
+var MIRROR_NODE_ACCOUNTS_ENDPOINT = '/api/v1/accounts/';
 var nextPollId = 1;
 function formatTimestamp(s) {
     var _a = s.split("."), sec = _a[0], nano = _a[1];
@@ -529,6 +530,32 @@ var BaseProvider = /** @class */ (function (_super) {
             });
         });
     };
+    BaseProvider.prototype.getEvmAddress = function (accountLike) {
+        return __awaiter(this, void 0, void 0, function () {
+            var account, data, error_2;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        this._checkMirrorNode();
+                        return [4 /*yield*/, accountLike];
+                    case 1:
+                        accountLike = _a.sent();
+                        account = (0, address_1.asAccountString)(accountLike);
+                        _a.label = 2;
+                    case 2:
+                        _a.trys.push([2, 4, , 5]);
+                        return [4 /*yield*/, this._makeRequest(MIRROR_NODE_ACCOUNTS_ENDPOINT + account)];
+                    case 3:
+                        data = (_a.sent()).data;
+                        return [2 /*return*/, data.evm_address || accountLike.toString()];
+                    case 4:
+                        error_2 = _a.sent();
+                        return [2 /*return*/, accountLike.toString()];
+                    case 5: return [2 /*return*/];
+                }
+            });
+        });
+    };
     /**
      *  AccountBalance query implementation, using the hashgraph sdk.
      *  It returns the tinybar balance of the given address.
@@ -537,7 +564,7 @@ var BaseProvider = /** @class */ (function (_super) {
      */
     BaseProvider.prototype.getBalance = function (accountLike) {
         return __awaiter(this, void 0, void 0, function () {
-            var account, balance, error_2;
+            var account, balance, error_3;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, accountLike];
@@ -554,11 +581,11 @@ var BaseProvider = /** @class */ (function (_super) {
                         balance = _a.sent();
                         return [2 /*return*/, bignumber_1.BigNumber.from(balance.hbars.toTinybars().toString())];
                     case 4:
-                        error_2 = _a.sent();
+                        error_3 = _a.sent();
                         return [2 /*return*/, logger.throwError("bad result from backend", logger_1.Logger.errors.SERVER_ERROR, {
                                 method: "AccountBalanceQuery",
                                 params: { address: accountLike },
-                                error: error_2
+                                error: error_3
                             })];
                     case 5: return [2 /*return*/];
                 }
@@ -574,7 +601,7 @@ var BaseProvider = /** @class */ (function (_super) {
      */
     BaseProvider.prototype.getCode = function (accountLike, throwOnNonExisting) {
         return __awaiter(this, void 0, void 0, function () {
-            var account, data, error_3;
+            var account, data, error_4;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -591,13 +618,13 @@ var BaseProvider = /** @class */ (function (_super) {
                         data = (_a.sent()).data;
                         return [2 /*return*/, data.bytecode ? (0, bytes_1.hexlify)(data.bytecode) : "0x"];
                     case 4:
-                        error_3 = _a.sent();
-                        if (error_3.response && error_3.response.status &&
-                            (error_3.response.status != 404 || (error_3.response.status == 404 && throwOnNonExisting))) {
+                        error_4 = _a.sent();
+                        if (error_4.response && error_4.response.status &&
+                            (error_4.response.status != 404 || (error_4.response.status == 404 && throwOnNonExisting))) {
                             logger.throwError("bad result from backend", logger_1.Logger.errors.SERVER_ERROR, {
                                 method: "ContractByteCodeQuery",
                                 params: { address: accountLike },
-                                error: error_3
+                                error: error_4
                             });
                         }
                         return [2 /*return*/, "0x"];
@@ -660,7 +687,7 @@ var BaseProvider = /** @class */ (function (_super) {
     BaseProvider.prototype.sendTransaction = function (signedTransaction) {
         var _a;
         return __awaiter(this, void 0, void 0, function () {
-            var txBytes, hederaTx, ethersTx, txHash, _b, resp, receipt, error_4, err;
+            var txBytes, hederaTx, ethersTx, txHash, _b, resp, receipt, error_5, err;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0: return [4 /*yield*/, signedTransaction];
@@ -686,8 +713,8 @@ var BaseProvider = /** @class */ (function (_super) {
                         receipt = _c.sent();
                         return [2 /*return*/, this._wrapTransaction(ethersTx, txHash, receipt)];
                     case 7:
-                        error_4 = _c.sent();
-                        err = logger.makeError(error_4.message, (_a = error_4.status) === null || _a === void 0 ? void 0 : _a.toString());
+                        error_5 = _c.sent();
+                        err = logger.makeError(error_5.message, (_a = error_5.status) === null || _a === void 0 ? void 0 : _a.toString());
                         err.transaction = ethersTx;
                         err.transactionHash = txHash;
                         throw err;
@@ -743,7 +770,7 @@ var BaseProvider = /** @class */ (function (_super) {
      */
     BaseProvider.prototype.getTransaction = function (transactionIdOrTimestamp) {
         return __awaiter(this, void 0, void 0, function () {
-            var transactionsEndpoint, data, filtered_1, record_1, transactionName, charityFee_1, toTransfers, contractsEndpoint, dataWithLogs, error_5;
+            var transactionsEndpoint, data, filtered_1, record_1, transactionName, charityFee_1, toTransfers, contractsEndpoint, dataWithLogs, error_6;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -811,11 +838,11 @@ var BaseProvider = /** @class */ (function (_super) {
                     case 7: return [2 /*return*/, this.formatter.responseFromRecord(record_1)];
                     case 8: return [3 /*break*/, 10];
                     case 9:
-                        error_5 = _a.sent();
-                        if (error_5 && error_5.response && error_5.response.status != 404) {
+                        error_6 = _a.sent();
+                        if (error_6 && error_6.response && error_6.response.status != 404) {
                             logger.throwError("bad result from backend", logger_1.Logger.errors.SERVER_ERROR, {
                                 method: "TransactionResponseQuery",
-                                error: error_5
+                                error: error_6
                             });
                         }
                         return [3 /*break*/, 10];
@@ -862,7 +889,7 @@ var BaseProvider = /** @class */ (function (_super) {
      */
     BaseProvider.prototype.getLogs = function (filter) {
         return __awaiter(this, void 0, void 0, function () {
-            var params, fromTimestampFilter, toTimestampFilter, limit, epContractsLogs, i, topic, requestUrl, data, mappedLogs, nextLink, data_1, error_6, errorParams;
+            var params, fromTimestampFilter, toTimestampFilter, limit, epContractsLogs, i, topic, requestUrl, data, mappedLogs, nextLink, data_1, error_7, errorParams;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -912,12 +939,12 @@ var BaseProvider = /** @class */ (function (_super) {
                     case 6: return [2 /*return*/, formatter_1.Formatter.arrayOf(this.formatter.filterLog.bind(this.formatter))(mappedLogs)];
                     case 7: return [3 /*break*/, 9];
                     case 8:
-                        error_6 = _a.sent();
-                        errorParams = { method: "ContractLogsQuery", error: error_6 };
-                        if (error_6.response && error_6.response.status != 404) {
+                        error_7 = _a.sent();
+                        errorParams = { method: "ContractLogsQuery", error: error_7 };
+                        if (error_7.response && error_7.response.status != 404) {
                             logger.throwError("bad result from backend", logger_1.Logger.errors.SERVER_ERROR, errorParams);
                         }
-                        logger.throwError(error_6.message, error_6.code, errorParams);
+                        logger.throwError(error_7.message, error_7.code, errorParams);
                         return [3 /*break*/, 9];
                     case 9: return [2 /*return*/, []];
                 }

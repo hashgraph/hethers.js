@@ -77,6 +77,7 @@ export declare class BaseProvider extends Provider {
     set pollingInterval(value: number);
     waitForTransaction(transactionIdOrTimestamp: string, timeout?: number): Promise<TransactionReceipt>;
     _waitForTransaction(transactionIdOrTimestamp: string, timeout: number): Promise<TransactionReceipt>;
+    getEvmAddress(accountLike: AccountLike | Promise<AccountLike>): Promise<string>;
     /**
      *  AccountBalance query implementation, using the hashgraph sdk.
      *  It returns the tinybar balance of the given address.

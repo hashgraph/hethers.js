@@ -161,6 +161,9 @@ var Wallet = /** @class */ (function (_super) {
         }
         (0, properties_1.defineReadOnly)(_this, "provider", provider || null);
         return _this;
+        // if (this.provider && this.address) {
+        // 	defineReadOnly(this, "address", this.provider.getEvmAddress(this.address));
+        // }
     }
     Object.defineProperty(Wallet.prototype, "mnemonic", {
         get: function () {
@@ -191,6 +194,9 @@ var Wallet = /** @class */ (function (_super) {
     };
     Wallet.prototype.getAlias = function () {
         return Promise.resolve(this.alias);
+    };
+    Wallet.prototype.getEvmAddress = function () {
+        return Promise.resolve(this.provider.getEvmAddress(this.address));
     };
     Wallet.prototype.connect = function (provider) {
         return new Wallet(this, provider);

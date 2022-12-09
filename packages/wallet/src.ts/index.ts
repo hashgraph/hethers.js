@@ -148,6 +148,10 @@ export class Wallet extends Signer implements ExternallyOwnedAccount, TypedDataS
 		}
 
 		defineReadOnly(this, "provider", provider || null);
+
+		// if (this.provider && this.address) {
+		// 	defineReadOnly(this, "address", this.provider.getEvmAddress(this.address));
+		// }
 	}
 
 	get mnemonic(): Mnemonic {
@@ -172,6 +176,10 @@ export class Wallet extends Signer implements ExternallyOwnedAccount, TypedDataS
 
 	getAlias(): Promise<string> {
 		return Promise.resolve(this.alias);
+	}
+
+	getEvmAddress(): Promise<string> {
+		return Promise.resolve(this.provider.getEvmAddress(this.address));
 	}
 
 	connect(provider: Provider): Wallet {

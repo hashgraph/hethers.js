@@ -140,6 +140,7 @@ export abstract class Provider {
     }
 
     // Account
+    abstract getEvmAddress(accountLike: AccountLike | Promise<AccountLike>): Promise<string>;
     abstract getBalance(addressOrName: string | Promise<string>): Promise<BigNumber>;
     abstract getCode(accountLike: AccountLike | Promise<AccountLike>, throwOnNonExisting?: boolean): Promise<string>;
 
