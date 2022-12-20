@@ -24,11 +24,8 @@ describe('Contract.spec', () => {
     let localProvider, testnetWalletECDSA, localWalletECDSA, localWalletED25519;
     before(function () {
         localProvider = utils.getProviders().local[0];
-        // @ts-ignore
         testnetWalletECDSA = utils.getWallets().testnet.ecdsa[0];
-        // @ts-ignore
         localWalletECDSA = utils.getWallets().local.ecdsa[0];
-        // @ts-ignore
         localWalletED25519 = utils.getWallets().local.ed25519[1];
     });
     describe("Test Contract Transaction Population", function () {
@@ -54,7 +51,7 @@ describe('Contract.spec', () => {
                 const balance = yield contract.balanceOf(localWalletECDSA.address, { gasLimit: 300000 });
                 assert.strictEqual(BigNumber.from(balance).toNumber(), 10000, 'balance mismatch');
             });
-        }).timeout(600000);
+        }).timeout(60000);
         it("should be able to call contract methods", function () {
             return __awaiter(this, void 0, void 0, function* () {
                 this.timeout(6000000);

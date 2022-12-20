@@ -12,11 +12,13 @@ import shell from 'shelljs';
 import fs from 'fs';
 describe('Hethers Tests', function () {
     this.timeout(240 * 1000); // 240 seconds
+    before(function () {
+        runLocalHederaNetwork(true);
+    });
     after(function () {
         runLocalHederaNetwork(false);
     });
     describe("Executing test cases", () => __awaiter(this, void 0, void 0, function* () {
-        runLocalHederaNetwork(true);
         fs.readdirSync(path.resolve(__dirname, '../lib'))
             .forEach(test => {
             if (test !== 'index.spec.js' && test.endsWith('.spec.js')) {

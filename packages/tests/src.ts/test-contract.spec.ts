@@ -25,16 +25,10 @@ describe('Contract.spec', () => {
 
     before(function() {
         localProvider = utils.getProviders().local[0];
-
-        // @ts-ignore
         testnetWalletECDSA = utils.getWallets().testnet.ecdsa[0];
-        // @ts-ignore
         localWalletECDSA = utils.getWallets().local.ecdsa[0];
-        // @ts-ignore
         localWalletED25519 = utils.getWallets().local.ed25519[1];
     })
-
-
 
     describe("Test Contract Transaction Population", function () {
 
@@ -51,7 +45,7 @@ describe('Contract.spec', () => {
 
         it("should be able to deploy a contract", async function () {
             const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, localWalletECDSA);
-            const contract = await contractFactory.deploy(hethers.BigNumber.from("10000"), { gasLimit: 300000 });
+            const contract = await contractFactory.deploy(hethers.BigNumber.from("10000"), { gasLimit: 1000000 });
             assert.notStrictEqual(contract, null, "nullified contract");
             assert.notStrictEqual(contract.deployTransaction, "missing deploy transaction");
             assert.notStrictEqual(contract.address, null, 'missing address');

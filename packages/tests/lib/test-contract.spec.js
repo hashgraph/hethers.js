@@ -83,11 +83,8 @@ describe('Contract.spec', function () {
     var localProvider, testnetWalletECDSA, localWalletECDSA, localWalletED25519;
     before(function () {
         localProvider = utils.getProviders().local[0];
-        // @ts-ignore
         testnetWalletECDSA = utils.getWallets().testnet.ecdsa[0];
-        // @ts-ignore
         localWalletECDSA = utils.getWallets().local.ecdsa[0];
-        // @ts-ignore
         localWalletED25519 = utils.getWallets().local.ed25519[1];
     });
     describe("Test Contract Transaction Population", function () {
@@ -114,7 +111,7 @@ describe('Contract.spec', function () {
                     switch (_a.label) {
                         case 0:
                             contractFactory = new hethers_1.hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, localWalletECDSA);
-                            return [4 /*yield*/, contractFactory.deploy(hethers_1.hethers.BigNumber.from("10000"), { gasLimit: 300000 })];
+                            return [4 /*yield*/, contractFactory.deploy(hethers_1.hethers.BigNumber.from("10000"), { gasLimit: 1000000 })];
                         case 1:
                             contract = _a.sent();
                             assert_1.default.notStrictEqual(contract, null, "nullified contract");
