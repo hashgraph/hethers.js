@@ -17,7 +17,8 @@ import {
     AccountId,
     ContractCallQuery, ContractId,
     PublicKey as HederaPubKey,
-    TransactionId
+    TransactionId,
+    PrivateKey,
 } from "@hashgraph/sdk";
 
 const logger = new Logger(version);
@@ -181,7 +182,13 @@ export abstract class Signer {
             hederaTx.setContractId(to);
         }
 
+        const walletKey = this.isED25519Type
+            ? PrivateKey.fromStringED25519(this._signingKey().privateKey)
+            : PrivateKey.fromStringECDSA(this._signingKey().privateKey);
+
         const sdkClient = this.provider.getHederaClient();
+        sdkClient.setOperator(AccountId.fromString(from), walletKey);
+
         const cost = await hederaTx.getCost(sdkClient);
         hederaTx.setQueryPayment(cost);
 

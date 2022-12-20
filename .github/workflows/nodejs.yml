@@ -33,7 +33,7 @@ jobs:
         run: npm ci
 
       - name: Install hedera-local node globally
-        run: npm install -g https://github.com/hashgraph/hedera-local-node.git#v.1.1.0
+        run: npm install -g @hashgraph/hedera-local
 
       - name: Build CommonJS and ESM (from TypeScript)
         run: npm run build-all

@@ -1138,7 +1138,7 @@ describe('Providers.spec', function () {
                                 assert_1.default.strictEqual(receipt.to, null);
                                 assert_1.default.strictEqual(receipt.contractAddress, '0x' + sendTransactionResponse.customData.contractId);
                                 assert_1.default.strictEqual(receipt.from, hethers_1.hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.account));
-                                assert_1.default.strictEqual(receipt.transactionHash, sendTransactionResponse.hash);
+                                assert_1.default.strictEqual(receipt.transactionHash, sendTransactionResponse.hash.substring(0, 66));
                                 return [2 /*return*/];
                         }
                     });
@@ -1162,7 +1162,7 @@ describe('Providers.spec', function () {
                                 assert_1.default.strictEqual(receipt.to, null);
                                 assert_1.default.strictEqual(receipt.contractAddress, '0x' + sendTransactionResponse.customData.contractId);
                                 assert_1.default.strictEqual(receipt.from, hethers_1.hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.account));
-                                assert_1.default.strictEqual(receipt.transactionHash, sendTransactionResponse.hash);
+                                assert_1.default.strictEqual(receipt.transactionHash, sendTransactionResponse.hash.substring(0, 66));
                                 return [2 /*return*/];
                         }
                     });

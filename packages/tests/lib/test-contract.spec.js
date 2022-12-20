@@ -80,13 +80,16 @@ var bytecodeTokenWithArgs = (0, fs_1.readFileSync)('packages/tests/contracts/Tok
 var iUniswapV2PairAbi = JSON.parse(fs_1.default.readFileSync('packages/tests/contracts/IUniswapV2Pair.abi.json').toString());
 var TIMEOUT_PERIOD = 120000;
 describe('Contract.spec', function () {
-    var localProvider = utils.getProviders().local[0];
-    // @ts-ignore
-    var testnetWalletECDSA = utils.getWallets().testnet.ecdsa[0];
-    // @ts-ignore
-    var localWalletECDSA = utils.getWallets().local.ecdsa[0];
-    // @ts-ignore
-    var localWalletED25519 = utils.getWallets().local.ed25519[1];
+    var localProvider, testnetWalletECDSA, localWalletECDSA, localWalletED25519;
+    before(function () {
+        localProvider = utils.getProviders().local[0];
+        // @ts-ignore
+        testnetWalletECDSA = utils.getWallets().testnet.ecdsa[0];
+        // @ts-ignore
+        localWalletECDSA = utils.getWallets().local.ecdsa[0];
+        // @ts-ignore
+        localWalletED25519 = utils.getWallets().local.ed25519[1];
+    });
     describe("Test Contract Transaction Population", function () {
         it("should return an array of transactions on getDeployTransaction call", function () {
             return __awaiter(this, void 0, void 0, function () {
@@ -155,41 +158,50 @@ describe('Contract.spec', function () {
                         case 4:
                             // test sending hbars to the contract
                             _g.sent();
+                            // test sending hbars to newly created account
+                            return [4 /*yield*/, localWalletECDSA.sendTransaction({
+                                    to: clientWallet.address,
+                                    from: localWalletECDSA.address,
+                                    value: 100000000 * 5 // 5 Hbar
+                                })];
+                        case 5:
+                            // test sending hbars to newly created account
+                            _g.sent();
                             // test if initial balance of the client is zero
                             _b = (_a = assert_1.default).strictEqual;
                             return [4 /*yield*/, contract.balanceOf(clientWallet.address, { gasLimit: 3000000 })];
-                        case 5:
+                        case 6:
                             // test if initial balance of the client is zero
                             _b.apply(_a, [(_g.sent()).toString(), '0']);
                             return [4 /*yield*/, contract.getInternalCounter({ gasLimit: 3000000 })];
-                        case 6:
+                        case 7:
                             viewMethodCall = _g.sent();
                             assert_1.default.strictEqual(viewMethodCall.toString(), '29');
                             return [4 /*yield*/, contract.populateTransaction.transfer(clientWallet.address, 10, { gasLimit: 3000000 })];
-                        case 7:
+                        case 8:
                             populatedTx = _g.sent();
                             return [4 /*yield*/, localWalletECDSA.signTransaction(populatedTx)];
-                        case 8:
+                        case 9:
                             signedTransaction = _g.sent();
                             return [4 /*yield*/, localWalletECDSA.provider.sendTransaction(signedTransaction)];
-                        case 9:
+                        case 10:
                             tx = _g.sent();
                             return [4 /*yield*/, tx.wait()];
-                        case 10:
+                        case 11:
                             _g.sent();
                             _d = (_c = assert_1.default).strictEqual;
                             return [4 /*yield*/, contract.balanceOf(clientWallet.address, { gasLimit: 3000000 })];
-                        case 11:
+                        case 12:
                             _d.apply(_c, [(_g.sent()).toString(), '10']);
                             return [4 /*yield*/, contract.transfer(clientWallet.address, 10, { gasLimit: 3000000 })];
-                        case 12:
+                        case 13:
                             transferMethodCall = _g.sent();
                             return [4 /*yield*/, transferMethodCall.wait()];
-                        case 13:
+                        case 14:
                             _g.sent();
                             _f = (_e = assert_1.default).strictEqual;
                             return [4 /*yield*/, contract.balanceOf(clientWallet.address, { gasLimit: 3000000 })];
-                        case 14:
+                        case 15:
                             _f.apply(_e, [(_g.sent()).toString(), '20']);
                             return [2 /*return*/];
                     }
@@ -226,7 +238,7 @@ describe('Contract.spec', function () {
                             receipt = _a.sent();
                             assert_1.default.notStrictEqual(receipt, null, "wait returns a receipt");
                             assert_1.default.strictEqual(receipt.transactionId, deployTx.transactionId, "receipt.transactionId is correct");
-                            assert_1.default.strictEqual(receipt.transactionHash, deployTx.hash, "receipt.transactionHash is correct");
+                            assert_1.default.strictEqual(receipt.transactionHash, deployTx.hash.substring(0, 66), "receipt.transactionHash is correct");
                             assert_1.default.notStrictEqual(receipt.logs, null, "receipt.logs exists");
                             assert_1.default.strictEqual(receipt.logs.length, 2);
                             events = receipt.events;

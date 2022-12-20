@@ -21,13 +21,16 @@ const bytecodeTokenWithArgs = readFileSync('packages/tests/contracts/TokenWithAr
 const iUniswapV2PairAbi = JSON.parse(fs.readFileSync('packages/tests/contracts/IUniswapV2Pair.abi.json').toString());
 const TIMEOUT_PERIOD = 120000;
 describe('Contract.spec', () => {
-    const localProvider = utils.getProviders().local[0];
-    // @ts-ignore
-    const testnetWalletECDSA = utils.getWallets().testnet.ecdsa[0];
-    // @ts-ignore
-    const localWalletECDSA = utils.getWallets().local.ecdsa[0];
-    // @ts-ignore
-    const localWalletED25519 = utils.getWallets().local.ed25519[1];
+    let localProvider, testnetWalletECDSA, localWalletECDSA, localWalletED25519;
+    before(function () {
+        localProvider = utils.getProviders().local[0];
+        // @ts-ignore
+        testnetWalletECDSA = utils.getWallets().testnet.ecdsa[0];
+        // @ts-ignore
+        localWalletECDSA = utils.getWallets().local.ecdsa[0];
+        // @ts-ignore
+        localWalletED25519 = utils.getWallets().local.ed25519[1];
+    });
     describe("Test Contract Transaction Population", function () {
         it("should return an array of transactions on getDeployTransaction call", function () {
             return __awaiter(this, void 0, void 0, function* () {
@@ -56,7 +59,7 @@ describe('Contract.spec', () => {
             return __awaiter(this, void 0, void 0, function* () {
                 this.timeout(3000000);
                 const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, localWalletECDSA);
-                const contract = yield contractFactory.deploy(hethers.BigNumber.from('10000'), { gasLimit: 3000000 });
+                let contract = yield contractFactory.deploy(hethers.BigNumber.from('10000'), { gasLimit: 3000000 });
                 yield contract.deployed();
                 // client wallet init
                 let clientWallet = hethers.Wallet.createRandom();
@@ -68,6 +71,12 @@ describe('Contract.spec', () => {
                     from: localWalletECDSA.address,
                     value: 30,
                     gasLimit: 300000
+                });
+                // test sending hbars to newly created account
+                yield localWalletECDSA.sendTransaction({
+                    to: clientWallet.address,
+                    from: localWalletECDSA.address,
+                    value: 100000000 * 5 // 5 Hbar
                 });
                 // test if initial balance of the client is zero
                 assert.strictEqual((yield contract.balanceOf(clientWallet.address, { gasLimit: 3000000 })).toString(), '0');
@@ -102,7 +111,7 @@ describe('Contract.spec', () => {
                 const receipt = yield deployTx.wait();
                 assert.notStrictEqual(receipt, null, "wait returns a receipt");
                 assert.strictEqual(receipt.transactionId, deployTx.transactionId, "receipt.transactionId is correct");
-                assert.strictEqual(receipt.transactionHash, deployTx.hash, "receipt.transactionHash is correct");
+                assert.strictEqual(receipt.transactionHash, deployTx.hash.substring(0, 66), "receipt.transactionHash is correct");
                 assert.notStrictEqual(receipt.logs, null, "receipt.logs exists");
                 assert.strictEqual(receipt.logs.length, 2);
                 // @ts-ignore

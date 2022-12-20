@@ -14,7 +14,7 @@ import { defineReadOnly, resolveProperties, shallowCopy } from "@ethersproject/p
 import { Logger } from "@hethers/logger";
 import { version } from "./_version";
 import { asAccountString, getAddressFromAccount, getChecksumAddress } from "@hethers/address";
-import { AccountId, ContractCallQuery, ContractId, PublicKey as HederaPubKey, TransactionId } from "@hashgraph/sdk";
+import { AccountId, ContractCallQuery, ContractId, PublicKey as HederaPubKey, TransactionId, PrivateKey, } from "@hashgraph/sdk";
 const logger = new Logger(version);
 const allowedTransactionKeys = [
     "accessList", "chainId", "customData", "data", "from", "gasLimit", "maxFeePerGas", "maxPriorityFeePerGas", "to", "type", "value",
@@ -95,7 +95,11 @@ export class Signer {
             else {
                 hederaTx.setContractId(to);
             }
+            const walletKey = this.isED25519Type
+                ? PrivateKey.fromStringED25519(this._signingKey().privateKey)
+                : PrivateKey.fromStringECDSA(this._signingKey().privateKey);
             const sdkClient = this.provider.getHederaClient();
+            sdkClient.setOperator(AccountId.fromString(from), walletKey);
             const cost = yield hederaTx.getCost(sdkClient);
             hederaTx.setQueryPayment(cost);
             try {

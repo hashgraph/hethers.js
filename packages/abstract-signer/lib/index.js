@@ -156,7 +156,7 @@ var Signer = /** @class */ (function () {
     // super classes should override this for now
     Signer.prototype.call = function (txRequest) {
         return __awaiter(this, void 0, void 0, function () {
-            var tx, to, from, _a, nodeID, paymentTxId, hederaTx, sdkClient, cost, response, error_1;
+            var tx, to, from, _a, nodeID, paymentTxId, hederaTx, walletKey, sdkClient, cost, response, error_1;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -182,7 +182,11 @@ var Signer = /** @class */ (function () {
                         else {
                             hederaTx.setContractId(to);
                         }
+                        walletKey = this.isED25519Type
+                            ? sdk_1.PrivateKey.fromStringED25519(this._signingKey().privateKey)
+                            : sdk_1.PrivateKey.fromStringECDSA(this._signingKey().privateKey);
                         sdkClient = this.provider.getHederaClient();
+                        sdkClient.setOperator(sdk_1.AccountId.fromString(from), walletKey);
                         return [4 /*yield*/, hederaTx.getCost(sdkClient)];
                     case 3:
                         cost = _b.sent();
