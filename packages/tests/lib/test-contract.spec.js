@@ -545,7 +545,7 @@ describe('Contract.spec', function () {
                     switch (_a.label) {
                         case 0:
                             contractFactory = new hethers_1.hethers.ContractFactory(abiToken, bytecodeToken, localWalletED25519);
-                            return [4 /*yield*/, contractFactory.deploy({ gasLimit: 300000 })];
+                            return [4 /*yield*/, contractFactory.deploy({ gasLimit: 1000000 })];
                         case 1:
                             contract = _a.sent();
                             assert_1.default.notStrictEqual(contract, null, "nullified contract");
@@ -578,7 +578,7 @@ describe('Contract.spec', function () {
                             newAccBalance = _a.sent();
                             assert_1.default.strictEqual(newAccBalance.toNumber(), 10000000000);
                             contractFactory = new hethers_1.hethers.ContractFactory(abiToken, bytecodeToken, newWallet);
-                            return [4 /*yield*/, contractFactory.deploy({ gasLimit: 300000 })];
+                            return [4 /*yield*/, contractFactory.deploy({ gasLimit: 1000000 })];
                         case 3:
                             contract = _a.sent();
                             assert_1.default.notStrictEqual(contract, null, "nullified contract");
