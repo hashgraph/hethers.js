@@ -40,7 +40,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var path_1 = __importDefault(require("path"));
-var shelljs_1 = __importDefault(require("shelljs"));
+// import shell from 'shelljs';
 var fs_1 = __importDefault(require("fs"));
 describe('Hethers Tests', function () {
     var _this = this;
@@ -65,7 +65,7 @@ describe('Hethers Tests', function () {
         if (!start) {
             // stop local-node
             console.log('Shutdown local node');
-            shelljs_1.default.exec('npx hedera-local stop');
+            // shell.exec('npx hedera-local stop');
             return;
         }
         // set env variables for docker images until local-node is updated
@@ -75,7 +75,7 @@ describe('Hethers Tests', function () {
         console.log("Docker container versions, services: " + process.env['NETWORK_NODE_IMAGE_TAG'] + ", mirror: " + process.env['MIRROR_IMAGE_TAG']);
         // start local-node
         console.log('Start local node');
-        shelljs_1.default.exec('npx hedera-local restart -d');
+        // shell.exec('npx hedera-local restart -d');
         console.log('Hedera Hashgraph local node env started');
     }
 });

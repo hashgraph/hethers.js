@@ -110,7 +110,7 @@ jobs:
     steps:
       - uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 16.x
 
       - name: Checkout repository
         uses: actions/checkout@v2

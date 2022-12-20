@@ -57,7 +57,7 @@ describe('Contract.spec', () => {
             assert.notStrictEqual(contract.address, null, 'missing address');
             const balance = await contract.balanceOf(localWalletECDSA.address, { gasLimit: 300000 });
             assert.strictEqual(BigNumber.from(balance).toNumber(), 10000, 'balance mismatch');
-        }).timeout(600000);
+        }).timeout(60000);
 
         it("should be able to call contract methods", async function () {
             this.timeout(6000000);

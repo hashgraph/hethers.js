@@ -128,7 +128,7 @@ describe('Contract.spec', function () {
                     }
                 });
             });
-        }).timeout(600000);
+        }).timeout(60000);
         it("should be able to call contract methods", function () {
             return __awaiter(this, void 0, void 0, function () {
                 var contractFactory, contract, clientWallet, clientAccountId, _a, _b, viewMethodCall, populatedTx, signedTransaction, tx, _c, _d, transferMethodCall, _e, _f;
