@@ -128,14 +128,14 @@ describe('Contract.spec', function () {
                     }
                 });
             });
-        }).timeout(300000);
+        }).timeout(600000);
         it("should be able to call contract methods", function () {
             return __awaiter(this, void 0, void 0, function () {
                 var contractFactory, contract, clientWallet, clientAccountId, _a, _b, viewMethodCall, populatedTx, signedTransaction, tx, _c, _d, transferMethodCall, _e, _f;
                 return __generator(this, function (_g) {
                     switch (_g.label) {
                         case 0:
-                            this.timeout(3000000);
+                            this.timeout(6000000);
                             contractFactory = new hethers_1.hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, localWalletECDSA);
                             return [4 /*yield*/, contractFactory.deploy(hethers_1.hethers.BigNumber.from('10000'), { gasLimit: 3000000 })];
                         case 1:
@@ -289,7 +289,7 @@ describe('Contract.spec', function () {
                     }
                 });
             });
-        }).timeout(300000);
+        }).timeout(600000);
     });
     describe('Contract Events', function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -478,7 +478,7 @@ describe('Contract.spec', function () {
                             }
                         });
                     });
-                }).timeout(300000);
+                }).timeout(600000);
                 it('create2 tests', function () {
                     return __awaiter(this, void 0, void 0, function () {
                         var factoryBytecode, accBytecode, factoryAbi, accAbi, salt, factoryCFactory, _factory, factory, deployArgs, deployTx;
@@ -486,7 +486,7 @@ describe('Contract.spec', function () {
                         return __generator(this, function (_a) {
                             switch (_a.label) {
                                 case 0:
-                                    this.timeout(300000);
+                                    this.timeout(600000);
                                     factoryBytecode = fs_1.default.readFileSync('packages/tests/contracts/Factory.bin').toString();
                                     accBytecode = fs_1.default.readFileSync('packages/tests/contracts/Account.bin').toString();
                                     factoryAbi = JSON.parse(fs_1.default.readFileSync('packages/tests/contracts/Factory.abi.json').toString());
@@ -699,7 +699,7 @@ describe('Contract.spec', function () {
                     }
                 });
             });
-        }).timeout(300000);
+        }).timeout(600000);
     });
     describe("contract.deployed", function () {
         it("should work for already deployed contracts", function () {

@@ -54,10 +54,10 @@ describe('Contract.spec', () => {
                 const balance = yield contract.balanceOf(localWalletECDSA.address, { gasLimit: 300000 });
                 assert.strictEqual(BigNumber.from(balance).toNumber(), 10000, 'balance mismatch');
             });
-        }).timeout(300000);
+        }).timeout(600000);
         it("should be able to call contract methods", function () {
             return __awaiter(this, void 0, void 0, function* () {
-                this.timeout(3000000);
+                this.timeout(6000000);
                 const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, localWalletECDSA);
                 let contract = yield contractFactory.deploy(hethers.BigNumber.from('10000'), { gasLimit: 3000000 });
                 yield contract.deployed();
@@ -150,7 +150,7 @@ describe('Contract.spec', () => {
                     assert.strictEqual(eventRc, receipt, "getTransactionReceipt returns the same receipt");
                 }
             });
-        }).timeout(300000);
+        }).timeout(600000);
     });
     describe('Contract Events', function () {
         return __awaiter(this, void 0, void 0, function* () {
@@ -252,10 +252,10 @@ describe('Contract.spec', () => {
                     assert.notStrictEqual(symbol, "");
                     assert.notStrictEqual(symbol, null);
                 });
-            }).timeout(300000);
+            }).timeout(600000);
             it('create2 tests', function () {
                 return __awaiter(this, void 0, void 0, function* () {
-                    this.timeout(300000);
+                    this.timeout(600000);
                     const factoryBytecode = fs.readFileSync('packages/tests/contracts/Factory.bin').toString();
                     const accBytecode = fs.readFileSync('packages/tests/contracts/Account.bin').toString();
                     const factoryAbi = JSON.parse(fs.readFileSync('packages/tests/contracts/Factory.abi.json').toString());
@@ -365,7 +365,7 @@ describe('Contract.spec', () => {
                 yield transferMethodCall.wait();
                 assert.strictEqual((yield contract.balanceOf(clientWallet.address, { gasLimit: 300000 })).toString(), '20');
             });
-        }).timeout(300000);
+        }).timeout(600000);
     });
     describe("contract.deployed", function () {
         it("should work for already deployed contracts", function () {
