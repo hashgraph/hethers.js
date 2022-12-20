@@ -35,7 +35,7 @@ describe('Hethers Tests', function () {
 
         // start local-node
         console.log('Start local node');
-        shell.exec('npx hedera-local restart');
+        shell.exec('npx hedera-local restart -d');
         console.log('Hedera Hashgraph local node env started');
     }
 });
