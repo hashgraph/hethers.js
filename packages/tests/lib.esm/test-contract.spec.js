@@ -44,7 +44,7 @@ describe('Contract.spec', () => {
         it("should be able to deploy a contract", function () {
             return __awaiter(this, void 0, void 0, function* () {
                 const contractFactory = new hethers.ContractFactory(abiTokenWithArgs, bytecodeTokenWithArgs, localWalletECDSA);
-                const contract = yield contractFactory.deploy(hethers.BigNumber.from("10000"), { gasLimit: 300000 });
+                const contract = yield contractFactory.deploy(hethers.BigNumber.from("10000"), { gasLimit: 1000000 });
                 assert.notStrictEqual(contract, null, "nullified contract");
                 assert.notStrictEqual(contract.deployTransaction, "missing deploy transaction");
                 assert.notStrictEqual(contract.address, null, 'missing address');
@@ -284,7 +284,7 @@ describe('Contract.spec', () => {
         it("should deploy a contract", function () {
             return __awaiter(this, void 0, void 0, function* () {
                 const contractFactory = new hethers.ContractFactory(abiToken, bytecodeToken, localWalletED25519);
-                const contract = yield contractFactory.deploy({ gasLimit: 300000 });
+                const contract = yield contractFactory.deploy({ gasLimit: 1000000 });
                 assert.notStrictEqual(contract, null, "nullified contract");
                 assert.notStrictEqual(contract.deployTransaction, "missing deploy transaction");
                 assert.notStrictEqual(contract.address, null, 'missing address');
@@ -302,7 +302,7 @@ describe('Contract.spec', () => {
                 const newAccBalance = yield localProvider.getBalance(newAccountAddress);
                 assert.strictEqual(newAccBalance.toNumber(), 10000000000);
                 const contractFactory = new hethers.ContractFactory(abiToken, bytecodeToken, newWallet);
-                const contract = yield contractFactory.deploy({ gasLimit: 300000 });
+                const contract = yield contractFactory.deploy({ gasLimit: 1000000 });
                 assert.notStrictEqual(contract, null, "nullified contract");
                 assert.notStrictEqual(contract.deployTransaction, "missing deploy transaction");
                 assert.notStrictEqual(contract.address, null, 'missing address');
