@@ -174,6 +174,10 @@ export class Wallet extends Signer implements ExternallyOwnedAccount, TypedDataS
 		return Promise.resolve(this.alias);
 	}
 
+	getEvmAddress(): Promise<string> {
+		return Promise.resolve(this.provider.getEvmAddress(this.address));
+	}
+
 	connect(provider: Provider): Wallet {
 		return new Wallet(this, provider);
 	}

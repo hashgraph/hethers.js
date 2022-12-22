@@ -99,6 +99,7 @@ export declare abstract class Provider {
     getHederaClient(): Client;
     getHederaNetworkConfig(): AccountId[];
     getGasPrice(): Promise<BigNumber>;
+    abstract getEvmAddress(accountLike: AccountLike | Promise<AccountLike>): Promise<string>;
     abstract getBalance(addressOrName: string | Promise<string>): Promise<BigNumber>;
     abstract getCode(accountLike: AccountLike | Promise<AccountLike>, throwOnNonExisting?: boolean): Promise<string>;
     abstract sendTransaction(signedTransaction: string | Promise<string>): Promise<TransactionResponse>;

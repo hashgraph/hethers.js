@@ -25,25 +25,6 @@ var __assign = (this && this.__assign) || function () {
     };
     return __assign.apply(this, arguments);
 };
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -89,20 +70,11 @@ var logger_1 = require("@hethers/logger");
 var _version_1 = require("./_version");
 var address_1 = require("@hethers/address");
 var sdk_1 = require("@hashgraph/sdk");
-var Long = __importStar(require("long"));
-var proto_1 = require("@hashgraph/proto");
 var logger = new logger_1.Logger(_version_1.version);
 var allowedTransactionKeys = [
     "accessList", "chainId", "customData", "data", "from", "gasLimit", "maxFeePerGas", "maxPriorityFeePerGas", "to", "type", "value",
     "nodeId"
 ];
-// oversize cost for 1 gas in ContractCallQuery
-var CALL_GAS_PRICE_TINYBARS = 100;
-// the average default cost of a signed hedera ContractCallQuery
-// source https://github.com/hashgraph/hedera-services/blob/master/hedera-node/src/main/resources/feeSchedules.json
-// 1_000_000_000_000_000 / 100_000_000 (to hbars) / 10_000_000 (coef to weibars) = 1 hbar or 100_000_000 weibars
-var DEFAULT_HEDERA_CALL_TX_FEE = 100000000;
-var TX_FEE_BUFFER_MULTIPLIER = 2;
 ;
 ;
 function checkError(method, error, txRequest) {
@@ -184,7 +156,7 @@ var Signer = /** @class */ (function () {
     // super classes should override this for now
     Signer.prototype.call = function (txRequest) {
         return __awaiter(this, void 0, void 0, function () {
-            var tx, to, from, _a, nodeID, paymentTxId, hederaTx, gasLimit, baseCost, cost, paymentBody, signed, walletKey, signature, transferSignedTransactionBytes, response, error_1;
+            var tx, to, from, _a, nodeID, paymentTxId, hederaTx, walletKey, sdkClient, cost, response, error_1;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -210,57 +182,26 @@ var Signer = /** @class */ (function () {
                         else {
                             hederaTx.setContractId(to);
                         }
-                        gasLimit = bignumber_1.BigNumber.from(tx.gasLimit).toNumber();
-                        baseCost = DEFAULT_HEDERA_CALL_TX_FEE * TX_FEE_BUFFER_MULTIPLIER;
-                        cost = baseCost + gasLimit * CALL_GAS_PRICE_TINYBARS;
-                        paymentBody = {
-                            transactionID: paymentTxId._toProtobuf(),
-                            nodeAccountID: nodeID._toProtobuf(),
-                            transactionFee: sdk_1.Hbar.fromTinybars(baseCost).toTinybars(),
-                            transactionValidDuration: {
-                                seconds: Long.fromInt(120),
-                            },
-                            cryptoTransfer: {
-                                transfers: {
-                                    accountAmounts: [
-                                        {
-                                            accountID: sdk_1.AccountId.fromString(from)._toProtobuf(),
-                                            amount: sdk_1.Hbar.fromTinybars(cost).negated().toTinybars()
-                                        },
-                                        {
-                                            accountID: nodeID._toProtobuf(),
-                                            amount: sdk_1.Hbar.fromTinybars(cost).toTinybars()
-                                        }
-                                    ],
-                                },
-                            },
-                        };
-                        signed = {
-                            bodyBytes: proto_1.proto.TransactionBody.encode(paymentBody).finish(),
-                            sigMap: {}
-                        };
                         walletKey = this.isED25519Type
                             ? sdk_1.PrivateKey.fromStringED25519(this._signingKey().privateKey)
                             : sdk_1.PrivateKey.fromStringECDSA(this._signingKey().privateKey);
-                        signature = walletKey.sign(signed.bodyBytes);
-                        signed.sigMap = {
-                            sigPair: [walletKey.publicKey._toProtobufSignature(signature)]
-                        };
-                        transferSignedTransactionBytes = proto_1.proto.SignedTransaction.encode(signed).finish();
-                        hederaTx._paymentTransactions.push({
-                            signedTransactionBytes: transferSignedTransactionBytes
-                        });
-                        _b.label = 3;
+                        sdkClient = this.provider.getHederaClient();
+                        sdkClient.setOperator(sdk_1.AccountId.fromString(from), walletKey);
+                        return [4 /*yield*/, hederaTx.getCost(sdkClient)];
                     case 3:
-                        _b.trys.push([3, 5, , 6]);
-                        return [4 /*yield*/, hederaTx.execute(this.provider.getHederaClient())];
+                        cost = _b.sent();
+                        hederaTx.setQueryPayment(cost);
+                        _b.label = 4;
                     case 4:
+                        _b.trys.push([4, 6, , 7]);
+                        return [4 /*yield*/, hederaTx.execute(sdkClient)];
+                    case 5:
                         response = _b.sent();
                         return [2 /*return*/, (0, bytes_1.hexlify)(response.bytes)];
-                    case 5:
+                    case 6:
                         error_1 = _b.sent();
                         return [2 /*return*/, checkError('call', error_1, tx)];
-                    case 6: return [2 /*return*/];
+                    case 7: return [2 /*return*/];
                 }
             });
         });

@@ -949,7 +949,7 @@ describe('Providers.spec', () => {
                     assert.strictEqual(receipt.to, null);
                     assert.strictEqual(receipt.contractAddress, '0x' + sendTransactionResponse.customData.contractId);
                     assert.strictEqual(receipt.from, hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.account));
-                    assert.strictEqual(receipt.transactionHash, sendTransactionResponse.hash);
+                    assert.strictEqual(receipt.transactionHash, sendTransactionResponse.hash.substring(0, 66));
                 });
             }).timeout(timeout * 8);
             it("Should populate transaction receipt with timeout", function () {
@@ -960,7 +960,7 @@ describe('Providers.spec', () => {
                     assert.strictEqual(receipt.to, null);
                     assert.strictEqual(receipt.contractAddress, '0x' + sendTransactionResponse.customData.contractId);
                     assert.strictEqual(receipt.from, hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.account));
-                    assert.strictEqual(receipt.transactionHash, sendTransactionResponse.hash);
+                    assert.strictEqual(receipt.transactionHash, sendTransactionResponse.hash.substring(0, 66));
                 });
             }).timeout(timeout * 10);
             it("Should throw timeout exceeded", function () {

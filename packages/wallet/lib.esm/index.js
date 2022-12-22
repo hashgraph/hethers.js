@@ -131,6 +131,9 @@ export class Wallet extends Signer {
     getAlias() {
         return Promise.resolve(this.alias);
     }
+    getEvmAddress() {
+        return Promise.resolve(this.provider.getEvmAddress(this.address));
+    }
     connect(provider) {
         return new Wallet(this, provider);
     }

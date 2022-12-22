@@ -16,13 +16,10 @@ import { SigningKey } from "@hethers/signing-key";
 import {
     AccountId,
     ContractCallQuery, ContractId,
-    Hbar,
-    PrivateKey,
     PublicKey as HederaPubKey,
-    TransactionId
+    TransactionId,
+    PrivateKey,
 } from "@hashgraph/sdk";
-import * as Long from "long";
-import { proto } from "@hashgraph/proto";
 
 const logger = new Logger(version);
 
@@ -30,16 +27,6 @@ const allowedTransactionKeys: Array<string> = [
     "accessList", "chainId", "customData", "data", "from", "gasLimit", "maxFeePerGas", "maxPriorityFeePerGas", "to", "type", "value",
     "nodeId"
 ];
-
-// oversize cost for 1 gas in ContractCallQuery
-const CALL_GAS_PRICE_TINYBARS = 100;
-
-// the average default cost of a signed hedera ContractCallQuery
-// source https://github.com/hashgraph/hedera-services/blob/master/hedera-node/src/main/resources/feeSchedules.json
-// 1_000_000_000_000_000 / 100_000_000 (to hbars) / 10_000_000 (coef to weibars) = 1 hbar or 100_000_000 weibars
-const DEFAULT_HEDERA_CALL_TX_FEE = 100_000_000;
-
-const TX_FEE_BUFFER_MULTIPLIER = 2;
 
 // EIP-712 Typed Data
 // See: https://eips.ethereum.org/EIPS/eip-712
@@ -194,52 +181,19 @@ export abstract class Signer {
         } else {
             hederaTx.setContractId(to);
         }
-        const gasLimit = BigNumber.from(tx.gasLimit).toNumber();
-        const baseCost = DEFAULT_HEDERA_CALL_TX_FEE * TX_FEE_BUFFER_MULTIPLIER;
-        const cost = baseCost + gasLimit * CALL_GAS_PRICE_TINYBARS;
-        const paymentBody = {
-            transactionID: paymentTxId._toProtobuf(),
-            nodeAccountID: nodeID._toProtobuf(),
-            transactionFee: Hbar.fromTinybars(baseCost).toTinybars(),
-            transactionValidDuration: {
-                seconds: Long.fromInt(120),
-            },
-            cryptoTransfer: {
-                transfers: {
-                    accountAmounts:[
-                        {
-                            accountID: AccountId.fromString(from)._toProtobuf(),
-                            amount: Hbar.fromTinybars(cost).negated().toTinybars()
-                        },
-                        {
-                            accountID: nodeID._toProtobuf(),
-                            amount: Hbar.fromTinybars(cost).toTinybars()
-                        }
-                    ],
-                },
-            },
-        };
 
-        const signed = {
-            bodyBytes: proto.TransactionBody.encode(paymentBody).finish(),
-            sigMap: {}
-        };
-
-        const walletKey = this.isED25519Type 
+        const walletKey = this.isED25519Type
             ? PrivateKey.fromStringED25519(this._signingKey().privateKey)
             : PrivateKey.fromStringECDSA(this._signingKey().privateKey);
-        const signature = walletKey.sign(signed.bodyBytes);
-        signed.sigMap = {
-            sigPair: [walletKey.publicKey._toProtobufSignature(signature)]
-        }
 
-        const transferSignedTransactionBytes =  proto.SignedTransaction.encode(signed).finish();
-        hederaTx._paymentTransactions.push({
-            signedTransactionBytes: transferSignedTransactionBytes
-        });
+        const sdkClient = this.provider.getHederaClient();
+        sdkClient.setOperator(AccountId.fromString(from), walletKey);
 
-        try{
-            const response = await hederaTx.execute(this.provider.getHederaClient());
+        const cost = await hederaTx.getCost(sdkClient);
+        hederaTx.setQueryPayment(cost);
+
+        try {
+            const response = await hederaTx.execute(sdkClient);
             return hexlify(response.bytes);
         } catch (error) {
             return checkError('call', error, tx);

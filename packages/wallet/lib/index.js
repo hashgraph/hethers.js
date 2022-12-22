@@ -192,6 +192,9 @@ var Wallet = /** @class */ (function (_super) {
     Wallet.prototype.getAlias = function () {
         return Promise.resolve(this.alias);
     };
+    Wallet.prototype.getEvmAddress = function () {
+        return Promise.resolve(this.provider.getEvmAddress(this.address));
+    };
     Wallet.prototype.connect = function (provider) {
         return new Wallet(this, provider);
     };

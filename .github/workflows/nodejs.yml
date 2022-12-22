@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [12.x, 13.x]
+        node-version: [16.x]
 
     steps:
       - name: Use Node.js ${{ matrix.node-version }}
@@ -33,7 +33,7 @@ jobs:
         run: npm ci
 
       - name: Install hedera-local node globally
-        run: npm install -g https://github.com/hashgraph/hedera-local-node.git#v.1.1.0
+        run: npm install -g @hashgraph/hedera-local
 
       - name: Build CommonJS and ESM (from TypeScript)
         run: npm run build-all
@@ -110,7 +110,7 @@ jobs:
     steps:
       - uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 16.x
 
       - name: Checkout repository
         uses: actions/checkout@v2
