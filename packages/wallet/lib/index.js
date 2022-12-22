@@ -161,6 +161,9 @@ var Wallet = /** @class */ (function (_super) {
         }
         (0, properties_1.defineReadOnly)(_this, "provider", provider || null);
         return _this;
+        // if (this.provider && this.address) {
+        // 	defineReadOnly(this, "address", this.provider.getEvmAddress(this.address));
+        // }
     }
     Object.defineProperty(Wallet.prototype, "mnemonic", {
         get: function () {
