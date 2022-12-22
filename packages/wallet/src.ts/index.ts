@@ -148,10 +148,6 @@ export class Wallet extends Signer implements ExternallyOwnedAccount, TypedDataS
 		}
 
 		defineReadOnly(this, "provider", provider || null);
-
-		// if (this.provider && this.address) {
-		// 	defineReadOnly(this, "address", this.provider.getEvmAddress(this.address));
-		// }
 	}
 
 	get mnemonic(): Mnemonic {
