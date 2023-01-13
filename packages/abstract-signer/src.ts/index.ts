@@ -19,6 +19,7 @@ import {
     PublicKey as HederaPubKey,
     TransactionId,
     PrivateKey,
+    Hbar
 } from "@hashgraph/sdk";
 
 const logger = new Logger(version);
@@ -189,8 +190,13 @@ export abstract class Signer {
         const sdkClient = this.provider.getHederaClient();
         sdkClient.setOperator(AccountId.fromString(from), walletKey);
 
+        const MULTIPLIER = 1.1;
         const cost = await hederaTx.getCost(sdkClient);
-        hederaTx.setQueryPayment(cost);
+        const costWithBuffer = Hbar.fromTinybars(
+            cost._valueInTinybar.multipliedBy(MULTIPLIER).toFixed(0)
+        )
+
+        hederaTx.setQueryPayment(costWithBuffer);
 
         try {
             const response = await hederaTx.execute(sdkClient);
