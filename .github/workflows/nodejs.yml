@@ -32,9 +32,6 @@ jobs:
       - name: Build CommonJS and ESM (from TypeScript)
         run: npm run build-all
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-
       - name: Run tests
         run: npm run test-node
 
