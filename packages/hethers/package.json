@@ -3,12 +3,12 @@
   "dependencies": {
     "@ethersproject/solidity": "5.5.0",
     "@hethers/abstract-provider": "1.2.1",
-    "@hethers/abstract-signer": "1.2.2",
+    "@hethers/abstract-signer": "1.2.3",
     "@hethers/address": "1.2.0",
     "@hethers/constants": "1.2.0",
-    "@hethers/contracts": "1.2.1",
-    "@hethers/hdnode": "1.2.1",
-    "@hethers/json-wallets": "1.2.1",
+    "@hethers/contracts": "1.2.2",
+    "@hethers/hdnode": "1.2.2",
+    "@hethers/json-wallets": "1.2.2",
     "@hethers/logger": "1.2.0",
     "@hethers/networks": "1.2.0",
     "@hethers/providers": "1.2.2",
@@ -39,7 +39,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "sideEffects": false,
-  "tarballHash": "0x670035da6f532e0c7809c51b36b18bdfd36cef073cf72c47abb5c67f66992109",
+  "tarballHash": "0x91505b639a10a6e97884b835ef2800a5d19b86c5ab684c84bbd2f73bfae506b1",
   "types": "./lib/index.d.ts",
-  "version": "1.2.3"
+  "version": "1.2.4"
 }

@@ -26,7 +26,7 @@
     "@hashgraph/proto": "2.9.0",
     "@hashgraph/sdk": "^2.19.0",
     "@hethers/abstract-provider": "1.2.1",
-    "@hethers/abstract-signer": "1.2.2",
+    "@hethers/abstract-signer": "1.2.3",
     "@hethers/address": "1.2.0",
     "@hethers/constants": "1.2.0",
     "@hethers/logger": "1.2.0",
@@ -62,7 +62,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "sideEffects": false,
-  "tarballHash": "0x1b1d9fbb531c6d1ee71f57cd54cbf94921f5fb50c443312344bd9f19b0daefb1",
+  "tarballHash": "0xc99c67b61e8792b54cf65de8e1d2715a847b02c1e3a456b4e2da6213ec87fa18",
   "types": "./lib/index.d.ts",
   "version": "1.2.2"
 }

@@ -40,7 +40,7 @@ describe('Hethers Tests', function () {
         console.log(`Docker container versions, services: ${process.env['NETWORK_NODE_IMAGE_TAG']}, mirror: ${process.env['MIRROR_IMAGE_TAG']}`);
         // start local-node
         console.log('Start local node');
-        shell.exec('hedera start --limits=false --dev=true -d');
+        shell.exec('hedera restart --limits=false --dev=true -d');
         console.log('Hedera Hashgraph local node env started');
     }
 });

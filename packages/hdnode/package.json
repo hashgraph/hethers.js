@@ -8,7 +8,7 @@
     "@ethersproject/sha2": "5.5.0",
     "@ethersproject/strings": "5.5.0",
     "@ethersproject/wordlists": "5.5.0",
-    "@hethers/abstract-signer": "1.2.2",
+    "@hethers/abstract-signer": "1.2.3",
     "@hethers/logger": "1.2.0",
     "@hethers/signing-key": "1.2.0",
     "@hethers/transactions": "1.2.2"
@@ -37,7 +37,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "sideEffects": false,
-  "tarballHash": "0x8f29920c513da55cad238e9cf848bbb1e3d4b9cad1ff0bd7562b8aabf92bb718",
+  "tarballHash": "0x111519450a78df21264c805c49f14834dc8320858be0e623f91b6b0ea1b4d78a",
   "types": "./lib/index.d.ts",
-  "version": "1.2.1"
+  "version": "1.2.2"
 }

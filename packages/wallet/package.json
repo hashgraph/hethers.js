@@ -9,10 +9,10 @@
     "@ethersproject/wordlists": "5.5.0",
     "@hashgraph/sdk": "^2.19.0",
     "@hethers/abstract-provider": "1.2.1",
-    "@hethers/abstract-signer": "1.2.2",
+    "@hethers/abstract-signer": "1.2.3",
     "@hethers/address": "1.2.0",
-    "@hethers/hdnode": "1.2.1",
-    "@hethers/json-wallets": "1.2.1",
+    "@hethers/hdnode": "1.2.2",
+    "@hethers/json-wallets": "1.2.2",
     "@hethers/logger": "1.2.0",
     "@hethers/signing-key": "1.2.0",
     "@hethers/transactions": "1.2.2"
@@ -41,7 +41,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "sideEffects": false,
-  "tarballHash": "0xa7ad3d900b8d0c814600e2cf8f2d0ea99671bb2ea3a430025046ead3bdac3054",
+  "tarballHash": "0xd1645e4cfa37b33b1515fa3042ca87008766fa53a71f49700fd6e00b31a90225",
   "types": "./lib/index.d.ts",
   "version": "1.2.2"
 }
