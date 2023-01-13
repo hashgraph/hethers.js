@@ -11,21 +11,22 @@ env:
 jobs:
   test-node:
     runs-on: ubuntu-latest
-    # runs-on: macos-latest
-
+    timeout-minutes: 35
     strategy:
       fail-fast: false
-      matrix:
-        node-version: [16.x]
+
+    permissions:
+      contents: write
 
     steps:
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
+      - name: Use Node.js [18.x]
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: npm
 
       - name: Install dependencies (and link per package)
         run: npm ci
@@ -35,9 +36,6 @@ jobs:
 
       - name: Build CommonJS and ESM (from TypeScript)
         run: npm run build-all
-
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
 
       - name: Run tests
         run: npm run test-node
