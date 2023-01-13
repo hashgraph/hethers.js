@@ -40,17 +40,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var path_1 = __importDefault(require("path"));
-var shelljs_1 = __importDefault(require("shelljs"));
+// import shell from 'shelljs';
 var fs_1 = __importDefault(require("fs"));
 describe('Hethers Tests', function () {
     var _this = this;
     this.timeout(240 * 1000); // 240 seconds
-    before(function () {
-        runLocalHederaNetwork(true);
-    });
-    after(function () {
-        runLocalHederaNetwork(false);
-    });
+    // before(function () {
+    //     runLocalHederaNetwork(true);
+    // });
+    //
+    // after(function () {
+    //     runLocalHederaNetwork(false);
+    // });
     describe("Executing test cases", function () { return __awaiter(_this, void 0, void 0, function () {
         return __generator(this, function (_a) {
             fs_1.default.readdirSync(path_1.default.resolve(__dirname, '../lib'))
@@ -62,23 +63,24 @@ describe('Hethers Tests', function () {
             return [2 /*return*/];
         });
     }); });
-    function runLocalHederaNetwork(start) {
-        if (start === void 0) { start = true; }
-        if (!start) {
-            // stop local-node
-            console.log('Shutdown local node');
-            shelljs_1.default.exec('hedera stop');
-            return;
-        }
-        // set env variables for docker images until local-node is updated
-        process.env['NETWORK_NODE_IMAGE_TAG'] = '0.33.2';
-        process.env['HAVEGED_IMAGE_TAG'] = '0.33.2';
-        process.env['MIRROR_IMAGE_TAG'] = '0.71.0-beta4';
-        console.log("Docker container versions, services: " + process.env['NETWORK_NODE_IMAGE_TAG'] + ", mirror: " + process.env['MIRROR_IMAGE_TAG']);
-        // start local-node
-        console.log('Start local node');
-        shelljs_1.default.exec('hedera restart --limits=false --dev=true -d');
-        console.log('Hedera Hashgraph local node env started');
-    }
+    // function runLocalHederaNetwork(start = true) {
+    //     if (!start) {
+    //         // stop local-node
+    //         console.log('Shutdown local node');
+    //         shell.exec('hedera stop');
+    //         return;
+    //     }
+    //
+    //     // set env variables for docker images until local-node is updated
+    //     process.env['NETWORK_NODE_IMAGE_TAG'] = '0.33.2';
+    //     process.env['HAVEGED_IMAGE_TAG'] = '0.33.2';
+    //     process.env['MIRROR_IMAGE_TAG'] = '0.71.0-beta4';
+    //     console.log(`Docker container versions, services: ${process.env['NETWORK_NODE_IMAGE_TAG']}, mirror: ${process.env['MIRROR_IMAGE_TAG']}`);
+    //
+    //     // start local-node
+    //     console.log('Start local node');
+    //     shell.exec('hedera restart --limits=false --dev=true -d');
+    //     console.log('Hedera Hashgraph local node env started');
+    // }
 });
 //# sourceMappingURL=index.spec.js.map

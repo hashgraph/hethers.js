@@ -31,14 +31,20 @@ jobs:
       - name: Install dependencies (and link per package)
         run: npm ci
 
-      - name: Install hedera-local node globally
-        run: npm install -g @hashgraph/hedera-local
+      - name: Install hedera-local node
+        run: npm install @hashgraph/hedera-local
+
+      - name: Start the local node
+        run: npx hedera start -d --network local
 
       - name: Build CommonJS and ESM (from TypeScript)
         run: npm run build-all
 
       - name: Run tests
         run: npm run test-node
+
+      - name: Stop the local node
+        run: npx hedera stop
 
   coverage:
     name: Coverage
