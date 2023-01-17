@@ -1,2 +1,2 @@
-export const version = "hethers/1.2.4";
+export const version = "hethers/1.2.5";
 //# sourceMappingURL=_version.js.map
