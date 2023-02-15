@@ -7,11 +7,11 @@
     "@hethers/address": "1.2.0",
     "@hethers/constants": "1.2.0",
     "@hethers/contracts": "1.2.3",
-    "@hethers/hdnode": "1.2.2",
+    "@hethers/hdnode": "1.2.3",
     "@hethers/json-wallets": "1.2.2",
     "@hethers/logger": "1.2.0",
     "@hethers/networks": "1.2.0",
-    "@hethers/providers": "1.2.3",
+    "@hethers/providers": "1.2.4",
     "@hethers/signing-key": "1.2.0",
     "@hethers/transactions": "1.2.2",
     "@hethers/units": "1.2.0",
@@ -39,7 +39,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "sideEffects": false,
-  "tarballHash": "0xa4c38a0933c7a413e6afd170c7c42d685e599bb7bad180ba31976a77b15d54ac",
+  "tarballHash": "0xaed67e003f2a3a68c9d47147befd19738748b8a0968ae8ab7c06e535a84b0eb7",
   "types": "./lib/index.d.ts",
-  "version": "1.2.5"
+  "version": "1.2.6"
 }
