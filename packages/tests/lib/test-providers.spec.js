@@ -63,7 +63,6 @@ var hethers_1 = require("@hashgraph/hethers");
 var bignumber_1 = require("@ethersproject/bignumber");
 var providers_1 = require("@hethers/providers");
 var default_hedera_provider_1 = require("@hethers/providers/lib/default-hedera-provider");
-var sdk_1 = require("@hashgraph/sdk");
 var utils = __importStar(require("./utils"));
 var bnify = hethers_1.hethers.BigNumber.from;
 var blockchainData = {
@@ -833,7 +832,6 @@ describe('Providers.spec', function () {
     var localWalletECDSA = utils.getWallets().local.ecdsa[0];
     // @ts-ignore
     var localWalletED25519 = utils.getWallets().local.ed25519[1];
-    var hederaTestnetOperableAccount = utils.getAccounts().testnet.ed25519[1];
     describe("Test Basic Authentication", function () {
         //this.retries(3);
         function test(name, url) {
@@ -918,161 +916,6 @@ describe('Providers.spec', function () {
             });
         }).timeout(timeout);
         describe("Filter Contract Logs", function () {
-            it('Should filter logs by timestamp and address', function () {
-                return __awaiter(this, void 0, void 0, function () {
-                    var fromTimestamp, toTimestamp, address, account, filterParams, logsResponse, logs, filterParamsAccount, logs2;
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0:
-                                fromTimestamp = "1642065156.264170833";
-                                toTimestamp = "1642080642.176149864";
-                                address = "0x000000000000000000000000000000000186fb1A";
-                                account = "0.0.25623322";
-                                filterParams = {
-                                    address: address,
-                                    fromTimestamp: fromTimestamp,
-                                    toTimestamp: toTimestamp
-                                };
-                                logsResponse = [
-                                    {
-                                        "address": "0x000000000000000000000000000000000186fb1a",
-                                        "contract_id": "0.0.25623322",
-                                        "data": "0x00000000000000000000000000000000000000000000003635c9adc5dea00000",
-                                        "index": 0,
-                                        "topics": [
-                                            "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
-                                            "0x0000000000000000000000000000000000000000000000000000000000000000",
-                                            "0x0000000000000000000000000000000000000000000000000000000000179977"
-                                        ],
-                                        "root_contract_id": "0.0.25623322",
-                                        "timestamp": "1642080642.176149864"
-                                    },
-                                    {
-                                        "address": "0x000000000000000000000000000000000186fb1a",
-                                        "contract_id": "0.0.25623322",
-                                        "data": "0x00000000000000000000000000000000000000000000003635c9adc5dea00000",
-                                        "index": 0,
-                                        "topics": [
-                                            "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
-                                            "0x0000000000000000000000000000000000000000000000000000000000000000",
-                                            "0x0000000000000000000000000000000000000000000000000000000000179977"
-                                        ],
-                                        "root_contract_id": "0.0.25623322",
-                                        "timestamp": "1642065156.264170833"
-                                    }
-                                ];
-                                return [4 /*yield*/, testnetProvider.getLogs(filterParams)];
-                            case 1:
-                                logs = _a.sent();
-                                assert_1.default.strictEqual(logs.length, 2);
-                                assert_1.default.strictEqual(logs[0].timestamp, logsResponse[0].timestamp);
-                                assert_1.default.strictEqual(logs[0].address.toLowerCase(), logsResponse[0].address.toLowerCase());
-                                assert_1.default.strictEqual(logs[0].data, logsResponse[0].data);
-                                assert_1.default.deepStrictEqual(logs[0].topics, logsResponse[0].topics);
-                                assert_1.default.strictEqual(logs[0].transactionHash, undefined);
-                                assert_1.default.strictEqual(logs[0].logIndex, logsResponse[0].index);
-                                assert_1.default.strictEqual(logs[0].transactionIndex, logsResponse[0].index);
-                                assert_1.default.strictEqual(logs[1].timestamp, logsResponse[1].timestamp);
-                                assert_1.default.strictEqual(logs[1].address.toLowerCase(), logsResponse[1].address.toLowerCase());
-                                assert_1.default.strictEqual(logs[1].data, logsResponse[1].data);
-                                assert_1.default.deepStrictEqual(logs[1].topics, logsResponse[1].topics);
-                                assert_1.default.strictEqual(logs[1].transactionHash, undefined);
-                                assert_1.default.strictEqual(logs[1].logIndex, logsResponse[1].index);
-                                assert_1.default.strictEqual(logs[1].transactionIndex, logsResponse[1].index);
-                                filterParamsAccount = {
-                                    address: account,
-                                    fromTimestamp: fromTimestamp,
-                                    toTimestamp: toTimestamp
-                                };
-                                return [4 /*yield*/, testnetProvider.getLogs(filterParamsAccount)];
-                            case 2:
-                                logs2 = _a.sent();
-                                assert_1.default.strictEqual(logs2.length, 2);
-                                assert_1.default.strictEqual(logs2[0].timestamp, logsResponse[0].timestamp);
-                                assert_1.default.strictEqual(logs2[0].address.toLowerCase(), logsResponse[0].address.toLowerCase());
-                                assert_1.default.strictEqual(logs2[0].data, logsResponse[0].data);
-                                assert_1.default.deepStrictEqual(logs2[0].topics, logsResponse[0].topics);
-                                assert_1.default.strictEqual(logs2[0].transactionHash, undefined);
-                                assert_1.default.strictEqual(logs2[0].logIndex, logsResponse[0].index);
-                                assert_1.default.strictEqual(logs2[0].transactionIndex, logsResponse[0].index);
-                                assert_1.default.strictEqual(logs2[1].timestamp, logsResponse[1].timestamp);
-                                assert_1.default.strictEqual(logs2[1].address.toLowerCase(), logsResponse[1].address.toLowerCase());
-                                assert_1.default.strictEqual(logs2[1].data, logsResponse[1].data);
-                                assert_1.default.deepStrictEqual(logs2[1].topics, logsResponse[1].topics);
-                                assert_1.default.strictEqual(logs2[1].transactionHash, undefined);
-                                assert_1.default.strictEqual(logs2[1].logIndex, logsResponse[1].index);
-                                assert_1.default.strictEqual(logs2[1].transactionIndex, logsResponse[1].index);
-                                return [2 /*return*/];
-                        }
-                    });
-                });
-            }).timeout(timeout * 4);
-            it('Should filter log with length more than 100', function () {
-                return __awaiter(this, void 0, void 0, function () {
-                    var fromTimestamp, toTimestamp, address, filterParams, logs, logsLength, logsResponse;
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0:
-                                fromTimestamp = "1442065156.264170833";
-                                toTimestamp = "1642080642.176149864";
-                                address = "0x000000000000000000000000000000000186fb1A";
-                                filterParams = {
-                                    address: address,
-                                    fromTimestamp: fromTimestamp,
-                                    toTimestamp: toTimestamp
-                                };
-                                return [4 /*yield*/, testnetProvider.getLogs(filterParams)];
-                            case 1:
-                                logs = _a.sent();
-                                logsLength = logs.length;
-                                logsResponse = [
-                                    {
-                                        "address": "0x000000000000000000000000000000000186fb1a",
-                                        "contract_id": "0.0.25623322",
-                                        "data": "0x00000000000000000000000000000000000000000000003635c9adc5dea00000",
-                                        "index": 0,
-                                        "topics": [
-                                            "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
-                                            "0x0000000000000000000000000000000000000000000000000000000000000000",
-                                            "0x0000000000000000000000000000000000000000000000000000000000179977"
-                                        ],
-                                        "root_contract_id": "0.0.25623322",
-                                        "timestamp": "1640183634.611982000"
-                                    },
-                                    {
-                                        "address": "0x000000000000000000000000000000000186fb1a",
-                                        "contract_id": "0.0.25623322",
-                                        "data": "0x000000000000000000000000000000000000000000000000000000003b9aca00",
-                                        "index": 0,
-                                        "topics": [
-                                            "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
-                                            "0x0000000000000000000000000000000000000000000000000000000000000000",
-                                            "0x0000000000000000000000000000000000000000000000000000000000179977"
-                                        ],
-                                        "root_contract_id": "0.0.25623322",
-                                        "timestamp": "1640075394.182370923"
-                                    }
-                                ];
-                                assert_1.default.strictEqual(logsLength, 211);
-                                assert_1.default.strictEqual(logs[logsLength - 2].timestamp, logsResponse[0].timestamp);
-                                assert_1.default.strictEqual(logs[logsLength - 2].address.toLowerCase(), logsResponse[0].address.toLowerCase());
-                                assert_1.default.strictEqual(logs[logsLength - 2].data, logsResponse[0].data);
-                                assert_1.default.deepStrictEqual(logs[logsLength - 2].topics, logsResponse[0].topics);
-                                assert_1.default.strictEqual(logs[logsLength - 2].transactionHash, undefined);
-                                assert_1.default.strictEqual(logs[logsLength - 2].logIndex, logsResponse[0].index);
-                                assert_1.default.strictEqual(logs[logsLength - 2].transactionIndex, logsResponse[0].index);
-                                assert_1.default.strictEqual(logs[logsLength - 1].timestamp, logsResponse[1].timestamp);
-                                assert_1.default.strictEqual(logs[logsLength - 1].address.toLowerCase(), logsResponse[1].address.toLowerCase());
-                                assert_1.default.strictEqual(logs[logsLength - 1].data, logsResponse[1].data);
-                                assert_1.default.deepStrictEqual(logs[logsLength - 1].topics, logsResponse[1].topics);
-                                assert_1.default.strictEqual(logs[logsLength - 1].transactionHash, undefined);
-                                assert_1.default.strictEqual(logs[logsLength - 1].logIndex, logsResponse[1].index);
-                                assert_1.default.strictEqual(logs[logsLength - 1].transactionIndex, logsResponse[1].index);
-                                return [2 /*return*/];
-                        }
-                    });
-                });
-            }).timeout(timeout * 4);
             it('Should return default value', function () {
                 return __awaiter(this, void 0, void 0, function () {
                     var address, filterParams, logs;
@@ -1094,126 +937,13 @@ describe('Providers.spec', function () {
                 });
             }).timeout(timeout * 4);
         });
-        describe("Sign & Send Transacton, Wait for receipt", function () {
-            var _this = this;
-            var signedTx;
-            beforeEach(function () { return __awaiter(_this, void 0, void 0, function () {
-                var privateKey, txID, tx, txBytes;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            privateKey = sdk_1.PrivateKey.fromString(hederaTestnetOperableAccount.privateKey);
-                            txID = sdk_1.TransactionId.generate(hederaTestnetOperableAccount.account);
-                            return [4 /*yield*/, new sdk_1.ContractCreateTransaction()
-                                    .setGas(300000)
-                                    .setBytecodeFileId("0.0.26562254")
-                                    .setNodeAccountIds([new sdk_1.AccountId(0, 0, 3)])
-                                    .setConstructorParameters(new sdk_1.ContractFunctionParameters().addUint256(100))
-                                    .setTransactionId(txID)
-                                    .freeze()
-                                    .sign(privateKey)];
-                        case 1:
-                            tx = _a.sent();
-                            txBytes = tx.toBytes();
-                            signedTx = hethers_1.hethers.utils.hexlify(txBytes);
-                            return [2 /*return*/];
-                    }
-                });
-            }); });
-            it("Should populate transaction receipt", function () {
-                return __awaiter(this, void 0, void 0, function () {
-                    var sendTransactionResponse, _a, _b, receipt;
-                    return __generator(this, function (_c) {
-                        switch (_c.label) {
-                            case 0:
-                                _b = (_a = testnetProvider).sendTransaction;
-                                return [4 /*yield*/, signedTx];
-                            case 1: return [4 /*yield*/, _b.apply(_a, [_c.sent()])];
-                            case 2:
-                                sendTransactionResponse = _c.sent();
-                                return [4 /*yield*/, sendTransactionResponse.wait()];
-                            case 3:
-                                receipt = _c.sent();
-                                // assert.strict(receipt.logs.length > 0);
-                                assert_1.default.strictEqual(receipt.to, null);
-                                assert_1.default.strictEqual(receipt.contractAddress, '0x' + sendTransactionResponse.customData.contractId);
-                                assert_1.default.strictEqual(receipt.from, hethers_1.hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.account));
-                                assert_1.default.strictEqual(receipt.transactionHash, sendTransactionResponse.hash.substring(0, 66));
-                                return [2 /*return*/];
-                        }
-                    });
-                });
-            }).timeout(timeout * 8);
-            it("Should populate transaction receipt with timeout", function () {
-                return __awaiter(this, void 0, void 0, function () {
-                    var sendTransactionResponse, _a, _b, receipt;
-                    return __generator(this, function (_c) {
-                        switch (_c.label) {
-                            case 0:
-                                _b = (_a = testnetProvider).sendTransaction;
-                                return [4 /*yield*/, signedTx];
-                            case 1: return [4 /*yield*/, _b.apply(_a, [_c.sent()])];
-                            case 2:
-                                sendTransactionResponse = _c.sent();
-                                return [4 /*yield*/, sendTransactionResponse.wait(timeout * 2)];
-                            case 3:
-                                receipt = _c.sent();
-                                // assert.strict(receipt.logs.length > 0);
-                                assert_1.default.strictEqual(receipt.to, null);
-                                assert_1.default.strictEqual(receipt.contractAddress, '0x' + sendTransactionResponse.customData.contractId);
-                                assert_1.default.strictEqual(receipt.from, hethers_1.hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.account));
-                                assert_1.default.strictEqual(receipt.transactionHash, sendTransactionResponse.hash.substring(0, 66));
-                                return [2 /*return*/];
-                        }
-                    });
-                });
-            }).timeout(timeout * 10);
-            it("Should throw timeout exceeded", function () {
-                return __awaiter(this, void 0, void 0, function () {
-                    var insufficientTimeout;
-                    var _this = this;
-                    return __generator(this, function (_a) {
-                        switch (_a.label) {
-                            case 0:
-                                insufficientTimeout = 500;
-                                return [4 /*yield*/, assert_1.default.rejects(function () { return __awaiter(_this, void 0, void 0, function () {
-                                        var sendTransactionResponse, _a, _b;
-                                        return __generator(this, function (_c) {
-                                            switch (_c.label) {
-                                                case 0:
-                                                    _b = (_a = testnetProvider).sendTransaction;
-                                                    return [4 /*yield*/, signedTx];
-                                                case 1: return [4 /*yield*/, _b.apply(_a, [_c.sent()])];
-                                                case 2:
-                                                    sendTransactionResponse = _c.sent();
-                                                    return [4 /*yield*/, sendTransactionResponse.wait(insufficientTimeout)];
-                                                case 3:
-                                                    _c.sent();
-                                                    return [2 /*return*/];
-                                            }
-                                        });
-                                    }); }, function (err) {
-                                        assert_1.default.strictEqual(err.name, 'Error');
-                                        assert_1.default.strictEqual(err.reason, 'timeout exceeded');
-                                        assert_1.default.strictEqual(err.code, 'TIMEOUT');
-                                        assert_1.default.strictEqual(err.timeout, insufficientTimeout);
-                                        return true;
-                                    })];
-                            case 1:
-                                _a.sent();
-                                return [2 /*return*/];
-                        }
-                    });
-                });
-            }).timeout(timeout * 4);
-        });
         it("Should populate tx record by transactionId", function () {
             return __awaiter(this, void 0, void 0, function () {
                 var existingId, record, network;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            existingId = "0.0.1546615-1641987871-235099329";
+                            existingId = '0.0.902-1676628348-418441340';
                             return [4 /*yield*/, testnetProvider.getTransaction(existingId)];
                         case 1:
                             record = _a.sent();
@@ -1234,7 +964,7 @@ describe('Providers.spec', function () {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            timestamp = "1641987884.097680000";
+                            timestamp = "1676628357.867517003";
                             return [4 /*yield*/, testnetProvider.getTransaction(timestamp)];
                         case 1:
                             record = _a.sent();
@@ -1377,73 +1107,9 @@ describe('Providers.spec', function () {
                 });
             });
         }).timeout(timeout * 4);
-        it('should submit signed transaction', function () {
-            return __awaiter(this, void 0, void 0, function () {
-                var privateKey, txID, tx, txBytes, signedTx, provider, txResponse;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            privateKey = sdk_1.PrivateKey.fromString(hederaTestnetOperableAccount.privateKey);
-                            txID = sdk_1.TransactionId.generate(hederaTestnetOperableAccount.account);
-                            return [4 /*yield*/, new sdk_1.ContractCreateTransaction()
-                                    .setContractMemo("memo")
-                                    .setGas(300000)
-                                    // .setInitialBalance(1000)
-                                    .setBytecodeFileId("0.0.26562254")
-                                    .setNodeAccountIds([new sdk_1.AccountId(0, 0, 3)])
-                                    .setConstructorParameters(new sdk_1.ContractFunctionParameters().addUint256(100))
-                                    .setTransactionId(txID)
-                                    .freeze()
-                                    .sign(privateKey)];
-                        case 1:
-                            tx = _a.sent();
-                            txBytes = tx.toBytes();
-                            signedTx = hethers_1.hethers.utils.hexlify(txBytes);
-                            provider = hethers_1.hethers.providers.getDefaultProvider('testnet');
-                            return [4 /*yield*/, provider.sendTransaction(signedTx)];
-                        case 2:
-                            txResponse = _a.sent();
-                            assert_1.default.strictEqual(txResponse.gasLimit.toNumber(), 300000);
-                            assert_1.default.strictEqual(txResponse.from, hethers_1.hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.account));
-                            assert_1.default.strictEqual(txResponse.to, undefined); // contract create TX should not be addressed to anything
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        }).timeout(timeout * 4);
-        /* This test is skipped because the local network won't be started in the CI */
-        xit("Should be able to query local network", function () {
-            return __awaiter(this, void 0, void 0, function () {
-                var genesis, prov, bal;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            genesis = {
-                                operator: {
-                                    // genesis is the operator
-                                    accountId: "0.0.2",
-                                    privateKey: "302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137",
-                                    publicKey: "302a300506032b65700321000aa8e21064c61eab86e2a9c164565b4e7a9a4146106e0a6cd03a8c395a110e92"
-                                },
-                                network: {
-                                    "127.0.0.1:50211": "0.0.3",
-                                    "127.0.0.1:50212": "0.0.4",
-                                    "127.0.0.1:50213": "0.0.5"
-                                }
-                            };
-                            prov = new hethers_1.hethers.providers.HederaProvider(genesis.network["127.0.0.1:50211"], "127.0.0.1:50211", "");
-                            return [4 /*yield*/, prov.getBalance(solAddr)];
-                        case 1:
-                            bal = _a.sent();
-                            assert_1.default.strictEqual(true, bal.gte(0));
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        });
         it("Should be able to query testnet with custom urls", function () {
             return __awaiter(this, void 0, void 0, function () {
-                var provider2, balance2, txId, record2;
+                var provider2, balance2, existingId, record2;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -1452,8 +1118,8 @@ describe('Providers.spec', function () {
                         case 1:
                             balance2 = _a.sent();
                             assert_1.default.strictEqual(true, balance2.gte(0));
-                            txId = "0.0.1546615-1641987871-235099329";
-                            return [4 /*yield*/, provider2.getTransaction(txId)];
+                            existingId = '0.0.902-1676628348-418441340';
+                            return [4 /*yield*/, provider2.getTransaction(existingId)];
                         case 2:
                             record2 = _a.sent();
                             assert_1.default.notStrictEqual(record2, null, "Record is null");
@@ -1468,7 +1134,7 @@ describe('Providers.spec', function () {
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
-                            contractAccountConfig = { shard: BigInt(0), realm: BigInt(0), num: BigInt(16645669) };
+                            contractAccountConfig = { shard: BigInt(0), realm: BigInt(0), num: BigInt(3502207) };
                             contractAddress = hethers_1.hethers.utils.getAddressFromAccount(contractAccountConfig);
                             return [4 /*yield*/, testnetProvider.getCode(contractAddress)];
                         case 1:

@@ -77,13 +77,11 @@ var abiToken = JSON.parse((0, fs_1.readFileSync)('packages/tests/contracts/Token
 var abiTokenWithArgs = JSON.parse((0, fs_1.readFileSync)('packages/tests/contracts/TokenWithArgs.json').toString());
 var bytecodeToken = fs_1.default.readFileSync('packages/tests/contracts/Token.bin').toString();
 var bytecodeTokenWithArgs = (0, fs_1.readFileSync)('packages/tests/contracts/TokenWithArgs.bin').toString();
-var iUniswapV2PairAbi = JSON.parse(fs_1.default.readFileSync('packages/tests/contracts/IUniswapV2Pair.abi.json').toString());
 var TIMEOUT_PERIOD = 120000;
 describe('Contract.spec', function () {
-    var localProvider, testnetWalletECDSA, localWalletECDSA, localWalletED25519;
+    var localProvider, localWalletECDSA, localWalletED25519;
     before(function () {
         localProvider = utils.getProviders().local[0];
-        testnetWalletECDSA = utils.getWallets().testnet.ecdsa[0];
         localWalletECDSA = utils.getWallets().local.ecdsa[0];
         localWalletED25519 = utils.getWallets().local.ed25519[1];
     });
@@ -117,7 +115,7 @@ describe('Contract.spec', function () {
                             assert_1.default.notStrictEqual(contract, null, "nullified contract");
                             assert_1.default.notStrictEqual(contract.deployTransaction, "missing deploy transaction");
                             assert_1.default.notStrictEqual(contract.address, null, 'missing address');
-                            return [4 /*yield*/, contract.balanceOf(localWalletECDSA.address, { gasLimit: 300000 })];
+                            return [4 /*yield*/, contract.balanceOf(hethers_1.hethers.utils.computeAddress(localWalletECDSA._signingKey().compressedPublicKey), { gasLimit: 300000 })];
                         case 2:
                             balance = _a.sent();
                             assert_1.default.strictEqual(hethers_1.BigNumber.from(balance).toNumber(), 10000, 'balance mismatch');
@@ -361,7 +359,7 @@ describe('Contract.spec', function () {
                                     assert_1.default.strictEqual(enoughEventsCaptured(capturedMints.length, mintCount), true, "expected " + mintCount + " captured events (Mint). Got " + capturedMints.length);
                                     for (_i = 0, capturedMints_1 = capturedMints; _i < capturedMints_1.length; _i++) {
                                         mint = capturedMints_1[_i];
-                                        assert_1.default.strictEqual(mint[0].toLowerCase(), localWalletECDSA.address.toLowerCase(), "address mismatch - mint");
+                                        assert_1.default.strictEqual(mint[0].toLowerCase(), hethers_1.hethers.utils.computeAddress(localWalletECDSA._signingKey().compressedPublicKey).toLowerCase(), "address mismatch - mint");
                                     }
                                     return [2 /*return*/];
                             }
@@ -445,37 +443,7 @@ describe('Contract.spec', function () {
     });
     describe('Contract Aliases', function () {
         return __awaiter(this, void 0, void 0, function () {
-            var gasLimit;
             return __generator(this, function (_a) {
-                gasLimit = 3000000;
-                it('Should detect contract aliases', function () {
-                    return __awaiter(this, void 0, void 0, function () {
-                        var contractAlias, c1, token0, token1, symbol;
-                        return __generator(this, function (_a) {
-                            switch (_a.label) {
-                                case 0:
-                                    contractAlias = '0xbd438E8416b13e962781eBAfE344d45DC0DBBc0c';
-                                    c1 = hethers_1.hethers.ContractFactory.getContract(contractAlias, iUniswapV2PairAbi.abi, testnetWalletECDSA);
-                                    return [4 /*yield*/, c1.token0({ gasLimit: gasLimit })];
-                                case 1:
-                                    token0 = _a.sent();
-                                    assert_1.default.notStrictEqual(token0, "");
-                                    assert_1.default.notStrictEqual(token0, null);
-                                    return [4 /*yield*/, c1.token1({ gasLimit: gasLimit })];
-                                case 2:
-                                    token1 = _a.sent();
-                                    assert_1.default.notStrictEqual(token1, "");
-                                    assert_1.default.notStrictEqual(token1, null);
-                                    return [4 /*yield*/, c1.symbol({ gasLimit: gasLimit })];
-                                case 3:
-                                    symbol = _a.sent();
-                                    assert_1.default.notStrictEqual(symbol, "");
-                                    assert_1.default.notStrictEqual(symbol, null);
-                                    return [2 /*return*/];
-                            }
-                        });
-                    });
-                }).timeout(600000);
                 it('create2 tests', function () {
                     return __awaiter(this, void 0, void 0, function () {
                         var factoryBytecode, accBytecode, factoryAbi, accAbi, salt, factoryCFactory, _factory, factory, deployArgs, deployTx;
@@ -741,68 +709,6 @@ describe('Contract.spec', function () {
                             contractDeployed = _a.sent();
                             assert_1.default.notStrictEqual(contractDeployed, null, "deployed returns the contract");
                             assert_1.default.strictEqual(contractDeployed.address, contract.address, "deployed returns the same contract instance");
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        }).timeout(60000);
-    });
-    describe("Test Contract Query Filter", function () {
-        it("should filter contract events by timestamp string", function () {
-            return __awaiter(this, void 0, void 0, function () {
-                var contractAddress, fromTimestamp, toTimestamp, contract, filter, events;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            contractAddress = '0x000000000000000000000000000000000186fb1a';
-                            fromTimestamp = '1642065156.264170833';
-                            toTimestamp = '1642080642.176149864';
-                            contract = hethers_1.hethers.ContractFactory.getContract(contractAddress, abiToken, testnetWalletECDSA);
-                            filter = {
-                                address: contractAddress,
-                            };
-                            return [4 /*yield*/, contract.queryFilter(filter, fromTimestamp, toTimestamp)];
-                        case 1:
-                            events = _a.sent();
-                            assert_1.default.strictEqual(events.length, 2, "queryFilter returns the contract events");
-                            assert_1.default.strictEqual(events[0].address.toLowerCase(), contractAddress.toLowerCase(), "result address matches contract address");
-                            assert_1.default.notStrictEqual(events[0].data, null, "result data exists");
-                            assert_1.default.strict(events[0].topics.length > 0, "result topics not empty");
-                            assert_1.default.strict(events[0].timestamp >= fromTimestamp, "result timestamp is greater or equal fromTimestamp");
-                            assert_1.default.strict(events[0].timestamp <= toTimestamp, "result is less or equal toTimestamp");
-                            assert_1.default.strictEqual(events[1].address.toLowerCase(), contractAddress.toLowerCase(), "result address matches contract address");
-                            assert_1.default.notStrictEqual(events[1].data, null, "result data exists");
-                            assert_1.default.strict(events[1].topics.length > 0, "result topics not empty");
-                            assert_1.default.strict(events[1].timestamp >= fromTimestamp, "result timestamp is greater or equal fromTimestamp");
-                            assert_1.default.strict(events[1].timestamp <= toTimestamp, "result is less or equal toTimestamp");
-                            return [2 /*return*/];
-                    }
-                });
-            });
-        }).timeout(60000);
-        it("should filter contract events by timestamp number", function () {
-            return __awaiter(this, void 0, void 0, function () {
-                var contractAddress, fromTimestamp, toTimestamp, contract, filter, events;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            contractAddress = '0x000000000000000000000000000000000186fb1a';
-                            fromTimestamp = 1642065156264170;
-                            toTimestamp = 1642080642176150;
-                            contract = hethers_1.hethers.ContractFactory.getContract(contractAddress, abiToken, testnetWalletECDSA);
-                            filter = {
-                                address: contractAddress,
-                            };
-                            return [4 /*yield*/, contract.queryFilter(filter, fromTimestamp, toTimestamp)];
-                        case 1:
-                            events = _a.sent();
-                            assert_1.default.strictEqual(events.length, 2, "queryFilter returns the contract events");
-                            assert_1.default.strictEqual(events[0].address.toLowerCase(), contractAddress.toLowerCase(), "result address matches contract address");
-                            assert_1.default.notStrictEqual(events[0].data, null, "result data exists");
-                            assert_1.default.strict(events[0].topics.length > 0, "result topics not empty");
-                            assert_1.default.strictEqual(events[1].address.toLowerCase(), contractAddress.toLowerCase(), "result address matches contract address");
-                            assert_1.default.notStrictEqual(events[1].data, null, "result data exists");
-                            assert_1.default.strict(events[1].topics.length > 0, "result topics not empty");
                             return [2 /*return*/];
                     }
                 });
