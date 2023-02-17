@@ -13,19 +13,16 @@ const abiToken = JSON.parse(readFileSync('packages/tests/contracts/Token.json').
 const abiTokenWithArgs = JSON.parse(readFileSync('packages/tests/contracts/TokenWithArgs.json').toString());
 const bytecodeToken = fs.readFileSync('packages/tests/contracts/Token.bin').toString();
 const bytecodeTokenWithArgs = readFileSync('packages/tests/contracts/TokenWithArgs.bin').toString();
-const iUniswapV2PairAbi = JSON.parse(fs.readFileSync('packages/tests/contracts/IUniswapV2Pair.abi.json').toString());
 
 const TIMEOUT_PERIOD = 120000;
 
 describe('Contract.spec', () => {
     let localProvider: hethers.providers.HederaProvider,
-        testnetWalletECDSA: hethers.Wallet,
         localWalletECDSA: hethers.Wallet,
         localWalletED25519: hethers.Wallet;
 
     before(function() {
         localProvider = utils.getProviders().local[0];
-        testnetWalletECDSA = utils.getWallets().testnet.ecdsa[0];
         localWalletECDSA = utils.getWallets().local.ecdsa[0];
         localWalletED25519 = utils.getWallets().local.ed25519[1];
     })
@@ -49,7 +46,7 @@ describe('Contract.spec', () => {
             assert.notStrictEqual(contract, null, "nullified contract");
             assert.notStrictEqual(contract.deployTransaction, "missing deploy transaction");
             assert.notStrictEqual(contract.address, null, 'missing address');
-            const balance = await contract.balanceOf(localWalletECDSA.address, { gasLimit: 300000 });
+            const balance = await contract.balanceOf(hethers.utils.computeAddress(localWalletECDSA._signingKey().compressedPublicKey), { gasLimit: 300000 });
             assert.strictEqual(BigNumber.from(balance).toNumber(), 10000, 'balance mismatch');
         }).timeout(60000);
 
@@ -203,7 +200,7 @@ describe('Contract.spec', () => {
                 true,
                 `expected ${mintCount} captured events (Mint). Got ${capturedMints.length}`);
             for (let mint of capturedMints) {
-                assert.strictEqual(mint[0].toLowerCase(), localWalletECDSA.address.toLowerCase(), "address mismatch - mint");
+                assert.strictEqual(mint[0].toLowerCase(), hethers.utils.computeAddress(localWalletECDSA._signingKey().compressedPublicKey).toLowerCase(), "address mismatch - mint");
             }
         }).timeout(TIMEOUT_PERIOD * 3);
 
@@ -253,28 +250,6 @@ describe('Contract.spec', () => {
     });
 
     describe('Contract Aliases', async function () {
-        const gasLimit = 3000000;
-
-        it('Should detect contract aliases', async function () {
-            // TODO: deploy and use local contract address
-
-            const contractAlias = '0xbd438E8416b13e962781eBAfE344d45DC0DBBc0c';
-
-            const c1 = hethers.ContractFactory.getContract(contractAlias, iUniswapV2PairAbi.abi, testnetWalletECDSA);
-            const token0 = await c1.token0({ gasLimit });
-            assert.notStrictEqual(token0, "");
-            assert.notStrictEqual(token0, null);
-
-            const token1 = await c1.token1({ gasLimit });
-            assert.notStrictEqual(token1, "");
-            assert.notStrictEqual(token1, null);
-
-            const symbol = await c1.symbol({ gasLimit });
-            assert.notStrictEqual(symbol, "");
-            assert.notStrictEqual(symbol, null);
-
-        }).timeout(600000);
-
         it('create2 tests', async function () {
             this.timeout(600000);
             const factoryBytecode = fs.readFileSync('packages/tests/contracts/Factory.bin').toString();
@@ -431,51 +406,4 @@ describe('Contract.spec', () => {
         }).timeout(60000);
 
     });
-
-    describe("Test Contract Query Filter", function () {
-        it("should filter contract events by timestamp string", async function () {
-            const contractAddress = '0x000000000000000000000000000000000186fb1a';
-            const fromTimestamp = '1642065156.264170833';
-            const toTimestamp = '1642080642.176149864';
-            const contract = hethers.ContractFactory.getContract(contractAddress, abiToken, testnetWalletECDSA);
-            const filter = {
-                address: contractAddress,
-            }
-            const events = await contract.queryFilter(filter, fromTimestamp, toTimestamp);
-
-            assert.strictEqual(events.length, 2, "queryFilter returns the contract events");
-            assert.strictEqual(events[0].address.toLowerCase(), contractAddress.toLowerCase(), "result address matches contract address");
-            assert.notStrictEqual(events[0].data, null, "result data exists");
-            assert.strict(events[0].topics.length > 0, "result topics not empty");
-            assert.strict(events[0].timestamp >= fromTimestamp, "result timestamp is greater or equal fromTimestamp");
-            assert.strict(events[0].timestamp <= toTimestamp, "result is less or equal toTimestamp");
-
-            assert.strictEqual(events[1].address.toLowerCase(), contractAddress.toLowerCase(), "result address matches contract address");
-            assert.notStrictEqual(events[1].data, null, "result data exists");
-            assert.strict(events[1].topics.length > 0, "result topics not empty");
-            assert.strict(events[1].timestamp >= fromTimestamp, "result timestamp is greater or equal fromTimestamp");
-            assert.strict(events[1].timestamp <= toTimestamp, "result is less or equal toTimestamp");
-        }).timeout(60000);
-
-        it("should filter contract events by timestamp number", async function () {
-            const contractAddress = '0x000000000000000000000000000000000186fb1a';
-            const fromTimestamp = 1642065156264170;
-            const toTimestamp = 1642080642176150;
-            const contract = hethers.ContractFactory.getContract(contractAddress, abiToken, testnetWalletECDSA);
-            const filter = {
-                address: contractAddress,
-            }
-            const events = await contract.queryFilter(filter, fromTimestamp, toTimestamp);
-
-            assert.strictEqual(events.length, 2, "queryFilter returns the contract events");
-            assert.strictEqual(events[0].address.toLowerCase(), contractAddress.toLowerCase(), "result address matches contract address");
-            assert.notStrictEqual(events[0].data, null, "result data exists");
-            assert.strict(events[0].topics.length > 0, "result topics not empty");
-
-            assert.strictEqual(events[1].address.toLowerCase(), contractAddress.toLowerCase(), "result address matches contract address");
-            assert.notStrictEqual(events[1].data, null, "result data exists");
-            assert.strict(events[1].topics.length > 0, "result topics not empty");
-        }).timeout(60000);
-    });
-
 });

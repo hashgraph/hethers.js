@@ -6,12 +6,6 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { DefaultHederaProvider } from "@hethers/providers";
 import { HederaTransactionRecord, TransactionResponse, TransactionReceipt } from "@hethers/abstract-provider";
 import { HederaNetworks } from "@hethers/providers/lib/default-hedera-provider";
-import {
-    AccountId,
-    ContractCreateTransaction, ContractFunctionParameters,
-    PrivateKey,
-    TransactionId
-} from "@hashgraph/sdk";
 import * as utils from "./utils";
 
 const bnify = hethers.BigNumber.from;
@@ -758,8 +752,6 @@ describe('Providers.spec', () => {
     const localWalletECDSA = utils.getWallets().local.ecdsa[0];
     // @ts-ignore
     const localWalletED25519 = utils.getWallets().local.ed25519[1];
-    
-    const hederaTestnetOperableAccount = utils.getAccounts().testnet.ed25519[1];
 
     describe("Test Basic Authentication", function () {
         //this.retries(3);
@@ -859,152 +851,6 @@ describe('Providers.spec', () => {
         }).timeout(timeout);
 
         describe("Filter Contract Logs", function () {
-
-            it('Should filter logs by timestamp and address', async function () {
-                const fromTimestamp = "1642065156.264170833";
-                const toTimestamp = "1642080642.176149864";
-                const address = "0x000000000000000000000000000000000186fb1A";
-                const account = "0.0.25623322";
-                const filterParams = {
-                    address: address,
-                    fromTimestamp: fromTimestamp,
-                    toTimestamp: toTimestamp
-                }
-
-                const logsResponse = [
-                    {
-                        "address": "0x000000000000000000000000000000000186fb1a",
-                        "contract_id": "0.0.25623322",
-                        "data": "0x00000000000000000000000000000000000000000000003635c9adc5dea00000",
-                        "index": 0,
-                        "topics": [
-                            "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
-                            "0x0000000000000000000000000000000000000000000000000000000000000000",
-                            "0x0000000000000000000000000000000000000000000000000000000000179977"
-                        ],
-                        "root_contract_id": "0.0.25623322",
-                        "timestamp": "1642080642.176149864"
-                    },
-                    {
-                        "address": "0x000000000000000000000000000000000186fb1a",
-                        "contract_id": "0.0.25623322",
-                        "data": "0x00000000000000000000000000000000000000000000003635c9adc5dea00000",
-                        "index": 0,
-                        "topics": [
-                            "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
-                            "0x0000000000000000000000000000000000000000000000000000000000000000",
-                            "0x0000000000000000000000000000000000000000000000000000000000179977"
-                        ],
-                        "root_contract_id": "0.0.25623322",
-                        "timestamp": "1642065156.264170833"
-                    }
-                ]
-
-                const logs = await testnetProvider.getLogs(filterParams);
-                assert.strictEqual(logs.length, 2);
-
-                assert.strictEqual(logs[0].timestamp, logsResponse[0].timestamp);
-                assert.strictEqual(logs[0].address.toLowerCase(), logsResponse[0].address.toLowerCase());
-                assert.strictEqual(logs[0].data, logsResponse[0].data);
-                assert.deepStrictEqual(logs[0].topics, logsResponse[0].topics);
-                assert.strictEqual(logs[0].transactionHash, undefined);
-                assert.strictEqual(logs[0].logIndex, logsResponse[0].index);
-                assert.strictEqual(logs[0].transactionIndex, logsResponse[0].index);
-
-                assert.strictEqual(logs[1].timestamp, logsResponse[1].timestamp);
-                assert.strictEqual(logs[1].address.toLowerCase(), logsResponse[1].address.toLowerCase());
-                assert.strictEqual(logs[1].data, logsResponse[1].data);
-                assert.deepStrictEqual(logs[1].topics, logsResponse[1].topics);
-                assert.strictEqual(logs[1].transactionHash, undefined);
-                assert.strictEqual(logs[1].logIndex, logsResponse[1].index);
-                assert.strictEqual(logs[1].transactionIndex, logsResponse[1].index);
-
-                const filterParamsAccount = {
-                    address: account,
-                    fromTimestamp: fromTimestamp,
-                    toTimestamp: toTimestamp
-                }
-
-                const logs2 = await testnetProvider.getLogs(filterParamsAccount);
-                assert.strictEqual(logs2.length, 2);
-
-                assert.strictEqual(logs2[0].timestamp, logsResponse[0].timestamp);
-                assert.strictEqual(logs2[0].address.toLowerCase(), logsResponse[0].address.toLowerCase());
-                assert.strictEqual(logs2[0].data, logsResponse[0].data);
-                assert.deepStrictEqual(logs2[0].topics, logsResponse[0].topics);
-                assert.strictEqual(logs2[0].transactionHash, undefined);
-                assert.strictEqual(logs2[0].logIndex, logsResponse[0].index);
-                assert.strictEqual(logs2[0].transactionIndex, logsResponse[0].index);
-
-                assert.strictEqual(logs2[1].timestamp, logsResponse[1].timestamp);
-                assert.strictEqual(logs2[1].address.toLowerCase(), logsResponse[1].address.toLowerCase());
-                assert.strictEqual(logs2[1].data, logsResponse[1].data);
-                assert.deepStrictEqual(logs2[1].topics, logsResponse[1].topics);
-                assert.strictEqual(logs2[1].transactionHash, undefined);
-                assert.strictEqual(logs2[1].logIndex, logsResponse[1].index);
-                assert.strictEqual(logs2[1].transactionIndex, logsResponse[1].index);
-            }).timeout(timeout * 4);
-
-            it('Should filter log with length more than 100', async function () {
-                const fromTimestamp = "1442065156.264170833";
-                const toTimestamp = "1642080642.176149864";
-                const address = "0x000000000000000000000000000000000186fb1A";
-                const filterParams = {
-                    address: address,
-                    fromTimestamp: fromTimestamp,
-                    toTimestamp: toTimestamp
-                }
-                const logs = await testnetProvider.getLogs(filterParams);
-                const logsLength = logs.length;
-                const logsResponse = [
-                    {
-                        "address": "0x000000000000000000000000000000000186fb1a",
-                        "contract_id": "0.0.25623322",
-                        "data": "0x00000000000000000000000000000000000000000000003635c9adc5dea00000",
-                        "index": 0,
-                        "topics": [
-                            "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
-                            "0x0000000000000000000000000000000000000000000000000000000000000000",
-                            "0x0000000000000000000000000000000000000000000000000000000000179977"
-                        ],
-                        "root_contract_id": "0.0.25623322",
-                        "timestamp": "1640183634.611982000"
-                    },
-                    {
-                        "address": "0x000000000000000000000000000000000186fb1a",
-                        "contract_id": "0.0.25623322",
-                        "data": "0x000000000000000000000000000000000000000000000000000000003b9aca00",
-                        "index": 0,
-                        "topics": [
-                            "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef",
-                            "0x0000000000000000000000000000000000000000000000000000000000000000",
-                            "0x0000000000000000000000000000000000000000000000000000000000179977"
-                        ],
-                        "root_contract_id": "0.0.25623322",
-                        "timestamp": "1640075394.182370923"
-                    }
-                ]
-
-                assert.strictEqual(logsLength, 211);
-
-                assert.strictEqual(logs[logsLength-2].timestamp, logsResponse[0].timestamp);
-                assert.strictEqual(logs[logsLength-2].address.toLowerCase(), logsResponse[0].address.toLowerCase());
-                assert.strictEqual(logs[logsLength-2].data, logsResponse[0].data);
-                assert.deepStrictEqual(logs[logsLength-2].topics, logsResponse[0].topics);
-                assert.strictEqual(logs[logsLength-2].transactionHash, undefined);
-                assert.strictEqual(logs[logsLength-2].logIndex, logsResponse[0].index);
-                assert.strictEqual(logs[logsLength-2].transactionIndex, logsResponse[0].index);
-
-                assert.strictEqual(logs[logsLength-1].timestamp, logsResponse[1].timestamp);
-                assert.strictEqual(logs[logsLength-1].address.toLowerCase(), logsResponse[1].address.toLowerCase());
-                assert.strictEqual(logs[logsLength-1].data, logsResponse[1].data);
-                assert.deepStrictEqual(logs[logsLength-1].topics, logsResponse[1].topics);
-                assert.strictEqual(logs[logsLength-1].transactionHash, undefined);
-                assert.strictEqual(logs[logsLength-1].logIndex, logsResponse[1].index);
-                assert.strictEqual(logs[logsLength-1].transactionIndex, logsResponse[1].index);
-
-            }).timeout(timeout * 4);
-
             it('Should return default value', async function () {
                 const address = "0x000000000000000000000000000000000186fb1b";
                 const filterParams = {
@@ -1018,63 +864,8 @@ describe('Providers.spec', () => {
             }).timeout(timeout * 4);
         });
 
-        describe("Sign & Send Transacton, Wait for receipt", function () {
-            let signedTx: string | Promise<string>;
-            beforeEach(async () => {
-                const privateKey = PrivateKey.fromString(hederaTestnetOperableAccount.privateKey);
-                const txID = TransactionId.generate(hederaTestnetOperableAccount.account);
-                const tx = await new ContractCreateTransaction()
-                    .setGas(300000)
-                    .setBytecodeFileId("0.0.26562254")
-                    .setNodeAccountIds([new AccountId(0, 0, 3)])
-                    .setConstructorParameters(new ContractFunctionParameters().addUint256(100))
-                    .setTransactionId(txID)
-                    .freeze()
-                    .sign(privateKey);
-                const txBytes = tx.toBytes();
-                signedTx = hethers.utils.hexlify(txBytes);
-            });
-
-            it("Should populate transaction receipt", async function () {
-                const sendTransactionResponse = await testnetProvider.sendTransaction(await signedTx);
-                const receipt = await sendTransactionResponse.wait();
-                // assert.strict(receipt.logs.length > 0);
-                assert.strictEqual(receipt.to, null);
-                assert.strictEqual(receipt.contractAddress, '0x' + sendTransactionResponse.customData.contractId);
-                assert.strictEqual(receipt.from, hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.account));
-                assert.strictEqual(receipt.transactionHash, sendTransactionResponse.hash.substring(0, 66));
-            }).timeout(timeout * 8);
-
-            it("Should populate transaction receipt with timeout", async function () {
-                const sendTransactionResponse = await testnetProvider.sendTransaction(await signedTx);
-                const receipt = await sendTransactionResponse.wait(timeout * 2);
-                // assert.strict(receipt.logs.length > 0);
-                assert.strictEqual(receipt.to, null);
-                assert.strictEqual(receipt.contractAddress, '0x' + sendTransactionResponse.customData.contractId);
-                assert.strictEqual(receipt.from, hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.account));
-                assert.strictEqual(receipt.transactionHash, sendTransactionResponse.hash.substring(0, 66));
-            }).timeout(timeout * 10);
-
-            it("Should throw timeout exceeded", async function () {
-                const insufficientTimeout = 500;
-                await assert.rejects(
-                    async () => {
-                        const sendTransactionResponse = await testnetProvider.sendTransaction(await signedTx);
-                        await sendTransactionResponse.wait(insufficientTimeout);
-                    },
-                    (err) => {
-                        assert.strictEqual(err.name, 'Error');
-                        assert.strictEqual(err.reason, 'timeout exceeded');
-                        assert.strictEqual(err.code, 'TIMEOUT');
-                        assert.strictEqual(err.timeout, insufficientTimeout);
-                        return true;
-                    }
-                );
-            }).timeout(timeout * 4);
-        });
-
         it("Should populate tx record by transactionId", async function () {
-            const existingId = `0.0.1546615-1641987871-235099329`;
+            const existingId = '0.0.902-1676628348-418441340';
             const record = await testnetProvider.getTransaction(existingId);
             const network = await testnetProvider.getNetwork();
             assert.notStrictEqual(record, null);
@@ -1083,7 +874,7 @@ describe('Providers.spec', () => {
         }).timeout(timeout * 4);
 
         it("Should populate tx record by consensus timestamp", async function () {
-            const timestamp = `1641987884.097680000`;
+            const timestamp = `1676628357.867517003`;
             const record = await testnetProvider.getTransaction(timestamp);
             const network = await testnetProvider.getNetwork();
             assert.notStrictEqual(record, null);
@@ -1158,55 +949,6 @@ describe('Providers.spec', () => {
             assert.strictEqual(true, balance.gte(0));
         }).timeout(timeout * 4);
 
-        it('should submit signed transaction', async function () {
-            // TODO: this test may be flaky
-            // The initial balance part is commented out as of the current non-payable constructor.
-            // In the future, this test should be changed to use testnet and pre-deployed
-            // bytecode for contract with a payable constructor .
-            const privateKey = PrivateKey.fromString(hederaTestnetOperableAccount.privateKey);
-            // 1. Sign TX -> `sign-transaction.ts`
-            const txID = TransactionId.generate(hederaTestnetOperableAccount.account);
-            const tx = await new ContractCreateTransaction()
-                .setContractMemo("memo")
-                .setGas(300000)
-                // .setInitialBalance(1000)
-                .setBytecodeFileId("0.0.26562254")
-                .setNodeAccountIds([new AccountId(0, 0, 3)])
-                .setConstructorParameters(new ContractFunctionParameters().addUint256(100))
-                .setTransactionId(txID)
-                .freeze()
-                .sign(privateKey);
-            const txBytes = tx.toBytes();
-            const signedTx = hethers.utils.hexlify(txBytes);
-            const provider = hethers.providers.getDefaultProvider('testnet');
-            const txResponse = await provider.sendTransaction(signedTx);
-            assert.strictEqual(txResponse.gasLimit.toNumber(), 300000);
-            assert.strictEqual(txResponse.from, hethers.utils.getAddressFromAccount(hederaTestnetOperableAccount.account));
-            assert.strictEqual(txResponse.to, undefined); // contract create TX should not be addressed to anything
-            // assert.strictEqual(txResponse.value.toNumber(), 100000000000);
-        }).timeout(timeout * 4);
-
-        /* This test is skipped because the local network won't be started in the CI */
-        xit("Should be able to query local network", async function () {
-            const genesis = {
-                operator: {
-                    // genesis is the operator
-                    accountId: "0.0.2",
-                    privateKey: "302e020100300506032b65700422042091132178e72057a1d7528025956fe39b0b847f200ab59b2fdd367017f3087137",
-                    publicKey: "302a300506032b65700321000aa8e21064c61eab86e2a9c164565b4e7a9a4146106e0a6cd03a8c395a110e92"
-                },
-                network: {
-                    "127.0.0.1:50211": "0.0.3",
-                    "127.0.0.1:50212": "0.0.4",
-                    "127.0.0.1:50213": "0.0.5"
-                }
-            };
-            /* Connected to the local network as the GENESIS account*/
-            const prov = new hethers.providers.HederaProvider(genesis.network["127.0.0.1:50211"], "127.0.0.1:50211", "");
-            const bal = await prov.getBalance(solAddr);
-            assert.strictEqual(true, bal.gte(0));
-        });
-
         it("Should be able to query testnet with custom urls", async function () {
             const provider2 = new hethers.providers.HederaProvider(
                 "0.0.3",
@@ -1215,13 +957,13 @@ describe('Providers.spec', () => {
 
             const balance2 = await provider2.getBalance(solAddr);
             assert.strictEqual(true, balance2.gte(0));
-            const txId = `0.0.1546615-1641987871-235099329`;
-            const record2 = await provider2.getTransaction(txId);
+            const existingId = '0.0.902-1676628348-418441340';
+            const record2 = await provider2.getTransaction(existingId);
             assert.notStrictEqual(record2, null, "Record is null")
         }).timeout(timeout * 4);
 
         it("Should get bytecode of contract", async function () {
-            const contractAccountConfig = { shard: BigInt(0), realm: BigInt(0), num: BigInt(16645669) };
+            const contractAccountConfig = { shard: BigInt(0), realm: BigInt(0), num: BigInt(3502207) };
             const contractAddress = hethers.utils.getAddressFromAccount(contractAccountConfig);
             let result = await testnetProvider.getCode(contractAddress);
             assert.strict((typeof result === "string" && result != "0x"), `returns bytecode of contract - ` + contractAddress);

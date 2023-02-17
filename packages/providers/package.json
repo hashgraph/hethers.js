@@ -20,7 +20,7 @@
     "@ethersproject/hash": "5.5.0",
     "@ethersproject/properties": "5.5.0",
     "@ethersproject/random": "5.5.0",
-    "@ethersproject/sha2": "5.5.0",
+    "@ethersproject/sha2": "5.7.0",
     "@ethersproject/strings": "5.5.0",
     "@ethersproject/web": "5.5.0",
     "@hashgraph/proto": "2.9.0",
@@ -62,7 +62,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "sideEffects": false,
-  "tarballHash": "0xaf8867e9b19c9e52c1655530bf0b33820180f58fcc862fde8e284b0f1ed34801",
+  "tarballHash": "0x6a8a7d0c562438fcac4a548f5451baf0a5b65738509f06973394198275d31af3",
   "types": "./lib/index.d.ts",
-  "version": "1.2.3"
+  "version": "1.2.4"
 }

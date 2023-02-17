@@ -8,7 +8,7 @@
     "@hethers/abstract-signer": "1.2.3",
     "@hethers/address": "1.2.0",
     "@hethers/logger": "1.2.0",
-    "@hethers/providers": "1.2.3",
+    "@hethers/providers": "1.2.4",
     "@hethers/transactions": "1.2.2"
   },
   "description": "Contract abstraction meta-class for hethers.",
@@ -35,7 +35,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "sideEffects": false,
-  "tarballHash": "0x6fe9b5fd59f0f5896b0a138f6782addf6a916d8e779862de6447e77e79093bc5",
+  "tarballHash": "0x63b1e4a98f4040167d525bd2da55fb28135784a97036c003d64f2c59bf939bd3",
   "types": "./lib/index.d.ts",
   "version": "1.2.3"
 }

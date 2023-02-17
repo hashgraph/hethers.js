@@ -88,7 +88,7 @@
     "@ethersproject/pbkdf2": "5.5.0",
     "@ethersproject/properties": "5.5.0",
     "@ethersproject/random": "5.5.0",
-    "@ethersproject/sha2": "5.5.0",
+    "@ethersproject/sha2": "5.7.0",
     "@ethersproject/solidity": "5.5.0",
     "@ethersproject/strings": "5.5.0",
     "@ethersproject/web": "5.5.0",

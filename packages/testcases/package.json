@@ -18,7 +18,7 @@
     "@ethersproject/bytes": "5.5.0",
     "@ethersproject/keccak256": "5.5.0",
     "@ethersproject/strings": "5.5.0",
-    "@hashgraph/hethers": "1.2.5",
+    "@hashgraph/hethers": "1.2.6",
     "tiny-inflate": "1.0.3"
   },
   "description": "Testcases for Hethers and scripts to generate testcases.",
@@ -44,7 +44,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "tarballHash": "0x8366714ac548b8a49c25be2b28d658516b1fa1987712c078e2091a80570fd513",
+  "tarballHash": "0xf96b51b0452c2ea62b5ad02e0fa7943b58a22de4fb4bddddc335d27d4e35bd2c",
   "types": "./lib/index.d.ts",
   "version": "1.0.0"
 }

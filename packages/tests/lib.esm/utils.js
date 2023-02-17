@@ -101,18 +101,17 @@ const getAccounts = () => {
         },
         testnet: {
             ecdsa: [
-                { account: '0.0.29562194', privateKey: '0x3b6cd41ded6986add931390d5d3efa0bb2b311a8415cfe66716cac0234de035d', isED25519Type: false }
+                { account: '0.0.3493864', privateKey: '0xac7a35ced622b589b69346c899b8b229c33f6ded0fc93d06cd2c8d998ee080de', isED25519Type: false }
             ],
             ed25519: [
                 {
-                    account: "0.0.34100425",
-                    alias: "0.0.QsxEYZU82YPvQqrZ8DAfOktZjmbcfjaPwVATlsaJCCM=",
-                    privateKey: "06bd0453347618988f1e1c60bd3e57892a4b8603969827d65b1a87d13b463d70",
+                    account: "0.0.3493861",
+                    privateKey: "d553ff78b07050867a09f5bf17c762f858b8d05476be4aca72c02bce548d27e9",
                     isED25519Type: true
                 },
                 {
-                    account: "0.0.19041642",
-                    privateKey: "302e020100300506032b6570042204207ef3437273a5146e4e504a6e22c5caedf07cb0821f01bc05d18e8e716f77f66c",
+                    account: "0.0.3493861",
+                    privateKey: "302e020100300506032b657004220420d553ff78b07050867a09f5bf17c762f858b8d05476be4aca72c02bce548d27e9",
                     isED25519Type: true
                 }
             ]
