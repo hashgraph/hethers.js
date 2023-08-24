@@ -3,7 +3,7 @@ Hethers
 # ⛔️ DEPRECATED
 
 Deprecation of Hethers.js by October 20, 2023\
-As we continue to eveolve the Hedera ecosystem, we are committed to ensuring that our developer tools and resources remain easy to use and up-to-date. With this goal in mind, the Hethers.js library will be deprecated by October 20, 2023
+As we continue to evolve the Hedera ecosystem, we are committed to ensuring that our developer tools and resources remain easy to use and up-to-date. With this goal in mind, the Hethers.js library will be deprecated by October 20, 2023
 If you are currently using or planned to use Hethers in your projects, please consider instead [ethers.js](https://docs.ethers.org/v6/) or [web3js](https://web3js.org/) in combination with [hedera-json-rpc-relay](https://github.com/hashgraph/hedera-json-rpc-relay) before the deprecation date. For ED25519 focused scenarios the [hedera-sdk-js](https://github.com/hashgraph/hedera-sdk-js) may be utilized
 
 ---
