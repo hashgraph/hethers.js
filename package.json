@@ -1,5 +1,5 @@
 {
-  "name": "hethers",
+  "name": "@hashgraph/hethers",
   "version": "1.2.6",
   "private": true,
   "repository": {
