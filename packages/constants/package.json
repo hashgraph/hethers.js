@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@ethersproject/bignumber": "5.5.0"
+    "@ethersproject/bignumber": "5.7.0"
   },
   "description": "Common EVM & Hedera Hashgraph constants used for hethers.",
   "keywords": [
